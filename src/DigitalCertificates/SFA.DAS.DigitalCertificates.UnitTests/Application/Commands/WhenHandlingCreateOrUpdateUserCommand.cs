@@ -26,22 +26,20 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands
         [Test, MoqAutoData]
         public async Task Then_The_User_Is_Created_Or_Updated_Successfully(
             CreateOrUpdateUserCommand command,
-            CreateOrUpdateUserResponse apiResponseBody,
+            PostCreateOrUpdateUserResponse apiResponseBody,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
             CreateOrUpdateUserCommandHandler handler)
         {
             // Arrange
-            var apiResponse = new ApiResponse<CreateOrUpdateUserResponse>(
+            var apiResponse = new ApiResponse<PostCreateOrUpdateUserResponse>(
                 apiResponseBody, HttpStatusCode.OK, string.Empty);
 
             mockDigitalCertificatesApiClient
-                .Setup(client => client.PostWithResponseCode<PostCreateOrUpdateUserRequestData, CreateOrUpdateUserResponse>(
+                .Setup(client => client.PostWithResponseCode<PostCreateOrUpdateUserRequestData, PostCreateOrUpdateUserResponse>(
                     It.Is<PostCreateOrUpdateUserRequest>(r =>
                         r.Data.GovUkIdentifier == command.GovUkIdentifier &&
                         r.Data.EmailAddress == command.EmailAddress &&
-                        r.Data.PhoneNumber == command.PhoneNumber &&
-                        r.Data.Names == command.Names &&
-                        r.Data.DateOfBirth == command.DateOfBirth), true))
+                        r.Data.PhoneNumber == command.PhoneNumber), true))
                 .ReturnsAsync(apiResponse);
 
             // Act
@@ -54,16 +52,16 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands
         [Test, MoqAutoData]
         public async Task Then_The_Request_Is_Correctly_Constructed(
             CreateOrUpdateUserCommand command,
-            CreateOrUpdateUserResponse apiResponseBody,
+            PostCreateOrUpdateUserResponse apiResponseBody,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
             CreateOrUpdateUserCommandHandler handler)
         {
             // Arrange
-            var response = new ApiResponse<CreateOrUpdateUserResponse>(apiResponseBody, HttpStatusCode.OK, string.Empty);
+            var response = new ApiResponse<PostCreateOrUpdateUserResponse>(apiResponseBody, HttpStatusCode.OK, string.Empty);
             PostCreateOrUpdateUserRequest capturedRequest = null;
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.PostWithResponseCode<PostCreateOrUpdateUserRequestData, CreateOrUpdateUserResponse>(
+                .Setup(c => c.PostWithResponseCode<PostCreateOrUpdateUserRequestData, PostCreateOrUpdateUserResponse>(
                     It.IsAny<IPostApiRequest<PostCreateOrUpdateUserRequestData>>(), It.IsAny<bool>()))
                 .Callback<IPostApiRequest<PostCreateOrUpdateUserRequestData>, bool>((req, includeResponse) =>
                 {
@@ -79,8 +77,6 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands
             capturedRequest!.Data.GovUkIdentifier.Should().Be(command.GovUkIdentifier);
             capturedRequest!.Data.EmailAddress.Should().Be(command.EmailAddress);
             capturedRequest!.Data.PhoneNumber.Should().Be(command.PhoneNumber);
-            capturedRequest!.Data.Names.Should().BeEquivalentTo(command.Names);
-            capturedRequest!.Data.DateOfBirth.Should().Be(command.DateOfBirth);
         }
 
 
@@ -92,7 +88,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands
         {
             // Arrange
             mockDigitalCertificatesApiClient
-                .Setup(client => client.PostWithResponseCode<PostCreateOrUpdateUserRequestData, CreateOrUpdateUserResponse>(
+                .Setup(client => client.PostWithResponseCode<PostCreateOrUpdateUserRequestData, PostCreateOrUpdateUserResponse>(
                     It.IsAny<PostCreateOrUpdateUserRequest>(), true))
                 .ThrowsAsync(new ApiResponseException(HttpStatusCode.BadRequest, "Bad request"));
 

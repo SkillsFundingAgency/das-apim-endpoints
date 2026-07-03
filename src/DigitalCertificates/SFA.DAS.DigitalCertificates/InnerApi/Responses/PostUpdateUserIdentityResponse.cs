@@ -2,9 +2,8 @@
 
 namespace SFA.DAS.DigitalCertificates.InnerApi.Responses
 {
-    public class CreateOrUpdateUserResponse
+    public class PostUpdateUserIdentityResponse
     {
         public Guid UserId { get; set; }
-
     }
 }
