@@ -209,6 +209,7 @@ public class ShortCourseSteps
                         {
                             CourseCode = e.CourseCode,
                             AimSequenceNumber = aimNumber++,
+                            StartDate = e.StartDate
                         }).ToList()
                     }
                 }, 
