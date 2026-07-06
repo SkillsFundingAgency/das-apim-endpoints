@@ -19,7 +19,7 @@ using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 using static SFA.DAS.DigitalCertificates.InnerApi.Requests.PostCreateOrUpdateUserRequest;
 
-namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands
+namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateOrUpdateUser
 {
     public class WhenHandlingCreateOrUpdateUserCommand
     {
