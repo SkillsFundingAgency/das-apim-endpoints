@@ -1,13 +1,12 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.LearnerData.Application.UpdateLearner;
 

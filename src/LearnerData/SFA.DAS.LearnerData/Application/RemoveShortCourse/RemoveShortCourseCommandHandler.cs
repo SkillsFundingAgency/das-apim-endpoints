@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
+using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Application.Requests.Learning;
 using SFA.DAS.LearnerData.Configuration;
@@ -8,10 +9,10 @@ using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
-using System.Net;
-using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.NServiceBus;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using System.Net;
 
 namespace SFA.DAS.LearnerData.Application.RemoveShortCourse;
 
@@ -19,7 +20,6 @@ public class RemoveShortCourseCommandHandler(
     ILogger<RemoveShortCourseCommandHandler> logger,
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
     IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
-    ICalculateGrowthAndSkillsPaymentsEventBuilder calculateGrowthAndSkillsPaymentsEventBuilder,
     IMessageSession messageSession,
     PaymentsConfiguration paymentsConfiguration
 
@@ -29,7 +29,7 @@ public class RemoveShortCourseCommandHandler(
     {
         logger.LogInformation("Handling DeleteShortCourseCommand for Ukprn: {Ukprn}, LearningKey: {LearningKey}", command.Ukprn, command.LearnerKey);
 
-        var learningRequest = new DeleteShortCourseApiDeleteRequest(command.Ukprn, command.LearnerKey);
+        var learningRequest = new DeleteShortCourseApiDeleteRequest(command.Ukprn, command.LearnerKey, command.AcademicYear);
 
         var learningResponse = await learningApiClient.DeleteWithResponseCode<DeleteShortCourseResponse>(learningRequest, true);
 
@@ -41,7 +41,8 @@ public class RemoveShortCourseCommandHandler(
 
         foreach (var item in learningResponse.Body.Results)
         {
-            var earningsRequest = new DeleteShortCourseEarningsRequest(item.LearningKey, item.RemovedEpisodeKey);
+            var learnerRef = GetLearnerRef(item, command.Ukprn);
+            var earningsRequest = new DeleteShortCourseEarningsRequest(item.LearningKey, item.RemovedEpisodeKey, command.LearnerKey, learnerRef);
 
             var earningsResponse = await earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest, true);
 
@@ -51,27 +52,24 @@ public class RemoveShortCourseCommandHandler(
                 throw new Exception($"Failed to delete short course earnings with key {item.LearningKey}. Status code: {earningsResponse.StatusCode}.");
             }
 
-            await PublishEvent(command.Ukprn, item, earningsResponse.Body);
         }
 
         logger.LogInformation("Short courses for learner {LearnerKey} deleted from Learning and Earnings successfully", command.LearnerKey);
     }
 
-    private async Task PublishEvent(long ukprn, DeleteShortCourseItemResponse learningResponse, ShortCourseEarningsResponse earningsResponse)
+    private string GetLearnerRef(DeleteShortCourseItemResponse learningResponse, long ukprn)
     {
-        logger.LogInformation("Sending CalculateGrowthAndSkillsPayments command for LearningKey: {LearningKey}", learningResponse.LearningKey);
+        var learnerRef = learningResponse.Episodes
+            .Where(e => e.Ukprn == ukprn)
+            .OrderByDescending(e => e.StartDate)
+            .Select(e => e.LearnerRef)
+            .FirstOrDefault();
 
-        var command = await calculateGrowthAndSkillsPaymentsEventBuilder.Build(ukprn, learningResponse, earningsResponse);
-
-        var options = new SendOptions();
-        options.DoNotEnforceBestPractices();
-        options.SetDestination(paymentsConfiguration.PaymentsEndpoint);
-        await messageSession.Send(command, options);
-
-        logger.LogInformation("CalculateGrowthAndSkillsPayments command sent for LearningKey: {LearningKey}", learningResponse.LearningKey);
-
-        await messageSession.Publish(new GrowthAndSkillsPaymentsRecalculatedEvent { Command = command });
-
-        logger.LogInformation("GrowthAndSkillsPaymentsRecalculatedEvent published for LearningKey: {LearningKey}", learningResponse.LearningKey);
+        if (string.IsNullOrWhiteSpace(learnerRef))
+        {
+            throw new InvalidOperationException($"No episode LearnerRef found for Ukprn {ukprn} and LearnerKey {learningResponse.LearnerKey}");
+        }
+        return learnerRef;
     }
+
 }
