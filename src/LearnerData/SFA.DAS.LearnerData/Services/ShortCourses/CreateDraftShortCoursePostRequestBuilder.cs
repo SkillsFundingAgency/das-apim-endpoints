@@ -9,14 +9,14 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
 {
     public interface ICreateDraftShortCoursePostRequestBuilder
     {
-        Task<CreateDraftShortCourseRequest> Build(ShortCourseRequest request, long ukprn);
+        Task<CreateDraftShortCourseRequest> Build(ShortCourseRequest request, long ukprn, int academicYear);
     }
 
     public class CreateDraftShortCoursePostRequestBuilder(
         ILogger<CreateDraftShortCoursePostRequestBuilder> logger,
         IShortCourseLookupService shortCourseLookupService) : ICreateDraftShortCoursePostRequestBuilder
     {
-        public async Task<CreateDraftShortCourseRequest> Build(ShortCourseRequest request, long ukprn)
+        public async Task<CreateDraftShortCourseRequest> Build(ShortCourseRequest request, long ukprn, int academicYear)
         {
             var onProgrammeItems = new List<SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme>();
 
@@ -55,6 +55,7 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
             return new CreateDraftShortCourseRequest
             {
                 Ukprn = ukprn,
+                AcademicYear = academicYear,
                 LearnerUpdateDetails = new ShortCourseLearningUpdateDetails
                 {
                     Uln = request.Learner.Uln,
