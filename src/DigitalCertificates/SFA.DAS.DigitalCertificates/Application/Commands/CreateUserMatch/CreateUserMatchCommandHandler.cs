@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,21 +34,15 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateUserMatch
 
             var userMatchIdentity = command.UserIdentityId != null
                 ? identity.Identity.FirstOrDefault(p => p.UserIdentityId == command.UserIdentityId)
-                : identity.Identity.OrderByDescending(p => p.ValidFrom).First();
+                : identity.Identity.OrderByDescending(p => p.ValidFrom).FirstOrDefault();
 
-            if (command.UserIdentityId != null)
+            if (userMatchIdentity == null || identity.DateOfBirth == null)
             {
-                if (userMatchIdentity != null)
-                {
-                    request.Data.FamilyName = userMatchIdentity.FamilyName;
-                    request.Data.DateOfBirth = identity.DateOfBirth.Value;
-                }
-                else
-                {
-                    request.Data.FamilyName = string.Empty;
-                    request.Data.DateOfBirth = default;
-                }
+                throw new InvalidOperationException("User identity details are required to submit a match attempt.");
             }
+
+            request.Data.FamilyName = userMatchIdentity.FamilyName;
+            request.Data.DateOfBirth = identity.DateOfBirth.Value;
 
             var response = await _digitalCertificatesApiClient.PostWithResponseCode<PostCreateUserMatchRequestData, object>(request, false);
 

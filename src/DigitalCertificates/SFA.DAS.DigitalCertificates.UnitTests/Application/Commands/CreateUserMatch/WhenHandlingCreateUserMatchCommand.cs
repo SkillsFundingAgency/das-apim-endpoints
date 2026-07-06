@@ -170,15 +170,30 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
         }
 
         [Test, MoqAutoData]
-        public async Task Then_Empty_Identity_Details_Are_Used_When_UserIdentityId_Is_Supplied_But_Not_Found(
+        public async Task Then_When_UserIdentityId_Is_Null_The_Latest_UserIdentity_Is_Used(
             CreateUserMatchCommand command,
-            Guid userIdentityId,
-            DateTime dateOfBirth,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
-            CreateUserMatchCommandHandler _sut)
+            CreateUserMatchCommandHandler sut)
         {
-            // Arrange
-            command.UserIdentityId = userIdentityId;
+            command.UserIdentityId = null;
+
+            var dateOfBirth = new DateTime(1990, 1, 1);
+
+            var olderIdentity = new IdentityName
+            {
+                UserIdentityId = Guid.NewGuid(),
+                FamilyName = "Old",
+                GivenNames = "Old Name",
+                ValidFrom = new DateTime(2020, 1, 1)
+            };
+
+            var latestIdentity = new IdentityName
+            {
+                UserIdentityId = Guid.NewGuid(),
+                FamilyName = "Current",
+                GivenNames = "Current Name",
+                ValidFrom = new DateTime(2024, 1, 1)
+            };
 
             var identityResponse = new ApiResponse<GetUserIdentityResponse>(
                 new GetUserIdentityResponse
@@ -186,12 +201,8 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
                     DateOfBirth = dateOfBirth,
                     Identity = new List<IdentityName>
                     {
-                        new IdentityName
-                        {
-                            UserIdentityId = Guid.NewGuid(),
-                            FamilyName = "Different surname",
-                            ValidFrom = DateTime.UtcNow
-                        }
+                olderIdentity,
+                latestIdentity
                     }
                 },
                 HttpStatusCode.OK,
@@ -201,30 +212,20 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
 
             mockDigitalCertificatesApiClient
                 .Setup(client => client.GetWithResponseCode<GetUserIdentityResponse>(
-                    It.IsAny<GetUserIdentityRequest>()))
+                    It.Is<GetUserIdentityRequest>(r => r.GetUrl == $"api/users/{command.UserId}/identity")))
                 .ReturnsAsync(identityResponse);
 
             mockDigitalCertificatesApiClient
                 .Setup(client => client.PostWithResponseCode<PostCreateUserMatchRequestData, object>(
                     It.Is<PostCreateUserMatchRequest>(r =>
-                        r.Data.FamilyName == string.Empty &&
-                        r.Data.DateOfBirth == default &&
-                        r.PostUrl == $"api/users/{command.UserId}/match"), false))
+                        r.Data.FamilyName == "Current" &&
+                        r.Data.DateOfBirth == dateOfBirth),
+                    false))
                 .ReturnsAsync(apiResponse);
 
-            // Act
-            var actual = await _sut.Handle(command, CancellationToken.None);
+            var result = await sut.Handle(command, CancellationToken.None);
 
-            // Assert
-            actual.Should().Be(Unit.Value);
-
-            mockDigitalCertificatesApiClient.Verify(client =>
-                client.PostWithResponseCode<PostCreateUserMatchRequestData, object>(
-                    It.Is<PostCreateUserMatchRequest>(r =>
-                        r.Data.FamilyName == string.Empty &&
-                        r.Data.DateOfBirth == default &&
-                        r.PostUrl == $"api/users/{command.UserId}/match"), false),
-                Times.Once);
+            result.Should().Be(Unit.Value);
         }
 
         [Test, MoqAutoData]
