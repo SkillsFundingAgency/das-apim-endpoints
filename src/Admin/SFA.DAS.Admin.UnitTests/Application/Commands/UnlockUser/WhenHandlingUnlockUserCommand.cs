@@ -10,9 +10,11 @@ using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
 using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
 using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.DigitalCertificates.Contracts.Client;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Admin.Application.Commands.UnlockUser;
+using SFA.DAS.Apim.Shared.Exceptions;
 
 namespace SFA.DAS.Admin.UnitTests.Application.Commands.UnlockUser
 {
@@ -25,11 +27,11 @@ namespace SFA.DAS.Admin.UnitTests.Application.Commands.UnlockUser
             UnlockUserCommandHandler handler)
         {
             // Arrange
-            var putResponse = new ApiResponse<object>(null, HttpStatusCode.NoContent, string.Empty);
+            var putResponse = new ApiResponse<NullResponse>(null, HttpStatusCode.NoContent, string.Empty);
             var postResponse = new ApiResponse<CreateAdminActionCommand>(null, HttpStatusCode.OK, string.Empty);
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.PutWithResponseCode<object, object>(It.IsAny<Apim.Shared.Interfaces.IPutApiRequest<object>>()))
+                .Setup(c => c.PutWithResponseCode<object, NullResponse>(It.IsAny<PutUsersByUserIdUnlockApiRequest>()))
                 .ReturnsAsync(putResponse);
 
             mockDigitalCertificatesApiClient
@@ -42,7 +44,7 @@ namespace SFA.DAS.Admin.UnitTests.Application.Commands.UnlockUser
             // Assert
             actual.Should().Be(Unit.Value);
 
-            mockDigitalCertificatesApiClient.Verify(c => c.PutWithResponseCode<object, object>(It.IsAny<Apim.Shared.Interfaces.IPutApiRequest<object>>()), Times.Once);
+            mockDigitalCertificatesApiClient.Verify(c => c.PutWithResponseCode<object, NullResponse>(It.IsAny<PutUsersByUserIdUnlockApiRequest>()), Times.Once);
 
             mockDigitalCertificatesApiClient.Verify(c => c.PostWithResponseCode<CreateAdminActionCommand>(
                 It.Is<PostUsersAdminactionsApiRequest>(p => ((CreateAdminActionCommand)p.Data).UserActionId == command.UserActionId && ((CreateAdminActionCommand)p.Data).Username == command.Username && ((CreateAdminActionCommand)p.Data).Action.ToString() == "Unlocked")), Times.Once);
@@ -55,17 +57,17 @@ namespace SFA.DAS.Admin.UnitTests.Application.Commands.UnlockUser
             UnlockUserCommandHandler handler)
         {
             // Arrange
-            var putResponse = new ApiResponse<object>(null, HttpStatusCode.BadRequest, string.Empty);
+            var putResponse = new ApiResponse<NullResponse>(null, HttpStatusCode.BadRequest, string.Empty);
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.PutWithResponseCode<object, object>(It.IsAny<Apim.Shared.Interfaces.IPutApiRequest<object>>()))
+                .Setup(c => c.PutWithResponseCode<object, NullResponse>(It.IsAny<PutUsersByUserIdUnlockApiRequest>()))
                 .ReturnsAsync(putResponse);
 
             // Act
             Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            await act.Should().ThrowAsync<ArgumentException>();
+            await act.Should().ThrowAsync<ApiResponseException>();
 
             mockDigitalCertificatesApiClient.Verify(c => c.PostWithResponseCode<CreateAdminActionCommand>(It.IsAny<PostUsersAdminactionsApiRequest>()), Times.Never);
         }
@@ -77,11 +79,11 @@ namespace SFA.DAS.Admin.UnitTests.Application.Commands.UnlockUser
             UnlockUserCommandHandler handler)
         {
             // Arrange
-            var putResponse = new ApiResponse<object>(null, HttpStatusCode.NoContent, string.Empty);
+            var putResponse = new ApiResponse<NullResponse>(null, HttpStatusCode.NoContent, string.Empty);
             var postResponse = new ApiResponse<CreateAdminActionCommand>(null, HttpStatusCode.BadRequest, string.Empty);
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.PutWithResponseCode<object, object>(It.IsAny<Apim.Shared.Interfaces.IPutApiRequest<object>>()))
+                .Setup(c => c.PutWithResponseCode<object, NullResponse>(It.IsAny<PutUsersByUserIdUnlockApiRequest>()))
                 .ReturnsAsync(putResponse);
 
             mockDigitalCertificatesApiClient
