@@ -7,5 +7,6 @@ public class UpdateShortCourseLearningCommand : IRequest
 {
     public Guid LearnerKey { get; set; }
     public long Ukprn { get; set; }
+    public int AcademicYear { get; set; }
     public ShortCourseRequest Request { get; set; }
 }

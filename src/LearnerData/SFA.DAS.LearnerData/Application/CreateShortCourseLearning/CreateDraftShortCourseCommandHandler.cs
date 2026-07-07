@@ -36,7 +36,7 @@ public class CreateDraftShortCourseCommandHandler(
 
         await learnerDataCacheService.StoreLearner(command.ShortCourseRequest, command.Ukprn, cancellationToken);
 
-        var requestData = await createDraftShortCoursePostRequestBuilder.Build(command.ShortCourseRequest, command.Ukprn);
+        var requestData = await createDraftShortCoursePostRequestBuilder.Build(command.ShortCourseRequest, command.Ukprn, command.AcademicYear);
 
         var learningResponse = await learningApiClient.PostWithResponseCode<CreateDraftShortCoursePostResponse>(new CreateDraftShortCourseApiPostRequest(requestData));
 
