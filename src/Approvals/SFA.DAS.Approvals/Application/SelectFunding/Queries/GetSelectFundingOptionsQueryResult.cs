@@ -7,4 +7,5 @@ public class GetSelectFundingOptionsQueryResult
     public bool HasLtmTransfersAvailable { get; set; }
     public bool HasUnallocatedReservationsAvailable { get; set; }
     public bool HasAdditionalReservationFundsAvailable { get; set; }
+    public int RemainingReservationsCount { get; set; }
 }
