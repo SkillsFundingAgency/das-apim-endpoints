@@ -208,8 +208,7 @@ public class ShortCourseSteps
                         OnProgramme = learning.Episodes.Select(e => new ShortCourseOnProgramme
                         {
                             CourseCode = e.CourseCode,
-                            AimSequenceNumber = aimNumber++,
-                            StartDate = e.StartDate
+                            AimSequenceNumber = aimNumber++
                         }).ToList()
                     }
                 }, 

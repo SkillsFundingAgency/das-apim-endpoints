@@ -26,6 +26,5 @@ namespace SFA.DAS.LearnerData.Responses.LearningInner.GetShortCourseLearnersForE
         public string LearnerRef { get; set; }
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public EmployerType EmployerType { get; set; }
-        public DateTime StartDate { get; set; }
     }
 }

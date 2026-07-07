@@ -22,7 +22,7 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
     private readonly ILogger<GetShortCourseEarningsQueryHandler> _logger;
     private readonly ILearningApiClient<LearningApiConfiguration> _learningApiClient;
     private readonly IEarningsApiClient<EarningsApiConfiguration> _earningsApiClient;
-    private readonly ILearnerDataCacheService _distributedCache;
+    private readonly ILearnerDataCacheService _learnerDataCacheService;
 
     public GetShortCourseEarningsQueryHandler(
         ILogger<GetShortCourseEarningsQueryHandler> logger,
@@ -33,7 +33,7 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
         _logger = logger;
         _learningApiClient = learningApiClient;
         _earningsApiClient = earningsApiClient;
-        _distributedCache = distributedCache;
+        _learnerDataCacheService = distributedCache;
     }
 
     public async Task<GetShortCourseEarningsQueryResult> Handle(GetShortCourseEarningsQuery request, CancellationToken cancellationToken)
@@ -42,7 +42,7 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
 
         var (learnings, totalLearners) = await GetLearnings(request);
 
-        var sldLearners = await _distributedCache.GetLearners<ShortCourseRequest>(request.Ukprn, learnings.Select(x => x.Learner.Uln), cancellationToken);
+        var sldLearners = await _learnerDataCacheService.GetLearners<ShortCourseRequest>(request.Ukprn, learnings.Select(x => x.Learner.Uln), cancellationToken);
 
         var earningsByKey = await GetEarningsByKey(request, learnings);
 
@@ -138,8 +138,7 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
 
     private static int GetAimSequenceNumber(ShortCourseRequest cachedLearner, Responses.LearningInner.GetShortCourseLearnersForEarningsResponse.Episode episode)
     {
-        var onprogramme = cachedLearner.Delivery.OnProgramme.Single(op => 
-            op.CourseCode == episode.CourseCode && op.StartDate.Date == episode.StartDate.Date);
+        var onprogramme = cachedLearner.Delivery.OnProgramme.Single(op => op.CourseCode == episode.CourseCode);
         return onprogramme.AimSequenceNumber;
     }
 }
