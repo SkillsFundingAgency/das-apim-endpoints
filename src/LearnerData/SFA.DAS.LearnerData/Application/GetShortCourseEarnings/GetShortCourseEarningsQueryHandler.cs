@@ -28,12 +28,12 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
         ILogger<GetShortCourseEarningsQueryHandler> logger,
         ILearningApiClient<LearningApiConfiguration> learningApiClient,
         IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
-        ILearnerDataCacheService distributedCache)
+        ILearnerDataCacheService learnerDataCacheService)
     {
         _logger = logger;
         _learningApiClient = learningApiClient;
         _earningsApiClient = earningsApiClient;
-        _learnerDataCacheService = distributedCache;
+        _learnerDataCacheService = learnerDataCacheService;
     }
 
     public async Task<GetShortCourseEarningsQueryResult> Handle(GetShortCourseEarningsQuery request, CancellationToken cancellationToken)
