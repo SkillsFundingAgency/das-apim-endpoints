@@ -1,15 +1,16 @@
-﻿using SFA.DAS.Admin.InnerApi.Requests;
-using SFA.DAS.Admin.InnerApi.Responses;
-using System.Net;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
+﻿using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
 using SFA.DAS.Apim.Shared.Extensions;
+using System.Net;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
 using MediatR;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
 using System;
-using SFA.DAS.Admin.Enums;
+
+using CreateAdminActionCommand = SFA.DAS.DigitalCertificates.Contracts.ApiResponses.CreateAdminActionCommand;
+using PostUsersAdminactionsApiRequest = SFA.DAS.DigitalCertificates.Contracts.ApiRequests.PostUsersAdminactionsApiRequest;
 
 namespace SFA.DAS.Admin.Application.Commands.CheckUserActionByCode
 {
@@ -26,7 +27,7 @@ namespace SFA.DAS.Admin.Application.Commands.CheckUserActionByCode
 
         public async Task<CheckUserActionByCodeResult> Handle(CheckUserActionByCodeCommand request, CancellationToken cancellationToken)
         {
-            var apiResponse = await _digitalCertificatesApiClient.GetWithResponseCode<GetUserActionByCodeResponse>(new GetUserActionByCodeRequest(request.Code));
+            var apiResponse = await _digitalCertificatesApiClient.GetWithResponseCode<UserActionDetail>(new GetUsersUseractionsByCodeApiRequest(request.Code));
 
             if (apiResponse?.StatusCode == HttpStatusCode.NotFound)
             {
@@ -50,7 +51,7 @@ namespace SFA.DAS.Admin.Application.Commands.CheckUserActionByCode
                 var mostRecent = response.AdminActions.OrderByDescending(a => a.ActionTime).FirstOrDefault();
 
                 if (mostRecent == null || !string.Equals(mostRecent.Username, request.Username, StringComparison.OrdinalIgnoreCase) ||
-                    !IsAdminAction(mostRecent.Action, AdminActionType.Viewed))
+                    mostRecent.Action != AdminActionType.Viewed)
                 {
                     shouldLog = true;
                 }
@@ -58,39 +59,41 @@ namespace SFA.DAS.Admin.Application.Commands.CheckUserActionByCode
 
             if (shouldLog)
             {
-                var postRequest = new PostAdminActionRequest(request.Username, AdminActionType.Viewed.ToString(), response.Id);
-                            await _digitalCertificatesApiClient
-                 .PostWithResponseCode<PostAdminActionRequestData, object>(postRequest);
+                var create = new CreateAdminActionCommand
+                {
+                    Username = request.Username,
+                    Action = AdminActionType.Viewed,
+                    UserActionId = response.Id
+                };
+
+                var postResponse = await _digitalCertificatesApiClient.PostWithResponseCode<CreateAdminActionCommand>(
+                    new PostUsersAdminactionsApiRequest(create));
+
+                postResponse?.EnsureSuccessStatusCode();
             }
 
             var result = new CheckUserActionByCodeResult
             {
                 Id = response.Id,
                 UserId = response.UserId,
-                ActionType = response.ActionType,
+                ActionType = response.ActionType.ToString(),
                 ActionTime = response.ActionTime,
-                ActionStatus = response.ActionStatus,
+                ActionStatus = response.ActionStatus.ToString(),
                 Uln = response.Uln,
                 FamilyName = response.FamilyName,
                 GivenNames = response.GivenNames,
                 CertificateId = response.CertificateId,
-                CertificateType = response.CertificateType,
+                CertificateType = response.CertificateType.ToString(),
                 CourseName = response.CourseName,
-                AdminActions = response.AdminActions?.ConvertAll(a => new CheckUserActionByCodeResult.AdminActionDetail
+                AdminActions = response.AdminActions?.Select(a => new CheckUserActionByCodeResult.AdminActionDetail
                 {
                     Username = a.Username,
                     ActionTime = a.ActionTime,
-                    Action = a.Action
-                })
+                    Action = a.Action.ToString()
+                }).ToList()
             };
 
             return result;
-        }
-
-        private static bool IsAdminAction(string value, AdminActionType expected)
-        {
-            if (string.IsNullOrWhiteSpace(value)) return false;
-            return Enum.TryParse<AdminActionType>(value, true, out var parsed) && parsed == expected;
         }
     }
 }

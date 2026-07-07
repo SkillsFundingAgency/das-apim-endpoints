@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
     <ProjectReference Include="..\SFA.DAS.Admin\SFA.DAS.Admin.csproj" />
   </ItemGroup>
 
