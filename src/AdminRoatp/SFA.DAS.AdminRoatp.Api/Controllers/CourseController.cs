@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.AdminRoatp.Application.Queries.GetAllowedProviders;
+using SFA.DAS.AdminRoatp.Application.Queries.GetProvidersNotAllowed;
 using SFA.DAS.AdminRoatp.InnerApi.Responses;
 
 namespace SFA.DAS.AdminRoatp.Api.Controllers;
@@ -13,9 +14,20 @@ public class CourseController(IMediator _mediator, ILogger<CourseController> _lo
     [ProducesResponseType(typeof(GetAllowedProvidersResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllowedProvidersByCourse([FromRoute] string larsCode)
     {
-        _logger.LogInformation("Request received to get allowed providers for a course");
+        _logger.LogInformation("Request received to get allowed providers by course for {LarsCode}", larsCode);
 
         GetAllowedProvidersQuery query = new(larsCode);
+        GetAllowedProvidersResponse result = await _mediator.Send(query);
+        return Ok(result);
+    }
+
+    [HttpGet("{larsCode}/providers/not-allowed")]
+    [ProducesResponseType(typeof(GetAllowedProvidersResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetProvidersNotAllowedByCourse([FromRoute] string larsCode)
+    {
+        _logger.LogInformation("Request received to get providers not allowed by course for {LarsCode}", larsCode);
+
+        GetProvidersNotAllowedQuery query = new(larsCode);
         GetAllowedProvidersResponse result = await _mediator.Send(query);
         return Ok(result);
     }

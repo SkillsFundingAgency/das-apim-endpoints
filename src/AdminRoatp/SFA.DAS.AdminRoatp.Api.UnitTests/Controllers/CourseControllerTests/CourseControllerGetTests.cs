@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.AdminRoatp.Api.Controllers;
 using SFA.DAS.AdminRoatp.Application.Queries.GetAllowedProviders;
+using SFA.DAS.AdminRoatp.Application.Queries.GetProvidersNotAllowed;
 using SFA.DAS.AdminRoatp.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -25,6 +26,24 @@ public class CourseControllerGetTests
 
         // Act
         var result = await sut.GetAllowedProvidersByCourse(query.larsCode);
+
+        // Assert
+        result.As<OkObjectResult>().Value.Should().Be(expected);
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenGetProvidersNotAllowedByCourseIsInvoked_ThenReturnsOkResult(
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] CourseController sut,
+        GetAllowedProvidersResponse expected,
+        GetProvidersNotAllowedQuery query)
+    {
+        // Arrange
+        mediatorMock.Setup(m => m.Send(It.IsAny<GetProvidersNotAllowedQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expected);
+
+        // Act
+        var result = await sut.GetProvidersNotAllowedByCourse(query.larsCode);
 
         // Assert
         result.As<OkObjectResult>().Value.Should().Be(expected);

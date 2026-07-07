@@ -12,7 +12,7 @@ public class GetAllowedProvidersQueryHandler(IRoatpCourseManagementApiClient<Roa
 {
     public async Task<GetAllowedProvidersResponse> Handle(GetAllowedProvidersQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Handling get allowed providers by course request");
+        _logger.LogInformation("Handling get allowed providers by course request for {LarsCode}", request.larsCode);
 
         var response = await _courseManagementApiClient.GetWithResponseCode<GetAllowedProvidersResponse>(new GetAllowedProvidersRequest(request.larsCode));
 
