@@ -50,5 +50,6 @@ public class GetApprenticeshipsResponse
         public string TrainingCourseVersion { get; set; }
         public int? EmployerVerificationStatus { get; set; }
         public string EmployerVerificationNotes { get; set; }
+        public bool? IsOnFlexiPaymentPilot { get; set; }
     }
 }
