@@ -25,7 +25,6 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
     private readonly ILogger<UpdateShortCourseLearningCommandHandler> _logger;
     private readonly ILearningApiClient<LearningApiConfiguration> _learningApiClient;
     private readonly IEarningsApiClient<EarningsApiConfiguration> _earningsApiClient;
-    private readonly ICalculateGrowthAndSkillsPaymentsEventBuilder _calculateGrowthAndSkillsPaymentsEventBuilder;
     private readonly IUpdateShortCourseOnProgrammeEarningPutRequestBuilder _updateShortCourseOnProgrammeEarningPutRequestBuilder;
     private readonly IShortCourseLookupService _shortCourseLookupService;
     private readonly IMessageSession _messageSession;
@@ -35,7 +34,6 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         ILogger<UpdateShortCourseLearningCommandHandler> logger,
         ILearningApiClient<LearningApiConfiguration> learningApiClient,
         IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
-        ICalculateGrowthAndSkillsPaymentsEventBuilder calculateGrowthAndSkillsPaymentsEventBuilder,
         IUpdateShortCourseOnProgrammeEarningPutRequestBuilder updateShortCourseOnProgrammeEarningPutRequestBuilder,
         IShortCourseLookupService shortCourseLookupService,
         IMessageSession messageSession,
@@ -44,7 +42,6 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         _logger = logger;
         _learningApiClient = learningApiClient;
         _earningsApiClient = earningsApiClient;
-        _calculateGrowthAndSkillsPaymentsEventBuilder = calculateGrowthAndSkillsPaymentsEventBuilder;
         _updateShortCourseOnProgrammeEarningPutRequestBuilder = updateShortCourseOnProgrammeEarningPutRequestBuilder;
         _shortCourseLookupService = shortCourseLookupService;
         _messageSession = messageSession;
@@ -76,8 +73,8 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
                 _logger.LogInformation("Ignoring OnProgramme item for CourseCode {CourseCode}", result.CourseCode);
                 continue;
             }
-
-            if (result.IsNewLearning)
+            
+            if (result.IsNewLearning || result.IsNewEpisode)
             {
                 await HandleNewLearning(command, onProg, result, details);
             }
@@ -101,7 +98,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         _logger.LogInformation("Removing omitted Learning {LearningKey} / {CourseCode} from Earnings for LearnerKey {LearnerKey}",
             removedResult.LearningKey, removedResult.CourseCode, command.LearnerKey);
 
-        var earningsRequest = new DeleteShortCourseEarningsRequest(removedResult.LearningKey, removedResult.UpdatedEpisodeKey);
+        var earningsRequest = new DeleteShortCourseEarningsRequest(removedResult.LearningKey, removedResult.UpdatedEpisodeKey, command.LearnerKey, command.Request.Learner.LearnerRef);
         var earningsResponse = await _earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest, true);
 
         if (!earningsResponse.StatusCode.IsSuccessStatusCode())
@@ -116,8 +113,8 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
 
     private async Task HandleNewLearning(UpdateShortCourseLearningCommand command, ShortCourseOnProgramme onProg, UpdateShortCourseLearningPutResponse learningResponse, ShortCourseLookupResult courseDetails)
     {
-        _logger.LogInformation("New Learning created for learner {LearnerKey} / course {CourseCode}. LearningKey: {LearningKey}",
-            command.LearnerKey, onProg.CourseCode, learningResponse.LearningKey);
+        _logger.LogInformation("New {LearningOrEpisode} created for learner {LearnerKey} / course {CourseCode}. LearningKey: {LearningKey}",
+            learningResponse.IsNewEpisode ? "Episode" : "Learning", command.LearnerKey, onProg.CourseCode, learningResponse.LearningKey);
 
         var earningsRequest = BuildCreateEarningsRequest(command, onProg, learningResponse, courseDetails.Price, courseDetails.LearningType);
         await _earningsApiClient.Post(new PostCreateUnapprovedShortCourseLearningRequest(earningsRequest));
@@ -125,7 +122,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         var correlationId = Guid.NewGuid();
         await _messageSession.Publish(MapToLearnerDataEvent(command, onProg, courseDetails.Price, correlationId));
 
-        _logger.LogInformation("LearnerDataEvent published for new Learning {LearningKey}", learningResponse.LearningKey);
+        _logger.LogInformation("LearnerDataEvent published for Learning {LearningKey}", learningResponse.LearningKey);
     }
 
     private async Task HandleExistingLearning(UpdateShortCourseLearningCommand command, ShortCourseOnProgramme onProg, UpdateShortCourseLearningPutResponse learningResponse)
@@ -134,7 +131,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
 
         if (EarningsUpdateRequired(learningResponse))
         {
-            var earningBody = _updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(onProg);
+            var earningBody = _updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(onProg, learningResponse.LearnerKey, command.Request.Learner.LearnerRef);
             var earningRequest = new UpdateShortCourseOnProgrammeEarningPutRequest(learningResponse.LearningKey, learningResponse.UpdatedEpisodeKey, earningBody);
             var response = await _earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(earningRequest);
             earningsResponse = response.Body;
@@ -145,7 +142,6 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             earningsResponse = await _earningsApiClient.Get<ShortCourseEarningGetResponse>(new GetShortCourseEarningsRequest(learningResponse.LearningKey, learningResponse.UpdatedEpisodeKey));
         }
 
-        await PublishPaymentsEvent(command.Ukprn, learningResponse, earningsResponse);
     }
 
     private UpdateShortCourseLearningPutRequest BuildLearningRequest(UpdateShortCourseLearningCommand command, IReadOnlyList<ShortCourseLookupResult> courseDetails)
@@ -153,6 +149,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         var body = new UpdateShortCourseLearningRequestBody
         {
             Ukprn = command.Ukprn,
+            AcademicYear = command.AcademicYear,
             LearnerUpdateDetails = new ShortCourseLearnerUpdateDetails
             {
                 LearnerRef = command.Request.Learner.LearnerRef
@@ -245,22 +242,6 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             ReceivedDate = DateTime.UtcNow,
             LearningType = LearningType.ApprenticeshipUnit
         };
-    }
-
-    private async Task PublishPaymentsEvent(long ukprn, UpdateShortCourseLearningPutResponse learningResponse, ShortCourseEarningsResponse earningsResponse)
-    {
-        _logger.LogInformation("Sending CalculateGrowthAndSkillsPayments for LearningKey: {LearningKey}", learningResponse.LearningKey);
-
-        var evt = await _calculateGrowthAndSkillsPaymentsEventBuilder.Build(ukprn, learningResponse, earningsResponse);
-
-        var options = new SendOptions();
-        options.DoNotEnforceBestPractices();
-        options.SetDestination(_paymentsConfiguration.PaymentsEndpoint);
-        await _messageSession.Send(evt, options);
-
-        await _messageSession.Publish(new GrowthAndSkillsPaymentsRecalculatedEvent { Command = evt });
-
-        _logger.LogInformation("CalculateGrowthAndSkillsPayments sent for LearningKey: {LearningKey}", learningResponse.LearningKey);
     }
 
     private static bool EarningsUpdateRequired(UpdateShortCourseLearningPutResponse response)

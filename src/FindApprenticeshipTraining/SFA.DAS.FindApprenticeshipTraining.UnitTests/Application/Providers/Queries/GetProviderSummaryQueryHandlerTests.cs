@@ -71,9 +71,7 @@ public class GetProviderSummaryQueryHandlerTests
         {
             sut.Ukprn.Should().Be(providerSummaryResponse.Ukprn);
             sut.ProviderName.Should().Be(providerSummaryResponse.Name);
-            sut.ProviderAddress.Should().BeEquivalentTo(providerSummaryResponse.Address, options => options
-                .Excluding(x => x.Latitude)
-                .Excluding(x => x.Longitude));
+            sut.ProviderAddress.Should().BeEquivalentTo(providerSummaryResponse.Address, options => options);
             sut.Contact.MarketingInfo.Should().Be(providerSummaryResponse.MarketingInfo);
             sut.Contact.Email.Should().Be(providerSummaryResponse.Email);
             sut.Contact.PhoneNumber.Should().Be(providerSummaryResponse.Phone);

@@ -52,7 +52,8 @@ public class GetSelectFundingOptionsQueryHandler : IRequestHandler<GetSelectFund
             HasDirectTransfersAvailable = connections?.Any() ?? false,
             HasLtmTransfersAvailable = ltm.Applications?.Any() ?? false,
             HasAdditionalReservationFundsAvailable = !status.HasReachedReservationsLimit,
-            HasUnallocatedReservationsAvailable = status.HasPendingReservations
+            HasUnallocatedReservationsAvailable = status.HasPendingReservations,
+            RemainingReservationsCount = status.RemainingReservationsCount
         };
     }
 }
