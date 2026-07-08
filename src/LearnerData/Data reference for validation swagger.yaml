@@ -274,6 +274,9 @@ components:
         effectiveTo:
           type: string
           format: date
+        lastDateStarts:
+          type: string
+          format: date
 
     employerData:
       type: object
