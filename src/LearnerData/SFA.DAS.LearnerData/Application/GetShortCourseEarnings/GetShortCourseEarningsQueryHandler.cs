@@ -138,7 +138,7 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
 
     private static int GetAimSequenceNumber(ShortCourseRequest cachedLearner, Responses.LearningInner.GetShortCourseLearnersForEarningsResponse.Episode episode)
     {
-        var onprogramme = cachedLearner.Delivery.OnProgramme.Single(op => op.CourseCode == episode.CourseCode);
+        var onprogramme = cachedLearner.Delivery.OnProgramme.OrderBy(x=>x.StartDate).First(op => op.CourseCode == episode.CourseCode);
         return onprogramme.AimSequenceNumber;
     }
 }
