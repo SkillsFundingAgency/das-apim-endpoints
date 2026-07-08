@@ -15,7 +15,7 @@ public class WhenGettingAllChangeHistoryForProvider
            GetAllChangeHistoryForProviderQuery query,
            GetAllChangeHistoryForProviderResponse response,
            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockClient,
-           GetAllChangeHistoryForProviderQueryHandler handler)
+           GetAllChangeHistoryForEmployerQueryHandler handler)
     {
         mockClient
               .Setup(client => client.Get<GetAllChangeHistoryForProviderResponse>(It.Is<GetAllChangeHistoryForProviderRequest>(q => q.ProviderId == query.ProviderId)))
@@ -30,7 +30,7 @@ public class WhenGettingAllChangeHistoryForProvider
            GetAllChangeHistoryForProviderQuery query,
            GetAllChangeHistoryForProviderResponse response,
            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockClient,
-           GetAllChangeHistoryForProviderQueryHandler handler)
+           GetAllChangeHistoryForEmployerQueryHandler handler)
     {
         mockClient
               .Setup(client => client.Get<GetAllChangeHistoryForProviderResponse>(It.Is<GetAllChangeHistoryForProviderRequest>(q => q.ProviderId == query.ProviderId)))

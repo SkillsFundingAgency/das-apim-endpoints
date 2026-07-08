@@ -47,4 +47,21 @@ public class ChangeHistoryController(IMediator mediator, ILogger<ChangeHistoryCo
             return BadRequest();
         }
     }
+
+    [HttpGet]    
+    [Route("employer/{accountId:long}/get-all-change-history")]
+    public async Task<IActionResult> GetChangeHistoryForAllLearnersOfEmployer(long accountId)
+    {
+        try
+        {
+            var queryResult = await mediator.Send(new GetAllChangeHistoryForEmployerQuery(accountId));
+            var model = queryResult;
+            return Ok(model);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error attempting to get change history for Employer: {accountId}", accountId);
+            return BadRequest();
+        }
+    }
 }
