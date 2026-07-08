@@ -6,7 +6,6 @@ using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
@@ -28,7 +27,6 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
     private readonly IUpdateShortCourseOnProgrammeEarningPutRequestBuilder _updateShortCourseOnProgrammeEarningPutRequestBuilder;
     private readonly IShortCourseLookupService _shortCourseLookupService;
     private readonly IMessageSession _messageSession;
-    private readonly PaymentsConfiguration _paymentsConfiguration;
 
     public UpdateShortCourseLearningCommandHandler(
         ILogger<UpdateShortCourseLearningCommandHandler> logger,
@@ -45,7 +43,6 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         _updateShortCourseOnProgrammeEarningPutRequestBuilder = updateShortCourseOnProgrammeEarningPutRequestBuilder;
         _shortCourseLookupService = shortCourseLookupService;
         _messageSession = messageSession;
-        _paymentsConfiguration = paymentsConfiguration;
     }
 
     public async Task Handle(UpdateShortCourseLearningCommand command, CancellationToken cancellationToken)
@@ -127,21 +124,16 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
 
     private async Task HandleExistingLearning(UpdateShortCourseLearningCommand command, ShortCourseOnProgramme onProg, UpdateShortCourseLearningPutResponse learningResponse)
     {
-        ShortCourseEarningsResponse earningsResponse;
-
         if (EarningsUpdateRequired(learningResponse))
         {
             var earningBody = _updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(onProg, learningResponse.LearnerKey, command.Request.Learner.LearnerRef);
             var earningRequest = new UpdateShortCourseOnProgrammeEarningPutRequest(learningResponse.LearningKey, learningResponse.UpdatedEpisodeKey, earningBody);
-            var response = await _earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(earningRequest);
-            earningsResponse = response.Body;
+            await _earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(earningRequest);
         }
         else
         {
             _logger.LogInformation("No earnings update required for {LearnerKey} / {CourseCode}", command.LearnerKey, onProg.CourseCode);
-            earningsResponse = await _earningsApiClient.Get<ShortCourseEarningGetResponse>(new GetShortCourseEarningsRequest(learningResponse.LearningKey, learningResponse.UpdatedEpisodeKey));
         }
-
     }
 
     private UpdateShortCourseLearningPutRequest BuildLearningRequest(UpdateShortCourseLearningCommand command, IReadOnlyList<ShortCourseLookupResult> courseDetails)
