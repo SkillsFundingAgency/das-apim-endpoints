@@ -2,8 +2,6 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.LearningInner;
-using SFA.DAS.LearnerData.Shared;
-using OnProgramme = SFA.DAS.LearnerData.Requests.EarningsInner.OnProgramme;
 
 namespace SFA.DAS.LearnerData.Services.ShortCourses
 {
@@ -18,7 +16,7 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
     {
         public async Task<CreateDraftShortCourseRequest> Build(ShortCourseRequest request, long ukprn, int academicYear)
         {
-            var onProgrammeItems = new List<SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme>();
+            var onProgrammeItems = new List<OnProgramme>();
 
             foreach (var onProg in request.Delivery.OnProgramme)
             {
@@ -35,7 +33,7 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
 
                 var courseDetails = await shortCourseLookupService.GetCourseDetails(onProg.CourseCode, onProg.StartDate);
 
-                onProgrammeItems.Add(new SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme
+                onProgrammeItems.Add(new OnProgramme
                 {
                     CourseCode = onProg.CourseCode,
                     Ukprn = ukprn,
