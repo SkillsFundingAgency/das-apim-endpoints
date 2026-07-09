@@ -32,11 +32,9 @@ public class GetApprenticeshipsQueryHandler(
             return null;
         }
 
-        if (filtersResponse.StatusCode == HttpStatusCode.NotFound)
-        { return null; }
-
         var apprenticeShips = mapper.Map<GetApprenticeshipsQueryResult>(apprenticeshipResponse.Body);
-        apprenticeShips.ApprenticeshipFiltersValue = mapper.Map<GetApprenticeshipsFilterValuesQueryResult>(filtersResponse.Body);
+        apprenticeShips.ApprenticeshipFiltersValue = filtersResponse.StatusCode == HttpStatusCode.NotFound ? new GetApprenticeshipsFilterValuesQueryResult() :
+            mapper.Map<GetApprenticeshipsFilterValuesQueryResult>(filtersResponse.Body);
         return apprenticeShips;
     }
 }

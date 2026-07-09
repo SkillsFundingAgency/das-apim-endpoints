@@ -637,11 +637,9 @@ public class ApprenticesController(
             if (apprenticesData == null)
             {
                 return NotFound();
-            }
+            }    
 
-            var response = mapper.Map<GetApprenticeshipsResponse>(apprenticesData);
-
-            return Ok(response);
+            return Ok(apprenticesData);
         }
         catch (Exception ex)
         {
