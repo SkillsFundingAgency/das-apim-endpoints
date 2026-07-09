@@ -18,6 +18,7 @@ namespace SFA.DAS.Admin.Application.Queries.GetUserActionByCode
         public Guid? CertificateId { get; set; }
         public string CertificateType { get; set; }
         public string CourseName { get; set; }
+        public int? StandardCode { get; set; }
         public List<AdminActionDetail> AdminActions { get; set; }
 
         public class AdminActionDetail

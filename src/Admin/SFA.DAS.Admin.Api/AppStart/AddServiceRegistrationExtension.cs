@@ -5,6 +5,8 @@ using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.DigitalCertificates.Contracts.Client;
+using AssessorsApiClient = SFA.DAS.SharedOuterApi.Types.Services.AssessorsApiClient;
+using IAssessorsApiClient = SFA.DAS.SharedOuterApi.Types.Interfaces.IAssessorsApiClient<SFA.DAS.SharedOuterApi.Types.Configuration.AssessorsApiConfiguration>;
 
 namespace SFA.DAS.Admin.Api.AppStart
 {
@@ -17,6 +19,7 @@ namespace SFA.DAS.Admin.Api.AppStart
             services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>, DigitalCertificatesApiClient>();
+            services.AddTransient<IAssessorsApiClient, AssessorsApiClient>();
         }
     }
 }

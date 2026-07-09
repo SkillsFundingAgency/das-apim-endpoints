@@ -14,6 +14,7 @@ using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.Admin.Api.Infrastructure.HealthCheck;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using AssessorsApiHealthCheck = SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck.AssessorsApiHealthCheck;
 
 namespace SFA.DAS.Admin.Api
 {
@@ -47,7 +48,8 @@ namespace SFA.DAS.Admin.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
 
                 services.AddHealthChecks()
-                    .AddCheck<DigitalCertificatesApiHealthCheck>(DigitalCertificatesApiHealthCheck.HealthCheckResultDescription);
+                    .AddCheck<DigitalCertificatesApiHealthCheck>(DigitalCertificatesApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<AssessorsApiHealthCheck>(AssessorsApiHealthCheck.HealthCheckResultDescription);
             }
 
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetUserActionByCodeQuery).Assembly));
