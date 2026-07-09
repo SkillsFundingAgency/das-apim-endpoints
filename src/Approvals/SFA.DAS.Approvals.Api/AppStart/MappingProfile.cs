@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using SFA.DAS.Approvals.Api.Models.Apprentices;
-using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetApprenticeshipsFilterValues;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprenticeships;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprenticeshipsCSV;

@@ -13,7 +13,6 @@ using SFA.DAS.Approvals.Application.Apprentices.Commands.EditApprenticeship;
 using SFA.DAS.Approvals.Application.Apprentices.Queries;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.ApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditApprenticeship;
-using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetApprenticeshipsFilterValues;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetChangePayments;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetEditApprenticeshipCourse;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
@@ -608,7 +607,7 @@ public class ApprenticesController(
     }
 
     [HttpGet]
-    [Route("/provider/{providerId}/apprenticeships")]
+    [Route("/provider/{providerId}/apprentices")]
     public async Task<IActionResult> GetApprenticeships(long providerId, [FromQuery] InnerApi.Requests.GetApprenticeshipsRequest request)
     {
         try
@@ -649,28 +648,7 @@ public class ApprenticesController(
             logger.LogError(ex, "Error in GetApprenticeships for provider Id: {providerId}", providerId);
             return BadRequest();
         }
-    }
-
-    [HttpGet]
-    [Route("/provider/{providerId}/apprenticeships/filters")]
-    [Route("/employer/{employerAccountId}/apprenticeships/filters")]
-    public async Task<IActionResult> GetApprenticeshipsFilterValues(long? providerId, long? employerAccountId)
-    {
-        var response = await mediator.Send(new GetApprenticeshipsFilterValuesQuery
-        {
-            ProviderId = providerId,
-            EmployerAccountId = employerAccountId
-        });
-
-        if (response == null)
-        {
-            return NotFound();
-        }
-
-        var filterValuesResponse = mapper.Map<InnerApi.Responses.GetApprenticeshipsFiltersResponse>(response);
-
-        return Ok(filterValuesResponse);
-    }
+    }   
 
     private async Task<IActionResult> ConfirmEditApprenticeshipInternal(
         long apprenticeshipId,

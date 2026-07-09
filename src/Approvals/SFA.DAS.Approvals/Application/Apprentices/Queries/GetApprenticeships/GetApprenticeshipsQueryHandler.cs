@@ -16,14 +16,27 @@ public class GetApprenticeshipsQueryHandler(
 {
     public async Task<GetApprenticeshipsQueryResult> Handle(GetApprenticeshipsQuery request, CancellationToken cancellationToken)
     {
-        var apprenticeshipResponse = await apiClient.GetWithResponseCode<GetApprenticeshipsResponse>(
+        var apprenticeshipResponseTask = apiClient.GetWithResponseCode<GetApprenticeshipsResponse>(
             new GetApprenticeshipsRequest(request.ProviderId.Value, request));
+
+        var filtersTask = apiClient.GetWithResponseCode<GetApprenticeshipsFilterValuesResponse>(
+            new GetApprenticeshipsFilterValuesRequest(request.ProviderId, request.AccountId));
+
+        await Task.WhenAll(apprenticeshipResponseTask, filtersTask);
+
+        var apprenticeshipResponse = apprenticeshipResponseTask.Result;
+        var filtersResponse = filtersTask.Result;
 
         if (apprenticeshipResponse.StatusCode == HttpStatusCode.NotFound)
         {
             return null;
         }
 
-        return mapper.Map<GetApprenticeshipsQueryResult>(apprenticeshipResponse.Body);
+        if (filtersResponse.StatusCode == HttpStatusCode.NotFound)
+        { return null; }
+
+        var apprenticeShips = mapper.Map<GetApprenticeshipsQueryResult>(apprenticeshipResponse.Body);
+        apprenticeShips.ApprenticeshipFiltersValue = mapper.Map<GetApprenticeshipsFilterValuesQueryResult>(filtersResponse.Body);
+        return apprenticeShips;
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SFA.DAS.Approvals.Enums;
 using SFA.DAS.Approvals.InnerApi;
+using SFA.DAS.Approvals.InnerApi.Responses;
 
 namespace SFA.DAS.Approvals.Api.Models.Apprentices;
 
@@ -13,6 +14,8 @@ public class GetApprenticeshipsResponse
     public int TotalApprenticeships { get; set; }
     public int PageNumber { get; set; }
     public bool HasChangeHistory { get; set; }
+
+    public GetApprenticeshipsFiltersResponse ApprenticeshipFiltersValue { get; set; }
 
     public class ApprenticeshipDetailsResponse
     {

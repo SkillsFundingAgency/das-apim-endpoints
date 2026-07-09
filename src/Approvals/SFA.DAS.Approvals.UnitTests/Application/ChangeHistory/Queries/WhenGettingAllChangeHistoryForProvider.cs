@@ -37,6 +37,6 @@ public class WhenGettingAllChangeHistoryForProvider
               .ReturnsAsync((GetAllChangeHistoryForProviderResponse)null);
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result.ChangeHistory.Should().BeNull();
+        result.ChangeHistory.Should().BeEmpty();
     }
 }

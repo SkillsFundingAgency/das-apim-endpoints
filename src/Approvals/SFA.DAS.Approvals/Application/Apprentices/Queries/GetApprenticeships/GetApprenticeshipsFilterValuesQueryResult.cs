@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetApprenticeshipsFilterValues;
+namespace SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprenticeships;
 
 public class GetApprenticeshipsFilterValuesQueryResult
 {
@@ -10,5 +10,5 @@ public class GetApprenticeshipsFilterValuesQueryResult
     public IEnumerable<string> CourseNames { get; set; }
     public IEnumerable<DateTime> StartDates { get; set; }
     public IEnumerable<DateTime> EndDates { get; set; }
-    public IEnumerable<string> Statuses { get; set; }
+    public IEnumerable<string> Sectors { get; set; }
 }

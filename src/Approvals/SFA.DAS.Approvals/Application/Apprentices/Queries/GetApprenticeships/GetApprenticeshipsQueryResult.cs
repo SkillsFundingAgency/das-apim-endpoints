@@ -13,6 +13,7 @@ public class GetApprenticeshipsQueryResult
     public int TotalApprenticeships { get; set; }
     public int PageNumber { get; set; }
     public bool HasChangeHistory { get; set; }
+    public GetApprenticeshipsFilterValuesQueryResult ApprenticeshipFiltersValue { get; set; }
 
     public class ApprenticeshipDetailsResponse
     {
