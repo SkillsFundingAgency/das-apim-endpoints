@@ -4,8 +4,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.AdminRoatp.Api.Controllers;
-using SFA.DAS.AdminRoatp.Application.Queries.GetAllowedProviders;
-using SFA.DAS.AdminRoatp.Application.Queries.GetProvidersNotAllowed;
+using SFA.DAS.AdminRoatp.Application.Queries.GetProvidersAllowedToDeliverCourse;
+using SFA.DAS.AdminRoatp.Application.Queries.GetProvidersNotAllowedToDeliverCourse;
 using SFA.DAS.AdminRoatp.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -17,11 +17,11 @@ public class CourseControllerGetTests
     public async Task WhenGetAllowedProvidersByCourseIsInvoked_ThenReturnsOkResult(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] CourseController sut,
-        GetAllowedProvidersResponse expected,
-        GetAllowedProvidersQuery query)
+        RestrictedCourseDetailsModel expected,
+        GetProvidersAllowedToDeliverCourseQuery query)
     {
         // Arrange
-        mediatorMock.Setup(m => m.Send(It.IsAny<GetAllowedProvidersQuery>(), It.IsAny<CancellationToken>()))
+        mediatorMock.Setup(m => m.Send(It.IsAny<GetProvidersAllowedToDeliverCourseQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(expected);
 
         // Act
@@ -35,11 +35,11 @@ public class CourseControllerGetTests
     public async Task WhenGetProvidersNotAllowedByCourseIsInvoked_ThenReturnsOkResult(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] CourseController sut,
-        GetAllowedProvidersResponse expected,
-        GetProvidersNotAllowedQuery query)
+        RestrictedCourseDetailsModel expected,
+        GetProvidersNotAllowedToDeliverCourseQuery query)
     {
         // Arrange
-        mediatorMock.Setup(m => m.Send(It.IsAny<GetProvidersNotAllowedQuery>(), It.IsAny<CancellationToken>()))
+        mediatorMock.Setup(m => m.Send(It.IsAny<GetProvidersNotAllowedToDeliverCourseQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(expected);
 
         // Act
