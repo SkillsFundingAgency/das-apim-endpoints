@@ -7,9 +7,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Application\**" />
+    <Compile Remove="InnerApi\Responses\DelayedNotifications\**" />
     <EmbeddedResource Remove="Application\**" />
+    <EmbeddedResource Remove="InnerApi\Responses\DelayedNotifications\**" />
     <GraphQL Remove="Application\**" />
+    <GraphQL Remove="InnerApi\Responses\DelayedNotifications\**" />
     <None Remove="Application\**" />
+    <None Remove="InnerApi\Responses\DelayedNotifications\**" />
   </ItemGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="SFA.DAS.RecruitJobs.UnitTests" />
@@ -27,8 +31,9 @@
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="10.0.5" />
-    <PackageReference Include="StrawberryShake.Blazor" Version="16.0.0-p.11.47" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="10.0.9" />
+    <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.106-prerelease-8" />
+    <PackageReference Include="StrawberryShake.Blazor" Version="16.3.0" />
   </ItemGroup>
   <ItemGroup>
     <GraphQL Update="GraphQL\RecruitInner\Queries\GetVacancyByReference.graphql">

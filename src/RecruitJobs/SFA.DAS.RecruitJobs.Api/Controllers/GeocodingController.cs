@@ -44,7 +44,7 @@ public class GeocodingController(ILocationLookupService locationLookupService) :
     public async Task<IResult> PostUpdateGeocodedLocations(
         [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
         [FromRoute] Guid vacancyId,
-        [FromBody] List<Address> employerLocations,
+        [FromBody] List<Recruit.Contracts.ApiResponses.Address> employerLocations,
         CancellationToken cancellationToken)
     {
         // Patch the Vacancy

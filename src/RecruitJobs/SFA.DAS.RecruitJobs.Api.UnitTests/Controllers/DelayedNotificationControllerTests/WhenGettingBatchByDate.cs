@@ -1,57 +1,27 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.WebUtilities;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using SFA.DAS.Recruit.Contracts.ApiRequests;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitJobs.Api.Controllers;
-using SFA.DAS.RecruitJobs.InnerApi.Requests.DelayedNotifications;
-using SFA.DAS.RecruitJobs.InnerApi.Responses.DelayedNotifications;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
-using NotificationEmail = SFA.DAS.RecruitJobs.Api.Models.NotificationEmail;
+using System.Collections.Generic;
 
 namespace SFA.DAS.RecruitJobs.Api.UnitTests.Controllers.DelayedNotificationControllerTests;
 
 public class WhenGettingBatchByDate
 {
     [Test, MoqAutoData]
-    public async Task Then_The_Request_Is_Sent_Correctly(
-        DateTime dateTime,
-        GetDelayedNotificationsByDateResponse response,
-        Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
-        [Greedy] DelayedNotificationsController sut)
-    {
-        // arrange
-        GetDelayedNotificationsByDateRequest? capturedRequest = null;
-        recruitApiClient
-            .Setup(x => x.Get<GetDelayedNotificationsByDateResponse>(It.IsAny<GetDelayedNotificationsByDateRequest>()))
-            .Callback<IGetApiRequest>(x => capturedRequest = x as GetDelayedNotificationsByDateRequest)
-            .ReturnsAsync(response);
-
-        var expectedUrl = QueryHelpers.AddQueryString("api/notifications/batch/by/date", "dateTime", dateTime.ToString("s"));
-
-        // act
-        await sut.GetBatchByDate(recruitApiClient.Object, dateTime);
-
-        // assert
-        capturedRequest.Should().NotBeNull();
-        capturedRequest!.GetUrl.Should().Be(expectedUrl);
-    }
-    
-    [Test, MoqAutoData]
     public async Task Then_The_Results_Are_Returned(
         DateTime dateTime,
-        GetDelayedNotificationsByDateResponse response,
-        Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        GetNotificationsBatchByDateResponse response,
+        Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] DelayedNotificationsController sut)
     {
         // arrange
         recruitApiClient
-            .Setup(x => x.Get<GetDelayedNotificationsByDateResponse>(It.IsAny<GetDelayedNotificationsByDateRequest>()))
+            .Setup(x => x.Get<GetNotificationsBatchByDateResponse>(It.IsAny<GetNotificationsBatchByDateApiRequest>()))
             .ReturnsAsync(response);
 
         // act
-        var result = await sut.GetBatchByDate(recruitApiClient.Object, dateTime) as Ok<List<NotificationEmail>>;
+        var result = await sut.GetBatchByDate(recruitApiClient.Object, dateTime) as Ok<ICollection<NotificationEmail>>;
 
         // assert
         result.Should().NotBeNull();
@@ -61,16 +31,16 @@ public class WhenGettingBatchByDate
     [Test, MoqAutoData]
     public async Task Then_If_No_Response_Then_Empty_Results_Are_Returned(
         DateTime dateTime,
-        Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] DelayedNotificationsController sut)
     {
         // arrange
         recruitApiClient
-            .Setup(x => x.Get<GetDelayedNotificationsByDateResponse>(It.IsAny<GetDelayedNotificationsByDateRequest>()))
-            .ReturnsAsync((GetDelayedNotificationsByDateResponse)null!);
+            .Setup(x => x.Get<GetNotificationsBatchByDateResponse>(It.IsAny<GetNotificationsBatchByDateApiRequest>()))
+            .ReturnsAsync((GetNotificationsBatchByDateResponse)null!);
 
         // act
-        var result = await sut.GetBatchByDate(recruitApiClient.Object, dateTime) as Ok<List<NotificationEmail>>;
+        var result = await sut.GetBatchByDate(recruitApiClient.Object, dateTime) as Ok<ICollection<NotificationEmail>>;
 
         // assert
         result.Should().NotBeNull();
