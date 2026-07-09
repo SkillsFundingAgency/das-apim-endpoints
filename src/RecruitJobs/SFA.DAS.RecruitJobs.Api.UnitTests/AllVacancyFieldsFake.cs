@@ -1,11 +1,11 @@
-using System.Text.Json;
 using AutoFixture;
-using SFA.DAS.RecruitJobs.Domain;
+using System.Text.Json;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitJobs.GraphQL;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
-using Address = SFA.DAS.RecruitJobs.Domain.Address;
 using ApplicationMethod = SFA.DAS.RecruitJobs.GraphQL.ApplicationMethod;
+using ApprenticeshipTypes = SFA.DAS.RecruitJobs.GraphQL.ApprenticeshipTypes;
+using ArchiveType = SFA.DAS.RecruitJobs.GraphQL.ArchiveType;
+using AvailableWhere = SFA.DAS.RecruitJobs.GraphQL.AvailableWhere;
 using ClosureReason = SFA.DAS.RecruitJobs.GraphQL.ClosureReason;
 using DurationUnit = SFA.DAS.RecruitJobs.GraphQL.DurationUnit;
 using EmployerNameOption = SFA.DAS.RecruitJobs.GraphQL.EmployerNameOption;
@@ -15,6 +15,7 @@ using SourceOrigin = SFA.DAS.RecruitJobs.GraphQL.SourceOrigin;
 using SourceType = SFA.DAS.RecruitJobs.GraphQL.SourceType;
 using VacancyStatus = SFA.DAS.RecruitJobs.GraphQL.VacancyStatus;
 using WageType = SFA.DAS.RecruitJobs.GraphQL.WageType;
+
 
 namespace SFA.DAS.RecruitJobs.Api.UnitTests;
 
@@ -50,6 +51,7 @@ public class AllVacancyFieldsFake: IAllVacancyFields
     public OwnerType? OwnerType { get; set; }
     public SourceOrigin? SourceOrigin { get; set; }
     public SourceType? SourceType { get; set; }
+    public ArchiveType? ArchiveType { get; set; }
     public long? SourceVacancyReference { get; set; }
     public DateTimeOffset? ApprovedDate { get; set; }
     public DateTimeOffset? CreatedDate { get; set; }
@@ -61,6 +63,7 @@ public class AllVacancyFieldsFake: IAllVacancyFields
     public DateTimeOffset? LiveDate { get; set; }
     public DateTimeOffset? StartDate { get; set; }
     public DateTimeOffset? ClosingDate { get; set; }
+    public DateTimeOffset? ArchivedDate { get; set; }
     public int ReviewCount { get; set; }
     public string? ApplicationUrl { get; set; }
     public ApplicationMethod? ApplicationMethod { get; set; }
@@ -113,4 +116,5 @@ public class AllVacancyFieldsFake: IAllVacancyFields
     public string? ProviderReviewFieldIndicators { get; set; }
     public Guid? SubmittedByUserId { get; set; }
     public Guid? ReviewRequestedByUserId { get; set; }
+    public Guid? ArchivedByUserId { get; set; }
 }

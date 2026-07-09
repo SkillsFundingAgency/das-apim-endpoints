@@ -1,22 +1,12 @@
-﻿using System.Web;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+using System.Web;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location;
 
-using SFA.DAS.Apim.Shared.Interfaces;
-
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location
+public class GetAddressesQueryRequest(string query, double minMatch) : IGetApiRequest
 {
-    public class GetAddressesQueryRequest : IGetApiRequest
-    {
-        public string Query { get; }
-        public double MinMatch { get; }
+    public string Query { get; } = query;
+    public double MinMatch { get; } = minMatch;
 
-        public GetAddressesQueryRequest(string query, double minMatch)
-        {
-            Query = query;
-            MinMatch = minMatch;
-        }
-
-        public string GetUrl => $"api/addresses?query={HttpUtility.UrlEncode(Query)}&minMatch={MinMatch}";
-    }
+    public string GetUrl => $"api/addresses?query={HttpUtility.UrlEncode(Query)}&minMatch={MinMatch}";
 }

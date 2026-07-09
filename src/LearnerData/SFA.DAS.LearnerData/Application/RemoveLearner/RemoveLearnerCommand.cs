@@ -28,18 +28,11 @@ public class RemoveLearnerCommandHandler(
 
         var removeRequest = new RemoveLearnerApiDeleteRequest(command.LearningKey, command.Ukprn);
 
-        var response = await learningApiClient.DeleteWithResponseCode<RemoveLearnerResponse>(removeRequest, true);
+        var response = await learningApiClient.DeleteWithResponseCode<NullResponse>(removeRequest);
 
         if (!response.StatusCode.IsSuccessStatusCode())
         {
             throw new Exception($"Failed to remove learner with key {command.LearningKey}. Status code: {response.StatusCode}.");
-        }
-
-        var lastDayOfLearning = response.Body?.LastDayOfLearning;
-
-        if (lastDayOfLearning == null)
-        {
-            throw new Exception($"LastDayOfLearning returned from learning inner not found. Cannot withdraw from earnings.");
         }
 
         var deleteLearningRequest = new DeleteLearningRequest(command.LearningKey);

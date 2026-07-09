@@ -1,10 +1,7 @@
 using System.Collections.Generic;
 using System.Text.Json;
-using SFA.DAS.RecruitJobs.Domain;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitJobs.GraphQL.RecruitInner.Mappers;
-using SFA.DAS.SharedOuterApi.Types.Domain;
-using SFA.DAS.SharedOuterApi.Types.Models;
-using Address = SFA.DAS.RecruitJobs.Domain.Address;
 using GqlApplicationMethod = SFA.DAS.RecruitJobs.GraphQL.ApplicationMethod;
 using GqlApprenticeshipTypes = SFA.DAS.RecruitJobs.GraphQL.ApprenticeshipTypes;
 using GqlClosureReason = SFA.DAS.RecruitJobs.GraphQL.ClosureReason;
@@ -213,8 +210,7 @@ public class WhenMappingAVacancy
     [MoqInlineAutoData(GqlOwnerType.External, OwnerType.External)]
     [MoqInlineAutoData(GqlOwnerType.Provider, OwnerType.Provider)]
     [MoqInlineAutoData(GqlOwnerType.Unknown, OwnerType.Unknown)]
-    [MoqInlineAutoData(null, null)]
-    public void OwnerType_Is_Mapped(GqlOwnerType? srcValue, OwnerType? dstValue)
+    public void OwnerType_Is_Mapped(GqlOwnerType srcValue, OwnerType dstValue)
     {
         // arrange
         var source = AllVacancyFieldsFake.Create();
@@ -358,18 +354,24 @@ public class WhenMappingAVacancy
         var source = AllVacancyFieldsFake.Create();
         source.Wage_CompanyBenefitsInformation = wage.CompanyBenefitsInformation;
         source.Wage_Duration = wage.Duration;
-        source.Wage_DurationUnit = (GqlDurationUnit)Enum.Parse(typeof(DurationUnit), wage.DurationUnit.ToString()!);
-        source.Wage_FixedWageYearlyAmount = wage.FixedWageYearlyAmount;
+        source.Wage_DurationUnit = (GqlDurationUnit)Enum.Parse(typeof(GqlDurationUnit), wage.DurationUnit.ToString()!);
+        source.Wage_FixedWageYearlyAmount = (decimal?) wage.FixedWageYearlyAmount;
         source.Wage_WageAdditionalInformation = wage.WageAdditionalInformation;
-        source.Wage_WageType = (GqlWageType)Enum.Parse(typeof(WageType), wage.WageType.ToString()!);
-        source.Wage_WeeklyHours = wage.WeeklyHours;
+        source.Wage_WageType = (GqlWageType)Enum.Parse(typeof(GqlWageType), wage.WageType.ToString()!);
+        source.Wage_WeeklyHours = (decimal?) wage.WeeklyHours;
         source.Wage_WorkingWeekDescription = wage.WorkingWeekDescription;
             
         // act
         var result = GqlVacancyMapper.From(source);
 
         // assert
-        result.Wage.Should().BeEquivalentTo(wage);
+        result.Wage.Should().BeEquivalentTo(wage, options => options
+            .Excluding(x => x.ApprenticeMinimumWage)
+            .Excluding(x => x.Under18NationalMinimumWage)
+            .Excluding(x => x.Between18AndUnder21NationalMinimumWage)
+            .Excluding(x => x.Between21AndUnder25NationalMinimumWage)
+            .Excluding(x => x.Over25NationalMinimumWage)
+            .Excluding(x => x.WageText));
     }
     
     
@@ -396,7 +398,7 @@ public class WhenMappingAVacancy
         // arrange
         var source = AllVacancyFieldsFake.Create();
         source.EmployerLocationOption = null;
-        source.Status = (VacancyStatus)Domain.VacancyStatus.Draft;
+        source.Status = VacancyStatus.Draft;
 
         // act
         var result = GqlVacancyMapper.From(source);
@@ -411,7 +413,7 @@ public class WhenMappingAVacancy
         // arrange
         var source = AllVacancyFieldsFake.Create();
         source.EmployerLocationOption = null;
-        source.Status = (VacancyStatus)Domain.VacancyStatus.Live;
+        source.Status = VacancyStatus.Live;
 
         // act
         var result = GqlVacancyMapper.From(source);
@@ -426,7 +428,7 @@ public class WhenMappingAVacancy
         // arrange
         var source = AllVacancyFieldsFake.Create();
         source.EmployerLocationOption = null;
-        source.Status = (VacancyStatus)Domain.VacancyStatus.Live;
+        source.Status = VacancyStatus.Live;
         source.EmployerLocations = JsonSerializer.Serialize(new List<Address> { address }, Global.JsonSerializerOptions);
 
         // act
@@ -442,7 +444,7 @@ public class WhenMappingAVacancy
         // arrange
         var source = AllVacancyFieldsFake.Create();
         source.EmployerLocationOption = null;
-        source.Status = (VacancyStatus)Domain.VacancyStatus.Live;
+        source.Status = VacancyStatus.Live;
         source.EmployerLocations = null;
 
         // act

@@ -17,6 +17,16 @@ public class CreateDraftShortCourseApiPostRequest(CreateDraftShortCourseRequest 
 public class CreateDraftShortCourseRequest
 {
     /// <summary>
+    /// Provider UKPRN for this request
+    /// </summary>
+    public long Ukprn { get; set; }
+
+    /// <summary>
+    /// Academic year (e.g. 2526)
+    /// </summary>
+    public int AcademicYear { get; set; }
+
+    /// <summary>
     /// Learner details to be updated
     /// </summary>
     public ShortCourseLearningUpdateDetails LearnerUpdateDetails { get; set; }
@@ -29,7 +39,7 @@ public class CreateDraftShortCourseRequest
     /// <summary>
     /// On programme details
     /// </summary>
-    public OnProgramme OnProgramme { get; set; }
+    public List<OnProgramme> OnProgramme { get; set; } = new();
 }
 
 public class ShortCourseLearningUpdateDetails : LearningUpdateDetails
@@ -67,6 +77,11 @@ public class OnProgramme
     /// Withdrawal date of the short course
     /// </summary>
     public DateTime? WithdrawalDate { get; set; }
+
+    /// <summary>
+    /// Withdrawal reason code
+    /// </summary>
+    public short? WithdrawalReasonCode { get; set; }
 
     /// <summary>
     /// Completion date of the short course

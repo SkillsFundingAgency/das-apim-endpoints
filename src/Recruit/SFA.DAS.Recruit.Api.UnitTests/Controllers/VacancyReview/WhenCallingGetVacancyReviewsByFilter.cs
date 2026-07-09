@@ -15,7 +15,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.VacancyReview;
 
 public class WhenCallingGetVacancyReviewsByFilter
 {
-    [Test, MoqAutoData]
+    [Test, RecursiveMoqAutoData]
     public async Task Then_The_Mediator_Query_Is_Handled_And_Data_Returned(
         List<string> statuses,
         DateTime? expiredAssignationDateTime,

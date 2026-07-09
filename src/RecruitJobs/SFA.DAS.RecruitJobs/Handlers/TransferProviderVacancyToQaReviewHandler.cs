@@ -10,7 +10,6 @@ using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Recruit;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Recruit;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using Vacancy = SFA.DAS.RecruitJobs.Domain.Vacancy;
 
 namespace SFA.DAS.RecruitJobs.Handlers;
 
@@ -38,13 +37,13 @@ public class TransferProviderVacancyToQaReviewHandler(
         }
         
         // patch the vacancy status to Submitted
-        var patchDocument = new JsonPatchDocument<Vacancy>();
-        patchDocument.Replace(x => x.Status, Domain.VacancyStatus.Submitted);
+        var patchDocument = new JsonPatchDocument<PatchableVacancyDto>();
+        patchDocument.Replace(x => x.Status, SFA.DAS.SharedOuterApi.Types.Domain.Recruit.VacancyStatus.Submitted);
         patchDocument.Replace(x => x.SubmittedDate, DateTime.UtcNow);
         patchDocument.Replace(x => x.LastUpdatedDate, DateTime.UtcNow);
         patchDocument.Replace(x => x.SubmittedByUserId, userReference);
 
-        var patchVacancyResponse = await recruitApiClient.PatchWithResponseCode(new InnerApi.Requests.PatchVacancyRequest(vacancyId, patchDocument));
+        var patchVacancyResponse = await recruitApiClient.PatchWithResponseCode(new PatchVacancyRequest(vacancyId, patchDocument));
         patchVacancyResponse.EnsureSuccessStatusCode();
         
         // create the vacancy review

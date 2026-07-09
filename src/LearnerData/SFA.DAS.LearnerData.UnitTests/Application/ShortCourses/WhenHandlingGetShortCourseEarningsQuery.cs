@@ -3,7 +3,6 @@ using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
-using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.SharedOuterApi.Types.Configuration;

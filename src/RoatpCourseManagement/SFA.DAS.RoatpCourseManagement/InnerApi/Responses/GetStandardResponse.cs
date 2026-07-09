@@ -12,7 +12,7 @@ public class GetStandardResponse
     public string LarsCode { get; set; }
     public string Title { get; set; }
     public int Level { get; set; }
-    public LearningType ApprenticeshipType { get; set; }
+    public LearningType LearningType { get; set; }
     public string ApprovalBody { get; set; }
     public string Route { get; set; }
     public bool IsRegulatedForProvider { get; set; }
@@ -20,6 +20,7 @@ public class GetStandardResponse
     public DurationUnits DurationUnits { get; set; }
     public CourseType CourseType { get; set; }
     public bool IsActiveAvailable { get; set; }
+    public DateTime? LastDateStarts { get; set; }
 
     public static implicit operator GetStandardResponse(GetStandardResponseFromCoursesApi source)
     {
@@ -35,14 +36,15 @@ public class GetStandardResponse
             LarsCode = source.LarsCode,
             Title = source.Title,
             Level = source.Level,
-            ApprenticeshipType = source.LearningType,
+            LearningType = source.LearningType,
             ApprovalBody = source.ApprovalBody,
             Route = source.Route,
             IsRegulatedForProvider = source.IsRegulatedForProvider,
             Duration = apprenticeshipFunding?.Duration ?? 0,
             DurationUnits = apprenticeshipFunding?.DurationUnits ?? default(DurationUnits),
             CourseType = source.CourseType,
-            IsActiveAvailable = IsActiveAvailableStandard(source.CourseDates)
+            IsActiveAvailable = IsActiveAvailableStandard(source.CourseDates),
+            LastDateStarts = source.CourseDates?.LastDateStarts
         };
     }
 

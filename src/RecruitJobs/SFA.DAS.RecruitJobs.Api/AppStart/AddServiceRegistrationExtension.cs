@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
@@ -11,8 +10,11 @@ using SFA.DAS.Apim.Shared.Infrastructure.Services;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Services;
 using SFA.DAS.SharedOuterApi.Recruit.Services;
+using System.Diagnostics.CodeAnalysis;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Services;
+using BankHolidaysService = SFA.DAS.SharedOuterApi.Recruit.Services.BankHolidaysService;
+using IBankHolidaysService = SFA.DAS.SharedOuterApi.Recruit.Services.IBankHolidaysService;
 
 namespace SFA.DAS.RecruitJobs.Api.AppStart;
 
@@ -43,5 +45,6 @@ public static class AddServiceRegistrationExtension
         services.AddTransient<IVacancyComparerService, VacancyComparerService>();
         services.AddTransient<IVacancyReviewService, VacancyReviewService>();
         services.AddTransient<ILocationLookupService, LocationLookupService>();
+        services.AddTransient<SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>, SFA.DAS.Recruit.Contracts.Client.RecruitApiClient>();
     }
 }

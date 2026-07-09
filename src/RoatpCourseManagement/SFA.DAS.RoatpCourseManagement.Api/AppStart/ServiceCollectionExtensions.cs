@@ -4,58 +4,51 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.Apim.Shared.Infrastructure;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
-using SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp;
-using SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Services;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
-namespace SFA.DAS.RoatpCourseManagement.Api.AppStart
-{
-    [ExcludeFromCodeCoverage]
-    public static class ServiceCollectionExtensions
-    {
-        public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddHttpClient();
-            services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
-            services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
-            services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
-            services.AddTransient<IRoatpServiceApiClient<RoatpConfiguration>, RoatpServiceApiClient>();
-            services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
-            services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
-            services.AddTransient<ILocationLookupService, LocationLookupService>();
-            services.AddTransient<IUkrlpSoapSerializer, UkrlpSoapSerializer>();
-            services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
-            services.AddTransient<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>, ApprenticeFeedbackApiClient>();
-            services.AddTransient<IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration>, EmployerFeedbackApiClient>();
-            services.AddTransient<IProviderAccountApiClient<ProviderAccountApiConfiguration>, ProviderAccountApiClient>();
-        }
+namespace SFA.DAS.RoatpCourseManagement.Api.AppStart;
 
-        public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddOptions();
-            services.Configure<RoatpV2ApiConfiguration>(configuration.GetSection(nameof(RoatpV2ApiConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>().Value);
-            services.Configure<CoursesApiConfiguration>(configuration.GetSection(nameof(CoursesApiConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
-            services.Configure<RoatpConfiguration>(configuration.GetSection(nameof(RoatpConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpConfiguration>>().Value);
-            services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<LocationApiConfiguration>>().Value);
-            services.AddSingleton(BrowsingContext.New(AngleSharp.Configuration.Default.WithDefaultLoader()));
-            services.Configure<UkrlpApiConfiguration>(configuration.GetSection(nameof(UkrlpApiConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<UkrlpApiConfiguration>>().Value);
-            services.Configure<ApprenticeFeedbackApiConfiguration>(configuration.GetSection(nameof(ApprenticeFeedbackApiConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeFeedbackApiConfiguration>>().Value);
-            services.Configure<EmployerFeedbackApiConfiguration>(configuration.GetSection(nameof(EmployerFeedbackApiConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerFeedbackApiConfiguration>>().Value);
-            services.Configure<ProviderAccountApiConfiguration>(configuration.GetSection(nameof(ProviderAccountApiConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderAccountApiConfiguration>>().Value);
-        }
+[ExcludeFromCodeCoverage]
+public static class ServiceCollectionExtensions
+{
+    public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddHttpClient();
+        services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+        services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
+        services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
+        services.AddTransient<IRoatpServiceApiClient<RoatpConfiguration>, RoatpServiceApiClient>();
+        services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
+        services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
+        services.AddTransient<ILocationLookupService, LocationLookupService>();
+        services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
+        services.AddTransient<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>, ApprenticeFeedbackApiClient>();
+        services.AddTransient<IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration>, EmployerFeedbackApiClient>();
+        services.AddTransient<IProviderAccountApiClient<ProviderAccountApiConfiguration>, ProviderAccountApiClient>();
+    }
+
+    public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddOptions();
+        services.Configure<RoatpV2ApiConfiguration>(configuration.GetSection(nameof(RoatpV2ApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>().Value);
+        services.Configure<CoursesApiConfiguration>(configuration.GetSection(nameof(CoursesApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
+        services.Configure<RoatpConfiguration>(configuration.GetSection(nameof(RoatpConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpConfiguration>>().Value);
+        services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<LocationApiConfiguration>>().Value);
+        services.AddSingleton(BrowsingContext.New(AngleSharp.Configuration.Default.WithDefaultLoader()));
+        services.Configure<ApprenticeFeedbackApiConfiguration>(configuration.GetSection(nameof(ApprenticeFeedbackApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeFeedbackApiConfiguration>>().Value);
+        services.Configure<EmployerFeedbackApiConfiguration>(configuration.GetSection(nameof(EmployerFeedbackApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerFeedbackApiConfiguration>>().Value);
+        services.Configure<ProviderAccountApiConfiguration>(configuration.GetSection(nameof(ProviderAccountApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderAccountApiConfiguration>>().Value);
     }
 }

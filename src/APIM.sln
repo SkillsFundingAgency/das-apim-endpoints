@@ -258,14 +258,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpCourseManageme
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RoatpCourseManagement", "RoatpCourseManagement", "{FA811F98-EAC9-448C-B9AD-FBA8484B49C0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgress", "TrackProgress\SFA.DAS.TrackProgress\SFA.DAS.TrackProgress.csproj", "{4995E012-8308-4D6B-8E57-CDCD2D0D3A76}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgress.Api", "TrackProgress\SFA.DAS.TrackProgress.Api\SFA.DAS.TrackProgress.Api.csproj", "{F0848DD9-F3CC-4BBB-9C4F-28E142728DD9}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgress.Api.AcceptanceTests", "TrackProgress\SFA.DAS.TrackProgress.Api.AcceptanceTests\SFA.DAS.TrackProgress.Api.AcceptanceTests.csproj", "{14DEA7D6-F3C4-4EEF-9707-EDC979065D52}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TrackProgress", "TrackProgress", "{28342B33-18B0-4B28-9244-7B07C6B1DFFC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Vacancies", "Vacancies\SFA.DAS.Vacancies\SFA.DAS.Vacancies.csproj", "{50EE27B7-96B0-4804-8130-BA8218AFBE0D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Vacancies.Api", "Vacancies\SFA.DAS.Vacancies.Api\SFA.DAS.Vacancies.Api.csproj", "{ABF4D56B-9A74-45AE-97F2-2CC273FBD906}"
@@ -383,14 +375,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpProviderModeration.Application", "RoatpProviderModeration\SFA.DAS.RoatpProviderModeration.Application\SFA.DAS.RoatpProviderModeration.Application.csproj", "{EFAF1DE3-531F-4774-B5B8-565FC476220A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpProviderModeration.Application.UnitTests", "RoatpProviderModeration\SFA.DAS.RoatpProviderModeration.Application.UnitTests\SFA.DAS.RoatpProviderModeration.Application.UnitTests.csproj", "{9A1FBAE1-4B26-47E0-BFE4-5248C550B48F}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TrackProgressInternal", "TrackProgressInternal", "{28EFA61E-CA7C-41C3-AA2C-FF0E5770E818}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgressInternal", "TrackProgressInternal\SFA.DAS.TrackProgressInternal\SFA.DAS.TrackProgressInternal.csproj", "{6FC7D524-AB89-46E0-AEDE-415A820659A0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgressInternal.Api", "TrackProgressInternal\SFA.DAS.TrackProgressInternal.Api\SFA.DAS.TrackProgressInternal.Api.csproj", "{0F77956A-9E91-4B33-B587-B1EB5E668F41}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgressInternal.Api.AcceptanceTests", "TrackProgressInternal\SFA.DAS.TrackProgressInternal.Api.AcceptanceTests\SFA.DAS.TrackProgressInternal.Api.AcceptanceTests.csproj", "{5F60C3AD-6D60-44B8-88D5-06728E3AEED1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EmployerRequestApprenticeTraining", "EmployerRequestApprenticeTraining", "{3673F5A1-2F53-4F96-B3E8-990A07FC9661}"
 EndProject
@@ -595,6 +579,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.UnitTests", "Shared\SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.UnitTests\SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.UnitTests.csproj", "{72EFD1F7-599F-4503-BD1E-7319F9368606}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.LearnerData.TestHelpers", "LearnerData\SFA.DAS.LearnerData.TestHelpers\SFA.DAS.LearnerData.TestHelpers.csproj", "{43AF2766-DE69-4D6B-A2CF-4240C40217B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Recruit", "Shared\SFA.DAS.SharedOuterApi.Recruit\SFA.DAS.SharedOuterApi.Recruit.csproj", "{0BD62027-0232-40BC-AD24-1161FBF5A1B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Recruit.UnitTests", "Shared\SFA.DAS.SharedOuterApi.Recruit.UnitTests\SFA.DAS.SharedOuterApi.Recruit.UnitTests.csproj", "{5CD2218A-2D05-42A4-95C2-A55B81A67D09}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1558,6 +1546,14 @@ Global
 		{43AF2766-DE69-4D6B-A2CF-4240C40217B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43AF2766-DE69-4D6B-A2CF-4240C40217B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43AF2766-DE69-4D6B-A2CF-4240C40217B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BD62027-0232-40BC-AD24-1161FBF5A1B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BD62027-0232-40BC-AD24-1161FBF5A1B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BD62027-0232-40BC-AD24-1161FBF5A1B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BD62027-0232-40BC-AD24-1161FBF5A1B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CD2218A-2D05-42A4-95C2-A55B81A67D09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CD2218A-2D05-42A4-95C2-A55B81A67D09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CD2218A-2D05-42A4-95C2-A55B81A67D09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CD2218A-2D05-42A4-95C2-A55B81A67D09}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1801,6 +1797,8 @@ Global
 		{112EE2CA-4455-42C3-81D9-3C6DC991807B} = {9C327515-DF6A-4277-BF53-4C86D510C718}
 		{72EFD1F7-599F-4503-BD1E-7319F9368606} = {9C327515-DF6A-4277-BF53-4C86D510C718}
 		{43AF2766-DE69-4D6B-A2CF-4240C40217B0} = {C26049C4-45D6-4E3C-91EC-4F54CA8DFFE1}
+		{0BD62027-0232-40BC-AD24-1161FBF5A1B4} = {9C327515-DF6A-4277-BF53-4C86D510C718}
+		{5CD2218A-2D05-42A4-95C2-A55B81A67D09} = {9C327515-DF6A-4277-BF53-4C86D510C718}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2353A4D0-2859-4472-B2D4-BBD8087B4E22}

@@ -8,7 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.5" />
-      <PackageReference Include="SFA.DAS.Apim.Shared" Version="17.1.189" />
+      <PackageReference Include="SFA.DAS.Apim.Shared" Version="17.1.195" />
     </ItemGroup>
 
     <ItemGroup>

@@ -3,7 +3,7 @@ using Newtonsoft.Json.Converters;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
 
 public class GetApprenticeshipResponse : IPartyResource
 {
@@ -13,7 +13,7 @@ public class GetApprenticeshipResponse : IPartyResource
     public string ProviderName { get; set; }
     public long EmployerAccountId { get; set; }
     public long AccountId => EmployerAccountId;
-    public long AccountLegalEntityId { get; set; } 
+    public long AccountLegalEntityId { get; set; }
     public string EmployerName { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
@@ -33,7 +33,11 @@ public class GetApprenticeshipResponse : IPartyResource
     public string ProviderReference { get; set; }
     public short Status { get; set; }
     public DateTime? StopDate { get; set; }
+    public int? WithdrawnReasonCode { get; set; }
     public DateTime? PauseDate { get; set; }
+    public bool FreezeStatus { get; set; }
+    public byte? FreezePaymentsReason { get; set; }
+    public DateTime? PaymentFreezeDate { get; set; }
     public DateTime? CompletionDate { get; set; }
     public string EndpointAssessorName { get; set; }
     public bool HasHadDataLockSuccess { get; set; }
@@ -61,4 +65,5 @@ public class GetApprenticeshipResponse : IPartyResource
     public LearningType? LearningType { get; set; }
     public int? EmployerVerificationStatus { get; set; }
     public string EmployerVerificationNotes { get; set; }
+    public bool HasChangeHistory { get; set; }
 }

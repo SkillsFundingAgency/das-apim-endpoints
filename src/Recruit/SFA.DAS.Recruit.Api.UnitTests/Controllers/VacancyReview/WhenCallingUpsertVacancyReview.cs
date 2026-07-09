@@ -4,14 +4,13 @@ using System.Threading;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Api.Models;
-using SFA.DAS.Recruit.Application.Services;
 using SFA.DAS.Recruit.Application.VacancyReview.Commands.UpsertVacancyReview;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.VacancyReview;
 
 public class WhenCallingUpsertVacancyReview
 {
-    [Test, MoqAutoData]
+    [Test, RecursiveMoqAutoData]
     public async Task Then_Request_Is_Handled_And_Mediator_Command_Sent(
         Guid id,
         VacancyReviewDto vacancyReview,
@@ -34,7 +33,7 @@ public class WhenCallingUpsertVacancyReview
             Times.Once);
     }
     
-    [Test, MoqAutoData]
+    [Test, RecursiveMoqAutoData]
     public async Task Then_If_Exception_Thrown_InternalServerError_Returned(
         Guid id,
         VacancyReviewDto vacancyReview,

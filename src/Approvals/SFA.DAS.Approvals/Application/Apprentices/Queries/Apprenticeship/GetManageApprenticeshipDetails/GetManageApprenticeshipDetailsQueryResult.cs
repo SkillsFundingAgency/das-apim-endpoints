@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
 using static SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetApprenticeshipUpdatesResponse;
 using static SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetChangeOfEmployerChainResponse;
@@ -52,9 +51,9 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
 
     public class PaymentsStatus
     {
-        public bool PaymentsFrozen { get; set; }
+        public bool FreezeStatus { get; set; }
         public string ReasonFrozen { get; set; }
-        public DateTime? FrozenOn { get; set; }
+        public DateTime? PaymentFreezeDate { get; set; }
     }
 
     public class LearnerStatusDetails
