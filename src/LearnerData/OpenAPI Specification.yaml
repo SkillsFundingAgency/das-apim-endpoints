@@ -834,12 +834,12 @@ components:
     employment:
       type: object
       properties:
+        status:
+          type: string
+          enum: [InEmployment, Unemployed]
         agreementId:
           type: string
         startDate:
-          type: string
-          format: date
-        endDate:
           type: string
           format: date
 
