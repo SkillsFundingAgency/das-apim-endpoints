@@ -12,7 +12,7 @@ public class GetProvidersAllowedToDeliverCourseQueryHandler(IRoatpCourseManageme
 {
     public async Task<RestrictedCourseDetailsModel> Handle(GetProvidersAllowedToDeliverCourseQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Handling get allowed providers by course request for {LarsCode}", request.larsCode);
+        _logger.LogInformation("Handling GetProvidersAllowedToDeliverCourse request for {LarsCode}", request.larsCode);
 
         var response = await _courseManagementApiClient.GetWithResponseCode<RestrictedCourseDetailsModel>(new GetAllowedProvidersRequest(request.larsCode));
 
