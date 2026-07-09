@@ -21,8 +21,8 @@ public class WhenUpdatingALearner
         long ukprn,
         UpdateLearnerRequest request,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ILogger<LearnersController>> mockLogger,
-        [Greedy] LearnersController sut)
+        [Frozen] Mock<ILogger<ApprenticeshipsController>> mockLogger,
+        [Greedy] ApprenticeshipsController sut)
     {
         // Act
         var result = await sut.UpdateLearner(ukprn, learningKey, request) as AcceptedResult;
@@ -42,8 +42,8 @@ public class WhenUpdatingALearner
         long ukprn,
         UpdateLearnerRequest request,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ILogger<LearnersController>> mockLogger,
-        [Greedy] LearnersController sut)
+        [Frozen] Mock<ILogger<ApprenticeshipsController>> mockLogger,
+        [Greedy] ApprenticeshipsController sut)
     {
         // Arrange
         mockMediator.Setup(x => x.Send(It.IsAny<UpdateLearnerCommand>(), It.IsAny<CancellationToken>()))

@@ -19,8 +19,8 @@ public class WhenRemovingALearner
         Guid learningKey,
         long ukprn,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ILogger<LearnersController>> mockLogger,
-        [Greedy] LearnersController sut)
+        [Frozen] Mock<ILogger<ApprenticeshipsController>> mockLogger,
+        [Greedy] ApprenticeshipsController sut)
     {
         // Act
         var result = await sut.RemoveLearner(ukprn, learningKey) as NoContentResult;
@@ -39,8 +39,8 @@ public class WhenRemovingALearner
         Guid learningKey,
         long ukprn,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ILogger<LearnersController>> mockLogger,
-        [Greedy] LearnersController sut)
+        [Frozen] Mock<ILogger<ApprenticeshipsController>> mockLogger,
+        [Greedy] ApprenticeshipsController sut)
     {
         // Arrange
         mockMediator.Setup(x => x.Send(It.IsAny<RemoveLearnerCommand>(), It.IsAny<CancellationToken>()))

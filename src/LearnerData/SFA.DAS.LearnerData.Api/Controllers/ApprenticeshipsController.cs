@@ -14,12 +14,12 @@ namespace SFA.DAS.LearnerData.Api.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class LearnersController(
+public class ApprenticeshipsController(
     IMediator mediator, 
-    ILogger<LearnersController> logger) : ControllerBase
+    ILogger<ApprenticeshipsController> logger) : ControllerBase
 {
     [HttpGet]
-    [Route("providers/{ukprn}/academicyears/{academicyear}/learners")]
+    [Route("/Learners/providers/{ukprn}/academicyears/{academicyear}/learners")]
     public async Task<IActionResult> GetLearners_Legacy([FromRoute] string ukprn, [FromRoute] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
     {
         return await GetLearnersInternal(ukprn, academicyear, page, pagesize);
@@ -30,7 +30,7 @@ public class LearnersController(
     /// The original method can be removed when SLD stop using it.  At which point, the internal method can also be moved directly into this method.
     /// </summary>
     [HttpGet]
-    [Route("providers/{ukprn}/apprenticeships/learners")]
+    [Route("/providers/{ukprn}/apprenticeships/learners")]
     public async Task<IActionResult> GetLearners([FromRoute] string ukprn, [FromQuery] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
     {
         return await GetLearnersInternal(ukprn, academicyear, page, pagesize);
@@ -81,15 +81,15 @@ public class LearnersController(
     }
 
     [HttpPut]
-    [Route("/providers/{ukprn}/learning/{learningKey}")]
-    [Route("/providers/{ukprn}/apprenticeships/{learningKey}")]
-    public async Task<IActionResult> UpdateLearner([FromRoute] long ukprn, [FromRoute] Guid learningKey, [FromBody] UpdateLearnerRequest request, [FromQuery] int academicyear = 2526, [FromQuery] int collectionPeriod = 0)
+    [Route("/providers/{ukprn}/learning/{learnerKey}")]
+    [Route("/providers/{ukprn}/apprenticeships/{learnerKey}")]
+    public async Task<IActionResult> UpdateLearner([FromRoute] long ukprn, [FromRoute] Guid learnerKey, [FromBody] UpdateLearnerRequest request, [FromQuery] int academicyear = 2526, [FromQuery] int collectionPeriod = 0)
     {
         try
         {
             await mediator.Send(new UpdateLearnerCommand
             {
-                LearningKey = learningKey,
+                LearnerKey = learnerKey,
                 UpdateLearnerRequest = request,
                 Ukprn = ukprn
             });
@@ -97,7 +97,7 @@ public class LearnersController(
         }
         catch (Exception e)
         {
-            logger.LogError(e, $"Internal error occurred when updating learner {learningKey}");
+            logger.LogError(e, $"Internal error occurred when updating learner {learnerKey}");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -137,7 +137,7 @@ public class LearnersController(
     /// </summary>
     /// <returns>All earnings data in the format of an FM36Learner array.</returns>
     [HttpGet]
-    [Route("providers/{ukprn}/collectionPeriod/{collectionYear}/{collectionPeriod}/fm36data")]
+    [Route("/Learners/providers/{ukprn}/collectionPeriod/{collectionYear}/{collectionPeriod}/fm36data")]
     public async Task<IActionResult> GetFm36Learners(long ukprn, int collectionYear, byte collectionPeriod, [FromQuery] int? page, [FromQuery] int? pageSize)
     {
         return await GetFm36Data_Internal(ukprn, collectionYear, collectionPeriod, page, pageSize);
@@ -148,7 +148,7 @@ public class LearnersController(
     /// The original method can be removed when SLD stop using it.  At which point, the internal method can also be moved directly into this method.
     /// </summary>
     [HttpGet]
-    [Route("providers/{ukprn}/fm36data")]
+    [Route("/providers/{ukprn}/fm36data")]
     public async Task<IActionResult> GetFm36Data(long ukprn, [FromQuery] int academicYear, [FromQuery] byte collectionPeriod, [FromQuery] int? page, [FromQuery] int? pageSize)
     {
         return await GetFm36Data_Internal(ukprn, academicYear, collectionPeriod, page, pageSize);
