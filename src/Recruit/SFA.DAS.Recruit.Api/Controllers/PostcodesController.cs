@@ -23,7 +23,11 @@ public class PostcodesController(IMediator mediator) : ControllerBase
             return BadRequest();
         }
         
-        var result = await mediator.Send(new GetPostcodeDataQuery(postcode), cancellationToken);
+        var result = await mediator.Send(new GetPostcodeDataQuery
+        {
+            Postcode = postcode
+        }, cancellationToken);
+
         return result == GetPostcodeDataResult.None
             ? NotFound()
             : Ok(GetPostcodeDataResponse.From(postcode, result));
