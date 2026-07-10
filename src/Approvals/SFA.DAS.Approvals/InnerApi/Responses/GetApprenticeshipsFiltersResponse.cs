@@ -11,7 +11,7 @@ public class GetApprenticeshipsFiltersResponse
 
     public IEnumerable<string> CourseNames { get; set; }
 
-    public IEnumerable<string> Statuses { get; set; }
+    public IEnumerable<string> Sectors { get; set; }
 
     public IEnumerable<DateTime> StartDates { get; set; }
 

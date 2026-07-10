@@ -17,7 +17,7 @@ public class GetAllChangeHistoryForProviderQueryHandler(ICommitmentsV2ApiClient<
 
         return new GetAllChangeHistoryForProviderQueryResult
         {
-            ChangeHistory = changeHistory?.ChangeHistory
+            ChangeHistory = changeHistory?.ChangeHistory ?? []
         };
     }
 }

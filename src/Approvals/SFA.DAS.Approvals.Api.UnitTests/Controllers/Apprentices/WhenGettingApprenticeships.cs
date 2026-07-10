@@ -36,7 +36,7 @@ public class WhenGettingApprenticeships
         controllerResult.Should().NotBeNull();
 
         controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-        var model = controllerResult.Value as GetApprenticeshipsResponse;
+        var model = controllerResult.Value as GetApprenticeshipsQueryResult;
 
         model.Should().NotBeNull();
 

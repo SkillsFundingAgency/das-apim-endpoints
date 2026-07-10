@@ -21,6 +21,8 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         private GetApprenticeshipsResponse _apprenticeships;
         private GetApprenticeshipsQuery _query;
 
+        private GetApprenticeshipsFilterValuesResponse _apprenticeshipsFilters;
+
         [SetUp]
         public void Setup()
         {
@@ -32,6 +34,9 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _query = fixture.Create<GetApprenticeshipsQuery>();
 
             _apiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
+
+            _apprenticeshipsFilters = fixture.Build<GetApprenticeshipsFilterValuesResponse>()
+            .Create();
 
             _apiClient.Setup(x =>
                     x.GetWithResponseCode<GetApprenticeshipsResponse>(It.Is<GetApprenticeshipsRequest>(
@@ -47,6 +52,13 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
                         && r.DeliveryModel == _query.DeliveryModel
                         )))
                 .ReturnsAsync(new ApiResponse<GetApprenticeshipsResponse>(_apprenticeships, HttpStatusCode.OK, string.Empty));
+
+            _apiClient.Setup(x =>
+              x.GetWithResponseCode<GetApprenticeshipsFilterValuesResponse>(It.Is<GetApprenticeshipsFilterValuesRequest>(
+                  r => r.ProviderId == _query.ProviderId
+
+                  )))
+          .ReturnsAsync(new ApiResponse<GetApprenticeshipsFilterValuesResponse>(_apprenticeshipsFilters, HttpStatusCode.OK, string.Empty));
 
             var mappingConfig = new MapperConfiguration(mc => { mc.AddProfile(new MappingProfile()); });
             var mapper = mappingConfig.CreateMapper();
@@ -69,6 +81,10 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _apiClient.Setup(x =>
                   x.GetWithResponseCode<GetApprenticeshipsResponse>(It.IsAny<GetApprenticeshipsRequest>()))
               .ReturnsAsync(new ApiResponse<GetApprenticeshipsResponse>(null, HttpStatusCode.NotFound, string.Empty));
+
+            _apiClient.Setup(x =>
+            x.GetWithResponseCode<GetApprenticeshipsFilterValuesResponse>(It.IsAny<GetApprenticeshipsFilterValuesRequest>()))
+        .ReturnsAsync(new ApiResponse<GetApprenticeshipsFilterValuesResponse>(null, HttpStatusCode.NotFound, string.Empty));
 
             var result = await _handler.Handle(_query, CancellationToken.None);
 
