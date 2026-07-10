@@ -6,7 +6,6 @@ using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
@@ -25,17 +24,14 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
     private readonly ILogger<UpdateShortCourseLearningCommandHandler> _logger;
     private readonly ILearningApiClient<LearningApiConfiguration> _learningApiClient;
     private readonly IEarningsApiClient<EarningsApiConfiguration> _earningsApiClient;
-    private readonly ICalculateGrowthAndSkillsPaymentsEventBuilder _calculateGrowthAndSkillsPaymentsEventBuilder;
     private readonly IUpdateShortCourseOnProgrammeEarningPutRequestBuilder _updateShortCourseOnProgrammeEarningPutRequestBuilder;
     private readonly IShortCourseLookupService _shortCourseLookupService;
     private readonly IMessageSession _messageSession;
-    private readonly PaymentsConfiguration _paymentsConfiguration;
 
     public UpdateShortCourseLearningCommandHandler(
         ILogger<UpdateShortCourseLearningCommandHandler> logger,
         ILearningApiClient<LearningApiConfiguration> learningApiClient,
         IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
-        ICalculateGrowthAndSkillsPaymentsEventBuilder calculateGrowthAndSkillsPaymentsEventBuilder,
         IUpdateShortCourseOnProgrammeEarningPutRequestBuilder updateShortCourseOnProgrammeEarningPutRequestBuilder,
         IShortCourseLookupService shortCourseLookupService,
         IMessageSession messageSession,
@@ -44,11 +40,9 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         _logger = logger;
         _learningApiClient = learningApiClient;
         _earningsApiClient = earningsApiClient;
-        _calculateGrowthAndSkillsPaymentsEventBuilder = calculateGrowthAndSkillsPaymentsEventBuilder;
         _updateShortCourseOnProgrammeEarningPutRequestBuilder = updateShortCourseOnProgrammeEarningPutRequestBuilder;
         _shortCourseLookupService = shortCourseLookupService;
         _messageSession = messageSession;
-        _paymentsConfiguration = paymentsConfiguration;
     }
 
     public async Task Handle(UpdateShortCourseLearningCommand command, CancellationToken cancellationToken)
@@ -101,7 +95,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         _logger.LogInformation("Removing omitted Learning {LearningKey} / {CourseCode} from Earnings for LearnerKey {LearnerKey}",
             removedResult.LearningKey, removedResult.CourseCode, command.LearnerKey);
 
-        var earningsRequest = new DeleteShortCourseEarningsRequest(removedResult.LearningKey, removedResult.UpdatedEpisodeKey);
+        var earningsRequest = new DeleteShortCourseEarningsRequest(removedResult.LearningKey, removedResult.UpdatedEpisodeKey, command.LearnerKey, command.Request.Learner.LearnerRef);
         var earningsResponse = await _earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest, true);
 
         if (!earningsResponse.StatusCode.IsSuccessStatusCode())
@@ -130,22 +124,16 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
 
     private async Task HandleExistingLearning(UpdateShortCourseLearningCommand command, ShortCourseOnProgramme onProg, UpdateShortCourseLearningPutResponse learningResponse)
     {
-        ShortCourseEarningsResponse earningsResponse;
-
         if (EarningsUpdateRequired(learningResponse))
         {
-            var earningBody = _updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(onProg);
+            var earningBody = _updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(onProg, learningResponse.LearnerKey, command.Request.Learner.LearnerRef);
             var earningRequest = new UpdateShortCourseOnProgrammeEarningPutRequest(learningResponse.LearningKey, learningResponse.UpdatedEpisodeKey, earningBody);
-            var response = await _earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(earningRequest);
-            earningsResponse = response.Body;
+            await _earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(earningRequest);
         }
         else
         {
             _logger.LogInformation("No earnings update required for {LearnerKey} / {CourseCode}", command.LearnerKey, onProg.CourseCode);
-            earningsResponse = await _earningsApiClient.Get<ShortCourseEarningGetResponse>(new GetShortCourseEarningsRequest(learningResponse.LearningKey, learningResponse.UpdatedEpisodeKey));
         }
-
-        await PublishPaymentsEvent(command.Ukprn, learningResponse, earningsResponse);
     }
 
     private UpdateShortCourseLearningPutRequest BuildLearningRequest(UpdateShortCourseLearningCommand command, IReadOnlyList<ShortCourseLookupResult> courseDetails)
@@ -153,6 +141,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         var body = new UpdateShortCourseLearningRequestBody
         {
             Ukprn = command.Ukprn,
+            AcademicYear = command.AcademicYear,
             LearnerUpdateDetails = new ShortCourseLearnerUpdateDetails
             {
                 LearnerRef = command.Request.Learner.LearnerRef
@@ -245,22 +234,6 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             ReceivedDate = DateTime.UtcNow,
             LearningType = LearningType.ApprenticeshipUnit
         };
-    }
-
-    private async Task PublishPaymentsEvent(long ukprn, UpdateShortCourseLearningPutResponse learningResponse, ShortCourseEarningsResponse earningsResponse)
-    {
-        _logger.LogInformation("Sending CalculateGrowthAndSkillsPayments for LearningKey: {LearningKey}", learningResponse.LearningKey);
-
-        var evt = await _calculateGrowthAndSkillsPaymentsEventBuilder.Build(ukprn, learningResponse, earningsResponse);
-
-        var options = new SendOptions();
-        options.DoNotEnforceBestPractices();
-        options.SetDestination(_paymentsConfiguration.PaymentsEndpoint);
-        await _messageSession.Send(evt, options);
-
-        await _messageSession.Publish(new GrowthAndSkillsPaymentsRecalculatedEvent { Command = evt });
-
-        _logger.LogInformation("CalculateGrowthAndSkillsPayments sent for LearningKey: {LearningKey}", learningResponse.LearningKey);
     }
 
     private static bool EarningsUpdateRequired(UpdateShortCourseLearningPutResponse response)

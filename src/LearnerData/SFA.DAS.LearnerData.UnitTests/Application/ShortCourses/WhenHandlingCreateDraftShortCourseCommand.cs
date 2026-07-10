@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
 using SFA.DAS.LearnerData.Application.Requests.Earnings;
-using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
@@ -11,9 +10,7 @@ using SFA.DAS.LearnerData.Requests.LearningInner;
 using OnProgramme = SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
-using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Services.ShortCourses;
-using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
@@ -30,15 +27,15 @@ public class WhenHandlingCreateDraftShortCourseCommand
     private Mock<ICreateDraftShortCoursePostRequestBuilder> _createDraftShortCoursePostRequestBuilder;
     private Mock<ICreateUnapprovedShortCourseLearningRequestBuilder> _createUnapprovedShortCourseLearningRequestBuilder;
     private Mock<IUpdateShortCourseOnProgrammeEarningPutRequestBuilder> _updateShortCourseOnProgrammeEarningPutRequestBuilder;
-    private Mock<ICalculateGrowthAndSkillsPaymentsEventBuilder> _calculateGrowthAndSkillsPaymentsEventBuilder;
     private Mock<IMessageSession> _messageSession;
-    private PaymentsConfiguration _paymentsConfiguration;
 
     private CreateDraftShortCourseCommand _command;
     private CreateDraftShortCourseRequest _builtRequest;
     private OnProgramme _resolvedOnProg;
     private long _ukprn;
     private Guid _learningKey;
+    private Guid _learnerKey;
+    private string _learnerRef;
     private Guid _episodeKey;
     private ShortCourseRequest _shortCourseRequest;
     private ShortCourseOnProgramme _onProg;
@@ -53,13 +50,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
         _createDraftShortCoursePostRequestBuilder = new Mock<ICreateDraftShortCoursePostRequestBuilder>();
         _createUnapprovedShortCourseLearningRequestBuilder = new Mock<ICreateUnapprovedShortCourseLearningRequestBuilder>();
         _updateShortCourseOnProgrammeEarningPutRequestBuilder = new Mock<IUpdateShortCourseOnProgrammeEarningPutRequestBuilder>();
-        _calculateGrowthAndSkillsPaymentsEventBuilder = new Mock<ICalculateGrowthAndSkillsPaymentsEventBuilder>();
         _messageSession = new Mock<IMessageSession>();
-        _paymentsConfiguration = new PaymentsConfiguration { PaymentsEndpoint = "payments-endpoint" };
-
-        _calculateGrowthAndSkillsPaymentsEventBuilder
-            .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<IShortCourseLearningPaymentEventBuildContext>(), It.IsAny<ShortCourseEarningsResponse>()))
-            .ReturnsAsync(new CalculateGrowthAndSkillsPayments());
 
         _handler = new CreateDraftShortCourseCommandHandler(
             _logger.Object,
@@ -68,14 +59,14 @@ public class WhenHandlingCreateDraftShortCourseCommand
             _createDraftShortCoursePostRequestBuilder.Object,
             _createUnapprovedShortCourseLearningRequestBuilder.Object,
             _updateShortCourseOnProgrammeEarningPutRequestBuilder.Object,
-            _calculateGrowthAndSkillsPaymentsEventBuilder.Object,
-            _messageSession.Object,
-            _paymentsConfiguration);
+            _messageSession.Object);
 
         // Arrange
         _ukprn = 12345;
         _learningKey = Guid.NewGuid();
+        _learnerKey = Guid.NewGuid();
         _episodeKey = Guid.NewGuid();
+        _learnerRef = "learner-ref-123";
 
         _builtEarningsRequest = new CreateUnapprovedShortCourseLearningRequest();
 
@@ -83,6 +74,10 @@ public class WhenHandlingCreateDraftShortCourseCommand
 
         _shortCourseRequest = new ShortCourseRequest
         {
+            Learner = new ShortCourseLearnerRequestDetails
+            {
+                LearnerRef = _learnerRef,
+            },
             Delivery = new ShortCourseDelivery
             {
                 OnProgramme = [_onProg]
@@ -93,6 +88,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
         _command = new CreateDraftShortCourseCommand
         {
             Ukprn = _ukprn,
+            AcademicYear = 2526,
             ShortCourseRequest = _shortCourseRequest
         };
 
@@ -114,17 +110,18 @@ public class WhenHandlingCreateDraftShortCourseCommand
                 FirstName = "John",
                 LastName = "Smith",
                 EmailAddress = "john@test.com",
-                DateOfBirth = new DateTime(2000, 1, 1)
+                DateOfBirth = new DateTime(2000, 1, 1),
+                LearnerRef = _learnerRef
             },
             OnProgramme = [_resolvedOnProg]
         };
 
         _createDraftShortCoursePostRequestBuilder
-            .Setup(x => x.Build(_shortCourseRequest, _ukprn))
+            .Setup(x => x.Build(_shortCourseRequest, _ukprn, It.IsAny<int>()))
             .ReturnsAsync(_builtRequest);
 
         var apiResponse = new ApiResponse<CreateDraftShortCoursePostResponse>(
-            new CreateDraftShortCoursePostResponse { Results = [new CreateShortCoursePostResponse { LearningKey = _learningKey, EpisodeKey = _episodeKey }] },
+            new CreateDraftShortCoursePostResponse { Results = [new CreateShortCoursePostResponse { LearningKey = _learningKey, EpisodeKey = _episodeKey, LearnerKey = _learnerKey }] },
             HttpStatusCode.Created, "");
 
         _learningApiClient
@@ -251,7 +248,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
 
         var builtBody = new UpdateShortCourseOnProgrammeRequestBody { Milestones = [] };
         _updateShortCourseOnProgrammeEarningPutRequestBuilder
-            .Setup(x => x.Build(_resolvedOnProg))
+            .Setup(x => x.Build(_resolvedOnProg, _learnerKey, _learnerRef))
             .Returns(builtBody);
 
         _earningsApiClient
@@ -270,29 +267,6 @@ public class WhenHandlingCreateDraftShortCourseCommand
             Times.Once);
         _earningsApiClient.Verify(x => x.Post(It.IsAny<PostCreateUnapprovedShortCourseLearningRequest>()), Times.Never);
         _messageSession.Verify(x => x.Publish(It.IsAny<LearnerDataEvent>(), It.IsAny<PublishOptions>()), Times.Never);
-    }
-
-    [Test]
-    public async Task Then_When_Reinstated_CalculateGrowthAndSkillsPayments_Is_Sent_And_Event_Published()
-    {
-        // Arrange
-        SetupReinstatedLearningResponse();
-
-        _updateShortCourseOnProgrammeEarningPutRequestBuilder
-            .Setup(x => x.Build(_resolvedOnProg))
-            .Returns(new UpdateShortCourseOnProgrammeRequestBody { Milestones = [] });
-
-        _earningsApiClient
-            .Setup(x => x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
-                It.IsAny<UpdateShortCourseOnProgrammeEarningPutRequest>()))
-            .ReturnsAsync(new ApiResponse<UpdateShortCourseEarningPutResponse>(new UpdateShortCourseEarningPutResponse(), HttpStatusCode.OK, ""));
-
-        // Act
-        await _handler.Handle(_command, CancellationToken.None);
-
-        // Assert
-        _messageSession.Verify(x => x.Send(It.IsAny<CalculateGrowthAndSkillsPayments>(), It.IsAny<SendOptions>()), Times.Once);
-        _messageSession.Verify(x => x.Publish(It.IsAny<GrowthAndSkillsPaymentsRecalculatedEvent>(), It.IsAny<PublishOptions>()), Times.Once);
     }
 
     [Test]
@@ -386,7 +360,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
     private void SetupReinstatedLearningResponse()
     {
         var reinstatedResponse = new ApiResponse<CreateDraftShortCoursePostResponse>(
-            new CreateDraftShortCoursePostResponse { Results = [new CreateShortCoursePostResponse { LearningKey = _learningKey, EpisodeKey = _episodeKey, IsReinstated = true, Episodes = [] }] },
+            new CreateDraftShortCoursePostResponse { Results = [new CreateShortCoursePostResponse { LearningKey = _learningKey, EpisodeKey = _episodeKey, IsReinstated = true, Episodes = [] , LearnerKey = _learnerKey}] },
             HttpStatusCode.OK, "");
         _learningApiClient
             .Setup(x => x.PostWithResponseCode<CreateDraftShortCoursePostResponse>(It.IsAny<CreateDraftShortCourseApiPostRequest>()))

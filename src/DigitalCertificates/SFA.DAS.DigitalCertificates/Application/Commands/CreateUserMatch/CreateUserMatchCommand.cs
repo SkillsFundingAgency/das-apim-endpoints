@@ -7,8 +7,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateUserMatch
     {
         public Guid UserId { get; set; }
         public long? Uln { get; set; }
-        public string FamilyName { get; set; }
-        public DateTime DateOfBirth { get; set; }
+        public Guid? UserIdentityId {  get; set; }
         public string CertificateType { get; set; }
         public string CourseCode { get; set; }
         public string CourseName { get; set; }

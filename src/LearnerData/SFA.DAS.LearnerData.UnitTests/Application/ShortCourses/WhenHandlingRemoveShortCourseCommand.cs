@@ -1,18 +1,14 @@
 using AutoFixture;
 using Microsoft.Extensions.Logging;
-using NServiceBus;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Application.RemoveShortCourse;
 using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Application.Requests.Learning;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
-using SFA.DAS.LearnerData.Services;
-using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
-using System.Net;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using System.Net;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.ShortCourses;
 
@@ -24,10 +20,8 @@ public class WhenHandlingRemoveShortCourseCommand
     private Mock<ILearningApiClient<LearningApiConfiguration>> _learningApiClient;
     private Mock<IEarningsApiClient<EarningsApiConfiguration>> _earningsApiClient;
     private Mock<ILogger<RemoveShortCourseCommandHandler>> _logger;
-    private Mock<ICalculateGrowthAndSkillsPaymentsEventBuilder> _calculateGrowthAndSkillsPaymentsEventBuilder;
-    private Mock<IMessageSession> _messageSession;
     private RemoveShortCourseCommandHandler _sut;
-    private PaymentsConfiguration _configuration;
+    private string _learnerRef;
 #pragma warning restore CS8618
 
     [SetUp]
@@ -36,24 +30,33 @@ public class WhenHandlingRemoveShortCourseCommand
         _learningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _earningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
         _logger = new Mock<ILogger<RemoveShortCourseCommandHandler>>();
-        _configuration = new PaymentsConfiguration { PaymentsEndpoint = "destination" };
-
-        _calculateGrowthAndSkillsPaymentsEventBuilder = new Mock<ICalculateGrowthAndSkillsPaymentsEventBuilder>();
-        _messageSession = new Mock<IMessageSession>();
-
-        _calculateGrowthAndSkillsPaymentsEventBuilder.Setup(x => x.Build(It.IsAny<long>(), It.IsAny<IShortCourseLearningPaymentEventBuildContext>(), It.IsAny<ShortCourseEarningsResponse>()))
-            .ReturnsAsync(_fixture.Create<CalculateGrowthAndSkillsPayments>());
 
         _sut = new RemoveShortCourseCommandHandler(
-            _logger.Object, _learningApiClient.Object, _earningsApiClient.Object, _calculateGrowthAndSkillsPaymentsEventBuilder.Object, _messageSession.Object, _configuration);
+            _logger.Object, _learningApiClient.Object, _earningsApiClient.Object);
+
+        _learnerRef = "someLearnerRef";
     }
 
     [Test]
     public async Task Then_Earnings_Called_Once_Per_Removed_Learning_When_Learning_Returns_200()
     {
         var command = _fixture.Create<RemoveShortCourseCommand>();
-        var item1 = _fixture.Create<DeleteShortCourseItemResponse>();
-        var item2 = _fixture.Create<DeleteShortCourseItemResponse>();
+        var item1 = _fixture.Build<DeleteShortCourseItemResponse>()
+            .With(x => x.Episodes, [new LearningInnerShortCourseEpisode
+            {
+                Ukprn = command.Ukprn,
+                LearnerRef = _learnerRef,
+                StartDate = DateTime.UtcNow.Date
+            }])
+            .Create();
+        var item2 = _fixture.Build<DeleteShortCourseItemResponse>()
+            .With(x => x.Episodes, [new LearningInnerShortCourseEpisode
+            {
+                Ukprn = command.Ukprn,
+                LearnerRef = _learnerRef,
+                StartDate = DateTime.UtcNow.Date
+            }])
+            .Create();
         var learningResponse = new DeleteShortCourseResponse { Results = [item1, item2] };
 
         _learningApiClient.Setup(x => x.DeleteWithResponseCode<DeleteShortCourseResponse>(
@@ -88,7 +91,14 @@ public class WhenHandlingRemoveShortCourseCommand
     public void Then_Throws_If_Earnings_Delete_Fails()
     {
         var command = _fixture.Create<RemoveShortCourseCommand>();
-        var item = _fixture.Create<DeleteShortCourseItemResponse>();
+        var item = _fixture.Build<DeleteShortCourseItemResponse>()
+            .With(x => x.Episodes, [new LearningInnerShortCourseEpisode
+            {
+                Ukprn = command.Ukprn,
+                LearnerRef = _learnerRef,
+                StartDate = DateTime.UtcNow.Date
+            }])
+            .Create();
         var learningResponse = new DeleteShortCourseResponse { Results = [item] };
 
         _learningApiClient.Setup(x => x.DeleteWithResponseCode<DeleteShortCourseResponse>(
