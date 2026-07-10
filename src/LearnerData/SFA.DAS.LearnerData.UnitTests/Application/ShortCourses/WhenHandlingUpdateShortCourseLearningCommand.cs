@@ -17,6 +17,7 @@ using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SharedLearningType = SFA.DAS.SharedOuterApi.Types.Constants.LearningType;
+using SFA.DAS.LearnerData.Services;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.ShortCourses;
 
