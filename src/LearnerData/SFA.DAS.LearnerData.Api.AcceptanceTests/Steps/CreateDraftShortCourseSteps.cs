@@ -1,13 +1,13 @@
 using AutoFixture;
 using FluentAssertions;
 using Newtonsoft.Json;
+using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses.LearningInner;
-using System.Net;
-using System.Net.Http.Headers;
-using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using System.Net;
+using System.Net.Http.Headers;
 using TechTalk.SpecFlow;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
@@ -214,7 +214,7 @@ public class CreateDraftShortCourseSteps
                 .RespondWith(
                     Response.Create()
                         .WithStatusCode(HttpStatusCode.Created)
-                        .WithBodyAsJson(learningResponse)
+                        .WithBodyAsJson(new CreateDraftShortCoursePostResponse { Results = [learningResponse] })
                 );
         }
     }

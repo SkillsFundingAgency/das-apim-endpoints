@@ -1,15 +1,10 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
-using NServiceBus;
+using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Application.Requests.Learning;
-using SFA.DAS.LearnerData.Configuration;
-using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
-using SFA.DAS.LearnerData.Services;
-using System.Net;
-using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
@@ -18,57 +13,52 @@ namespace SFA.DAS.LearnerData.Application.RemoveShortCourse;
 public class RemoveShortCourseCommandHandler(
     ILogger<RemoveShortCourseCommandHandler> logger,
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
-    IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
-    ICalculateGrowthAndSkillsPaymentsEventBuilder calculateGrowthAndSkillsPaymentsEventBuilder,
-    IMessageSession messageSession,
-    PaymentsConfiguration paymentsConfiguration
-
+    IEarningsApiClient<EarningsApiConfiguration> earningsApiClient
 ) : IRequestHandler<RemoveShortCourseCommand>
 {
     public async Task Handle(RemoveShortCourseCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Handling DeleteShortCourseCommand for Ukprn: {Ukprn}, LearningKey: {LearningKey}", command.Ukprn, command.LearningKey);
+        logger.LogInformation("Handling DeleteShortCourseCommand for Ukprn: {Ukprn}, LearningKey: {LearningKey}", command.Ukprn, command.LearnerKey);
 
-        var learningRequest = new DeleteShortCourseApiDeleteRequest(command.Ukprn, command.LearningKey);
+        var learningRequest = new DeleteShortCourseApiDeleteRequest(command.Ukprn, command.LearnerKey, command.AcademicYear);
 
         var learningResponse = await learningApiClient.DeleteWithResponseCode<DeleteShortCourseResponse>(learningRequest, true);
 
         if (!learningResponse.StatusCode.IsSuccessStatusCode())
         {
-            logger.LogError("Failed to delete short course with key {LearningKey}. Status code: {StatusCode}", command.LearningKey, learningResponse.StatusCode);
-            throw new Exception($"Failed to delete short course with key {command.LearningKey}. Status code: {learningResponse.StatusCode}.");
+            logger.LogError("Failed to delete short course episodes for learner {LearningKey}. Status code: {StatusCode}", command.LearnerKey, learningResponse.StatusCode);
+            throw new Exception($"Failed to delete short course episodes for learner {command.LearnerKey}. Status code: {learningResponse.StatusCode}.");
         }
 
-        var earningsRequest = new DeleteShortCourseEarningsRequest(command.LearningKey, learningResponse.Body.RemovedEpisodeKey);
-
-        var earningsResponse = await earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest, true);
-
-        if (!earningsResponse.StatusCode.IsSuccessStatusCode())
+        foreach (var item in learningResponse.Body.Results)
         {
-            logger.LogError("Failed to delete short course earnings with key {LearningKey}. Status code: {StatusCode}", command.LearningKey, earningsResponse.StatusCode);
-            throw new Exception($"Failed to delete short course earnings with key {command.LearningKey}. Status code: {earningsResponse.StatusCode}.");
+            var learnerRef = GetLearnerRef(item, command.Ukprn);
+            var earningsRequest = new DeleteShortCourseEarningsRequest(item.LearningKey, item.RemovedEpisodeKey, command.LearnerKey, learnerRef);
+
+            var earningsResponse = await earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest, true);
+
+            if (!earningsResponse.StatusCode.IsSuccessStatusCode())
+            {
+                logger.LogError("Failed to delete short course earnings with key {LearningKey}. Status code: {StatusCode}", item.LearningKey, earningsResponse.StatusCode);
+                throw new Exception($"Failed to delete short course earnings with key {item.LearningKey}. Status code: {earningsResponse.StatusCode}.");
+            }
         }
 
-        await PublishEvent(command.Ukprn, learningResponse.Body, earningsResponse.Body);
-
-        logger.LogInformation("Short course with key {LearningKey} deleted from Learning and Earnings successfully", command.LearningKey);
+        logger.LogInformation("Short courses for learner {LearnerKey} deleted from Learning and Earnings successfully", command.LearnerKey);
     }
 
-    private async Task PublishEvent(long ukprn, DeleteShortCourseResponse learningResponse, ShortCourseEarningsResponse earningsResponse)
+    private string GetLearnerRef(DeleteShortCourseItemResponse learningResponse, long ukprn)
     {
-        logger.LogInformation("Sending CalculateGrowthAndSkillsPayments command for LearningKey: {LearningKey}", learningResponse.LearningKey);
+        var learnerRef = learningResponse.Episodes
+            .Where(e => e.Ukprn == ukprn)
+            .OrderByDescending(e => e.StartDate)
+            .Select(e => e.LearnerRef)
+            .FirstOrDefault();
 
-        var command = await calculateGrowthAndSkillsPaymentsEventBuilder.Build(ukprn, learningResponse, earningsResponse);
-
-        var options = new SendOptions();
-        options.DoNotEnforceBestPractices();
-        options.SetDestination(paymentsConfiguration.PaymentsEndpoint);
-        await messageSession.Send(command, options);
-
-        logger.LogInformation("CalculateGrowthAndSkillsPayments command sent for LearningKey: {LearningKey}", learningResponse.LearningKey);
-
-        await messageSession.Publish(new GrowthAndSkillsPaymentsRecalculatedEvent { Command = command });
-
-        logger.LogInformation("GrowthAndSkillsPaymentsRecalculatedEvent published for LearningKey: {LearningKey}", learningResponse.LearningKey);
+        if (string.IsNullOrWhiteSpace(learnerRef))
+        {
+            throw new InvalidOperationException($"No episode LearnerRef found for Ukprn {ukprn} and LearnerKey {learningResponse.LearnerKey}");
+        }
+        return learnerRef;
     }
 }

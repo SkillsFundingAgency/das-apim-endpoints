@@ -20,13 +20,14 @@ public class ShortCoursesController(
 {
     [HttpPost]
     [Route("/providers/{ukprn}/shortCourses")]
-    public async Task<IActionResult> CreateShortCourse(ShortCourseRequest request, [FromRoute] long ukprn)
+    public async Task<IActionResult> CreateShortCourse(ShortCourseRequest request, [FromRoute] long ukprn, [FromQuery] int academicYear = 2526, [FromQuery] int collectionPeriod = 0)
     {
         try
         {
             var result = await mediator.Send(new CreateDraftShortCourseCommand
             {
                 Ukprn = ukprn,
+                AcademicYear = academicYear,
                 ShortCourseRequest = request
             });
 
@@ -49,10 +50,28 @@ public class ShortCoursesController(
         }
     }
 
-    [HttpGet("/providers/{ukprn}/academicyears/{academicyear}/shortCourses")]
-    public async Task<IActionResult> GetShortCourseLearners([FromRoute] string ukprn, [FromRoute] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
+    [HttpGet]
+    [Route("/providers/{ukprn}/academicyears/{academicyear}/shortCourses")]
+    public async Task<IActionResult> GetShortCourseLearners_Legacy([FromRoute] string ukprn, [FromRoute] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
     {
+        return await GetShortCourseLearner_Internal(ukprn, academicyear, page, pagesize);
 
+    }
+
+    /// <summary>
+    /// This is needed because I don't seem to be able to find from both query and route for the same parameter.
+    /// The original method can be removed when SLD stop using it.  At which point, the internal method can also be moved directly into this method.
+    /// </summary>
+    [HttpGet]
+    [Route("/providers/{ukprn}/shortCourses/learners")]
+    public async Task<IActionResult> GetShortCourseLearners([FromRoute] string ukprn, [FromQuery] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
+    {
+        return await GetShortCourseLearner_Internal(ukprn, academicyear, page, pagesize);
+
+    }
+
+    private async Task<IActionResult> GetShortCourseLearner_Internal(string ukprn, int academicyear, int page, int? pagesize)
+    {
         logger.LogInformation("GetShortCourseLearners for ukprn {Ukprn}, year {Year}", ukprn, academicyear);
 
         pagesize = pagesize.HasValue ? Math.Clamp(pagesize.Value, 1, 100) : pagesize;
@@ -69,14 +88,29 @@ public class ShortCoursesController(
         HttpContext.SetPageLinksInResponseHeaders(query, response);
 
         return Ok((GetShortCourseLearnersResponse)response);
-
     }
 
     // This is the short course equivalent of FM36
-    [HttpGet("/providers/{ukprn}/collectionPeriods/{collectionYear}/{collectionPeriod}/shortCourses")]
-    public async Task<IActionResult> GetShortCourseEarnings([FromRoute] long ukprn, [FromRoute] int collectionYear, [FromRoute] byte collectionPeriod, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
+    [HttpGet]
+    [Route("/providers/{ukprn}/collectionPeriods/{collectionYear}/{collectionPeriod}/shortCourses")]
+    public async Task<IActionResult> GetShortCourseEarnings_Legacy([FromRoute] long ukprn, [FromRoute] int collectionYear, [FromRoute] byte collectionPeriod, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
     {
+        return await GetShortCourseEarnings_Internal(ukprn, collectionYear, collectionPeriod, page, pagesize);
+    }
 
+    /// <summary>
+    /// This is needed because I don't seem to be able to find from both query and route for the same parameter.
+    /// The original method can be removed when SLD stop using it.  At which point, the internal method can also be moved directly into this method.
+    /// </summary>
+    [HttpGet]
+    [Route("/providers/{ukprn}/shortCourses/earnings")]
+    public async Task<IActionResult> GetShortCourseEarnings([FromRoute] long ukprn, [FromQuery] int academicYear, [FromQuery] byte collectionPeriod, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
+    {
+        return await GetShortCourseEarnings_Internal(ukprn, academicYear, collectionPeriod, page, pagesize);
+    }
+
+    private async Task<IActionResult> GetShortCourseEarnings_Internal(long ukprn, int collectionYear, byte collectionPeriod, int page, int? pagesize)
+    {
         logger.LogInformation("GetShortCourseEarnings for ukprn {Ukprn}, year {Year} and period {period}", ukprn, collectionYear, collectionPeriod);
 
         pagesize = pagesize.HasValue ? Math.Clamp(pagesize.Value, 1, 100) : pagesize;
@@ -87,18 +121,18 @@ public class ShortCoursesController(
         HttpContext.SetPageLinksInResponseHeaders(query, result);
 
         return Ok(result);
-
     }
 
-    [HttpDelete("/providers/{ukprn}/shortCourses/{learningKey}")]
-    public async Task<IActionResult> RemoveShortCourse([FromRoute] long ukprn, [FromRoute] Guid learningKey)
+    [HttpDelete("/providers/{ukprn}/shortCourses/{learnerKey}")]
+    public async Task<IActionResult> RemoveShortCourse([FromRoute] long ukprn, [FromRoute] Guid learnerKey, [FromQuery] int academicYear = 2526)
     {
         try
         {
             await mediator.Send(new RemoveShortCourseCommand
             {
                 Ukprn = ukprn,
-                LearningKey = learningKey
+                LearnerKey = learnerKey,
+                AcademicYear = academicYear
             });
 
             return Accepted();
@@ -110,15 +144,16 @@ public class ShortCoursesController(
         }
     }
 
-    [HttpPut("/providers/{ukprn}/shortCourses/{learningKey}")]
-    public async Task<IActionResult> UpdateShortCourseLearning(Guid learningKey, ShortCourseRequest request, long ukprn)
+    [HttpPut("/providers/{ukprn}/shortCourses/{learnerKey}")]
+    public async Task<IActionResult> UpdateShortCourseLearning(Guid learnerKey, ShortCourseRequest request, long ukprn, [FromQuery] int academicYear = 2526, [FromQuery] int collectionPeriod = 0)
     {
         try
         {
             await mediator.Send(new UpdateShortCourseLearningCommand
             {
-                LearningKey = learningKey,
+                LearnerKey = learnerKey,
                 Ukprn = ukprn,
+                AcademicYear = academicYear,
                 Request = request
             });
         }

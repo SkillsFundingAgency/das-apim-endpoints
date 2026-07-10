@@ -17,6 +17,10 @@ public class UpdateShortCourseOnProgrammeRequestBody
     public DateTime? WithdrawalDate { get; set; }
     public DateTime? CompletionDate { get; set; }
     public List<Milestone> Milestones { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime ExpectedEndDate { get; set; }
+    public Guid LearnerKey { get; set; }
+    public string LearnerRef { get; set; } = string.Empty;
 }
 
 #pragma warning restore CS8618

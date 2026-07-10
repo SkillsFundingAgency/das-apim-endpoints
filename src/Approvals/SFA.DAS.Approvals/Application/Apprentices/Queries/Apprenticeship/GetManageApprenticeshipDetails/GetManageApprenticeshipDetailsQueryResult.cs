@@ -51,9 +51,9 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
 
     public class PaymentsStatus
     {
-        public bool PaymentsFrozen { get; set; }
+        public bool FreezeStatus { get; set; }
         public string ReasonFrozen { get; set; }
-        public DateTime? FrozenOn { get; set; }
+        public DateTime? PaymentFreezeDate { get; set; }
     }
 
     public class LearnerStatusDetails
