@@ -23,5 +23,8 @@ public static class AddConfigurationOptionsExtension
         services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitAiApiConfiguration>>().Value);
         services.Configure<LocationApiConfiguration>(configuration.GetSection("LocationApiConfiguration"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<LocationApiConfiguration>>().Value);
+
+        services.Configure<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>(configuration.GetSection("RecruitAltApi"));
+        services.AddSingleton(cfg => cfg.GetRequiredService<IOptions<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>>().Value);
     }
 }
