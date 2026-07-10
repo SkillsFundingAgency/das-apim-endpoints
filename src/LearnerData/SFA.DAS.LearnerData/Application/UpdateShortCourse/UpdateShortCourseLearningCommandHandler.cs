@@ -6,6 +6,8 @@ using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Services.ShortCourses;
+using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
@@ -132,7 +134,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         {
             var earningBody = _updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(onProg, learningResponse.LearnerKey, command.Request.Learner.LearnerRef);
             var earningRequest = new UpdateShortCourseOnProgrammeEarningPutRequest(learningResponse.LearningKey, learningResponse.UpdatedEpisodeKey, earningBody);
-            var response = await _earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(earningRequest);
+            await _earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(earningRequest);
         }
         else
         {

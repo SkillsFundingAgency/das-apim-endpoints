@@ -1,9 +1,7 @@
 ﻿using SFA.DAS.LearnerData.Application.GetLearners;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application;
 
