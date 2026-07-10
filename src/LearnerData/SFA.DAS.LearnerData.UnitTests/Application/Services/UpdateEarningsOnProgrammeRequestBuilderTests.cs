@@ -46,7 +46,7 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
             
 
         // Act
-        var result = await _sut.Build(command.LearningKey, command.UpdateLearnerRequest, response, putRequest.Data);
+        var result = await _sut.Build(command.LearnerKey, command.UpdateLearnerRequest, response, putRequest.Data);
 
         // Assert
         result.PutUrl.Should().Be($"learning/{command.LearningKey}/on-programme");

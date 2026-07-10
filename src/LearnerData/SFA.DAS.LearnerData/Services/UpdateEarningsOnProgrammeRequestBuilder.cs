@@ -11,16 +11,16 @@ namespace SFA.DAS.LearnerData.Services;
 
 public interface IUpdateEarningsOnProgrammeRequestBuilder
 {
-    Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, UpdateLearnerRequest updateLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningRequestBody requestBody);
+    Task<UpdateOnProgrammeApiPutRequest> Build(UpdateLearnerRequest updateLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningRequestBody requestBody);
     Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, CreateLearnerRequest createLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningRequestBody requestBody);
 }
 
 public class UpdateEarningsOnProgrammeRequestBuilder(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient) : IUpdateEarningsOnProgrammeRequestBuilder
 {
-    public async Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, UpdateLearnerRequest updateLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse,
+    public async Task<UpdateOnProgrammeApiPutRequest> Build(UpdateLearnerRequest updateLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse,
         UpdateLearningRequestBody requestBody)
     {
-        return await BuildInternal(learningKey, updateLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(), learningApiPutResponse, requestBody);
+        return await BuildInternal(learningApiPutResponse.LearningKey, updateLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(), learningApiPutResponse, requestBody);
     }
 
     public async Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, CreateLearnerRequest createLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse,

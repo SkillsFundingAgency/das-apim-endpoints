@@ -23,54 +23,54 @@ public class UpdateLearnerCommandHandler(
 {
     public async Task Handle(UpdateLearnerCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Updating learner with key {LearningKey}", command.LearningKey);
+        logger.LogInformation("Updating learner with key {LearnerKey}", command.LearnerKey);
 
         await learnerDataCacheService.StoreLearner(command.UpdateLearnerRequest, command.Ukprn, cancellationToken);
 
-        var request = updateLearningPutRequestBuilder.Build(command.Ukprn, command.UpdateLearnerRequest, command.LearningKey);
+        var request = updateLearningPutRequestBuilder.Build(command.Ukprn, command.UpdateLearnerRequest, command.LearnerKey);
 
         var learningResponse = await learningApiClient.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(request);
 
         if (!learningResponse.StatusCode.IsSuccessStatusCode())
         {
-            logger.LogError("Failed to update learner with key {LearningKey}. Status code: {StatusCode}",
-                command.LearningKey, learningResponse.StatusCode);
-            throw new Exception($"Failed to update learner with key {command.LearningKey}. Status code: {learningResponse.StatusCode}.");
+            logger.LogError("Failed to update learner with key {LearnerKey}. Status code: {StatusCode}",
+                command.LearnerKey, learningResponse.StatusCode);
+            throw new Exception($"Failed to update learner with key {command.LearnerKey}. Status code: {learningResponse.StatusCode}.");
         }
 
         var learningApiPutResponse = learningResponse.Body;
 
-        logger.LogInformation("Learner with key {LearningKey} updated successfully. Changes: {@Changes}",
-            command.LearningKey, string.Join(", ", learningApiPutResponse));
+        logger.LogInformation("Learner with key {LearnerKey} updated successfully. Changes: {@Changes}",
+            command.LearnerKey, string.Join(", ", learningApiPutResponse));
         
         if (learningApiPutResponse.Changes.Count == 0 || learningApiPutResponse.Changes.HasPersonalDetailsOnly())
         {
-            logger.LogInformation("No changes requiring earnings update for learning {LearningKey}", command.LearningKey);
+            logger.LogInformation("No changes requiring earnings update for learner {LearnerKey}", command.LearnerKey);
             return;
         }
         
         //Update Earnings
         if (learningApiPutResponse.Changes.HasOnProgrammeUpdate())
         {
-            logger.LogInformation("Updating Earnings with OnProgramme changes for learning {LearningKey}", command.LearningKey);
-            var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(command.LearningKey, command.UpdateLearnerRequest, learningApiPutResponse, request.Data);
+            logger.LogInformation("Updating Earnings with OnProgramme changes for learning {LearningKey}", learningApiPutResponse.LearningKey);
+            var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(command.UpdateLearnerRequest, learningApiPutResponse, request.Data);
             await earningsApiClient.Put(earningsOnProgrammeApiRequest);
         }
 
         if (learningApiPutResponse.Changes.HasEnglishAndMathsUpdate())
         {
-            logger.LogInformation("Updating Earnings with English and Maths changes for learning {LearningKey}", command.LearningKey);
+            logger.LogInformation("Updating Earnings with English and Maths changes for learning {LearningKey}", learningApiPutResponse.LearningKey);
             var englishAndMathsRequest = updateEarningsEnglishAndMathsRequestBuilder.Build(command, learningApiPutResponse, request);
             await earningsApiClient.Put(englishAndMathsRequest);
         }
 
         if (learningApiPutResponse.Changes.HasLearningSupportUpdate())
         {
-            logger.LogInformation("Updating Earnings with Learning Support changes for learning {LearningKey}", command.LearningKey);
-            var earningsLearningSupportRequest = updateEarningsLearningSupportRequestBuilder.Build(command, learningApiPutResponse, request);
+            logger.LogInformation("Updating Earnings with Learning Support changes for learning {LearningKey}", learningApiPutResponse.LearningKey);
+            var earningsLearningSupportRequest = updateEarningsLearningSupportRequestBuilder.Build(learningApiPutResponse, request);
             await earningsApiClient.Put(earningsLearningSupportRequest);
         }
 
-        logger.LogInformation("Earnings updated for learning {LearningKey}", command.LearningKey);
+        logger.LogInformation("Earnings updated for learning {LearningKey}", learningApiPutResponse.LearningKey);
     }
 }

@@ -17,7 +17,7 @@ public class WhenUpdatingALearner
 {
     [Test, MoqAutoData]
     public async Task And_when_successful_Then_Accepted_returned(
-        Guid learningKey,
+        Guid learnerKey,
         long ukprn,
         UpdateLearnerRequest request,
         [Frozen] Mock<IMediator> mockMediator,
@@ -25,14 +25,14 @@ public class WhenUpdatingALearner
         [Greedy] ApprenticeshipsController sut)
     {
         // Act
-        var result = await sut.UpdateLearner(ukprn, learningKey, request) as AcceptedResult;
+        var result = await sut.UpdateLearner(ukprn, learnerKey, request) as AcceptedResult;
 
         // Assert
         result!.StatusCode.Should().Be((int)HttpStatusCode.Accepted);
 
         mockMediator.Verify(x => x.Send(
             It.Is<UpdateLearnerCommand>(c =>
-                c.LearningKey == learningKey &&
+                c.LearnerKey == learnerKey &&
                 c.UpdateLearnerRequest == request), It.IsAny<CancellationToken>()), Times.Once);
     }
 
