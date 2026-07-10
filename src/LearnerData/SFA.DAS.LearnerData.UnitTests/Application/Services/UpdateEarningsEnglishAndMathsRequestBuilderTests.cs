@@ -64,7 +64,7 @@ public class UpdateEarningsEnglishAndMathsRequestBuilderTests
                 .ToList()
         }).ToList();
 
-        result.PutUrl.Should().Be($"learning/{command.LearnerKey}/english-and-maths");
+        result.PutUrl.Should().Be($"learning/{response.LearningKey}/english-and-maths");
         result.Data.EnglishAndMaths.Should().BeEquivalentTo(expectedItems);
     }
 
