@@ -22,24 +22,24 @@ namespace SFA.DAS.Admin.UnitTests.Application.Commands.CheckUserActionByCode
 		public async Task Then_AdminAction_Is_Posted_When_AdminActions_Empty(
 			string code,
 			CheckUserActionByCodeCommand command,
-			UserActionDetail responseBody,
+			GetUserActionByCodeResponse responseBody,
 			[Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
 			CheckUserActionByCodeCommandHandler handler)
 		{
 			// Arrange
 			command.Code = code;
 			command.Username = "tester";
-			responseBody.AdminActions = new List<AdminActionDetail>();
+			responseBody.AdminActions = new List<AdminActionResponse>();
 
-			var apiResponse = new ApiResponse<UserActionDetail>(responseBody, HttpStatusCode.OK, string.Empty);
+			var apiResponse = new ApiResponse<GetUserActionByCodeResponse>(responseBody, HttpStatusCode.OK, string.Empty);
 
 			mockDigitalCertificatesApiClient
-				.Setup(c => c.GetWithResponseCode<UserActionDetail>(It.Is<GetUsersUseractionsByCodeApiRequest>(r => r.Code == code)))
+				.Setup(c => c.GetWithResponseCode<GetUserActionByCodeResponse>(It.Is<GetUserActionsByCodeApiRequest>(r => r.Code == code)))
 				.ReturnsAsync(apiResponse);
 
 			mockDigitalCertificatesApiClient
-				.Setup(c => c.PostWithResponseCode<CreateAdminActionCommand>(It.IsAny<PostUsersAdminactionsApiRequest>()))
-				.ReturnsAsync(new ApiResponse<CreateAdminActionCommand>(null, HttpStatusCode.OK, string.Empty));
+				.Setup(c => c.PostWithResponseCode<CreateAdminActionRequest>(It.IsAny<PostUserActionsByUserActionIdAdminActionsApiRequest>()))
+				.ReturnsAsync(new ApiResponse<CreateAdminActionRequest>(null, HttpStatusCode.OK, string.Empty));
 
 			// Act
 			var actual = await handler.Handle(command, CancellationToken.None);
@@ -48,18 +48,18 @@ namespace SFA.DAS.Admin.UnitTests.Application.Commands.CheckUserActionByCode
 			actual.Should().NotBeNull();
 			actual.Id.Should().Be(responseBody.Id);
 
-			mockDigitalCertificatesApiClient.Verify(c => c.PostWithResponseCode<CreateAdminActionCommand>(
-				It.Is<PostUsersAdminactionsApiRequest>(p => ((CreateAdminActionCommand)p.Data).UserActionId == responseBody.Id && ((CreateAdminActionCommand)p.Data).Username == command.Username && ((CreateAdminActionCommand)p.Data).Action.ToString() == "Viewed")), Times.Once);
+			mockDigitalCertificatesApiClient.Verify(c => c.PostWithResponseCode<CreateAdminActionRequest>(
+				It.Is<PostUserActionsByUserActionIdAdminActionsApiRequest>(p => ((CreateAdminActionRequest)p.Data).Username == command.Username && ((CreateAdminActionRequest)p.Data).Action.ToString() == "Viewed" && p.UserActionId == responseBody.Id)), Times.Once);
 
-			mockDigitalCertificatesApiClient.Verify(c => c.GetWithResponseCode<UserActionDetail>(
-				It.Is<GetUsersUseractionsByCodeApiRequest>(r => r.Code == code)), Times.Once);
+			mockDigitalCertificatesApiClient.Verify(c => c.GetWithResponseCode<GetUserActionByCodeResponse>(
+				It.Is<GetUserActionsByCodeApiRequest>(r => r.Code == code)), Times.Once);
 		}
 
 		[Test, MoqAutoData]
 		public async Task Then_Does_Not_Post_If_MostRecent_Is_Same_User_Viewed(
 			string code,
 			CheckUserActionByCodeCommand command,
-			UserActionDetail responseBody,
+			GetUserActionByCodeResponse responseBody,
 			[Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
 			CheckUserActionByCodeCommandHandler handler)
 		{
@@ -67,13 +67,13 @@ namespace SFA.DAS.Admin.UnitTests.Application.Commands.CheckUserActionByCode
 			command.Code = code;
 			command.Username = "tester";
 
-			var action = new AdminActionDetail { Username = command.Username, ActionTime = DateTime.UtcNow, Action = AdminActionType.Viewed };
-			responseBody.AdminActions = new List<AdminActionDetail> { action };
+			var action = new AdminActionResponse { Username = command.Username, ActionTime = DateTime.UtcNow, Action = AdminActionType.Viewed };
+			responseBody.AdminActions = new List<AdminActionResponse> { action };
 
-			var apiResponse = new ApiResponse<UserActionDetail>(responseBody, HttpStatusCode.OK, string.Empty);
+			var apiResponse = new ApiResponse<GetUserActionByCodeResponse>(responseBody, HttpStatusCode.OK, string.Empty);
 
 			mockDigitalCertificatesApiClient
-				.Setup(c => c.GetWithResponseCode<UserActionDetail>(It.IsAny<GetUsersUseractionsByCodeApiRequest>()))
+				.Setup(c => c.GetWithResponseCode<GetUserActionByCodeResponse>(It.IsAny<GetUserActionsByCodeApiRequest>()))
 				.ReturnsAsync(apiResponse);
 
 			// Act
@@ -82,7 +82,7 @@ namespace SFA.DAS.Admin.UnitTests.Application.Commands.CheckUserActionByCode
 			// Assert
 			actual.Should().NotBeNull();
 
-			mockDigitalCertificatesApiClient.Verify(c => c.PostWithResponseCode<CreateAdminActionCommand>(It.IsAny<PostUsersAdminactionsApiRequest>()), Times.Never);
+			mockDigitalCertificatesApiClient.Verify(c => c.PostWithResponseCode<CreateAdminActionRequest>(It.IsAny<PostUserActionsByUserActionIdAdminActionsApiRequest>()), Times.Never);
 		}
 
 		[Test, MoqAutoData]
@@ -95,10 +95,10 @@ namespace SFA.DAS.Admin.UnitTests.Application.Commands.CheckUserActionByCode
 			// Arrange
 			command.Code = code;
 
-			var apiResponse = new ApiResponse<UserActionDetail>(null, HttpStatusCode.NotFound, string.Empty);
+			var apiResponse = new ApiResponse<GetUserActionByCodeResponse>(null, HttpStatusCode.NotFound, string.Empty);
 
 			mockDigitalCertificatesApiClient
-				.Setup(c => c.GetWithResponseCode<UserActionDetail>(It.IsAny<GetUsersUseractionsByCodeApiRequest>()))
+				.Setup(c => c.GetWithResponseCode<GetUserActionByCodeResponse>(It.IsAny<GetUserActionsByCodeApiRequest>()))
 				.ReturnsAsync(apiResponse);
 
 			// Act
@@ -107,31 +107,31 @@ namespace SFA.DAS.Admin.UnitTests.Application.Commands.CheckUserActionByCode
 			// Assert
 			actual.Should().BeNull();
 
-			mockDigitalCertificatesApiClient.Verify(c => c.PostWithResponseCode<CreateAdminActionCommand>(It.IsAny<PostUsersAdminactionsApiRequest>()), Times.Never);
+			mockDigitalCertificatesApiClient.Verify(c => c.PostWithResponseCode<CreateAdminActionRequest>(It.IsAny<PostUserActionsByUserActionIdAdminActionsApiRequest>()), Times.Never);
 		}
 
 		[Test, MoqAutoData]
 		public void Then_Exception_Is_Thrown_If_Post_AdminAction_Fails(
 			string code,
 			CheckUserActionByCodeCommand command,
-			UserActionDetail responseBody,
+			GetUserActionByCodeResponse responseBody,
 			[Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
 			CheckUserActionByCodeCommandHandler handler)
 		{
 			// Arrange
 			command.Code = code;
 			command.Username = "tester";
-			responseBody.AdminActions = new List<AdminActionDetail>();
+			responseBody.AdminActions = new List<AdminActionResponse>();
 
-			var apiResponse = new ApiResponse<UserActionDetail>(responseBody, HttpStatusCode.OK, string.Empty);
-			var postResponse = new ApiResponse<CreateAdminActionCommand>(null, HttpStatusCode.BadRequest, string.Empty);
+			var apiResponse = new ApiResponse<GetUserActionByCodeResponse>(responseBody, HttpStatusCode.OK, string.Empty);
+			var postResponse = new ApiResponse<CreateAdminActionRequest>(null, HttpStatusCode.BadRequest, string.Empty);
 
 			mockDigitalCertificatesApiClient
-				.Setup(c => c.GetWithResponseCode<UserActionDetail>(It.Is<GetUsersUseractionsByCodeApiRequest>(r => r.Code == code)))
+				.Setup(c => c.GetWithResponseCode<GetUserActionByCodeResponse>(It.Is<GetUserActionsByCodeApiRequest>(r => r.Code == code)))
 				.ReturnsAsync(apiResponse);
 
 			mockDigitalCertificatesApiClient
-				.Setup(c => c.PostWithResponseCode<CreateAdminActionCommand>(It.IsAny<PostUsersAdminactionsApiRequest>()))
+				.Setup(c => c.PostWithResponseCode<CreateAdminActionRequest>(It.IsAny<PostUserActionsByUserActionIdAdminActionsApiRequest>()))
 				.ReturnsAsync(postResponse);
 
 			// Act
@@ -149,7 +149,7 @@ namespace SFA.DAS.Admin.UnitTests.Application.Commands.CheckUserActionByCode
 		{
 			// Arrange
 			mockDigitalCertificatesApiClient
-				.Setup(c => c.GetWithResponseCode<UserActionDetail>(It.IsAny<GetUsersUseractionsByCodeApiRequest>()))
+				.Setup(c => c.GetWithResponseCode<GetUserActionByCodeResponse>(It.IsAny<GetUserActionsByCodeApiRequest>()))
 				.ThrowsAsync(new Exception("Bad request"));
 
 			// Act
@@ -158,7 +158,7 @@ namespace SFA.DAS.Admin.UnitTests.Application.Commands.CheckUserActionByCode
 			// Assert
 			act.Should().ThrowAsync<Exception>();
 
-			mockDigitalCertificatesApiClient.Verify(c => c.GetWithResponseCode<UserActionDetail>(It.IsAny<GetUsersUseractionsByCodeApiRequest>()), Times.Once);
+			mockDigitalCertificatesApiClient.Verify(c => c.GetWithResponseCode<GetUserActionByCodeResponse>(It.IsAny<GetUserActionsByCodeApiRequest>()), Times.Once);
 		}
 	}
 }

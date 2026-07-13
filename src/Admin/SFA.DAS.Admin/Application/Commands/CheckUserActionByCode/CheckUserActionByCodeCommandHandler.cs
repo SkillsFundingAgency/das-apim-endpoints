@@ -1,5 +1,5 @@
-﻿using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
-using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+﻿using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
 using SFA.DAS.Apim.Shared.Extensions;
 using System.Net;
 using SFA.DAS.DigitalCertificates.Contracts.Client;
@@ -9,8 +9,6 @@ using System.Threading;
 using System.Linq;
 using System;
 
-using CreateAdminActionCommand = SFA.DAS.DigitalCertificates.Contracts.ApiResponses.CreateAdminActionCommand;
-using PostUsersAdminactionsApiRequest = SFA.DAS.DigitalCertificates.Contracts.ApiRequests.PostUsersAdminactionsApiRequest;
 
 namespace SFA.DAS.Admin.Application.Commands.CheckUserActionByCode
 {
@@ -27,7 +25,7 @@ namespace SFA.DAS.Admin.Application.Commands.CheckUserActionByCode
 
         public async Task<CheckUserActionByCodeResult> Handle(CheckUserActionByCodeCommand request, CancellationToken cancellationToken)
         {
-            var apiResponse = await _digitalCertificatesApiClient.GetWithResponseCode<UserActionDetail>(new GetUsersUseractionsByCodeApiRequest(request.Code));
+            var apiResponse = await _digitalCertificatesApiClient.GetWithResponseCode<GetUserActionByCodeResponse>(new GetUserActionsByCodeApiRequest(request.Code));
 
             if (apiResponse?.StatusCode == HttpStatusCode.NotFound)
             {
@@ -59,15 +57,14 @@ namespace SFA.DAS.Admin.Application.Commands.CheckUserActionByCode
 
             if (shouldLog)
             {
-                var create = new CreateAdminActionCommand
+                var create = new CreateAdminActionRequest
                 {
                     Username = request.Username,
-                    Action = AdminActionType.Viewed,
-                    UserActionId = response.Id
+                    Action = AdminActionType.Viewed
                 };
 
-                var postResponse = await _digitalCertificatesApiClient.PostWithResponseCode<CreateAdminActionCommand>(
-                    new PostUsersAdminactionsApiRequest(create));
+                var postResponse = await _digitalCertificatesApiClient.PostWithResponseCode<CreateAdminActionRequest>(
+                    new PostUserActionsByUserActionIdAdminActionsApiRequest(create) { UserActionId = response.Id });
 
                 postResponse?.EnsureSuccessStatusCode();
             }

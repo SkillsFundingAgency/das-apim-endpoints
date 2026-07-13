@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Admin.Api.Controllers;
+using SFA.DAS.Admin.Api.Models.UserActions;
 using SFA.DAS.Admin.Application.Queries.GetUserActionByCode;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -19,11 +20,33 @@ namespace SFA.DAS.Admin.Api.UnitTests.Controllers.UserActions
         [Test, MoqAutoData]
         public async Task Then_The_UserAction_Is_Returned(
             string code,
-            GetUserActionByCodeQueryResult queryResult,
+            GetUserActionByCodeResponse response,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] UsersController controller)
+            [Greedy] UserActionsController controller)
         {
             // Arrange
+            var queryResult = new GetUserActionByCodeQueryResult
+            {
+                Id = response.Id,
+                UserId = response.UserId,
+                ActionType = response.ActionType,
+                ActionTime = response.ActionTime,
+                ActionStatus = response.ActionStatus,
+                Uln = response.Uln,
+                FamilyName = response.FamilyName,
+                GivenNames = response.GivenNames,
+                CertificateId = response.CertificateId,
+                CertificateType = response.CertificateType,
+                CourseName = response.CourseName,
+                StandardCode = response.StandardCode,
+                AdminActions = response.AdminActions?.ConvertAll(a => new GetUserActionByCodeQueryResult.AdminActionDetail
+                {
+                    Username = a.Username,
+                    ActionTime = a.ActionTime,
+                    Action = a.Action
+                })
+            };
+
             mediator
                 .Setup(x => x.Send(It.Is<GetUserActionByCodeQuery>(q => q.Code == code), CancellationToken.None))
                 .ReturnsAsync(queryResult);
@@ -34,7 +57,7 @@ namespace SFA.DAS.Admin.Api.UnitTests.Controllers.UserActions
             // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().BeEquivalentTo(queryResult);
+            actual.Value.Should().BeEquivalentTo(response);
 
             mediator.Verify(m => m.Send(It.Is<GetUserActionByCodeQuery>(q => q.Code == code), It.IsAny<CancellationToken>()), Times.Once);
         }
@@ -43,7 +66,7 @@ namespace SFA.DAS.Admin.Api.UnitTests.Controllers.UserActions
         public async Task Then_NotFound_Returned_If_UserAction_Does_Not_Exist(
             string code,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] UsersController controller)
+            [Greedy] UserActionsController controller)
         {
             // Arrange
             mediator
@@ -64,7 +87,7 @@ namespace SFA.DAS.Admin.Api.UnitTests.Controllers.UserActions
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             string code,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] UsersController controller)
+            [Greedy] UserActionsController controller)
         {
             // Arrange
             mediator

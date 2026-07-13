@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="14.1.0" />
-    <PackageReference Include="SFA.DAS.DigitalCertificates.Contracts" Version="1.0.9" />
+    <PackageReference Include="SFA.DAS.DigitalCertificates.Contracts" Version="1.0.11" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />

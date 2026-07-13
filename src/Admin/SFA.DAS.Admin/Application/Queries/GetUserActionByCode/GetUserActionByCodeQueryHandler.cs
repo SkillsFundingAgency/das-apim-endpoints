@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Apim.Shared.Extensions;
 using DigitalCertificatesApiClient = SFA.DAS.DigitalCertificates.Contracts.Client.IDigitalCertificatesApiClient<SFA.DAS.DigitalCertificates.Contracts.Client.DigitalCertificatesApiConfiguration>;
-using GetUserActionByCodeResponse = SFA.DAS.DigitalCertificates.Contracts.ApiResponses.GetUserActionByCodeQueryResult;
+using GetUserActionByCodeResponse = SFA.DAS.DigitalCertificates.Contracts.ApiResponses.GetUserActionByCodeResponse;
 
 namespace SFA.DAS.Admin.Application.Queries.GetUserActionByCode
 {
@@ -28,7 +28,7 @@ namespace SFA.DAS.Admin.Application.Queries.GetUserActionByCode
         public async Task<GetUserActionByCodeQueryResult> Handle(GetUserActionByCodeQuery request, CancellationToken cancellationToken)
         {
             var apiResponse = await _digitalCertificatesApiClient.GetWithResponseCode<GetUserActionByCodeResponse>(
-                new GetUsersUseractionsByCodeApiRequest(request.Code));
+                new GetUserActionsByCodeApiRequest(request.Code));
 
             if (apiResponse?.StatusCode == HttpStatusCode.NotFound)
             {
