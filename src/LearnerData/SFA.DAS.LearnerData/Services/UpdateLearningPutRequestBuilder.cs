@@ -5,7 +5,7 @@ namespace SFA.DAS.LearnerData.Services;
 
 public interface IUpdateLearningPutRequestBuilder
 {
-    UpdateLearningApiPutRequest Build(long ukprn, UpdateLearnerRequest updateLearnerRequest, Guid learningKey);
+    UpdateLearningApiPutRequest Build(long ukprn, UpdateLearnerRequest updateLearnerRequest, Guid learnerKey);
 }
 
 public class UpdateLearningPutRequestBuilder(IUpdateLearningRequestBodyBuilder requestBodyBuilder) : IUpdateLearningPutRequestBuilder

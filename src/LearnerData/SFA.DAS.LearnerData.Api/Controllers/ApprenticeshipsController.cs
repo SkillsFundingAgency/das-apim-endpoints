@@ -138,7 +138,7 @@ public class ApprenticeshipsController(
     /// <returns>All earnings data in the format of an FM36Learner array.</returns>
     [HttpGet]
     [Route("/Learners/providers/{ukprn}/collectionPeriod/{collectionYear}/{collectionPeriod}/fm36data")]
-    public async Task<IActionResult> GetFm36Learners(long ukprn, int collectionYear, byte collectionPeriod, [FromQuery] int? page, [FromQuery] int? pageSize)
+    public async Task<IActionResult> GetFm36Learners_Legacy(long ukprn, int collectionYear, byte collectionPeriod, [FromQuery] int? page, [FromQuery] int? pageSize)
     {
         return await GetFm36Data_Internal(ukprn, collectionYear, collectionPeriod, page, pageSize);
     }
