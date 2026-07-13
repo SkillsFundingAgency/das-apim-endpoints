@@ -119,7 +119,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         await _earningsApiClient.Post(new PostCreateUnapprovedShortCourseLearningRequest(earningsRequest));
 
         var correlationId = Guid.NewGuid();
-        await _messageSession.Publish(MapToLearnerDataEvent(command, onProg, courseDetails.Price, correlationId));
+        await _messageSession.Publish(MapToLearnerDataEvent(command, onProg, resolvedOnProg, courseDetails.Price, correlationId));
 
         _logger.LogInformation("LearnerDataEvent published for Learning {LearningKey}", learningResponse.LearningKey);
     }
@@ -228,7 +228,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         };
     }
 
-    private static LearnerDataEvent MapToLearnerDataEvent(UpdateShortCourseLearningCommand command, ShortCourseOnProgramme onProg, decimal price, Guid correlationId)
+    private static LearnerDataEvent MapToLearnerDataEvent(UpdateShortCourseLearningCommand command, ShortCourseOnProgramme onProg, LearningInnerOnProgramme resolvedOnProg, decimal price, Guid correlationId)
     {
         return new LearnerDataEvent
         {
@@ -238,8 +238,8 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             LastName = command.Request.Learner.LastName,
             Email = command.Request.Learner.Email,
             DoB = command.Request.Learner.Dob,
-            StartDate = onProg.StartDate,
-            PlannedEndDate = onProg.ExpectedEndDate,
+            StartDate = resolvedOnProg.StartDate,
+            PlannedEndDate = resolvedOnProg.ExpectedEndDate,
             PercentageLearningToBeDelivered = 100,
             EpaoPrice = 0,
             TrainingPrice = (int)price,
@@ -248,7 +248,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             AgreementId = onProg.AgreementId,
             StandardCode = 0,
             ConsumerReference = command.Request.ConsumerReference,
-            LarsCode = onProg.CourseCode,
+            LarsCode = resolvedOnProg.CourseCode,
             CorrelationId = correlationId,
             ReceivedDate = DateTime.UtcNow,
             LearningType = LearningType.ApprenticeshipUnit
