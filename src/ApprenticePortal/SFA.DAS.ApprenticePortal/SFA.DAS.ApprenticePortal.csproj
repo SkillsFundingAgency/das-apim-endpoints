@@ -5,9 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="MediatR" />
-	<PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
-    <PackageReference Include="SFA.DAS.Common.Domain" />
+	<PackageReference Include="MediatR" Version="12.5.0" />
+	<PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="10.0.5" />
+    <PackageReference Include="SFA.DAS.Common.Domain" Version="1.4.308" />
   </ItemGroup>
 
   <ItemGroup>

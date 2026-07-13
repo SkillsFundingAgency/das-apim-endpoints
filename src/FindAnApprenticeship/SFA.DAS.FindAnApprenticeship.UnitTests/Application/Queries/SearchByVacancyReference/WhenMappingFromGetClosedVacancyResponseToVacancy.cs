@@ -62,7 +62,7 @@ public class WhenMappingFromGetClosedVacancyResponseToVacancy
         actual.ProviderContactName.Should().Be(source.ProviderContact?.Name);
         actual.ProviderContactPhone.Should().Be(source.ProviderContact?.Phone);
         actual.ProviderName.Should().Be(source.TrainingProvider.Name);
-        actual.Qualifications.Should().BeEquivalentTo(source.Qualifications, options => options.Excluding(x => x.Weighting));
+        actual.Qualifications.Should().BeEquivalentTo(source.Qualifications, options => options.Excluding(x => x.Weighting).Excluding(c=>c.OtherQualificationName));
         actual.Skills.Should().BeEquivalentTo(source.Skills);
         actual.StartDate.Should().Be(source.StartDate);
         actual.ThingsToConsider.Should().Be(source.ThingsToConsider);
@@ -76,5 +76,27 @@ public class WhenMappingFromGetClosedVacancyResponseToVacancy
         actual.WageUnit.Should().Be((int)source.Wage.DurationUnit);
         actual.WageText.Should().Be(source.Wage.ToDisplayText(source.StartDate));
         actual.WorkingWeek.Should().Be(source.Wage.WorkingWeekDescription);
+    }
+
+    [Test, AutoData]
+    public void Then_Other_Qualification_Types_Are_Mapped_To_Other_QualificationTypeName(GetClosedVacancyResponse source)
+    {
+        source.Qualifications = new List<GetClosedVacancyResponse.Qualification>
+        {
+            new()
+            {
+                Grade = "1",
+                OtherQualificationName = "OtherName",
+                QualificationType = "OtHer",
+                Subject = "OtherSubject",
+                Weighting = 0
+            }
+        };
+        
+        // act
+        var actual = GetApprenticeshipVacancyQueryResult.Vacancy.FromIVacancy(source);
+        
+        actual.Qualifications.Select(c=>c.QualificationType == "OtherName").ToList().TrueForAll(c=>c).Should().BeTrue();
+        
     }
 }

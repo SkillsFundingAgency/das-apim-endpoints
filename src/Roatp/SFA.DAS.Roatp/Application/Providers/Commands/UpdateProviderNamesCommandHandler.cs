@@ -1,139 +1,104 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Roatp.Domain.Models;
 using SFA.DAS.Roatp.Infrastructure;
-using SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp;
-using SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp;
 
 namespace SFA.DAS.Roatp.Application.Providers.Commands;
 
-public class
-    UpdateProviderNamesCommandHandler : IRequestHandler<UpdateProviderNamesCommand>
+public class UpdateProviderNamesCommandHandler : IRequestHandler<UpdateProviderNamesCommand>
 {
     private readonly IRoatpApiClient _roatpApiClient;
-    private readonly HttpClient _httpClient;
-    private readonly IUkrlpSoapSerializer _ukrlpSoapSerializer;
-    private readonly UkrlpApiConfiguration _ukrlpConfiguration;
     private readonly ILogger<UpdateProviderNamesCommandHandler> _logger;
-    private const int MaximumRecords = 500;
 
-    public UpdateProviderNamesCommandHandler(IRoatpApiClient roatpApiClient, ILogger<UpdateProviderNamesCommandHandler> logger,
-        IUkrlpSoapSerializer ukrlpSoapSerializer, UkrlpApiConfiguration ukrlpConfiguration, HttpClient httpClient)
+    public UpdateProviderNamesCommandHandler(IRoatpApiClient roatpApiClient, ILogger<UpdateProviderNamesCommandHandler> logger)
     {
         _roatpApiClient = roatpApiClient;
-        _httpClient = httpClient;
-        _ukrlpSoapSerializer = ukrlpSoapSerializer;
-        _ukrlpConfiguration = ukrlpConfiguration;
         _logger = logger;
     }
 
-    public async Task Handle(UpdateProviderNamesCommand command,
-        CancellationToken cancellationToken)
+    public async Task Handle(UpdateProviderNamesCommand command, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Getting organisations");
-        var organisations = await _roatpApiClient.GetOrganisations();
+        GetOrganisationsResponse result = await _roatpApiClient.GetOrganisations(cancellationToken);
+        Dictionary<int, OrganisationResponse> organisations = result.Organisations.ToDictionary(x => x.Ukprn);
 
-        List<long> ukprns = organisations.Organisations.Select(x => (long)x.Ukprn).ToList();
+        IEnumerable<int> ukprns = result.Organisations.Select(x => x.Ukprn);
 
         _logger.LogInformation("Getting Ukrlp data");
 
-        var chunks = ukprns.Chunk(MaximumRecords);
+        const int MaximumUkprnsPerRequest = 100;
+        var chunks = ukprns.Chunk(MaximumUkprnsPerRequest);
 
-        foreach (var batch in chunks)
+        var sharedBatchNumber = 0;
+        var chunkCount = chunks.Count();
+        var totalProvidersUpdated = 0;
+
+        var parallelOptions = new ParallelOptions
         {
-            var ukprnResponse = await GetUkrlpResponse(batch.ToList());
+            MaxDegreeOfParallelism = 4,
+            CancellationToken = cancellationToken
+        };
 
-            if (!ukprnResponse.Success)
+        await Parallel.ForEachAsync(chunks, parallelOptions, async (batch, ct) =>
+        {
+            int currentBatch = Interlocked.Increment(ref sharedBatchNumber);
+            _logger.LogInformation("Processing batch of ukprns: {BatchNumber} of {TotalBatches}", currentBatch, chunkCount);
+
+            UkrlpProvidersResponse ukprnResponse = await _roatpApiClient.GetProvidersDataFromUkrlp(null, batch, ct);
+            var count = await ProcessNameUpdates(ukprnResponse, organisations, ct);
+
+            _logger.LogInformation("Updated {Count} providers in {BatchNumber}", count, currentBatch);
+            Interlocked.Add(ref totalProvidersUpdated, count);
+        });
+
+        _logger.LogInformation("Total providers updated {TotalProvidersUpdated}.", totalProvidersUpdated);
+    }
+
+    private async Task<int> ProcessNameUpdates(UkrlpProvidersResponse ukrlpData, Dictionary<int, OrganisationResponse> organisationsLookup, CancellationToken cancellationToken)
+    {
+        List<(int Ukprn, UpdateOrganisationModel Model)> updatesToSend = [];
+        foreach (var ukrlp in ukrlpData.Providers)
+        {
+            var parsedUkprn = ukrlp.Ukprn;
+
+            if (!organisationsLookup.TryGetValue(ukrlp.Ukprn, out var provider))
             {
-                _logger.LogWarning("The response from UKRLP was failure");
-                return;
+                continue;
             }
 
-            await ProcessNameUpdates(ukprnResponse.Results, organisations);
-        }
-    }
+            var hasNameChanged = !string.Equals(provider.LegalName, ukrlp.LegalName, StringComparison.OrdinalIgnoreCase)
+                || !string.Equals(provider.TradingName, ukrlp.TradingName, StringComparison.OrdinalIgnoreCase);
 
-
-    private async Task<GetUkrlpDataQueryResponse> GetUkrlpResponse(List<long> ukprnsToCheck)
-    {
-        var request = _ukrlpSoapSerializer.BuildGetAllUkrlpsFromUkprnsSoapRequest(ukprnsToCheck,
-            _ukrlpConfiguration.StakeholderId, _ukrlpConfiguration.QueryId);
-
-        var requestMessage =
-            new HttpRequestMessage(HttpMethod.Post, _ukrlpConfiguration.ApiBaseAddress)
+            if (hasNameChanged)
             {
-                Content = new StringContent(request, Encoding.UTF8, "text/xml")
-            };
+                _logger.LogInformation("Organisation with ukprn {Ukprn} require name updated", provider.Ukprn);
 
-        var responseMessage = await _httpClient.SendAsync(requestMessage, CancellationToken.None);
-
-        if (!responseMessage.IsSuccessStatusCode)
-        {
-            var failureResponse = new GetUkrlpDataQueryResponse
-            {
-                Success = false,
-                Results = new List<ProviderAddress>()
-            };
-            return failureResponse;
-        }
-
-        var soapXml = await responseMessage.Content.ReadAsStringAsync(CancellationToken.None);
-        var matchingProviderRecords = _ukrlpSoapSerializer.DeserialiseMatchingProviderRecordsResponse(soapXml);
-
-        if (matchingProviderRecords != null)
-        {
-            var result = matchingProviderRecords.Select(matchingProvider => (ProviderAddress)matchingProvider)
-                .ToList();
-
-            var resultsFound = new GetUkrlpDataQueryResponse
-            {
-                Success = true,
-                Results = result
-            };
-            return resultsFound;
-        }
-
-        var noResultsFound = new GetUkrlpDataQueryResponse
-        {
-            Success = true,
-            Results = new List<ProviderAddress>()
-        };
-        return noResultsFound;
-    }
-
-    private async Task ProcessNameUpdates(List<ProviderAddress> ukrlpData, GetOrganisationsQueryResult organisations)
-    {
-        foreach (var ukrlp in ukrlpData)
-        {
-            var parsedUkprn = int.Parse(ukrlp.Ukprn);
-
-            var provider = organisations.Organisations.FirstOrDefault(x => x.Ukprn == parsedUkprn);
-
-            if (provider != null &&
-                (!string.Equals(provider.LegalName, ukrlp.ProviderName) ||
-                 !string.Equals(provider.TradingName ?? "", ukrlp.TradingName ?? "")))
-            {
-                _logger.LogInformation("Updating organisation name for ukprn {Ukprn}", provider.Ukprn);
-
-                UpdateOrganisationModel model = new UpdateOrganisationModel
+                UpdateOrganisationModel model = new()
                 {
                     ProviderType = provider.ProviderType,
                     OrganisationTypeId = provider.OrganisationTypeId,
                     CharityNumber = provider.CharityNumber,
                     CompanyNumber = provider.CompanyNumber,
-                    LegalName = ukrlp.ProviderName ?? "",
-                    TradingName = ukrlp.TradingName ?? "",
+                    LegalName = ukrlp.LegalName,
+                    TradingName = ukrlp.TradingName,
                     RequestingUserId = "System"
                 };
 
-                await _roatpApiClient.PutOrganisation(parsedUkprn, model);
+                updatesToSend.Add((parsedUkprn, model));
             }
         }
+
+        const int maxConcurrentRequests = 10;
+        foreach (var batch in updatesToSend.Chunk(maxConcurrentRequests))
+        {
+            IEnumerable<Task> tasks = batch.Select(update => _roatpApiClient.PutOrganisation(update.Ukprn, update.Model, cancellationToken));
+            await Task.WhenAll(tasks);
+        }
+        return updatesToSend.Count;
     }
 }

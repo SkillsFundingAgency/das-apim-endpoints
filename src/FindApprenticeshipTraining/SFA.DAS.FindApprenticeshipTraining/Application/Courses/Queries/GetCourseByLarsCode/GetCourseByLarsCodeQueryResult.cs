@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.Domain;
 using SFA.DAS.SharedOuterApi.Types.InnerApi;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
 
@@ -26,11 +26,12 @@ public sealed class GetCourseByLarsCodeQueryResult
     public string StandardPageUrl { get; set; }
     public List<Ksb> Ksbs { get; set; }
     public CourseType CourseType { get; set; }
-    public LearningType ApprenticeshipType { get; set; }
-    public List<RelatedOccupation> RelatedOccupations { get; set; }
+    public LearningType LearningType { get; set; }
+    public bool IsActiveAvailable { get; set; }
+    public List<RelatedOccupation> RelatedOccupations { get; set; } = [];
     public int IncentivePayment { get; set; }
 
-    public static implicit operator GetCourseByLarsCodeQueryResult(StandardDetailsLookupResponse source)
+    public static implicit operator GetCourseByLarsCodeQueryResult(GetCourseLookupResponse source)
     {
         return new()
         {
@@ -46,7 +47,8 @@ public sealed class GetCourseByLarsCodeQueryResult
             TypicalJobTitles = source.TypicalJobTitles,
             StandardPageUrl = source.StandardPageUrl,
             CourseType = source.CourseType,
-            ApprenticeshipType = source.LearningType,
+            LearningType = source.LearningType,
+            IsActiveAvailable = source.IsActiveAvailable,
             RelatedOccupations = source.RelatedOccupations.Select(c => (RelatedOccupation)c).ToList()
         };
     }

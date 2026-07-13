@@ -1,7 +1,6 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using SFA.DAS.EmployerAan.Application.User.GetUserAccounts;
-using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.EmployerAan.UnitTests.Application.User.GetUserAccounts;

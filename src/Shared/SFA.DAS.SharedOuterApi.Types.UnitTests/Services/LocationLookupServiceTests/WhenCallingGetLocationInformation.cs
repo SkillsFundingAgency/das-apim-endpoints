@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Text.Encodings.Web;
-using System.Web;
-using SFA.DAS.Apim.Shared.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Services;
+using System.Collections.Generic;
+using System.Net;
+using System.Text.Encodings.Web;
+using System.Web;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests;
 
@@ -150,7 +152,7 @@ public class WhenCallingGetLocationInformation
     [MoqInlineAutoData("CV11AA")]
     public async Task Then_If_There_Is_An_Postcode_Supplied_It_Is_Searched_And_Returned(
         string postcode,
-        GetLocationByFullPostcodeRequestV2Response response,
+        GetLookupPostcodeResponse response,
         [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
         LocationLookupService service)
     {
@@ -158,20 +160,21 @@ public class WhenCallingGetLocationInformation
         var location = $"{postcode}";
         response.Outcode = "";
         response.Postcode = postcode;
-        
-        GetLocationByFullPostcodeRequestV2? capturedRequest = null;
+
+        var apiResponse = new ApiResponse<GetLookupPostcodeResponse>(response, HttpStatusCode.OK, string.Empty);
+        GetLookupPostcodeRequest? capturedRequest = null;
         mockLocationApiClient
-            .Setup(x => x.Get<GetLocationByFullPostcodeRequestV2Response>(It.IsAny<GetLocationByFullPostcodeRequestV2>()))
-            .Callback<IGetApiRequest>(x => capturedRequest = x as GetLocationByFullPostcodeRequestV2)
-            .ReturnsAsync(response);
+            .Setup(x => x.GetWithResponseCode<GetLookupPostcodeResponse>(It.IsAny<GetLookupPostcodeRequest>()))
+            .Callback<IGetApiRequest>(x => capturedRequest = x as GetLookupPostcodeRequest)
+            .ReturnsAsync(apiResponse);
 
         // assert
         var result = await service.GetLocationInformation(location, 0, 0);
-        
+
         // assert
         capturedRequest.Should().NotBeNull();
         capturedRequest.GetUrl.Should().Be($"api/postcodes?postcode={UrlEncoder.Default.Encode(postcode)}");
-        
+
         result.Name.Should().Be(location);
         result.GeoPoint[0].Should().Be(response.Latitude);
         result.GeoPoint[1].Should().Be(response.Longitude);
@@ -180,7 +183,7 @@ public class WhenCallingGetLocationInformation
 
     [Test, MoqAutoData]
     public async Task Then_If_There_Is_A_Postcode_And_Include_District_Name_Is_Included_Option_Then_It_Is_Returned_As_Display_Name(
-        GetLocationByFullPostcodeRequestV2Response response,
+        GetLookupPostcodeResponse response,
         [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
         LocationLookupService service)
     {
@@ -190,19 +193,20 @@ public class WhenCallingGetLocationInformation
         response.Outcode = null;
         var location = $"{response.Postcode}, {response.DistrictName}";
 
-        GetLocationByFullPostcodeRequestV2? capturedRequest = null;
+        var apiResponse = new ApiResponse<GetLookupPostcodeResponse>(response, HttpStatusCode.OK, string.Empty);
+        GetLookupPostcodeRequest? capturedRequest = null;
         mockLocationApiClient
-            .Setup(x => x.Get<GetLocationByFullPostcodeRequestV2Response>(It.IsAny<GetLocationByFullPostcodeRequestV2>()))
-            .Callback<IGetApiRequest>(x => capturedRequest = x as GetLocationByFullPostcodeRequestV2)
-            .ReturnsAsync(response);
-        
+            .Setup(x => x.GetWithResponseCode<GetLookupPostcodeResponse>(It.IsAny<GetLookupPostcodeRequest>()))
+            .Callback<IGetApiRequest>(x => capturedRequest = x as GetLookupPostcodeRequest)
+            .ReturnsAsync(apiResponse);
+
         // act
         var result = await service.GetLocationInformation(postcode, 0, 0, true);
 
         // assert
         capturedRequest.Should().NotBeNull();
         capturedRequest.GetUrl.Should().Be("api/postcodes?postcode=CV1%201AA");
-        
+
         result.Name.Should().Be(location);
         result.GeoPoint[0].Should().Be(response.Latitude);
         result.GeoPoint[1].Should().Be(response.Longitude);

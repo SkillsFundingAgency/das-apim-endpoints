@@ -48,7 +48,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
         var currentAcademicYear = await GetCurrentAcademicYear(request);
         var (learnings, totalLearners) = await GetLearnings(request);
 
-        var sldLearners = await _distributedCache.GetLearners(request.Ukprn, learnings.Select(x => x.Uln), cancellationToken);
+        var sldLearners = await _distributedCache.GetLearners<UpdateLearnerRequest>(request.Ukprn, learnings.Select(x => x.Uln), cancellationToken);
 
         var earnings = await GetRelatedEarnings(request, learnings);
         
@@ -152,6 +152,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
             }
 
             _logger.LogInformation($"Processing learning with key: {learning.Key}");
+
             joinedApprenticeships.Add(new JoinedLearnerData(learning, matchingEarnings, matchingSld, currentAcademicYear.GetShortAcademicYear()));
         }
 

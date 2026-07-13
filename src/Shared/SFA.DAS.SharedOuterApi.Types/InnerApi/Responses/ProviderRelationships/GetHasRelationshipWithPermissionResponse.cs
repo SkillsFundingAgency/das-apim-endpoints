@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ProviderRelationships;
+
 public sealed class GetHasRelationshipWithPermissionResponse
 {
     [JsonPropertyName(nameof(HasPermission))]

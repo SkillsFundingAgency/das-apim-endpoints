@@ -1,4 +1,4 @@
-﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.LearnerData.Shared;
 
 namespace SFA.DAS.LearnerData.Requests.LearningInner
@@ -32,11 +32,13 @@ namespace SFA.DAS.LearnerData.Requests.LearningInner
         public string? EmailAddress { get; set; }
         public DateTime? CompletionDate { get; set; }
         public DateTime DateOfBirth { get; set; }
+        public long Uln { get; set; }
         public CareDetails Care { get; set; }
     }
 
     public class OnProgrammeDetails
     {
+        public DateTime? AchievementDate { get; set; }
         public DateTime ExpectedEndDate { get; set; }
         public List<Cost> Costs { get; set; }
         public DateTime? PauseDate { get; set; }
@@ -59,7 +61,7 @@ namespace SFA.DAS.LearnerData.Requests.LearningInner
         public DateTime? CompletionDate { get; set; }
         public DateTime? WithdrawalDate { get; set; }
         public DateTime? PauseDate { get; set; }
-        public int? PriorLearningPercentage { get; set; }
+        public decimal? CombinedFundingAdjustmentPercentage { get; set; }
         public decimal Amount { get; set; }
         public List<BreakInLearning> BreaksInLearning { get; set; }
     }

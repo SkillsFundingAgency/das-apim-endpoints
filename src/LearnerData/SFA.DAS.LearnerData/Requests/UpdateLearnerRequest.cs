@@ -45,6 +45,7 @@ public class OnProgrammeRequestDetails
     public Care Care { get; set; }
     public int AimSequenceNumber { get; set; }
     public string LearnAimRef { get; set; }
+    public DateTime? AchievementDate { get; set; }
 }
 
 public class CostDetails
@@ -66,7 +67,8 @@ public class MathsAndEnglish
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
     public DateTime? PauseDate { get; set; }
-    public int? PriorLearningPercentage { get; set; }
+    public int? PriorLearningAdjustment { get; set; }
+    public int? OtherFundingAdjustment { get; set; }
     public int? AimSequenceNumber { get; set; }
     public List<LearningSupport> LearningSupport { get; set; }
 }

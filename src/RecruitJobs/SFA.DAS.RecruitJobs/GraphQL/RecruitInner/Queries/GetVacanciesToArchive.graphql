@@ -1,0 +1,13 @@
+query GetVacanciesToArchive($pointInTime: DateTime) {
+  vacancies(
+    where: {
+      deletedDate: { eq: null }
+      status: { eq: CLOSED }
+      closedDate: { lt: $pointInTime }
+    }
+  ) {
+    id
+    vacancyReference
+    closingDate
+  }
+}

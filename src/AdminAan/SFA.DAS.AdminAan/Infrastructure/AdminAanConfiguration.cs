@@ -2,6 +2,6 @@
 {
     public class AdminAanConfiguration
     {
-        public string ApimEndpointsRedisConnectionString { get; set; }
+        public string ApimEndpointsRedisConnectionString { get; set; } = string.Empty;
     }
 }

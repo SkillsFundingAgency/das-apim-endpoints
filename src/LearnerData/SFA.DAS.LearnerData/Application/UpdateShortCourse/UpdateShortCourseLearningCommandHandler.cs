@@ -2,16 +2,20 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.LearnerData.Configuration;
+using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Events;
-using SFA.DAS.LearnerData.Services;
+using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
-using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Services;
+using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using EarningsOnProgramme = SFA.DAS.LearnerData.Requests.EarningsInner.OnProgramme;
+using SharedLearningType = SFA.DAS.SharedOuterApi.Types.Constants.LearningType;
 
 namespace SFA.DAS.LearnerData.Application.UpdateShortCourse;
 
@@ -20,145 +24,220 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
     private readonly ILogger<UpdateShortCourseLearningCommandHandler> _logger;
     private readonly ILearningApiClient<LearningApiConfiguration> _learningApiClient;
     private readonly IEarningsApiClient<EarningsApiConfiguration> _earningsApiClient;
-    private readonly ICalculateGrowthAndSkillsPaymentsEventBuilder _calculateGrowthAndSkillsPaymentsEventBuilder;
+    private readonly IUpdateShortCourseOnProgrammeEarningPutRequestBuilder _updateShortCourseOnProgrammeEarningPutRequestBuilder;
+    private readonly IShortCourseLookupService _shortCourseLookupService;
     private readonly IMessageSession _messageSession;
-    private readonly PaymentsConfiguration _paymentsConfiguration;
+    private readonly ILearnerDataCacheService _learnerDataCacheService;
 
     public UpdateShortCourseLearningCommandHandler(
         ILogger<UpdateShortCourseLearningCommandHandler> logger,
         ILearningApiClient<LearningApiConfiguration> learningApiClient,
         IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
-        ICalculateGrowthAndSkillsPaymentsEventBuilder calculateGrowthAndSkillsPaymentsEventBuilder,
+        IUpdateShortCourseOnProgrammeEarningPutRequestBuilder updateShortCourseOnProgrammeEarningPutRequestBuilder,
+        IShortCourseLookupService shortCourseLookupService,
         IMessageSession messageSession,
-        PaymentsConfiguration paymentsConfiguration)
+        ILearnerDataCacheService learnerDataCacheService)
     {
         _logger = logger;
         _learningApiClient = learningApiClient;
         _earningsApiClient = earningsApiClient;
-        _calculateGrowthAndSkillsPaymentsEventBuilder = calculateGrowthAndSkillsPaymentsEventBuilder;
+        _updateShortCourseOnProgrammeEarningPutRequestBuilder = updateShortCourseOnProgrammeEarningPutRequestBuilder;
+        _shortCourseLookupService = shortCourseLookupService;
         _messageSession = messageSession;
-        _paymentsConfiguration = paymentsConfiguration;
+        _learnerDataCacheService = learnerDataCacheService;
     }
 
     public async Task Handle(UpdateShortCourseLearningCommand command, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Handling UpdateShortCourseLearningCommand for Ukprn: {Ukprn}", command.Ukprn);
 
-        var learningRequest = MapToLearningRequest(command);
+        await _learnerDataCacheService.StoreLearner(command.Request, command.Ukprn, cancellationToken);
 
-        var learningResponse = await _learningApiClient.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningPutResponse>(learningRequest);
+        var courseDetails = await Task.WhenAll(command.Request.Delivery.OnProgramme
+            .Select(onProg => _shortCourseLookupService.GetCourseDetails(onProg.CourseCode, onProg.StartDate)));
+
+        var learningRequest = BuildLearningRequest(command, courseDetails);
+
+        var learningResponse = await _learningApiClient.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(learningRequest);
 
         if (!learningResponse.StatusCode.IsSuccessStatusCode())
         {
-            _logger.LogError("Failed to update shortcourse learning with key {LearningKey}. Status code: {StatusCode}",
-                command.LearningKey, learningResponse.StatusCode);
-            throw new Exception($"Failed to update shortcourse learning with key {command.LearningKey}. Status code: {learningResponse.StatusCode}.");
+            _logger.LogError("Failed to update short course learner with key {LearnerKey}. Status: {StatusCode}",
+                command.LearnerKey, learningResponse.StatusCode);
+            throw new Exception($"Failed to update short course learner {command.LearnerKey}. Status: {learningResponse.StatusCode}.");
         }
 
-        _logger.LogInformation("Shortcourse Learning with key {LearningKey} updated successfully. Changes: {@Changes}",
-            command.LearningKey, string.Join(", ", learningResponse.Body.Changes));
-
-        ShortCourseEarningsResponse earningsResponse;
-
-        if (EarningsUpdateRequired(learningResponse.Body))
+        foreach (var (onProg, result, details) in command.Request.Delivery.OnProgramme.Zip(learningResponse.Body.Results, courseDetails))
         {
-            var earningRequest = MapToEarningRequest(command);
-            var response = await _earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(earningRequest);
-            earningsResponse = response.Body;
+            if (result.IsIgnored)
+            {
+                _logger.LogInformation("Ignoring OnProgramme item for CourseCode {CourseCode}", result.CourseCode);
+                continue;
+            }
+            
+            if (result.IsNewLearning || result.IsNewEpisode)
+            {
+                await HandleNewLearning(command, onProg, result, details);
+            }
+            else
+            {
+                _logger.LogInformation("Short course learner {LearnerKey} / {CourseCode} updated. Changes: {Changes}",
+                    command.LearnerKey, result.CourseCode, string.Join(", ", result.Changes));
+
+                await HandleExistingLearning(command, onProg, result);
+            }
+        }
+
+        foreach (var removedResult in learningResponse.Body.Results.Where(r => r.IsRemoved))
+        {
+            await HandleRemovedLearning(command, removedResult);
+        }
+    }
+
+    private async Task HandleRemovedLearning(UpdateShortCourseLearningCommand command, UpdateShortCourseLearningPutResponse removedResult)
+    {
+        _logger.LogInformation("Removing omitted Learning {LearningKey} / {CourseCode} from Earnings for LearnerKey {LearnerKey}",
+            removedResult.LearningKey, removedResult.CourseCode, command.LearnerKey);
+
+        var earningsRequest = new DeleteShortCourseEarningsRequest(removedResult.LearningKey, removedResult.UpdatedEpisodeKey, command.LearnerKey, command.Request.Learner.LearnerRef);
+        var earningsResponse = await _earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest, true);
+
+        if (!earningsResponse.StatusCode.IsSuccessStatusCode())
+        {
+            _logger.LogError("Failed to delete earnings for omitted Learning {LearningKey}. Status: {StatusCode}",
+                removedResult.LearningKey, earningsResponse.StatusCode);
+            throw new Exception($"Failed to delete earnings for omitted Learning {removedResult.LearningKey}. Status: {earningsResponse.StatusCode}.");
+        }
+
+        _logger.LogInformation("Earnings removed for omitted Learning {LearningKey}", removedResult.LearningKey);
+    }
+
+    private async Task HandleNewLearning(UpdateShortCourseLearningCommand command, ShortCourseOnProgramme onProg, UpdateShortCourseLearningPutResponse learningResponse, ShortCourseLookupResult courseDetails)
+    {
+        _logger.LogInformation("New {LearningOrEpisode} created for learner {LearnerKey} / course {CourseCode}. LearningKey: {LearningKey}",
+            learningResponse.IsNewEpisode ? "Episode" : "Learning", command.LearnerKey, onProg.CourseCode, learningResponse.LearningKey);
+
+        var earningsRequest = BuildCreateEarningsRequest(command, onProg, learningResponse, courseDetails.Price, courseDetails.LearningType);
+        await _earningsApiClient.Post(new PostCreateUnapprovedShortCourseLearningRequest(earningsRequest));
+
+        var correlationId = Guid.NewGuid();
+        await _messageSession.Publish(MapToLearnerDataEvent(command, onProg, courseDetails.Price, correlationId));
+
+        _logger.LogInformation("LearnerDataEvent published for Learning {LearningKey}", learningResponse.LearningKey);
+    }
+
+    private async Task HandleExistingLearning(UpdateShortCourseLearningCommand command, ShortCourseOnProgramme onProg, UpdateShortCourseLearningPutResponse learningResponse)
+    {
+        if (EarningsUpdateRequired(learningResponse))
+        {
+            var earningBody = _updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(onProg, learningResponse.LearnerKey, command.Request.Learner.LearnerRef);
+            var earningRequest = new UpdateShortCourseOnProgrammeEarningPutRequest(learningResponse.LearningKey, learningResponse.UpdatedEpisodeKey, earningBody);
+            await _earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(earningRequest);
         }
         else
         {
-            _logger.LogInformation("No changes requiring earnings update for shortcourse learning {LearningKey}", command.LearningKey);
-            earningsResponse = await _earningsApiClient.Get<ShortCourseEarningGetResponse>(new GetShortCourseEarningsRequest(command.Ukprn, command.LearningKey));
+            _logger.LogInformation("No earnings update required for {LearnerKey} / {CourseCode}", command.LearnerKey, onProg.CourseCode);
         }
-
-        await PublishEvent(command.Ukprn, learningResponse.Body, earningsResponse);
     }
 
-    private UpdateShortCourseLearningPutRequest MapToLearningRequest(UpdateShortCourseLearningCommand command)
+    private UpdateShortCourseLearningPutRequest BuildLearningRequest(UpdateShortCourseLearningCommand command, IReadOnlyList<ShortCourseLookupResult> courseDetails)
     {
-        if (command.Request.Delivery.OnProgramme.Count > 1)
-        {
-            _logger.LogWarning("Multiple OnProgramme elements supplied for LearningKey: {LearningKey}. Element with earliest StartDate will be processed; subsequent will be ignored", command.LearningKey);
-        }
-
-        var currentOnProgramme = command.Request.Delivery.OnProgramme.MinBy(x=>x.StartDate);
-
-        if (currentOnProgramme == null)
-        {
-            _logger.LogWarning("No OnProgramme data found for LearningKey: {LearningKey}", command.LearningKey);
-            throw new InvalidOperationException($"No OnProgramme data found for LearningKey: {command.LearningKey}");
-        }
-
-        var milestones = currentOnProgramme.Milestones.Select(sourceMilestone =>
-            Enum.Parse<Milestone>(sourceMilestone.ToString())
-        ).ToList();
-
-        if (currentOnProgramme.CompletionDate.HasValue && !currentOnProgramme.Milestones.Contains(Milestone.LearningComplete))
-            milestones.Add(Milestone.LearningComplete);
-
         var body = new UpdateShortCourseLearningRequestBody
         {
+            Ukprn = command.Ukprn,
+            AcademicYear = command.AcademicYear,
             LearnerUpdateDetails = new ShortCourseLearnerUpdateDetails
             {
                 LearnerRef = command.Request.Learner.LearnerRef
             },
-            OnProgramme = new ShortCourseOnProgrammeUpdateDetails
+            OnProgramme = command.Request.Delivery.OnProgramme.Select((onProg, i) =>
             {
-                Ukprn = command.Ukprn,
-                ExpectedEndDate = currentOnProgramme.ExpectedEndDate,
-                CompletionDate = currentOnProgramme.CompletionDate,
-                WithdrawalDate = currentOnProgramme.WithdrawalDate,
-                Milestones = milestones
-            }
+                var milestones = onProg.Milestones.Select(m => Enum.Parse<Milestone>(m.ToString())).ToList();
+                if (onProg.CompletionDate.HasValue && !onProg.Milestones.Contains(Milestone.LearningComplete))
+                    milestones.Add(Milestone.LearningComplete);
+
+                return new ShortCourseOnProgrammeUpdateDetails
+                {
+                    Ukprn = command.Ukprn,
+                    CourseCode = onProg.CourseCode,
+                    StartDate = onProg.StartDate,
+                    ExpectedEndDate = onProg.ExpectedEndDate,
+                    CompletionDate = onProg.CompletionDate,
+                    WithdrawalDate = onProg.WithdrawalDate,
+                    WithdrawalReasonCode = onProg.WithdrawalReasonCode,
+                    Milestones = milestones,
+                    Price = courseDetails[i].Price,
+                    LearningType = courseDetails[i].LearningType
+                };
+            }).ToList()
         };
 
-        return new UpdateShortCourseLearningPutRequest(command.LearningKey, body);
+        return new UpdateShortCourseLearningPutRequest(command.LearnerKey, body);
     }
 
-    private UpdateShortCourseOnProgrammeEarningPutRequest MapToEarningRequest(UpdateShortCourseLearningCommand command)
+    private CreateUnapprovedShortCourseLearningRequest BuildCreateEarningsRequest(
+        UpdateShortCourseLearningCommand command,
+        ShortCourseOnProgramme onProg,
+        UpdateShortCourseLearningPutResponse learningResponse,
+        decimal price,
+        SharedLearningType learningType)
     {
-        var currentOnProgramme = command.Request.Delivery.OnProgramme.MaxBy(x => x.StartDate);
+        var milestones = onProg.Milestones.Select(m =>
+            m == Milestone.LearningComplete ? Milestone.LearningComplete : Milestone.ThirtyPercentLearningComplete).ToList();
 
-        if (currentOnProgramme == null)
-        {
-            _logger.LogWarning("No OnProgramme data found for LearningKey: {LearningKey}", command.LearningKey);
-            throw new InvalidOperationException($"No OnProgramme data found for LearningKey: {command.LearningKey}");
-        }
-
-        var milestones = currentOnProgramme.Milestones.Select(sourceMilestone =>
-            Enum.Parse<Milestone>(sourceMilestone.ToString())
-        ).ToList();
-
-        if (currentOnProgramme.CompletionDate.HasValue && !currentOnProgramme.Milestones.Contains(Milestone.LearningComplete))
+        if (onProg.CompletionDate.HasValue && !onProg.Milestones.Contains(Milestone.LearningComplete))
             milestones.Add(Milestone.LearningComplete);
 
-        var body = new UpdateShortCourseOnProgrammeRequestBody
+        return new CreateUnapprovedShortCourseLearningRequest
         {
-            WithdrawalDate = currentOnProgramme.WithdrawalDate,
-            CompletionDate = currentOnProgramme.CompletionDate,
-            Milestones = milestones
+            LearningKey = learningResponse.LearningKey,
+            EpisodeKey = learningResponse.UpdatedEpisodeKey,
+            Learner = new Learner
+            {
+                DateOfBirth = command.Request.Learner.Dob,
+                Uln = command.Request.Learner.Uln.ToString()
+            },
+            LearningSupport = onProg.LearningSupport,
+            OnProgramme = new EarningsOnProgramme
+            {
+                CourseCode = onProg.CourseCode,
+                Ukprn = command.Ukprn,
+                StartDate = onProg.StartDate,
+                ExpectedEndDate = onProg.ExpectedEndDate,
+                CompletionDate = onProg.CompletionDate,
+                WithdrawalDate = onProg.WithdrawalDate,
+                Milestones = milestones,
+                TotalPrice = price,
+                LearningType = learningType
+            }
         };
-
-        return new UpdateShortCourseOnProgrammeEarningPutRequest(command.LearningKey, body);
     }
 
-    private async Task PublishEvent(long ukprn, UpdateShortCourseLearningPutResponse learningResponse, ShortCourseEarningsResponse earningsResponse)
+    private static LearnerDataEvent MapToLearnerDataEvent(UpdateShortCourseLearningCommand command, ShortCourseOnProgramme onProg, decimal price, Guid correlationId)
     {
-        _logger.LogInformation("Sending CalculateGrowthAndSkillsPayments command for LearningKey: {LearningKey}", learningResponse.LearningKey);
-
-        var command = await _calculateGrowthAndSkillsPaymentsEventBuilder.Build(ukprn, learningResponse, earningsResponse);
-
-        var options = new SendOptions();
-        options.DoNotEnforceBestPractices();
-        options.SetDestination(_paymentsConfiguration.PaymentsEndpoint);
-        await _messageSession.Send(command, options);
-
-        _logger.LogInformation("CalculateGrowthAndSkillsPayments command sent for LearningKey: {LearningKey}", learningResponse.LearningKey);
-
-        await _messageSession.Publish(new GrowthAndSkillsPaymentsRecalculatedEvent { Command = command });
-
-        _logger.LogInformation("GrowthAndSkillsPaymentsRecalculatedEvent published for LearningKey: {LearningKey}", learningResponse.LearningKey);
+        return new LearnerDataEvent
+        {
+            ULN = command.Request.Learner.Uln,
+            UKPRN = command.Ukprn,
+            FirstName = command.Request.Learner.FirstName,
+            LastName = command.Request.Learner.LastName,
+            Email = command.Request.Learner.Email,
+            DoB = command.Request.Learner.Dob,
+            StartDate = onProg.StartDate,
+            PlannedEndDate = onProg.ExpectedEndDate,
+            PercentageLearningToBeDelivered = 100,
+            EpaoPrice = 0,
+            TrainingPrice = (int)price,
+            IsFlexiJob = false,
+            PlannedOTJTrainingHours = 0,
+            AgreementId = onProg.AgreementId,
+            StandardCode = 0,
+            ConsumerReference = command.Request.ConsumerReference,
+            LarsCode = onProg.CourseCode,
+            CorrelationId = correlationId,
+            ReceivedDate = DateTime.UtcNow,
+            LearningType = LearningType.ApprenticeshipUnit
+        };
     }
 
     private static bool EarningsUpdateRequired(UpdateShortCourseLearningPutResponse response)
@@ -167,7 +246,9 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
 
         return changes.Contains(ShortCourseUpdateChanges.WithdrawalDate) ||
             changes.Contains(ShortCourseUpdateChanges.Milestone) ||
-            changes.Contains(ShortCourseUpdateChanges.CompletionDate);
+            changes.Contains(ShortCourseUpdateChanges.CompletionDate) ||
+            changes.Contains(ShortCourseUpdateChanges.Reinstated) ||
+            changes.Contains(ShortCourseUpdateChanges.StartDate) ||
+            changes.Contains(ShortCourseUpdateChanges.ExpectedEndDate);
     }
-
 }

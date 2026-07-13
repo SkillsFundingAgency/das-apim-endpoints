@@ -1,103 +1,150 @@
 ﻿using System.Collections.Concurrent;
+using System.Threading;
 using SFA.DAS.LearnerData.Application.GetProviderRelationships;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.ProviderRelationships;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Rofjaa;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ProviderRelationships;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Rofjaa;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships;
 
-namespace SFA.DAS.LearnerData.Services
+namespace SFA.DAS.LearnerData.Services;
+
+public interface IGetProviderRelationshipService
 {
-    public interface IGetProviderRelationshipService
+    Task<List<EmployerDetails>> GetEmployerDetails(GetProviderAccountLegalEntitiesResponse providerDetails, CancellationToken cancellationToken = default);
+
+    Task<GetProviderAccountLegalEntitiesResponse> GetAllProviderRelationShipDetails(int ukprn, CancellationToken cancellationToken = default);
+
+    Task<GetCoursesForProviderResponse> GetCoursesForProviderByUkprn(long ukprn, CancellationToken cancellationToken = default);
+}
+
+public class GetProviderRelationshipService(
+    IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> providerRelationshipApiClient,
+    IAccountsApiClient<AccountsConfiguration> accountsApiClient,
+    IFjaaAgenciesService fjaaAgenciesService,
+    IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient) : IGetProviderRelationshipService
+{
+    private const int AccountsQueryParallelism = 5;
+
+    public async Task<List<EmployerDetails>> GetEmployerDetails(
+        GetProviderAccountLegalEntitiesResponse providerDetails,
+        CancellationToken cancellationToken = default)
     {
-        Task<List<EmployerDetails>> GetEmployerDetails(GetProviderAccountLegalEntitiesResponse providerDetails);
+        if (providerDetails?.AccountProviderLegalEntities is null || providerDetails.AccountProviderLegalEntities.Count == 0)
+        {
+            return [];
+        }
 
-        Task<GetProviderAccountLegalEntitiesResponse> GetAllProviderRelationShipDetails(int ukprn);
+        var agencies = await fjaaAgenciesService.GetAgencies(cancellationToken);
+        var accountIds = providerDetails.AccountProviderLegalEntities
+            .Select(x => x.AccountId)
+            .Distinct()
+            .ToList();
 
-        Task<GetCoursesForProviderResponse> GetCoursesForProviderByUkprn(long ukprn);
+        var accountsById = await GetEmployerAccountsByIds(accountIds, cancellationToken);
+
+        return providerDetails.AccountProviderLegalEntities
+            .Select(legalEntity =>
+            {
+                accountsById.TryGetValue(legalEntity.AccountId, out var accountDetails);
+                var isFunded = accountDetails?.LegalEntities is not null && GetIsFunded(agencies, accountDetails.LegalEntities);
+                return CreateEmployerDetails(accountDetails, isFunded, legalEntity.AccountLegalEntityPublicHashedId);
+            })
+            .ToList();
     }
 
-    public class GetProviderRelationshipService(
-    IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> providerRelationshipApiClient,
-        IAccountsApiClient<AccountsConfiguration> accountsApiClient,
-        IFjaaApiClient<FjaaApiConfiguration> fjaaApiClient,
-        IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient) : IGetProviderRelationshipService
+    private async Task<IReadOnlyDictionary<long, GetAccountByIdResponse>> GetEmployerAccountsByIds(
+        IReadOnlyList<long> accountIds,
+        CancellationToken cancellationToken)
     {
-        public GetAgenciesResponse GetAgencies { get; set; }
-
-        public async Task<List<EmployerDetails>> GetEmployerDetails(GetProviderAccountLegalEntitiesResponse providerDetails)
+        if (accountIds.Count == 0)
         {
-            ConcurrentBag<EmployerDetails> employerDetails = [];
-            GetAgencies = await GetAgencyDetails();
-            ConcurrentBag<GetAccountByIdResponse> accountdetails = [];
-
-            var accountTasks = new ConcurrentDictionary<long, Task<GetAccountByIdResponse>>();
-
-            var employerTasks = providerDetails.AccountProviderLegalEntities.
-                Select(async legalEntity =>
-                {
-                    var accountTask = accountTasks.GetOrAdd(legalEntity.AccountId, GetEmployerAccountDetails);
-                    var accountDetails = await accountTask;
-                    var isFunded = accountDetails?.LegalEntities is not null && GetIsFunded(accountDetails.LegalEntities);
-
-                    return CreateEmployerDetails(accountDetails, isFunded, legalEntity.AccountLegalEntityPublicHashedId);
-                });
-
-            var results = await Task.WhenAll(employerTasks);
-
-            return results.ToList();
+            return new Dictionary<long, GetAccountByIdResponse>();
         }
 
-        private async Task<GetAccountByIdResponse> GetEmployerAccountDetails(long accountId)
+        var distinctAccountIds = accountIds.Distinct().ToList();
+        var batches = distinctAccountIds
+            .Chunk(AccountQueryFieldNames.MaxAccountIdsPerRequest)
+            .ToList();
+
+        var accountsById = new ConcurrentDictionary<long, GetAccountByIdResponse>();
+        using var semaphore = new SemaphoreSlim(AccountsQueryParallelism);
+
+        var batchTasks = batches.Select(async batch =>
         {
-            var accountResponse = await accountsApiClient.Get<GetAccountByIdResponse>(
-                new GetAccountByIdRequest(accountId));
-
-            return accountResponse;
-        }
-
-        private async Task<GetAgenciesResponse> GetAgencyDetails()
-        {
-            var agencyResponse = await fjaaApiClient.Get<GetAgenciesResponse>(
-               new GetAgenciesQuery());
-
-            return agencyResponse;
-        }
-
-        private EmployerDetails CreateEmployerDetails(GetAccountByIdResponse? accountDetails, bool isFunded, string legalEntityHashedId)
-        {
-            return new EmployerDetails()
+            await semaphore.WaitAsync(cancellationToken);
+            try
             {
-                AgreementId = legalEntityHashedId,
-                IsLevy = accountDetails is not null && accountDetails.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy,
-                IsFlexiEmployer = isFunded
-            };
-        }
+                cancellationToken.ThrowIfCancellationRequested();
 
-        public async Task<GetProviderAccountLegalEntitiesResponse> GetAllProviderRelationShipDetails(int ukprn)
+                var apiResponse = await accountsApiClient.PostWithResponseCode<AccountsQueryRequestBody, PostAccountsQueryResponse>(
+                    new PostAccountsQueryRequest(batch));
+                var response = apiResponse.Body;
+
+                if (response?.Accounts is null)
+                {
+                    return;
+                }
+
+                foreach (var account in response.Accounts)
+                {
+                    accountsById[account.AccountId] = new GetAccountByIdResponse
+                    {
+                        AccountId = account.AccountId,
+                        ApprenticeshipEmployerType = ParseApprenticeshipEmployerType(account.ApprenticeshipEmployerType),
+                        LegalEntities = account.LegalEntities ?? []
+                    };
+                }
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+        });
+
+        await Task.WhenAll(batchTasks);
+
+        return accountsById;
+    }
+
+    private static ApprenticeshipEmployerType ParseApprenticeshipEmployerType(string apprenticeshipEmployerType)
+    {
+        return Enum.TryParse<ApprenticeshipEmployerType>(apprenticeshipEmployerType, true, out var result)
+            ? result
+            : default;
+    }
+
+    public async Task<GetProviderAccountLegalEntitiesResponse> GetAllProviderRelationShipDetails(int ukprn, CancellationToken cancellationToken = default)
+    {
+        return await providerRelationshipApiClient.Get<GetProviderAccountLegalEntitiesResponse>(
+            new GetProviderAccountLegalEntitiesRequest(ukprn, [Operation.CreateCohort]));
+    }
+
+    public async Task<GetCoursesForProviderResponse> GetCoursesForProviderByUkprn(long ukprn, CancellationToken cancellationToken = default)
+    {
+        var coursesApiResponse = await roatpCourseManagementApiClient.GetWithResponseCode<GetCoursesForProviderResponse>(
+            new GetCoursesForProviderRequest(ukprn));
+        return coursesApiResponse.Body;
+    }
+
+    private static bool GetIsFunded(GetAgenciesResponse agencies, ResourceList legalEntities)
+    {
+        return agencies.Agencies.Any(agency => legalEntities.Any(le => long.Parse(le.Id) == agency.LegalEntityId));
+    }
+
+    private static EmployerDetails CreateEmployerDetails(GetAccountByIdResponse? accountDetails, bool isFunded, string legalEntityHashedId)
+    {
+        return new EmployerDetails
         {
-            var providerResponse =
-                              await providerRelationshipApiClient.Get<GetProviderAccountLegalEntitiesResponse>(
-                                  new GetProviderAccountLegalEntitiesRequest(ukprn, [Operation.CreateCohort]));
-
-            return providerResponse;
-        }
-
-        public async Task<GetCoursesForProviderResponse> GetCoursesForProviderByUkprn(long ukprn)
-        {
-            var coursesApiResponse = await roatpCourseManagementApiClient.GetWithResponseCode<GetCoursesForProviderResponse>(new GetCoursesForProviderRequest(ukprn));
-            return coursesApiResponse.Body;
-        }
-
-        public bool GetIsFunded(ResourceList legalEntities)
-        {
-            return GetAgencies.Agencies.Any(t => legalEntities.Any(k => long.Parse(k.Id) == t.LegalEntityId));
-        }
+            AgreementId = legalEntityHashedId,
+            IsLevy = accountDetails is not null && accountDetails.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy,
+            IsFlexiEmployer = isFunded
+        };
     }
 }

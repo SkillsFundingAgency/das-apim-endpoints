@@ -4,10 +4,17 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.DigitalCertificates.Api.Attributes;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAction;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAuthorise;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserMatch;
+using SFA.DAS.DigitalCertificates.Application.Commands.UpdateUserIdentity;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificates;
+using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetSharings;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetUser;
+using SFA.DAS.DigitalCertificates.Application.Queries.GetUserActions;
 using SFA.DAS.DigitalCertificates.Models;
 
 namespace SFA.DAS.DigitalCertificates.Api.Controllers
@@ -40,7 +47,7 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             }
         }
 
-        [HttpPost("identity")]
+        [HttpPost("")]
         public async Task<IActionResult> CreateOrUpdateUser([FromBody] CreateOrUpdateUserRequest request)
         {
             try
@@ -49,9 +56,7 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
                 {
                     GovUkIdentifier = request.GovUkIdentifier,
                     EmailAddress = request.EmailAddress,
-                    PhoneNumber = request.PhoneNumber,
-                    Names = request.Names,
-                    DateOfBirth = request.DateOfBirth
+                    PhoneNumber = request.PhoneNumber
                 };
 
                 var result = await _mediator.Send(command);
@@ -64,7 +69,30 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             }
         }
 
+        [HttpPost("{userId}/identity")]
+        public async Task<IActionResult> UpdateUserIdentity([FromRoute] Guid userId, [FromBody] UpdateUserIdentityRequest request)
+        {
+            try
+            {
+                var command = new UpdateUserIdentityCommand
+                {
+                    UserId = userId,
+                    Names = request.Names,
+                    DateOfBirth = request.DateOfBirth
+                };
+
+                await _mediator.Send(command);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to update user identity");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
         [HttpGet("{userId}/certificates")]
+        [PrivateBetaUlnWhitelist]
         public async Task<IActionResult> GetCertificates([FromRoute] Guid userId)
         {
             try
@@ -90,6 +118,91 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to retrieve sharings {UserId}", userId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{userId}/match")]
+        [PrivateBetaUlnWhitelist]
+        public async Task<IActionResult> GetCertificatesMatch([FromRoute] Guid userId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetCertificatesMatchQuery { UserId = userId });
+
+                if (result == null)
+                {
+                    return NoContent();
+                }
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to retrieve certificate matches for user {UserId}", userId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("{userId}/actions")]
+        public async Task<IActionResult> CreateUserAction([FromRoute] Guid userId, [FromBody] CreateUserActionCommand command)
+        {
+            try
+            {
+                command.UserId = userId;
+                var result = await _mediator.Send(command);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to create user action for user {UserId}", userId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{userId}/actions")]
+        public async Task<IActionResult> GetUserActions([FromRoute] Guid userId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetUserActionsQuery { UserId = userId });
+                return Ok(new { useractions = result.UserActions });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to retrieve user actions for user {UserId}", userId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("{userId}/match")]
+        public async Task<IActionResult> CreateUserMatch([FromRoute] Guid userId, [FromBody] CreateUserMatchCommand command)
+        {
+            try
+            {
+                command.UserId = userId;
+                await _mediator.Send(command);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to create user match for user {UserId}", userId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("{userId}/authorise")]
+        public async Task<IActionResult> CreateUserAuthorise([FromRoute] Guid userId, [FromBody] CreateUserAuthoriseCommand command)
+        {
+            try
+            {
+                command.UserId = userId;
+                await _mediator.Send(command);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to authorise user {UserId}", userId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

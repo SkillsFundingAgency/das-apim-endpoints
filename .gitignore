@@ -6,6 +6,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+*_ignore.sln
 
 # Settings
 */local.settings.json
@@ -284,3 +285,16 @@ src/**/generated.sh
 *.learningtransport*
 src/ApprenticeApp/SFA.DAS.ApprenticeApp.Api/appsettings.json
 /src/FindApprenticeshipTraining/.github/copilot-instructions.md
+/src/RoatpCourseManagement/.github/copilot-instructions.md
+
+# Azurite Files (note - https://github.com/Azure/Azurite/pull/1061)
+__azurite_db_blob_extent__.json
+__azurite_db_blob__.json
+__azurite_db_queue__.json
+__azurite_db_table__.json
+__azurite_db_queue_extent__.json
+__blobstorage__
+__queuestorage__
+
+# VSCode
+**/.vscode/
