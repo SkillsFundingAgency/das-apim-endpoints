@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Admin.Api.Controllers;
+using SFA.DAS.Admin.Api.Models.Users;
 using SFA.DAS.Admin.Application.Commands.UnlockUser;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -19,7 +20,7 @@ namespace SFA.DAS.Admin.Api.UnitTests.Controllers.Users
         [Test, MoqAutoData]
         public async Task Then_NoContent_Returned_When_Mediator_Returns_Unit(
             Guid userId,
-            UnlockUserCommand command,
+            UnlockUserRequest request,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] UsersController controller)
         {
@@ -32,7 +33,7 @@ namespace SFA.DAS.Admin.Api.UnitTests.Controllers.Users
                 .ReturnsAsync((Unit?)Unit.Value);
 
             // Act
-            var result = await controller.UnlockUser(userId, command) as StatusCodeResult;
+            var result = await controller.UnlockUser(userId, request) as StatusCodeResult;
 
             // Assert
             result.Should().NotBeNull();
@@ -72,7 +73,7 @@ namespace SFA.DAS.Admin.Api.UnitTests.Controllers.Users
         [Test, MoqAutoData]
         public async Task Then_BadRequest_Returned_When_Mediator_Returns_Null(
             Guid userId,
-            UnlockUserCommand command,
+            UnlockUserRequest request,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] UsersController controller)
         {
@@ -82,7 +83,7 @@ namespace SFA.DAS.Admin.Api.UnitTests.Controllers.Users
                 .ReturnsAsync((Unit?)null);
 
             // Act
-            var result = await controller.UnlockUser(userId, command) as StatusCodeResult;
+            var result = await controller.UnlockUser(userId, request) as StatusCodeResult;
 
             // Assert
             result.Should().NotBeNull();
@@ -94,7 +95,7 @@ namespace SFA.DAS.Admin.Api.UnitTests.Controllers.Users
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             Guid userId,
-            UnlockUserCommand command,
+            UnlockUserRequest request,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] UsersController controller)
         {
@@ -104,7 +105,7 @@ namespace SFA.DAS.Admin.Api.UnitTests.Controllers.Users
                 .ThrowsAsync(new Exception());
 
             // Act
-            var actual = await controller.UnlockUser(userId, command) as StatusCodeResult;
+            var actual = await controller.UnlockUser(userId, request) as StatusCodeResult;
 
             // Assert
             actual.Should().NotBeNull();

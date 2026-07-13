@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GetUserActionByCodeQueryResponse=SFA.DAS.DigitalCertificates.Contracts.ApiResponses.GetUserActionByCodeQueryResult;
+using GetUserActionByCodeQueryResponse=SFA.DAS.DigitalCertificates.Contracts.ApiResponses.GetUserActionByCodeResponse;
 
 namespace SFA.DAS.Admin.Application.Queries.GetUserActionByCode
 {

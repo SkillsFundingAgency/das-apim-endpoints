@@ -1,13 +1,12 @@
 ﻿using MediatR;
 using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
 using SFA.DAS.DigitalCertificates.Contracts.Client;
 using SFA.DAS.Apim.Shared.Extensions;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-using CreateAdminActionCommand = SFA.DAS.DigitalCertificates.Contracts.ApiResponses.CreateAdminActionCommand;
-using PostUsersAdminactionsApiRequest = SFA.DAS.DigitalCertificates.Contracts.ApiRequests.PostUsersAdminactionsApiRequest;
 using PutUsersUnlockApiRequest = SFA.DAS.DigitalCertificates.Contracts.ApiRequests.PutUsersByUserIdUnlockApiRequest;
 using SFA.DAS.Apim.Shared.Infrastructure;
 
@@ -34,14 +33,13 @@ namespace SFA.DAS.Admin.Application.Commands.UnlockUser
 
             if (putResponse.StatusCode == HttpStatusCode.NoContent)
             {
-                var create = new CreateAdminActionCommand
+                var create = new CreateAdminActionRequest
                 {
                     Username = request.Username,
-                    Action = AdminActionType.Unlocked,
-                    UserActionId = request.UserActionId
+                    Action = AdminActionType.Unlocked
                 };
 
-                var postResponse = await _digitalCertificatesApiClient.PostWithResponseCode<CreateAdminActionCommand>(new PostUsersAdminactionsApiRequest(create));
+                var postResponse = await _digitalCertificatesApiClient.PostWithResponseCode<CreateAdminActionRequest>(new PostUserActionsByUserActionIdAdminActionsApiRequest(create) { UserActionId = request.UserActionId });
                 postResponse?.EnsureSuccessStatusCode();
             }
 

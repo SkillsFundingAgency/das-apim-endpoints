@@ -23,7 +23,7 @@ namespace SFA.DAS.Admin.Application.Queries.GetAllUserActivityByCode
 
         public async Task<GetAllUserActivityByCodeQueryResult> Handle(GetAllUserActivityByCodeQuery request, CancellationToken cancellationToken)
         {
-            var codeResponse = await _digitalCertificatesApiClient.GetWithResponseCode<GetUserActionByCodeQueryResult>(new GetUsersUseractionsByCodeApiRequest(request.Code));
+            var codeResponse = await _digitalCertificatesApiClient.GetWithResponseCode<GetUserActionByCodeResponse>(new GetUserActionsByCodeApiRequest(request.Code));
 
             if (codeResponse?.StatusCode == HttpStatusCode.NotFound)
             {
@@ -38,7 +38,7 @@ namespace SFA.DAS.Admin.Application.Queries.GetAllUserActivityByCode
 
             var userId = codeBody.UserId;
 
-            var userActionsTask = _digitalCertificatesApiClient.GetWithResponseCode<GetUserActionsQueryResult>(new GetUsersByUserIdActionsApiRequest(userId));
+            var userActionsTask = _digitalCertificatesApiClient.GetWithResponseCode<GetUserActionsResponse>(new GetUsersByUserIdUserActionsApiRequest(userId));
             var userDetailsTask = _digitalCertificatesApiClient.GetWithResponseCode<GetUserByIdQueryResult>(new GetUsersIdByUserIdApiRequest(userId));
 
             await Task.WhenAll(userActionsTask, userDetailsTask);

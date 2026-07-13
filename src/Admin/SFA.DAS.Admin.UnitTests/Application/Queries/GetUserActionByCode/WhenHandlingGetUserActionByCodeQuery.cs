@@ -11,7 +11,7 @@ using SFA.DAS.Admin.Application.Queries.GetUserActionByCode;
 using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
 using SFA.DAS.Admin.InnerApi.Requests.Assessor;
 using SFA.DAS.Admin.InnerApi.Responses.Assessor;
-using GetUserActionByCodeResponse = SFA.DAS.DigitalCertificates.Contracts.ApiResponses.GetUserActionByCodeQueryResult;
+using GetUserActionByCodeResponse = SFA.DAS.DigitalCertificates.Contracts.ApiResponses.GetUserActionByCodeResponse;
 using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.DigitalCertificates.Contracts.Client;
@@ -39,7 +39,7 @@ namespace SFA.DAS.Admin.UnitTests.Application.Queries.GetUserActionByCode
 
             mockDigitalCertificatesApiClient
                 .Setup(c => c.GetWithResponseCode<GetUserActionByCodeResponse>(
-                    It.Is<GetUsersUseractionsByCodeApiRequest>(r => r.Code == code)))
+                    It.Is<GetUserActionsByCodeApiRequest>(r => r.Code == code)))
                 .ReturnsAsync(apiResponse);
 
             var expected = (GetUserActionByCodeQueryResult)responseBody;
@@ -77,7 +77,7 @@ namespace SFA.DAS.Admin.UnitTests.Application.Queries.GetUserActionByCode
             actualAdminAction.Action.Should().Be(expectedAdminAction.Action);
 
             mockDigitalCertificatesApiClient.Verify(c => c.GetWithResponseCode<GetUserActionByCodeResponse>(
-                It.Is<GetUsersUseractionsByCodeApiRequest>(r => r.Code == code)), Times.Once);
+                It.Is<GetUserActionsByCodeApiRequest>(r => r.Code == code)), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -93,7 +93,7 @@ namespace SFA.DAS.Admin.UnitTests.Application.Queries.GetUserActionByCode
             var apiResponse = new ApiResponse<GetUserActionByCodeResponse>(null, HttpStatusCode.NotFound, string.Empty);
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.GetWithResponseCode<GetUserActionByCodeResponse>(It.IsAny<GetUsersUseractionsByCodeApiRequest>()))
+                .Setup(c => c.GetWithResponseCode<GetUserActionByCodeResponse>(It.IsAny<GetUserActionsByCodeApiRequest>()))
                 .ReturnsAsync(apiResponse);
 
             // Act
@@ -103,7 +103,7 @@ namespace SFA.DAS.Admin.UnitTests.Application.Queries.GetUserActionByCode
             actual.Should().BeNull();
 
             mockDigitalCertificatesApiClient.Verify(c => c.GetWithResponseCode<GetUserActionByCodeResponse>(
-                It.Is<GetUsersUseractionsByCodeApiRequest>(r => r.Code == code)), Times.Once);
+                It.Is<GetUserActionsByCodeApiRequest>(r => r.Code == code)), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -119,7 +119,7 @@ namespace SFA.DAS.Admin.UnitTests.Application.Queries.GetUserActionByCode
             var apiResponse = new ApiResponse<GetUserActionByCodeResponse>(null, HttpStatusCode.OK, string.Empty);
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.GetWithResponseCode<GetUserActionByCodeResponse>(It.IsAny<GetUsersUseractionsByCodeApiRequest>()))
+                .Setup(c => c.GetWithResponseCode<GetUserActionByCodeResponse>(It.IsAny<GetUserActionsByCodeApiRequest>()))
                 .ReturnsAsync(apiResponse);
 
             // Act
@@ -129,7 +129,7 @@ namespace SFA.DAS.Admin.UnitTests.Application.Queries.GetUserActionByCode
             actual.Should().BeNull();
 
             mockDigitalCertificatesApiClient.Verify(c => c.GetWithResponseCode<GetUserActionByCodeResponse>(
-                It.Is<GetUsersUseractionsByCodeApiRequest>(r => r.Code == code)), Times.Once);
+                It.Is<GetUserActionsByCodeApiRequest>(r => r.Code == code)), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -140,7 +140,7 @@ namespace SFA.DAS.Admin.UnitTests.Application.Queries.GetUserActionByCode
         {
             // Arrange
             mockDigitalCertificatesApiClient
-                .Setup(c => c.GetWithResponseCode<GetUserActionByCodeResponse>(It.IsAny<GetUsersUseractionsByCodeApiRequest>()))
+                .Setup(c => c.GetWithResponseCode<GetUserActionByCodeResponse>(It.IsAny<GetUserActionsByCodeApiRequest>()))
                 .ThrowsAsync(new ApiResponseException(HttpStatusCode.BadRequest, "Bad request"));
 
             // Act
@@ -151,7 +151,7 @@ namespace SFA.DAS.Admin.UnitTests.Application.Queries.GetUserActionByCode
                 .Where(e => e.Status == HttpStatusCode.BadRequest);
 
             mockDigitalCertificatesApiClient.Verify(c => c.GetWithResponseCode<GetUserActionByCodeResponse>(
-                It.IsAny<GetUsersUseractionsByCodeApiRequest>()), Times.Once);
+                It.IsAny<GetUserActionsByCodeApiRequest>()), Times.Once);
         }
     }
 }
