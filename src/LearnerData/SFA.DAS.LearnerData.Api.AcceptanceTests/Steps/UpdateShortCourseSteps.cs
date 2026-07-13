@@ -27,6 +27,8 @@ public class UpdateShortCourseSteps
     private const string ShortCourseChangesKey = "ShortCourseChanges";
     private const string UpdatedEpisodeKeyKey = "UpdatedEpisodeKey";
     private const string IsApprovedKey = "ShortCourseIsApproved";
+    private const string ShortCourseRequestKey = "ShortCourseRequest";
+    private const string PersistedStartDateOverrideKey = "PersistedStartDateOverride";
 
     public UpdateShortCourseSteps(TestContext testContext, ScenarioContext scenarioContext)
     {
@@ -68,12 +70,19 @@ public class UpdateShortCourseSteps
         _scenarioContext.Set(changes, ShortCourseChangesKey);
     }
 
+    [Given(@"learning ignores the change and persists a different StartDate")]
+    public void GivenLearningIgnoresTheChangeAndPersistsADifferentStartDate()
+    {
+        _scenarioContext.Set(new DateTime(2020, 1, 1), PersistedStartDateOverrideKey);
+    }
+
     [When(@"the short course learning is updated")]
     public async Task WhenTheShortCourseLearningIsUpdated()
     {
         var learningKey = _scenarioContext.Get<Guid>(ShortCourseLearnerKey);
         var ukprn = _scenarioContext.Get<long>(UkprnKey);
         var requestBody = _fixture.Create<ShortCourseRequest>();
+        _scenarioContext.Set(requestBody, ShortCourseRequestKey);
 
         ConfigureLearnerInnerApi(ukprn, learningKey, requestBody);
         ConfigureEarningsInnerApiToRespondeOkToEverything();
@@ -91,6 +100,24 @@ public class UpdateShortCourseSteps
 
         requests.Should().ContainSingle(request => request.RequestMessage.Url.Contains(requestUrl),
             $"Expected a request to {requestUrl} but found {requests.Count} requests instead.");
+    }
+
+    [Then(@"the on-programme update sent to earnings has the learning-persisted StartDate, not the SLD payload's StartDate")]
+    public void ThenTheOnProgrammeUpdateSentToEarningsHasTheLearningPersistedStartDate()
+    {
+        var persistedStartDate = _scenarioContext.Get<DateTime>(PersistedStartDateOverrideKey);
+        var sldStartDate = _scenarioContext.Get<ShortCourseRequest>(ShortCourseRequestKey).Delivery.OnProgramme.First().StartDate;
+        persistedStartDate.Should().NotBe(sldStartDate, "the test setup should use different dates or this assertion proves nothing");
+
+        var learnerKey = _scenarioContext.Get<Guid>(ShortCourseLearnerKey);
+        var episodeKey = _scenarioContext.Get<Guid>(UpdatedEpisodeKeyKey);
+        var requestUrl = $"/{learnerKey}/shortCourses/{episodeKey}/on-programme";
+
+        var entry = _testContext.EarningsApi.MockServer.LogEntries
+            .Single(request => request.RequestMessage.Url.Contains(requestUrl));
+
+        var body = JsonConvert.DeserializeObject<SFA.DAS.LearnerData.Requests.LearningInner.UpdateShortCourseOnProgrammeRequestBody>(entry.RequestMessage.Body);
+        body.StartDate.Should().Be(persistedStartDate);
     }
 
     private void ConfigureLearnerInnerApi(long ukprn, Guid learningKey, ShortCourseRequest shortCourseRequest)
@@ -127,7 +154,9 @@ public class UpdateShortCourseSteps
                         CourseCode = "ZSC00001",
                         CourseType = "ShortCourse",
                         LearningType = "ApprenticeshipUnit",
-                        StartDate = onProgramme.StartDate,
+                        StartDate = _scenarioContext.TryGetValue(PersistedStartDateOverrideKey, out DateTime persistedStartDate)
+                            ? persistedStartDate
+                            : onProgramme.StartDate,
                         AgeAtStart = 20,
                         PlannedEndDate = onProgramme.ExpectedEndDate,
                         WithdrawalDate = onProgramme.WithdrawalDate,
