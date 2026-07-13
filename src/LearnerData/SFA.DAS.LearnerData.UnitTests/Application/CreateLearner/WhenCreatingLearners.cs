@@ -80,7 +80,7 @@ public class WhenCreatingLearners
 
         // Assert
         _mockMessageSession.Verify(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()),
-            Times.Once());
+            Times.Exactly(command.Request.Delivery.OnProgramme.Count));
     }
 
     [Test]
@@ -121,6 +121,37 @@ public class WhenCreatingLearners
             ReceivedDate = command.ReceivedOn,
             ConsumerReference = request.ConsumerReference
         });
+    }
+
+    [Test]
+    public async Task Then_publishes_one_event_per_on_programme_item()
+    {
+        // Arrange
+        var request = _fixture.Create<CreateLearnerRequest>();
+        request.Delivery.OnProgramme =
+        [
+            _fixture.Build<CreateLearnerRequest.OnProgrammeDetails>()
+                .With(x => x.StandardCode, 100)
+                .With(x => x.Costs, [new CostDetails { TrainingPrice = 15000, EpaoPrice = 2000 }])
+                .Create(),
+            _fixture.Build<CreateLearnerRequest.OnProgrammeDetails>()
+                .With(x => x.StandardCode, 200)
+                .With(x => x.Costs, [new CostDetails { TrainingPrice = 12000, EpaoPrice = 1000 }])
+                .Create()
+        ];
+
+        var command = GetProcessLearnersCommand(request);
+        var publishedEvents = new List<LearnerDataEvent>();
+
+        _mockMessageSession.Setup(x => x.Publish(It.IsAny<LearnerDataEvent>(), It.IsAny<PublishOptions>()))
+            .Callback((object p, PublishOptions _) => publishedEvents.Add((LearnerDataEvent)p));
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _mockMessageSession.Verify(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()), Times.Exactly(2));
+        publishedEvents.Select(x => x.StandardCode).Should().BeEquivalentTo([100, 200]);
     }
 
     //[Test]
@@ -236,7 +267,14 @@ public class WhenCreatingLearners
         }
 
         command.Request.Learner.Uln = _fixture.Create<long>();
-        command.Request.Delivery.OnProgramme.First().Costs = new List<CostDetails> { _fixture.Create<CostDetails>() };
+        foreach (var onProgramme in command.Request.Delivery.OnProgramme)
+        {
+            onProgramme.Costs ??= new List<CostDetails>();
+            if (onProgramme.Costs.Count == 0)
+            {
+                onProgramme.Costs = [ _fixture.Create<CostDetails>() ];
+            }
+        }
 
         return command;
     }
