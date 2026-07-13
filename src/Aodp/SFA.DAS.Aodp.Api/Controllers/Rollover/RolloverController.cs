@@ -44,24 +44,6 @@ public class RolloverController : BaseController
         return await SendRequestAsync(new GetRolloverWorkflowCandidatesQuery());
     }
 
-    [HttpPost("/api/rollover/querybuilder/awardingorganisations")]
-    [ProducesResponseType(typeof(GetAwardingOrganisationsForRolloverQueryBuilderQueryResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetAwardingOrganisationsForRolloverQueryBuilder(
-        [FromBody] RolloverQueryBuilderRequest filters)
-    {
-        return await SendRequestAsync(new GetAwardingOrganisationsForRolloverQueryBuilderQuery(filters));
-    }
-
-    [HttpPost("/api/rollover/querybuilder/qualificationversions")]
-    [ProducesResponseType(typeof(GetQualificationVersionsForRolloverQueryBuilderQueryResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetQualificationVersionsForRolloverQueryBuilder(
-        [FromBody] RolloverQueryBuilderRequest filters)
-    {
-        return await SendRequestAsync(new GetQualificationVersionsForRolloverQueryBuilderQuery(filters));
-    }
-
     [HttpPost("/api/rollover/rolloverworkflowruns")]
     [ProducesResponseType(typeof(BaseMediatrResponse<CreateRolloverWorkflowRunCommandResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -100,5 +82,46 @@ public class RolloverController : BaseController
     public async Task<IActionResult> RemovePreviousWorkflowCandidates(RemovePreviousWorkflowCandidatesCommand removePreviousWorkflowCandidatesCommand)
     {
         return await SendRequestAsync(removePreviousWorkflowCandidatesCommand);
+    }
+
+    [HttpPost("/api/rollover/querybuilder/qualificationversions")]
+    [ProducesResponseType(typeof(GetQualificationVersionsForRolloverQueryBuilderQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetQualificationVersionsForRolloverQueryBuilder([FromBody] RolloverQueryBuilderRequest filters)
+    {
+        return await SendRequestAsync(new GetQualificationVersionsForRolloverQueryBuilderQuery(filters));
+    }
+
+    [HttpGet("/api/rollover/querybuilder/levels")]
+    [ProducesResponseType(typeof(GetLevelsForRolloverQueryBuilderQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetLevelsForRolloverQueryBuilder()
+    {
+        return await SendRequestAsync(new GetLevelsForRolloverQueryBuilderQuery());
+    }
+
+    [HttpPost("/api/rollover/querybuilder/types")]
+    [ProducesResponseType(typeof(GetTypesForRolloverQueryBuilderQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetTypesForRolloverQueryBuilder([FromBody] RolloverQueryBuilderTypesRequest filters)
+    {
+        return await SendRequestAsync(new GetTypesForRolloverQueryBuilderQuery(filters));
+    }
+
+    [HttpPost("/api/rollover/querybuilder/sectorsubjectarea")]
+    [ProducesResponseType(typeof(GetSectorSubjectAreaForRolloverQueryBuilderQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetSectorSubjectAreaForRolloverQueryBuilder([FromBody] RolloverQueryBuilderSectorSubjectAreaRequest filters)
+    {
+        return await SendRequestAsync(new GetSectorSubjectAreaForRolloverQueryBuilderQuery(filters));
+    }
+
+    [HttpPost("/api/rollover/querybuilder/awardingorganisations")]
+    [ProducesResponseType(typeof(GetAwardingOrganisationsForRolloverQueryBuilderQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetAwardingOrganisationsForRolloverQueryBuilder(
+        [FromBody] RolloverQueryBuilderAwardingOrganisationsRequest filters)
+    {
+        return await SendRequestAsync(new GetAwardingOrganisationsForRolloverQueryBuilderQuery(filters));
     }
 }

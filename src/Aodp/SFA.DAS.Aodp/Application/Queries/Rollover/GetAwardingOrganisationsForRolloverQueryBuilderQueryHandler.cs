@@ -21,7 +21,7 @@ public class GetAwardingOrganisationsForRolloverQueryBuilderQueryHandler(IAodpAp
             var result = await _apiClient.PostWithResponseCode<GetAwardingOrganisationsForRolloverQueryBuilderQueryResponse>(
                 new GetAwardingOrganisationsForRolloverQueryBuilderApiRequest(request.Filters));
 
-            response.Value = result.Body ?? new GetAwardingOrganisationsForRolloverQueryBuilderQueryResponse();
+            response.Value = result.Body;
             response.Success = true;
         }
         catch (Exception ex)

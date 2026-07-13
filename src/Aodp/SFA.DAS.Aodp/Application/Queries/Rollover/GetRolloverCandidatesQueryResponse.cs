@@ -13,5 +13,8 @@
         public Guid FundingOfferId { get; set; }
         public string? FundingOfferName { get; init; }
         public string? AcademicYear { get; set; }
+        public int? RolloverRound { get; set; }
+        public DateTime? PreviousFundingEndDate { get; set; }
+        public DateTime? NewFundingEndDate { get; set; }
     }
 }
