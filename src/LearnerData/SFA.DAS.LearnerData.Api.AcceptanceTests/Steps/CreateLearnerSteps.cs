@@ -12,6 +12,7 @@ using TechTalk.SpecFlow;
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps;
 
 [Binding]
+[Scope(Feature = "CreateLearner")]
 public class CreateLearnerSteps(TestContext testContext, ScenarioContext scenarioContext)
 {
     private readonly Fixture _fixture = new Fixture();

@@ -85,3 +85,9 @@ Scenario: Care updated
 	When the learner is updated
 	Then a on-programme update request is sent to the earnings domain
 	And sld data is stored to the cache
+
+Scenario: Subsequent / multiple on programme learnings
+	Given there is a learner
+	And the details passed in include multiple on-programme learnings
+	When the learner is updated
+	Then approvals is informed of each on-programme learning
