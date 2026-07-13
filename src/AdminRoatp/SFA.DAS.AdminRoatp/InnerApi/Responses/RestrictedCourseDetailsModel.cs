@@ -4,7 +4,7 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
 namespace SFA.DAS.AdminRoatp.InnerApi.Responses;
 
-public class GetAllowedProvidersResponse
+public class RestrictedCourseDetailsModel
 {
     public string LarsCode { get; set; } = string.Empty;
     public string IfateReferenceNumber { get; set; } = string.Empty;

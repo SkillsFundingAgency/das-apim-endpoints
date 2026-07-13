@@ -14,6 +14,7 @@ using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.LearnerData.Services;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.ShortCourses;
 
@@ -28,6 +29,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
     private Mock<ICreateUnapprovedShortCourseLearningRequestBuilder> _createUnapprovedShortCourseLearningRequestBuilder;
     private Mock<IUpdateShortCourseOnProgrammeEarningPutRequestBuilder> _updateShortCourseOnProgrammeEarningPutRequestBuilder;
     private Mock<IMessageSession> _messageSession;
+    private Mock<ILearnerDataCacheService> _learnerDataCacheService;
 
     private CreateDraftShortCourseCommand _command;
     private CreateDraftShortCourseRequest _builtRequest;
@@ -51,6 +53,8 @@ public class WhenHandlingCreateDraftShortCourseCommand
         _createUnapprovedShortCourseLearningRequestBuilder = new Mock<ICreateUnapprovedShortCourseLearningRequestBuilder>();
         _updateShortCourseOnProgrammeEarningPutRequestBuilder = new Mock<IUpdateShortCourseOnProgrammeEarningPutRequestBuilder>();
         _messageSession = new Mock<IMessageSession>();
+        _learnerDataCacheService = new Mock<ILearnerDataCacheService>();
+
 
         _handler = new CreateDraftShortCourseCommandHandler(
             _logger.Object,
@@ -59,7 +63,8 @@ public class WhenHandlingCreateDraftShortCourseCommand
             _createDraftShortCoursePostRequestBuilder.Object,
             _createUnapprovedShortCourseLearningRequestBuilder.Object,
             _updateShortCourseOnProgrammeEarningPutRequestBuilder.Object,
-            _messageSession.Object);
+            _messageSession.Object,
+            _learnerDataCacheService.Object);
 
         // Arrange
         _ukprn = 12345;
