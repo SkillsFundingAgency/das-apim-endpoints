@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.EmployerAan.Api.AppStart;
+using SFA.DAS.EmployerAan.Api.Extensions;
+using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +16,7 @@ builder.Services
     .AddServiceRegistration(configuration)
     .AddServiceHealthChecks()
     .AddAuthentication(configuration)
-    .AddApplicationInsightsTelemetry()
+    .AddTelemetryRegistration((IConfigurationRoot)builder.Configuration)
     .AddEndpointsApiExplorer()
     .AddSwaggerGen(c =>
     {
@@ -30,6 +32,7 @@ builder.Services
     {
         if (!configuration.IsLocal()) o.Filters.Add(new AuthorizeFilter("default"));
     })
+    .AddApplicationPart(typeof(AccountUsersController).Assembly)
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
