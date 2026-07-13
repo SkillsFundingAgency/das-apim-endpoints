@@ -1,5 +1,6 @@
 using AutoFixture;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
@@ -25,6 +26,7 @@ public class WhenHandlingUpdateLearnerCommand
     private Mock<IUpdateEarningsEnglishAndMathsRequestBuilder> _updateEarningsEnglishAndMathsRequestBuilder;
     private Mock<ILearnerDataCacheService> _distributedCache;
     private Mock<ILogger<UpdateLearnerCommandHandler>> _logger;
+    private FeatureFlags _featureFlags;
     private UpdateLearnerCommandHandler _sut;
 #pragma warning restore CS8618 // Non-nullable field, instantiated in SetUp method
 
@@ -40,6 +42,7 @@ public class WhenHandlingUpdateLearnerCommand
         _updateEarningsLearningSupportRequestBuilder = new Mock<IUpdateEarningsLearningSupportRequestBuilder>();
         _distributedCache = new Mock<ILearnerDataCacheService>();
         _logger = new Mock<ILogger<UpdateLearnerCommandHandler>>();
+        _featureFlags = new FeatureFlags { ApprenticeshipUpdateLearner = true };
         _sut = new UpdateLearnerCommandHandler(
             _logger.Object,
             _learningApiClient.Object,
@@ -48,7 +51,25 @@ public class WhenHandlingUpdateLearnerCommand
             _updateEarningsOnProgrammeRequestBuilder.Object,
             _updateEarningsEnglishAndMathsRequestBuilder.Object,
             _updateEarningsLearningSupportRequestBuilder.Object,
-            _distributedCache.Object);
+            _distributedCache.Object,
+            _featureFlags);
+    }
+
+    [Test]
+    public async Task Then_Does_Not_Run_Update_Logic_If_Feature_Flag_Is_Disabled()
+    {
+        // Arrange
+        _featureFlags.ApprenticeshipUpdateLearner = false;
+        var command = _fixture.Create<UpdateLearnerCommand>();
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _distributedCache.Verify(x => x.StoreLearner(It.IsAny<SFA.DAS.LearnerData.Requests.UpdateLearnerRequest>(), It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Never);
+        _updateLearningPutRequestBuilder.Verify(x => x.Build(It.IsAny<long>(), It.IsAny<SFA.DAS.LearnerData.Requests.UpdateLearnerRequest>(), It.IsAny<Guid>()), Times.Never);
+        _learningApiClient.Verify(x => x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()), Times.Never);
+        _earningsApiClient.VerifyNoOtherCalls();
     }
 
     [Test]

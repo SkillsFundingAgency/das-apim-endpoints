@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
@@ -18,11 +19,18 @@ public class UpdateLearnerCommandHandler(
     IUpdateEarningsOnProgrammeRequestBuilder updateEarningsOnProgrammeRequestBuilder,
     IUpdateEarningsEnglishAndMathsRequestBuilder updateEarningsEnglishAndMathsRequestBuilder,
     IUpdateEarningsLearningSupportRequestBuilder updateEarningsLearningSupportRequestBuilder,
-    ILearnerDataCacheService learnerDataCacheService)
+    ILearnerDataCacheService learnerDataCacheService,
+    FeatureFlags featureFlags)
     : IRequestHandler<UpdateLearnerCommand>
 {
     public async Task Handle(UpdateLearnerCommand command, CancellationToken cancellationToken)
     {
+        if (!featureFlags.ApprenticeshipUpdateLearner)
+        {
+            logger.LogInformation("Skipping apprenticeship learner update for learner {LearnerKey} as feature flag ApprenticeshipUpdateLearner is disabled", command.LearnerKey);
+            return;
+        }
+
         logger.LogInformation("Updating learner with key {LearnerKey}", command.LearnerKey);
 
         await learnerDataCacheService.StoreLearner(command.UpdateLearnerRequest, command.Ukprn, cancellationToken);
