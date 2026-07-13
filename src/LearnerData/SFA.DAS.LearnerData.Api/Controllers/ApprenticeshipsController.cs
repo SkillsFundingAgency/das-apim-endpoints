@@ -103,20 +103,20 @@ public class ApprenticeshipsController(
     }
 
     [HttpDelete]
-    [Route("/providers/{ukprn}/learning/{learningKey}")]
-    [Route("/providers/{ukprn}/apprenticeships/{learningKey}")]
-    public async Task<IActionResult> RemoveLearner([FromRoute] long ukprn, [FromRoute] Guid learningKey, [FromQuery] int academicyear = 2526)
+    [Route("/providers/{ukprn}/learning/{learnerKey}")]
+    [Route("/providers/{ukprn}/apprenticeships/{learnerKey}")]
+    public async Task<IActionResult> RemoveLearner([FromRoute] long ukprn, [FromRoute] Guid learnerKey, [FromQuery] int academicyear = 2526)
     {
         logger.LogInformation(
-            "RemoveLearner for provider {ukprn}, apprenticeship {learningKey}",
+            "RemoveLearner for provider {ukprn}, apprenticeship {learnerKey}",
             ukprn,
-            learningKey);
+            learnerKey);
 
         try
         {
             var command = new RemoveLearnerCommand
             {
-                LearningKey = learningKey,
+                LearnerKey = learnerKey,
                 Ukprn = ukprn
             };
 
@@ -127,7 +127,7 @@ public class ApprenticeshipsController(
         }
         catch (Exception e)
         {
-            logger.LogError(e, $"Internal error occurred when removing learner {learningKey}");
+            logger.LogError(e, $"Internal error occurred when removing learner {learnerKey}");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }

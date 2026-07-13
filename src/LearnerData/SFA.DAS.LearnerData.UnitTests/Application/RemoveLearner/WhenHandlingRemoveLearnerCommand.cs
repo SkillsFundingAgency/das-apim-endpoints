@@ -1,14 +1,13 @@
 using AutoFixture;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Application.RemoveLearner;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
-using System.Net;
-using SFA.DAS.Apim.Shared.Infrastructure;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using System.Net;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.RemoveLearner;
 
@@ -48,7 +47,7 @@ public class WhenHandlingRemoveLearnerCommand
         var startDate = DateTime.UtcNow;
 
         _learningApiClient.Setup(x => x.DeleteWithResponseCode<NullResponse>(
-                It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearningKey == command.LearningKey), It.IsAny<bool>()))
+                It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearnerKey == command.LearnerKey), It.IsAny<bool>()))
             .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
 
         _earningsApiClient.Setup(x => x.DeleteWithResponseCode<NullResponse>(
@@ -60,10 +59,10 @@ public class WhenHandlingRemoveLearnerCommand
 
         // Assert
         _learningApiClient.Verify(x => x.DeleteWithResponseCode<NullResponse>(
-            It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearningKey == command.LearningKey && r.Ukprn == command.Ukprn), It.IsAny<bool>()), Times.Once);
+            It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearnerKey == command.LearnerKey && r.Ukprn == command.Ukprn), It.IsAny<bool>()), Times.Once);
 
         _earningsApiClient.Verify(x => x.DeleteWithResponseCode<NullResponse>(
-            It.Is<DeleteLearningRequest>(r => r.LearningKey == command.LearningKey), false), Times.Once());
+            It.Is<DeleteLearningRequest>(r => r.LearnerKey == command.LearnerKey), false), Times.Once());
     }
 
     [Test]
@@ -88,7 +87,7 @@ public class WhenHandlingRemoveLearnerCommand
         var startDate = DateTime.UtcNow;
 
         _learningApiClient.Setup(x => x.DeleteWithResponseCode<NullResponse>(
-                It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearningKey == command.LearningKey), It.IsAny<bool>()))
+                It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearnerKey == command.LearnerKey), It.IsAny<bool>()))
             .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
 
         _earningsApiClient.Setup(x => x.DeleteWithResponseCode<NullResponse>(

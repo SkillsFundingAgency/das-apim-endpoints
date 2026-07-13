@@ -16,21 +16,21 @@ public class WhenRemovingALearner
 {
     [Test, MoqAutoData]
     public async Task And_when_successful_Then_NoContent_returned(
-        Guid learningKey,
+        Guid learnerKey,
         long ukprn,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] Mock<ILogger<ApprenticeshipsController>> mockLogger,
         [Greedy] ApprenticeshipsController sut)
     {
         // Act
-        var result = await sut.RemoveLearner(ukprn, learningKey) as NoContentResult;
+        var result = await sut.RemoveLearner(ukprn, learnerKey) as NoContentResult;
 
         // Assert
         result!.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
 
         mockMediator.Verify(x => x.Send(
             It.Is<RemoveLearnerCommand>(c =>
-                c.LearningKey == learningKey &&
+                c.LearnerKey == learnerKey &&
                 c.Ukprn == ukprn), It.IsAny<CancellationToken>()), Times.Once);
     }
 
