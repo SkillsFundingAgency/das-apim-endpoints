@@ -33,7 +33,9 @@ public class WhenUpdatingALearner
         mockMediator.Verify(x => x.Send(
             It.Is<UpdateLearnerCommand>(c =>
                 c.LearnerKey == learnerKey &&
-                c.UpdateLearnerRequest == request), It.IsAny<CancellationToken>()), Times.Once);
+                c.UpdateLearnerRequest == request &&
+                c.CorrelationId != Guid.Empty &&
+                c.ReceivedOn != default), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test, MoqAutoData]

@@ -90,18 +90,18 @@ public class WhenCreatingLearners
         var request = _fixture.Create<CreateLearnerRequest>();
         var command = GetProcessLearnersCommand(request);
 
-        var @event = new LearnerDataEvent();
+        var events = new List<LearnerDataEvent>();
         _mockMessageSession.Setup(x => x.Publish(It.IsAny<LearnerDataEvent>(), It.IsAny<PublishOptions>()))
             .Callback((object p, PublishOptions o) =>
             {
-                @event = (LearnerDataEvent)p;
+                events.Add((LearnerDataEvent)p);
             });
 
         // Act
         await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        @event.Should().BeEquivalentTo(new
+        events.Should().ContainEquivalentOf(new
         {
             ULN = request.Learner.Uln,
             UKPRN = command.Ukprn,

@@ -9,6 +9,8 @@ public class UpdateLearnerCommand : IRequest
 {
     public Guid LearnerKey { get; set; }
     public long Ukprn { get; set; }
+    public Guid CorrelationId { get; set; }
+    public DateTime ReceivedOn { get; set; }
     public UpdateLearnerRequest UpdateLearnerRequest { get; set; }
 }
 

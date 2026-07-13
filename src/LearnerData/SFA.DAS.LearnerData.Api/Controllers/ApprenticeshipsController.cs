@@ -87,8 +87,11 @@ public class ApprenticeshipsController(
     {
         try
         {
+            var correlationId = Guid.NewGuid();
             await mediator.Send(new UpdateLearnerCommand
             {
+                CorrelationId = correlationId,
+                ReceivedOn = DateTime.Now,
                 LearnerKey = learnerKey,
                 UpdateLearnerRequest = request,
                 Ukprn = ukprn

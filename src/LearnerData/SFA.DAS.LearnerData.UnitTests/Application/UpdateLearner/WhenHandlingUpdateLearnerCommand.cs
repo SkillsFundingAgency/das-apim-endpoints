@@ -1,7 +1,9 @@
 using AutoFixture;
 using Microsoft.Extensions.Logging;
+using NServiceBus;
 using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
@@ -26,6 +28,7 @@ public class WhenHandlingUpdateLearnerCommand
     private Mock<IUpdateEarningsEnglishAndMathsRequestBuilder> _updateEarningsEnglishAndMathsRequestBuilder;
     private Mock<ILearnerDataCacheService> _distributedCache;
     private Mock<ILogger<UpdateLearnerCommandHandler>> _logger;
+    private Mock<IMessageSession> _messageSession;
     private FeatureFlags _featureFlags;
     private UpdateLearnerCommandHandler _sut;
 #pragma warning restore CS8618 // Non-nullable field, instantiated in SetUp method
@@ -42,9 +45,11 @@ public class WhenHandlingUpdateLearnerCommand
         _updateEarningsLearningSupportRequestBuilder = new Mock<IUpdateEarningsLearningSupportRequestBuilder>();
         _distributedCache = new Mock<ILearnerDataCacheService>();
         _logger = new Mock<ILogger<UpdateLearnerCommandHandler>>();
+        _messageSession = new Mock<IMessageSession>();
         _featureFlags = new FeatureFlags { ApprenticeshipUpdateLearner = true };
         _sut = new UpdateLearnerCommandHandler(
             _logger.Object,
+            _messageSession.Object,
             _learningApiClient.Object,
             _earningsApiClient.Object,
             _updateLearningPutRequestBuilder.Object,
@@ -70,6 +75,7 @@ public class WhenHandlingUpdateLearnerCommand
         _updateLearningPutRequestBuilder.Verify(x => x.Build(It.IsAny<long>(), It.IsAny<SFA.DAS.LearnerData.Requests.UpdateLearnerRequest>(), It.IsAny<Guid>()), Times.Never);
         _learningApiClient.Verify(x => x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()), Times.Never);
         _earningsApiClient.VerifyNoOtherCalls();
+        _messageSession.Verify(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()), Times.Exactly(command.UpdateLearnerRequest.Delivery.OnProgramme.Count));
     }
 
     [Test]
@@ -87,6 +93,44 @@ public class WhenHandlingUpdateLearnerCommand
         //Assert
         _learningApiClient.Verify(x =>
             x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(apiPutRequest));
+        _messageSession.Verify(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()), Times.Exactly(command.UpdateLearnerRequest.Delivery.OnProgramme.Count));
+    }
+
+    [Test]
+    public async Task Then_LearnerDataEvent_Is_Published_For_Each_OnProgramme_Item()
+    {
+        // Arrange
+        var command = _fixture.Create<UpdateLearnerCommand>();
+        command.CorrelationId = Guid.NewGuid();
+        command.ReceivedOn = DateTime.UtcNow;
+        command.UpdateLearnerRequest.Delivery.OnProgramme =
+        [
+            _fixture.Build<SFA.DAS.LearnerData.Requests.OnProgrammeRequestDetails>()
+                .With(x => x.StandardCode, 100)
+                .With(x => x.Costs, [new SFA.DAS.LearnerData.Requests.CostDetails { TrainingPrice = 10000, EpaoPrice = 2000 }])
+                .Create(),
+            _fixture.Build<SFA.DAS.LearnerData.Requests.OnProgrammeRequestDetails>()
+                .With(x => x.StandardCode, 200)
+                .With(x => x.Costs, [new SFA.DAS.LearnerData.Requests.CostDetails { TrainingPrice = 12000, EpaoPrice = 1000 }])
+                .Create()
+        ];
+
+        MockLearningApiResponse();
+        MockLearningPutRequestBuilder(command);
+
+        var publishedEvents = new List<LearnerDataEvent>();
+        _messageSession
+            .Setup(x => x.Publish(It.IsAny<LearnerDataEvent>(), It.IsAny<PublishOptions>()))
+            .Callback((object e, PublishOptions _) => publishedEvents.Add((LearnerDataEvent)e));
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _messageSession.Verify(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()), Times.Exactly(2));
+        publishedEvents.Select(x => x.StandardCode).Should().BeEquivalentTo([100, 200]);
+        publishedEvents.Select(x => x.CorrelationId).Distinct().Should().BeEquivalentTo([command.CorrelationId]);
+        publishedEvents.Select(x => x.ReceivedDate).Distinct().Should().BeEquivalentTo([command.ReceivedOn]);
     }
 
     [Test]
