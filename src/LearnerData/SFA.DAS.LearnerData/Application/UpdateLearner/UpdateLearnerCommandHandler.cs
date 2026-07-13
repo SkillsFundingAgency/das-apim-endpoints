@@ -99,7 +99,7 @@ public class UpdateLearnerCommandHandler(
     {
         var cost = onProgramme.Costs.GetCostsOrDefault(onProgramme.StartDate).First();
 
-        return new LearnerDataEvent //todo verify assumptions
+        return new LearnerDataEvent
         {
             ULN = command.UpdateLearnerRequest.Learner.Uln,
             UKPRN = command.Ukprn,
@@ -109,15 +109,15 @@ public class UpdateLearnerCommandHandler(
             DoB = command.UpdateLearnerRequest.Learner.Dob,
             StartDate = onProgramme.StartDate,
             PlannedEndDate = onProgramme.ExpectedEndDate,
-            PercentageLearningToBeDelivered = null,
+            PercentageLearningToBeDelivered = onProgramme.PercentageOfTrainingLeft,
             EpaoPrice = cost.EpaoPrice ?? 0,
             TrainingPrice = cost.TrainingPrice,
-            AgreementId = onProgramme.AgreementId ?? string.Empty,
-            IsFlexiJob = false,
+            AgreementId = onProgramme.AgreementId!,
+            IsFlexiJob = onProgramme.IsFlexiJob.GetValueOrDefault(),
             StandardCode = onProgramme.StandardCode,
             CorrelationId = command.CorrelationId,
             ReceivedDate = command.ReceivedOn,
-            ConsumerReference = null,
+            ConsumerReference = command.UpdateLearnerRequest.ConsumerReference,
             LearningType = LearningType.Apprenticeship
         };
     }

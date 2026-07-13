@@ -130,11 +130,11 @@ public class WhenCreatingLearners
         var request = _fixture.Create<CreateLearnerRequest>();
         request.Delivery.OnProgramme =
         [
-            _fixture.Build<CreateLearnerRequest.OnProgrammeDetails>()
+            _fixture.Build<OnProgrammeRequestDetails>()
                 .With(x => x.StandardCode, 100)
                 .With(x => x.Costs, [new CostDetails { TrainingPrice = 15000, EpaoPrice = 2000 }])
                 .Create(),
-            _fixture.Build<CreateLearnerRequest.OnProgrammeDetails>()
+            _fixture.Build<OnProgrammeRequestDetails>()
                 .With(x => x.StandardCode, 200)
                 .With(x => x.Costs, [new CostDetails { TrainingPrice = 12000, EpaoPrice = 1000 }])
                 .Create()

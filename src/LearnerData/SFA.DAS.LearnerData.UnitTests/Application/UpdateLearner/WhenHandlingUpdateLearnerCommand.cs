@@ -103,14 +103,19 @@ public class WhenHandlingUpdateLearnerCommand
         var command = _fixture.Create<UpdateLearnerCommand>();
         command.CorrelationId = Guid.NewGuid();
         command.ReceivedOn = DateTime.UtcNow;
+        command.UpdateLearnerRequest.ConsumerReference = "consumer-ref-123";
         command.UpdateLearnerRequest.Delivery.OnProgramme =
         [
             _fixture.Build<SFA.DAS.LearnerData.Requests.OnProgrammeRequestDetails>()
                 .With(x => x.StandardCode, 100)
+                .With(x => x.PercentageOfTrainingLeft, 75)
+                .With(x => x.IsFlexiJob, true)
                 .With(x => x.Costs, [new SFA.DAS.LearnerData.Requests.CostDetails { TrainingPrice = 10000, EpaoPrice = 2000 }])
                 .Create(),
             _fixture.Build<SFA.DAS.LearnerData.Requests.OnProgrammeRequestDetails>()
                 .With(x => x.StandardCode, 200)
+                .With(x => x.PercentageOfTrainingLeft, 40)
+                .With(x => x.IsFlexiJob, false)
                 .With(x => x.Costs, [new SFA.DAS.LearnerData.Requests.CostDetails { TrainingPrice = 12000, EpaoPrice = 1000 }])
                 .Create()
         ];
@@ -129,6 +134,9 @@ public class WhenHandlingUpdateLearnerCommand
         // Assert
         _messageSession.Verify(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()), Times.Exactly(2));
         publishedEvents.Select(x => x.StandardCode).Should().BeEquivalentTo([100, 200]);
+        publishedEvents.Select(x => x.PercentageLearningToBeDelivered).Should().BeEquivalentTo([75, 40]);
+        publishedEvents.Select(x => x.IsFlexiJob).Should().BeEquivalentTo([true, false]);
+        publishedEvents.Select(x => x.ConsumerReference).Distinct().Should().BeEquivalentTo([command.UpdateLearnerRequest.ConsumerReference]);
         publishedEvents.Select(x => x.CorrelationId).Distinct().Should().BeEquivalentTo([command.CorrelationId]);
         publishedEvents.Select(x => x.ReceivedDate).Distinct().Should().BeEquivalentTo([command.ReceivedOn]);
     }

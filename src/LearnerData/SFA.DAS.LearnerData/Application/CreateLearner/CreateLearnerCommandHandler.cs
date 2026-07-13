@@ -50,7 +50,7 @@ public class CreateLearnerCommandHandler(
         }
     }
 
-    private LearnerDataEvent MapToEvent(CreateLearnerCommand command, CreateLearnerRequest.OnProgrammeDetails onProgramme)
+    private LearnerDataEvent MapToEvent(CreateLearnerCommand command, OnProgrammeRequestDetails onProgramme)
     {
         var cost = onProgramme.Costs.GetCostsOrDefault(onProgramme.StartDate).First();
 

@@ -203,9 +203,9 @@ public class WhenValidatingLearnerData
             },
             Delivery = new CreateLearnerRequest.DeliveryDetails
             {
-                OnProgramme = new List<CreateLearnerRequest.OnProgrammeDetails>
+                OnProgramme = new List<OnProgrammeRequestDetails>
                 {
-                    new CreateLearnerRequest.OnProgrammeDetails
+                    new OnProgrammeRequestDetails
                     {
                         AgreementId = "ABCD",
                         IsFlexiJob = false,
