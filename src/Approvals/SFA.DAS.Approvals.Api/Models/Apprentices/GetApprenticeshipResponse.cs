@@ -1,11 +1,11 @@
+﻿using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using SFA.DAS.SharedOuterApi.Types.Constants;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
+namespace SFA.DAS.Approvals.Api.Models.Apprentices;
 
-public class GetApprenticeshipResponse : IPartyResource
+public class GetApprenticeshipResponse
 {
     public long Id { get; set; }
     public long CohortId { get; set; }
@@ -33,11 +33,7 @@ public class GetApprenticeshipResponse : IPartyResource
     public string ProviderReference { get; set; }
     public short Status { get; set; }
     public DateTime? StopDate { get; set; }
-    public int? WithdrawnReasonCode { get; set; }
     public DateTime? PauseDate { get; set; }
-    public bool FreezeStatus { get; set; }
-    public byte? FreezePaymentsReason { get; set; }
-    public DateTime? PaymentFreezeDate { get; set; }
     public DateTime? CompletionDate { get; set; }
     public string EndpointAssessorName { get; set; }
     public bool HasHadDataLockSuccess { get; set; }
@@ -68,4 +64,8 @@ public class GetApprenticeshipResponse : IPartyResource
     public int? EmployerVerificationStatus { get; set; }
     public string EmployerVerificationNotes { get; set; }
     public bool HasChangeHistory { get; set; }
+    public int? WithdrawnReasonCode { get; set; }
+    public bool FreezeStatus { get; set; }
+    public byte? FreezePaymentsReason { get; set; }
+    public DateTime? PaymentFreezeDate { get; set; }
 }

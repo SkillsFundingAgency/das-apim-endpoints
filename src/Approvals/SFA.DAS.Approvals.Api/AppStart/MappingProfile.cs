@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using SFA.DAS.Approvals.Api.Models.Apprentices;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetApprenticeship;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprenticeshipsCSV;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
+using GetApprenticeshipResponseCommitemnts = SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
 using static SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetPriceEpisodesResponse;
+using GetApprenticeshipQueryResponse = SFA.DAS.Approvals.Api.Models.Apprentices;
 using GetApprenticeshipUpdatesResponse = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetApprenticeshipUpdatesResponse;
 
 namespace SFA.DAS.Approvals.Api.AppStart
@@ -14,7 +16,7 @@ namespace SFA.DAS.Approvals.Api.AppStart
     {
         public MappingProfile()
         {
-            CreateMap<GetApprenticeshipResponse, GetManageApprenticeshipDetailsResponse.ApprenticeshipDetails>();
+            CreateMap<GetApprenticeshipResponseCommitemnts.GetApprenticeshipResponse, GetManageApprenticeshipDetailsResponse.ApprenticeshipDetails>();
             CreateMap<PriceEpisode, GetManageApprenticeshipDetailsResponse.PriceEpisode>();
             CreateMap<GetApprenticeshipUpdatesResponse.ApprenticeshipUpdate, GetManageApprenticeshipDetailsResponse.ApprenticeshipUpdate>();
             CreateMap<GetDataLocksResponse.DataLock, GetManageApprenticeshipDetailsResponse.DataLock>();
@@ -29,6 +31,8 @@ namespace SFA.DAS.Approvals.Api.AppStart
             CreateMap<GetApprenticeshipsCSVQueryResult, PostApprenticeshipsCSVResponse>();
             CreateMap<GetApprenticeshipsCSVQueryResult.ApprenticeshipDetailsCSVResponse, PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse>();
             CreateMap<BulkUploadAddDraftApprenticeshipRequest, BulkUploadAddDraftApprenticeshipExtendedRequest>();
+            CreateMap<GetApprenticeshipResponseCommitemnts.GetApprenticeshipResponse, GetApprenticeshipQueryResult>();
+            CreateMap<GetApprenticeshipQueryResult, GetApprenticeshipQueryResponse.GetApprenticeshipResponse>();
         }
     }
 }
