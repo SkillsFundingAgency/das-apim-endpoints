@@ -2,9 +2,11 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
 using SFA.DAS.LearnerData.Enums;
+using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using GetShortCourseLearningsForEarnings = SFA.DAS.LearnerData.Requests.LearningInner.GetShortCourseLearningsForEarnings;
@@ -16,21 +18,24 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.ShortCourses;
 public class WhenHandlingGetShortCourseEarningsQuery
 {
     private GetShortCourseEarningsQueryHandler _handler;
-    private Mock<ILogger<GetShortCourseEarningsQueryHandler>> _logger;
-    private Mock<ILearningApiClient<LearningApiConfiguration>> _learningApiClient;
-    private Mock<IEarningsApiClient<EarningsApiConfiguration>> _earningsApiClient;
+    private Mock<ILogger<GetShortCourseEarningsQueryHandler>> _mockLogger;
+    private Mock<ILearningApiClient<LearningApiConfiguration>> _mockLearningApiClient;
+    private Mock<IEarningsApiClient<EarningsApiConfiguration>> _mockEarningsApiClient;
+    private Mock<ILearnerDataCacheService> _mockDistributedCache;
 
     [SetUp]
     public void SetUp()
     {
-        _logger = new Mock<ILogger<GetShortCourseEarningsQueryHandler>>();
-        _learningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
-        _earningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
+        _mockLogger = new Mock<ILogger<GetShortCourseEarningsQueryHandler>>();
+        _mockLearningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
+        _mockEarningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
+        _mockDistributedCache = new Mock<ILearnerDataCacheService>();
 
         _handler = new GetShortCourseEarningsQueryHandler(
-            _logger.Object,
-            _learningApiClient.Object,
-            _earningsApiClient.Object);
+            _mockLogger.Object,
+            _mockLearningApiClient.Object,
+            _mockEarningsApiClient.Object,
+            _mockDistributedCache.Object);
     }
 
     [Test]
@@ -39,6 +44,7 @@ public class WhenHandlingGetShortCourseEarningsQuery
         var learning = BuildLearning(learnerRef: "ABC123");
         SetupLearningApi([learning]);
         SetupEarningsApi(learning.LearningKey, []);
+        SetupCacheService([learning]);
 
         var result = await _handler.Handle(BuildQuery(), CancellationToken.None);
 
@@ -51,6 +57,7 @@ public class WhenHandlingGetShortCourseEarningsQuery
         var learning = BuildLearning(episodes: []);
         SetupLearningApi([learning]);
         SetupEarningsApi(learning.LearningKey, []);
+        SetupCacheService([learning]);
 
         var result = await _handler.Handle(BuildQuery(), CancellationToken.None);
 
@@ -60,7 +67,7 @@ public class WhenHandlingGetShortCourseEarningsQuery
     [Test]
     public async Task Then_Empty_Result_Returned_When_No_Learnings()
     {
-        _learningApiClient
+        _mockLearningApiClient
             .Setup(x => x.Get<GetPagedShortCourseLearnersResponse>(It.IsAny<GetShortCourseLearningsForEarnings>()))
             .ReturnsAsync(new GetPagedShortCourseLearnersResponse { Items = [], TotalItems = 0 });
 
@@ -68,13 +75,13 @@ public class WhenHandlingGetShortCourseEarningsQuery
 
         result.Learners.Should().BeEmpty();
         result.Total.Should().Be(0);
-        _earningsApiClient.Verify(x => x.GetWithResponseCode<GetFm99ShortCourseDataResponse>(It.IsAny<GetFm99ShortCourseDataRequest>()), Times.Never);
+        _mockEarningsApiClient.Verify(x => x.GetWithResponseCode<GetFm99ShortCourseDataResponse>(It.IsAny<GetFm99ShortCourseDataRequest>()), Times.Never);
     }
 
     [Test]
     public async Task Then_Empty_Result_Returned_When_Learning_Api_Returns_Null()
     {
-        _learningApiClient
+        _mockLearningApiClient
             .Setup(x => x.Get<GetPagedShortCourseLearnersResponse>(It.IsAny<GetShortCourseLearningsForEarnings>()))
             .ReturnsAsync((GetPagedShortCourseLearnersResponse)null);
 
@@ -89,8 +96,9 @@ public class WhenHandlingGetShortCourseEarningsQuery
     {
         var learning = BuildLearning();
         SetupLearningApi([learning]);
+        SetupCacheService([learning]);
 
-        _earningsApiClient
+        _mockEarningsApiClient
             .Setup(x => x.GetWithResponseCode<GetFm99ShortCourseDataResponse>(It.IsAny<GetFm99ShortCourseDataRequest>()))
             .ReturnsAsync(new ApiResponse<GetFm99ShortCourseDataResponse>(null, System.Net.HttpStatusCode.NotFound, ""));
 
@@ -105,6 +113,7 @@ public class WhenHandlingGetShortCourseEarningsQuery
         var learning = BuildLearning();
         SetupLearningApi([learning]);
         SetupEarningsApi(learning.LearningKey, []);
+        SetupCacheService([learning]);
 
         var result = await _handler.Handle(BuildQuery(), CancellationToken.None);
 
@@ -118,6 +127,7 @@ public class WhenHandlingGetShortCourseEarningsQuery
         var learning = BuildLearning(episodes: [episode]);
         SetupLearningApi([learning]);
         SetupEarningsApi(learning.LearningKey, []);
+        SetupCacheService([learning]);
 
         var result = await _handler.Handle(BuildQuery(), CancellationToken.None);
 
@@ -125,6 +135,31 @@ public class WhenHandlingGetShortCourseEarningsQuery
         course.CoursePrice.Should().Be(1500m);
         course.Approved.Should().BeTrue();
         course.AimSequenceNumber.Should().Be(1);
+    }
+
+    [Test]
+    public async Task Then_AimSequenceNumber_Is_Mapped_By_CourseCode()
+    {
+        var episodes = new List<LearningResponse.Episode>
+        {
+            new() { CourseCode = "91", Price = 1500m, IsApproved = true, LearnerRef = "X1" },
+            new() { CourseCode = "92", Price = 1200m, IsApproved = false, LearnerRef = "X1" }
+        };
+
+        var learning = BuildLearning(episodes: episodes);
+        SetupLearningApi([learning]);
+        SetupEarningsApi(learning.LearningKey, []);
+        SetupCacheService([learning], new Dictionary<string, int>
+        {
+            ["91"] = 7,
+            ["92"] = 3
+        });
+
+        var result = await _handler.Handle(BuildQuery(), CancellationToken.None);
+
+        var coursesByPrice = result.Learners[0].Courses.ToDictionary(x => x.CoursePrice);
+        coursesByPrice[1500m].AimSequenceNumber.Should().Be(7);
+        coursesByPrice[1200m].AimSequenceNumber.Should().Be(3);
     }
 
     [TestCase(EmployerType.Levy, "GSO Short Courses (Apprenticeship Units) Levy")]
@@ -135,6 +170,7 @@ public class WhenHandlingGetShortCourseEarningsQuery
         var learning = BuildLearning(episodes: [episode]);
         SetupLearningApi([learning]);
         SetupEarningsApi(learning.LearningKey, []);
+        SetupCacheService([learning]);
 
         var result = await _handler.Handle(BuildQuery(), CancellationToken.None);
 
@@ -146,6 +182,7 @@ public class WhenHandlingGetShortCourseEarningsQuery
     {
         var learning = BuildLearning();
         SetupLearningApi([learning]);
+        SetupCacheService([learning]);
         var earnings = new List<ShortCourseEarning>
         {
             new() { CollectionYear = 2526, CollectionPeriod = 3, Amount = 750m, Type = "ThirtyPercentLearningComplete" }
@@ -167,6 +204,7 @@ public class WhenHandlingGetShortCourseEarningsQuery
         var learning = BuildLearning();
         SetupLearningApi([learning], totalItems: 45);
         SetupEarningsApi(learning.LearningKey, []);
+        SetupCacheService([learning]);
 
         var result = await _handler.Handle(new GetShortCourseEarningsQuery(12345678, 2526, 1, page: 2, pageSize: 20), CancellationToken.None);
 
@@ -188,18 +226,45 @@ public class WhenHandlingGetShortCourseEarningsQuery
 
     private void SetupLearningApi(List<LearningResponse.Learning> items, int totalItems = -1)
     {
-        _learningApiClient
+        _mockLearningApiClient
             .Setup(x => x.Get<GetPagedShortCourseLearnersResponse>(It.IsAny<GetShortCourseLearningsForEarnings>()))
             .ReturnsAsync(new GetPagedShortCourseLearnersResponse { Items = items, TotalItems = totalItems < 0 ? items.Count : totalItems });
     }
 
     private void SetupEarningsApi(Guid learningKey, List<ShortCourseEarning> earnings)
     {
-        _earningsApiClient
+        _mockEarningsApiClient
             .Setup(x => x.GetWithResponseCode<GetFm99ShortCourseDataResponse>(It.IsAny<GetFm99ShortCourseDataRequest>()))
             .ReturnsAsync(new ApiResponse<GetFm99ShortCourseDataResponse>(
                 new GetFm99ShortCourseDataResponse { Earnings = earnings },
                 System.Net.HttpStatusCode.OK, ""));
+    }
+
+    private void SetupCacheService(List<LearningResponse.Learning> learningInnerLearners, Dictionary<string, int> aimSequenceNumberByCourseCode = null)
+    {
+        var aimNumber = 1;
+
+        var cachedSldLearners = learningInnerLearners.Select(l => new ShortCourseRequest
+        {
+            Learner = new ShortCourseLearnerRequestDetails
+            {
+                Uln = long.Parse(l.Learner.Uln)
+            },
+            Delivery = new ShortCourseDelivery{
+                OnProgramme = l.Episodes.Select(e => new ShortCourseOnProgramme
+                {
+                    CourseCode = e.CourseCode,
+                    AimSequenceNumber = aimSequenceNumberByCourseCode != null &&
+                                        aimSequenceNumberByCourseCode.TryGetValue(e.CourseCode, out var aimSequenceNumber)
+                        ? aimSequenceNumber
+                        : aimNumber++,
+                }).ToList()
+            }
+        }).ToList();
+
+        _mockDistributedCache.Setup(x=>
+            x.GetLearners<ShortCourseRequest>(It.IsAny<long>(), It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(cachedSldLearners);
     }
 
     private static GetShortCourseEarningsQuery BuildQuery() =>

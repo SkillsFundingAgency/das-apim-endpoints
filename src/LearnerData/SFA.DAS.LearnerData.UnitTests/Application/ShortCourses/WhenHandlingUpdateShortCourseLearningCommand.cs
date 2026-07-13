@@ -17,6 +17,7 @@ using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SharedLearningType = SFA.DAS.SharedOuterApi.Types.Constants.LearningType;
+using SFA.DAS.LearnerData.Services;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.ShortCourses;
 
@@ -31,6 +32,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
     private Mock<IUpdateShortCourseOnProgrammeEarningPutRequestBuilder> _updateShortCourseOnProgrammeEarningPutRequestBuilder;
     private Mock<IShortCourseLookupService> _shortCourseLookupService;
     private Mock<IMessageSession> _messageSession;
+    private Mock<ILearnerDataCacheService> _learnerDataCacheService;
 
     private UpdateShortCourseLearningCommand _command;
     private Guid _learnerKey;
@@ -52,6 +54,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             .Setup(x => x.GetCourseDetails(It.IsAny<string>(), It.IsAny<DateTime>()))
             .ReturnsAsync(new ShortCourseLookupResult { Price = 1500, LearningType = SharedLearningType.Apprenticeship });
         _messageSession = new Mock<IMessageSession>();
+        _learnerDataCacheService = new Mock<ILearnerDataCacheService>();
 
         _handler = new UpdateShortCourseLearningCommandHandler(
             _logger.Object,
@@ -60,7 +63,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             _updateShortCourseOnProgrammeEarningPutRequestBuilder.Object,
             _shortCourseLookupService.Object,
             _messageSession.Object,
-            new PaymentsConfiguration { PaymentsEndpoint = "test-payments-endpoint" });
+            _learnerDataCacheService.Object);
 
         _learnerKey = Guid.NewGuid();
         _ukprn = 12345678;
