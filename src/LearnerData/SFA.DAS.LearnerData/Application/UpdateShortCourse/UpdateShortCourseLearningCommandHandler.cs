@@ -13,6 +13,7 @@ using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using EarningsOnProgramme = SFA.DAS.LearnerData.Requests.EarningsInner.OnProgramme;
+using LearningInnerOnProgramme = SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme;
 using SharedLearningType = SFA.DAS.SharedOuterApi.Types.Constants.LearningType;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
@@ -113,7 +114,8 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         _logger.LogInformation("New {LearningOrEpisode} created for learner {LearnerKey} / course {CourseCode}. LearningKey: {LearningKey}",
             learningResponse.IsNewEpisode ? "Episode" : "Learning", command.LearnerKey, onProg.CourseCode, learningResponse.LearningKey);
 
-        var earningsRequest = BuildCreateEarningsRequest(command, onProg, learningResponse, courseDetails.Price, courseDetails.LearningType);
+        var resolvedOnProg = ResolveOnProgrammeFromLearningResponse(onProg, learningResponse);
+        var earningsRequest = BuildCreateEarningsRequest(command, onProg, resolvedOnProg, learningResponse, courseDetails.Price, courseDetails.LearningType);
         await _earningsApiClient.Post(new PostCreateUnapprovedShortCourseLearningRequest(earningsRequest));
 
         var correlationId = Guid.NewGuid();
@@ -126,7 +128,8 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
     {
         if (EarningsUpdateRequired(learningResponse))
         {
-            var earningBody = _updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(onProg, learningResponse.LearnerKey, command.Request.Learner.LearnerRef);
+            var resolvedOnProg = ResolveOnProgrammeFromLearningResponse(onProg, learningResponse);
+            var earningBody = _updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(resolvedOnProg, learningResponse.LearnerKey, command.Request.Learner.LearnerRef);
             var earningRequest = new UpdateShortCourseOnProgrammeEarningPutRequest(learningResponse.LearningKey, learningResponse.UpdatedEpisodeKey, earningBody);
             await _earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(earningRequest);
         }
@@ -134,6 +137,27 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         {
             _logger.LogInformation("No earnings update required for {LearnerKey} / {CourseCode}", command.LearnerKey, onProg.CourseCode);
         }
+    }
+
+    private static LearningInnerOnProgramme ResolveOnProgrammeFromLearningResponse(ShortCourseOnProgramme onProg, UpdateShortCourseLearningPutResponse learningResponse)
+    {
+        var episode = learningResponse.Episodes.Single(e => e.EpisodeKey == learningResponse.UpdatedEpisodeKey);
+
+        var milestones = onProg.Milestones.ToList();
+        if (episode.CompletionDate.HasValue && !milestones.Contains(Milestone.LearningComplete))
+            milestones.Add(Milestone.LearningComplete);
+
+        return new LearningInnerOnProgramme
+        {
+            CourseCode = episode.CourseCode,
+            Ukprn = episode.Ukprn,
+            StartDate = episode.StartDate,
+            ExpectedEndDate = episode.PlannedEndDate,
+            CompletionDate = episode.CompletionDate,
+            WithdrawalDate = episode.WithdrawalDate,
+            WithdrawalReasonCode = onProg.WithdrawalReasonCode,
+            Milestones = milestones
+        };
     }
 
     private UpdateShortCourseLearningPutRequest BuildLearningRequest(UpdateShortCourseLearningCommand command, IReadOnlyList<ShortCourseLookupResult> courseDetails)
@@ -174,16 +198,11 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
     private CreateUnapprovedShortCourseLearningRequest BuildCreateEarningsRequest(
         UpdateShortCourseLearningCommand command,
         ShortCourseOnProgramme onProg,
+        LearningInnerOnProgramme resolvedOnProg,
         UpdateShortCourseLearningPutResponse learningResponse,
         decimal price,
         SharedLearningType learningType)
     {
-        var milestones = onProg.Milestones.Select(m =>
-            m == Milestone.LearningComplete ? Milestone.LearningComplete : Milestone.ThirtyPercentLearningComplete).ToList();
-
-        if (onProg.CompletionDate.HasValue && !onProg.Milestones.Contains(Milestone.LearningComplete))
-            milestones.Add(Milestone.LearningComplete);
-
         return new CreateUnapprovedShortCourseLearningRequest
         {
             LearningKey = learningResponse.LearningKey,
@@ -196,13 +215,13 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             LearningSupport = onProg.LearningSupport,
             OnProgramme = new EarningsOnProgramme
             {
-                CourseCode = onProg.CourseCode,
-                Ukprn = command.Ukprn,
-                StartDate = onProg.StartDate,
-                ExpectedEndDate = onProg.ExpectedEndDate,
-                CompletionDate = onProg.CompletionDate,
-                WithdrawalDate = onProg.WithdrawalDate,
-                Milestones = milestones,
+                CourseCode = resolvedOnProg.CourseCode,
+                Ukprn = resolvedOnProg.Ukprn,
+                StartDate = resolvedOnProg.StartDate,
+                ExpectedEndDate = resolvedOnProg.ExpectedEndDate,
+                CompletionDate = resolvedOnProg.CompletionDate,
+                WithdrawalDate = resolvedOnProg.WithdrawalDate,
+                Milestones = resolvedOnProg.Milestones,
                 TotalPrice = price,
                 LearningType = learningType
             }

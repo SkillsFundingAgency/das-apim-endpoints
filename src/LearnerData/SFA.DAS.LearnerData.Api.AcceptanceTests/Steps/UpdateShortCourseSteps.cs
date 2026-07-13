@@ -121,6 +121,7 @@ public class UpdateShortCourseSteps
                     },
                     Episodes = [new LearningInnerShortCourseEpisode
                     {
+                        EpisodeKey = updatedEpisodeKey,
                         Ukprn = ukprn,
                         EmployerAccountId = 12,
                         CourseCode = "ZSC00001",

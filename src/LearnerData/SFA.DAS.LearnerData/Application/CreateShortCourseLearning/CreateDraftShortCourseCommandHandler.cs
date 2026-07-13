@@ -88,7 +88,8 @@ public class CreateDraftShortCourseCommandHandler(
 
     private async Task HandleReinstatedLearning(CreateDraftShortCourseCommand command, OnProgramme resolvedOnProg, CreateShortCoursePostResponse result)
     {
-        var earningsPutBody = updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(resolvedOnProg, result.LearnerKey, command.ShortCourseRequest.Learner.LearnerRef);
+        var earningsOnProg = ResolveOnProgrammeFromLearningResponse(resolvedOnProg, result);
+        var earningsPutBody = updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(earningsOnProg, result.LearnerKey, command.ShortCourseRequest.Learner.LearnerRef);
         await earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
             new UpdateShortCourseOnProgrammeEarningPutRequest(result.LearningKey, result.EpisodeKey, earningsPutBody));
     }
@@ -101,10 +102,31 @@ public class CreateDraftShortCourseCommandHandler(
         CreateShortCoursePostResponse result,
         Guid correlationId)
     {
-        var earningsRequestData = createUnapprovedShortCourseLearningRequestBuilder.Build(command.ShortCourseRequest, onProg, result.LearningKey, result.EpisodeKey, command.Ukprn, resolvedOnProg);
+        var earningsOnProg = ResolveOnProgrammeFromLearningResponse(resolvedOnProg, result);
+        var earningsRequestData = createUnapprovedShortCourseLearningRequestBuilder.Build(command.ShortCourseRequest, onProg, result.LearningKey, result.EpisodeKey, command.Ukprn, earningsOnProg);
         await earningsApiClient.Post(new SFA.DAS.LearnerData.Requests.EarningsInner.PostCreateUnapprovedShortCourseLearningRequest(earningsRequestData));
 
         await messageSession.Publish(MapToEvent(command.Ukprn, requestData, onProg, resolvedOnProg, command.ShortCourseRequest.ConsumerReference, correlationId));
+    }
+
+    private static OnProgramme ResolveOnProgrammeFromLearningResponse(OnProgramme resolvedOnProg, CreateShortCoursePostResponse result)
+    {
+        var episode = result.Episodes.Single(e => e.EpisodeKey == result.EpisodeKey);
+
+        return new OnProgramme
+        {
+            CourseCode = episode.CourseCode,
+            Ukprn = episode.Ukprn,
+            EmployerId = resolvedOnProg.EmployerId,
+            StartDate = episode.StartDate,
+            ExpectedEndDate = episode.PlannedEndDate,
+            CompletionDate = episode.CompletionDate,
+            WithdrawalDate = episode.WithdrawalDate,
+            WithdrawalReasonCode = resolvedOnProg.WithdrawalReasonCode,
+            Milestones = resolvedOnProg.Milestones,
+            Price = resolvedOnProg.Price,
+            LearningType = resolvedOnProg.LearningType
+        };
     }
 
     private static LearnerDataEvent MapToEvent(
