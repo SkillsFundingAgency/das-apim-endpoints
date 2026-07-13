@@ -2,20 +2,20 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.LearnerData.Configuration;
+using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.LearnerData.Services.ShortCourses;
-using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
-using SFA.DAS.LearnerData.Requests.LearningInner;
-using EarningsOnProgramme = SFA.DAS.LearnerData.Requests.EarningsInner.OnProgramme;
-using SharedLearningType = SFA.DAS.SharedOuterApi.Types.Constants.LearningType;
+using SFA.DAS.LearnerData.Services;
+using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using EarningsOnProgramme = SFA.DAS.LearnerData.Requests.EarningsInner.OnProgramme;
+using SharedLearningType = SFA.DAS.SharedOuterApi.Types.Constants.LearningType;
 
 namespace SFA.DAS.LearnerData.Application.UpdateShortCourse;
 
@@ -27,6 +27,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
     private readonly IUpdateShortCourseOnProgrammeEarningPutRequestBuilder _updateShortCourseOnProgrammeEarningPutRequestBuilder;
     private readonly IShortCourseLookupService _shortCourseLookupService;
     private readonly IMessageSession _messageSession;
+    private readonly ILearnerDataCacheService _learnerDataCacheService;
 
     public UpdateShortCourseLearningCommandHandler(
         ILogger<UpdateShortCourseLearningCommandHandler> logger,
@@ -35,7 +36,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         IUpdateShortCourseOnProgrammeEarningPutRequestBuilder updateShortCourseOnProgrammeEarningPutRequestBuilder,
         IShortCourseLookupService shortCourseLookupService,
         IMessageSession messageSession,
-        PaymentsConfiguration paymentsConfiguration)
+        ILearnerDataCacheService learnerDataCacheService)
     {
         _logger = logger;
         _learningApiClient = learningApiClient;
@@ -43,11 +44,14 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         _updateShortCourseOnProgrammeEarningPutRequestBuilder = updateShortCourseOnProgrammeEarningPutRequestBuilder;
         _shortCourseLookupService = shortCourseLookupService;
         _messageSession = messageSession;
+        _learnerDataCacheService = learnerDataCacheService;
     }
 
     public async Task Handle(UpdateShortCourseLearningCommand command, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Handling UpdateShortCourseLearningCommand for Ukprn: {Ukprn}", command.Ukprn);
+
+        await _learnerDataCacheService.StoreLearner(command.Request, command.Ukprn, cancellationToken);
 
         var courseDetails = await Task.WhenAll(command.Request.Delivery.OnProgramme
             .Select(onProg => _shortCourseLookupService.GetCourseDetails(onProg.CourseCode, onProg.StartDate)));
