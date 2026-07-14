@@ -17,6 +17,7 @@ using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SharedLearningType = SFA.DAS.SharedOuterApi.Types.Constants.LearningType;
+using LearningOnProgramme = SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme;
 using SFA.DAS.LearnerData.Services;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.ShortCourses;
@@ -143,11 +144,25 @@ public class WhenHandlingUpdateShortCourseLearningCommand
     public async Task Then_CompletionDate_Is_Sent_To_Earnings_Api_When_There_Are_Changes()
     {
         // Arrange
+        var episodeKey = Guid.NewGuid();
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = _learnerKey,
+            UpdatedEpisodeKey = episodeKey,
             CourseCode = "123",
-            Changes = [ShortCourseUpdateChanges.CompletionDate.ToString()]
+            Changes = [ShortCourseUpdateChanges.CompletionDate.ToString()],
+            Episodes =
+            [
+                new LearningInnerShortCourseEpisode
+                {
+                    EpisodeKey = episodeKey,
+                    Ukprn = _ukprn,
+                    CourseCode = "123",
+                    StartDate = new DateTime(2025, 1, 1),
+                    PlannedEndDate = new DateTime(2025, 12, 31),
+                    CompletionDate = _completionDate
+                }
+            ]
         };
 
         _learningApiClient
@@ -156,7 +171,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningResponse>(new UpdateShortCourseLearningResponse { Results = [learningResponse] }, HttpStatusCode.OK, string.Empty));
 
         _updateShortCourseOnProgrammeEarningPutRequestBuilder
-            .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>(), It.IsAny<Guid>(), It.IsAny<string>()))
+            .Setup(x => x.Build(It.IsAny<LearningOnProgramme>(), It.IsAny<Guid>(), It.IsAny<string>()))
             .Returns(new UpdateShortCourseOnProgrammeRequestBody { CompletionDate = _completionDate, Milestones = [] });
 
         var earningsResponse = _fixture.Create<UpdateShortCourseEarningPutResponse>();
@@ -174,6 +189,66 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(It.Is<UpdateShortCourseOnProgrammeEarningPutRequest>(r =>
                 r.Data.CompletionDate == _completionDate)),
             Times.Once);
+    }
+
+    [Test]
+    public async Task Then_ExpectedEndDate_From_Learning_Response_Episode_Is_Used_When_Learning_Ignores_Requested_Change()
+    {
+        // Arrange
+        var onProg = _command.Request.Delivery.OnProgramme.Single();
+        var learningPersistedEndDate = new DateTime(2025, 10, 31);
+        var episodeKey = Guid.NewGuid();
+
+        var learningResponse = new UpdateShortCourseLearningPutResponse
+        {
+            LearningKey = _learnerKey,
+            UpdatedEpisodeKey = episodeKey,
+            CourseCode = onProg.CourseCode,
+            Changes = [ShortCourseUpdateChanges.ExpectedEndDate.ToString()],
+            Episodes =
+            [
+                new LearningInnerShortCourseEpisode
+                {
+                    EpisodeKey = episodeKey,
+                    Ukprn = _ukprn,
+                    CourseCode = onProg.CourseCode,
+                    StartDate = onProg.StartDate,
+                    PlannedEndDate = learningPersistedEndDate,
+                    CompletionDate = onProg.CompletionDate,
+                    WithdrawalDate = null
+                }
+            ]
+        };
+
+        _learningApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(
+                It.IsAny<UpdateShortCourseLearningPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningResponse>(new UpdateShortCourseLearningResponse { Results = [learningResponse] }, HttpStatusCode.OK, string.Empty));
+
+        _updateShortCourseOnProgrammeEarningPutRequestBuilder
+            .Setup(x => x.Build(It.IsAny<LearningOnProgramme>(), It.IsAny<Guid>(), It.IsAny<string>()))
+            .Returns(new UpdateShortCourseOnProgrammeRequestBody { ExpectedEndDate = learningPersistedEndDate, Milestones = [] });
+
+        _earningsApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
+                It.IsAny<UpdateShortCourseOnProgrammeEarningPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseEarningPutResponse>(_fixture.Create<UpdateShortCourseEarningPutResponse>(), HttpStatusCode.OK, string.Empty));
+
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert — builder must use OnProgrammes info from Learning's api response, not the raw request, since Learning may have ignored some elements of the request
+        // (eg. StartDate cannot be changed after approval)
+        _updateShortCourseOnProgrammeEarningPutRequestBuilder.Verify(x =>
+            x.Build(
+                It.Is<LearningOnProgramme>(o => o.ExpectedEndDate == learningPersistedEndDate),
+                It.IsAny<Guid>(),
+                It.IsAny<string>()),
+            Times.Once);
+
+        _updateShortCourseOnProgrammeEarningPutRequestBuilder.Verify(x =>
+            x.Build(It.IsAny<ShortCourseOnProgramme>(), It.IsAny<Guid>(), It.IsAny<string>()),
+            Times.Never);
     }
 
     [Test]
@@ -238,11 +313,25 @@ public class WhenHandlingUpdateShortCourseLearningCommand
     public async Task Then_Builder_Body_Is_Passed_To_Earnings_Api()
     {
         // Arrange
+        var episodeKey = Guid.NewGuid();
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = _learnerKey,
+            UpdatedEpisodeKey = episodeKey,
             CourseCode = "123",
-            Changes = [ShortCourseUpdateChanges.CompletionDate.ToString()]
+            Changes = [ShortCourseUpdateChanges.CompletionDate.ToString()],
+            Episodes =
+            [
+                new LearningInnerShortCourseEpisode
+                {
+                    EpisodeKey = episodeKey,
+                    Ukprn = _ukprn,
+                    CourseCode = "123",
+                    StartDate = new DateTime(2025, 1, 1),
+                    PlannedEndDate = new DateTime(2025, 12, 31),
+                    CompletionDate = _completionDate
+                }
+            ]
         };
 
         _learningApiClient
@@ -256,7 +345,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             Milestones = [Milestone.LearningComplete]
         };
         _updateShortCourseOnProgrammeEarningPutRequestBuilder
-            .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>(), It.IsAny<Guid>(), It.IsAny<string>()))
+            .Setup(x => x.Build(It.IsAny<LearningOnProgramme>(), It.IsAny<Guid>(), It.IsAny<string>()))
             .Returns(builtBody);
 
         _earningsApiClient
@@ -285,7 +374,18 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             LearningKey = learningKey,
             UpdatedEpisodeKey = episodeKey,
             CourseCode = "123",
-            Changes = [ShortCourseUpdateChanges.Reinstated.ToString()]
+            Changes = [ShortCourseUpdateChanges.Reinstated.ToString()],
+            Episodes =
+            [
+                new LearningInnerShortCourseEpisode
+                {
+                    EpisodeKey = episodeKey,
+                    Ukprn = _ukprn,
+                    CourseCode = "123",
+                    StartDate = new DateTime(2025, 1, 1),
+                    PlannedEndDate = new DateTime(2025, 12, 31)
+                }
+            ]
         };
 
         _learningApiClient
@@ -318,7 +418,18 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             LearningKey = learningKey,
             UpdatedEpisodeKey = episodeKey,
             CourseCode = "123",
-            Changes = [ShortCourseUpdateChanges.Reinstated.ToString()]
+            Changes = [ShortCourseUpdateChanges.Reinstated.ToString()],
+            Episodes =
+            [
+                new LearningInnerShortCourseEpisode
+                {
+                    EpisodeKey = episodeKey,
+                    Ukprn = _ukprn,
+                    CourseCode = "123",
+                    StartDate = new DateTime(2025, 1, 1),
+                    PlannedEndDate = new DateTime(2025, 12, 31)
+                }
+            ]
         };
 
         _learningApiClient
@@ -354,7 +465,20 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             UpdatedEpisodeKey = episodeKey,
             CourseCode = onProg.CourseCode,
             IsNewLearning = true,
-            Changes = []
+            Changes = [],
+            Episodes =
+            [
+                new LearningInnerShortCourseEpisode
+                {
+                    EpisodeKey = episodeKey,
+                    Ukprn = _ukprn,
+                    CourseCode = onProg.CourseCode,
+                    StartDate = onProg.StartDate,
+                    PlannedEndDate = onProg.ExpectedEndDate,
+                    CompletionDate = onProg.CompletionDate,
+                    WithdrawalDate = onProg.WithdrawalDate
+                }
+            ]
         };
 
         _learningApiClient
@@ -446,7 +570,20 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             UpdatedEpisodeKey = episodeKey,
             CourseCode = onProg.CourseCode,
             IsNewLearning = true,
-            Changes = []
+            Changes = [],
+            Episodes =
+            [
+                new LearningInnerShortCourseEpisode
+                {
+                    EpisodeKey = episodeKey,
+                    Ukprn = _ukprn,
+                    CourseCode = onProg.CourseCode,
+                    StartDate = onProg.StartDate,
+                    PlannedEndDate = onProg.ExpectedEndDate,
+                    CompletionDate = onProg.CompletionDate,
+                    WithdrawalDate = onProg.WithdrawalDate
+                }
+            ]
         };
 
         _learningApiClient
@@ -489,7 +626,20 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             CourseCode = onProg.CourseCode,
             IsNewLearning = false,
             IsNewEpisode = true,
-            Changes = []
+            Changes = [],
+            Episodes =
+            [
+                new LearningInnerShortCourseEpisode
+                {
+                    EpisodeKey = episodeKey,
+                    Ukprn = _ukprn,
+                    CourseCode = onProg.CourseCode,
+                    StartDate = onProg.StartDate,
+                    PlannedEndDate = onProg.ExpectedEndDate,
+                    CompletionDate = onProg.CompletionDate,
+                    WithdrawalDate = onProg.WithdrawalDate
+                }
+            ]
         };
 
         _learningApiClient
@@ -523,14 +673,28 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         var onProg = _command.Request.Delivery.OnProgramme.Single();
         onProg.CompletionDate = _completionDate;
         onProg.Milestones = [];
+        var episodeKey = Guid.NewGuid();
 
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = Guid.NewGuid(),
-            UpdatedEpisodeKey = Guid.NewGuid(),
+            UpdatedEpisodeKey = episodeKey,
             CourseCode = onProg.CourseCode,
             IsNewLearning = true,
-            Changes = []
+            Changes = [],
+            Episodes =
+            [
+                new LearningInnerShortCourseEpisode
+                {
+                    EpisodeKey = episodeKey,
+                    Ukprn = _ukprn,
+                    CourseCode = onProg.CourseCode,
+                    StartDate = onProg.StartDate,
+                    PlannedEndDate = onProg.ExpectedEndDate,
+                    CompletionDate = onProg.CompletionDate,
+                    WithdrawalDate = onProg.WithdrawalDate
+                }
+            ]
         };
 
         _learningApiClient
@@ -557,14 +721,28 @@ public class WhenHandlingUpdateShortCourseLearningCommand
     {
         // Arrange
         var onProg = _command.Request.Delivery.OnProgramme.Single();
+        var episodeKey = Guid.NewGuid();
 
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = Guid.NewGuid(),
-            UpdatedEpisodeKey = Guid.NewGuid(),
+            UpdatedEpisodeKey = episodeKey,
             CourseCode = onProg.CourseCode,
             IsNewLearning = true,
-            Changes = []
+            Changes = [],
+            Episodes =
+            [
+                new LearningInnerShortCourseEpisode
+                {
+                    EpisodeKey = episodeKey,
+                    Ukprn = _ukprn,
+                    CourseCode = onProg.CourseCode,
+                    StartDate = onProg.StartDate,
+                    PlannedEndDate = onProg.ExpectedEndDate,
+                    CompletionDate = onProg.CompletionDate,
+                    WithdrawalDate = onProg.WithdrawalDate
+                }
+            ]
         };
 
         _learningApiClient
