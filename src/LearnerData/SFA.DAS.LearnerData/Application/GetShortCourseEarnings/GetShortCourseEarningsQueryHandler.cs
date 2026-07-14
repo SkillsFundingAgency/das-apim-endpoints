@@ -105,7 +105,8 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
 
             return new ShortCourseEarningsLearner
             {
-                LearningKey = learning.LearningKey.ToString(),
+                Key = learning.LearnerKey.ToString(),
+                LearningKey = learning.LearnerKey.ToString(),
                 LearnerRef = learning.Episodes.FirstOrDefault()?.LearnerRef ?? "",
                 Courses = learning.Episodes.Select(episode => new ShortCourseEarningsCourse
                 {

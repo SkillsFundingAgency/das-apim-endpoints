@@ -108,7 +108,7 @@ public class WhenHandlingGetShortCourseEarningsQuery
     }
 
     [Test]
-    public async Task Then_LearningKey_Is_Mapped_To_String()
+    public async Task Then_LearnerKey_Is_Mapped_To_Key_And_LearningKey()
     {
         var learning = BuildLearning();
         SetupLearningApi([learning]);
@@ -117,7 +117,8 @@ public class WhenHandlingGetShortCourseEarningsQuery
 
         var result = await _handler.Handle(BuildQuery(), CancellationToken.None);
 
-        result.Learners[0].LearningKey.Should().Be(learning.LearningKey.ToString());
+        result.Learners[0].Key.Should().Be(learning.LearnerKey.ToString());
+        result.Learners[0].LearningKey.Should().Be(learning.LearnerKey.ToString());
     }
 
     [Test]
@@ -219,6 +220,7 @@ public class WhenHandlingGetShortCourseEarningsQuery
         return new LearningResponse.Learning
         {
             LearningKey = Guid.NewGuid(),
+            LearnerKey = Guid.NewGuid(),
             Learner = new LearningResponse.Learner { Uln = "1000000001", FirstName = "Test", LastName = "Learner", DateOfBirth = new DateTime(2000, 1, 1) },
             Episodes = episodes ?? [new LearningResponse.Episode { CourseCode = "91", Price = 1000m, IsApproved = true, LearnerRef = learnerRef }]
         };

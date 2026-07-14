@@ -6,6 +6,7 @@ namespace SFA.DAS.LearnerData.Responses.LearningInner.GetShortCourseLearnersForE
     public class Learning
     {
         public Guid LearningKey { get; set; }
+        public Guid LearnerKey { get; set; }
         public Learner Learner { get; set; }
         public List<Episode> Episodes { get; set; }
     }
