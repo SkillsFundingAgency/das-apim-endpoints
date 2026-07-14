@@ -608,7 +608,8 @@ public class ApprenticesController(
 
     [HttpGet]
     [Route("/provider/{providerId}/apprentices")]
-    public async Task<IActionResult> GetApprenticeships(long providerId, [FromQuery] InnerApi.Requests.GetApprenticeshipsRequest request)
+    [Route("/employer/{accountId}/apprentices")]
+    public async Task<IActionResult> GetApprenticeships(long? providerId, long? accountId , [FromQuery] InnerApi.Requests.GetApprenticeshipsRequest request)
     {
         try
         {
@@ -616,6 +617,7 @@ public class ApprenticesController(
 
             var query = new GetApprenticeshipsQuery
             {
+                AccountId = accountId,
                 ProviderId = providerId,
                 PageNumber = request.PageNumber,
                 PageItemCount = request.PageItemCount,

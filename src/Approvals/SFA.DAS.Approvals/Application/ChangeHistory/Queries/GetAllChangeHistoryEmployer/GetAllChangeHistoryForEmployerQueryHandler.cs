@@ -16,7 +16,7 @@ public class GetAllChangeHistoryForEmployerQueryHandler(ICommitmentsV2ApiClient<
         var changeHistory = await commitmentsV2ApiClient.Get<GetAllChangeHistoryForEmployerResponse>(new GetAllChangeHistoryForEmployerRequest(query.AccountId));
         return new GetAllChangeHistoryForEmployerQueryResult
         {
-            ChangeHistory = changeHistory?.ChangeHistory
+            ChangeHistory = changeHistory?.ChangeHistory ?? []
         };
     }
 }

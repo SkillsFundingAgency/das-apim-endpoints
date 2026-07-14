@@ -8,17 +8,17 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.ChangeHistory.Queries;
 
-public class WhenGettingAllChangeHistoryForProvider
+public class WhenGettingAllChangeHistoryForEmployer
 {
     [Test, MoqAutoData]
-    public async Task Then_Gets_All_ChangeHistory_For_Provider(
-           GetAllChangeHistoryForProviderQuery query,
-           GetAllChangeHistoryForProviderResponse response,
+    public async Task Then_Gets_ChangeHistory_For_Employer(
+           GetAllChangeHistoryForEmployerQuery query,
+           GetAllChangeHistoryForEmployerResponse response,
            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockClient,
-           GetAllChangeHistoryForProviderQueryHandler handler)
+           GetAllChangeHistoryForEmployerQueryHandler handler)
     {
         mockClient
-              .Setup(client => client.Get<GetAllChangeHistoryForProviderResponse>(It.Is<GetAllChangeHistoryForProviderRequest>(q => q.ProviderId == query.ProviderId)))
+              .Setup(client => client.Get<GetAllChangeHistoryForEmployerResponse>(It.Is<GetAllChangeHistoryForEmployerRequest>(q => q.AccountId == query.AccountId)))
               .ReturnsAsync(response);
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -26,15 +26,15 @@ public class WhenGettingAllChangeHistoryForProvider
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Gets_No_ChangeHistory_For_Provider_When_None_Exist(
-           GetAllChangeHistoryForProviderQuery query,
-           GetAllChangeHistoryForProviderResponse response,
+    public async Task Then_Gets_No_ChangeHistory_For_Employer_When_None_Exist(
+           GetAllChangeHistoryForEmployerQuery query,
+           GetAllChangeHistoryForEmployerResponse response,
            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockClient,
-           GetAllChangeHistoryForProviderQueryHandler handler)
+           GetAllChangeHistoryForEmployerQueryHandler handler)
     {
         mockClient
-              .Setup(client => client.Get<GetAllChangeHistoryForProviderResponse>(It.Is<GetAllChangeHistoryForProviderRequest>(q => q.ProviderId == query.ProviderId)))
-              .ReturnsAsync((GetAllChangeHistoryForProviderResponse)null);
+              .Setup(client => client.Get<GetAllChangeHistoryForEmployerResponse>(It.Is<GetAllChangeHistoryForEmployerRequest>(q => q.AccountId == query.AccountId)))
+              .ReturnsAsync((GetAllChangeHistoryForEmployerResponse)null);
         var result = await handler.Handle(query, CancellationToken.None);
 
         result.ChangeHistory.Should().BeEmpty();

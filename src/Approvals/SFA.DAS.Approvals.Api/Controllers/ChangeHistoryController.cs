@@ -49,8 +49,8 @@ public class ChangeHistoryController(IMediator mediator, ILogger<ChangeHistoryCo
     }
 
     [HttpGet]    
-    [Route("employer/{accountId:long}/get-all-change-history")]
-    public async Task<IActionResult> GetChangeHistoryForAllLearnersOfEmployer(long accountId)
+    [Route("/employer/{accountId:long}/apprentices/change-history")]
+    public async Task<IActionResult> GetChangeHistoryForEmployer(long accountId)
     {
         try
         {

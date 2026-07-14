@@ -8,9 +8,9 @@ using SFA.DAS.Approvals.Enums;
 
 namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 
-public class GetApprenticeshipsRequest(long providerId, GetApprenticeshipsQuery request) : IGetApiRequest
+public class GetApprenticeshipsRequest(long? providerId,long? accountId, GetApprenticeshipsQuery request) : IGetApiRequest
 {
-    public long? AccountId { get; set; }
+    public long? AccountId { get; set; } = accountId;
 
     public long? ProviderId { get; set; } = providerId;
 
@@ -47,7 +47,7 @@ public class GetApprenticeshipsRequest(long providerId, GetApprenticeshipsQuery 
     public ConfirmationStatus? ApprenticeConfirmationStatus { get; set; } = request.ApprenticeConfirmationStatus;
 
     public DeliveryModel? DeliveryModel { get; set; } = request.DeliveryModel;
-    public string GetUrl => $"api/apprenticeships?providerId={ProviderId}{CreateFilterQuery(this)}";
+    public string GetUrl => ProviderId.HasValue ?  $"api/apprenticeships?providerId={ProviderId}{CreateFilterQuery(this)}" : $"api/apprenticeships?accountId={AccountId}{CreateFilterQuery(this)}";
 
     private static string CreateFilterQuery(GetApprenticeshipsRequest request)
     {
