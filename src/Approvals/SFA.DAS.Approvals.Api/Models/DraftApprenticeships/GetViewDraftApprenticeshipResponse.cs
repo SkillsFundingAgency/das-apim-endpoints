@@ -1,6 +1,9 @@
 ﻿using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetViewDraftApprenticeship;
 using SFA.DAS.Approvals.InnerApi;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
 {
@@ -49,6 +52,8 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         public long? LearnerDataId { get; set; }
         public bool HasLearnerDataChanges { get; set; }
         public DateTime? LastLearnerDataSync { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public LearningType? LearningType { get; set; }
 
         public static implicit operator GetViewDraftApprenticeshipResponse(GetViewDraftApprenticeshipQueryResult source)
         {
@@ -92,7 +97,8 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
                 EmailAddressConfirmed = source.EmailAddressConfirmed,
                 DurationReducedByHours = source.DurationReducedByHours,
                 IsDurationReducedByRpl = source.IsDurationReducedByRpl,
-                TrainingTotalHours = source.TrainingTotalHours
+                TrainingTotalHours = source.TrainingTotalHours,
+                LearningType = source.LearningType
             };
         }
     }

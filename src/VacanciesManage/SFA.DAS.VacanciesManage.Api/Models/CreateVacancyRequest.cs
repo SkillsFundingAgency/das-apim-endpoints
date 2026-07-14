@@ -400,6 +400,12 @@ public class CreateVacancyQualification
     /// </summary>
     [JsonPropertyName("weighting")]
     public QualificationWeighting Weighting { get; set; }
+    
+    /// <summary>
+    /// If the QualificationType is `Other`, you must include this field for the name of the qualification.
+    /// </summary>
+    [JsonPropertyName("otherQualificationName")]
+    public string OtherQualificationName { get; set; }
 }
 
 public class SubmitterContactDetails

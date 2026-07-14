@@ -42,7 +42,7 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
 
         var (learnings, totalLearners) = await GetLearnings(request);
 
-        var sldLearners = await _learnerDataCacheService.GetLearners<ShortCourseRequest>(request.Ukprn, learnings.Select(x => x.Learner.Uln), cancellationToken);
+        var sldLearners = await _learnerDataCacheService.GetLearners<ShortCourseRequest>(request.Ukprn, learnings.Select(x => x.Learner.Uln).Distinct(), cancellationToken);
 
         var earningsByKey = await GetEarningsByKey(request, learnings);
 

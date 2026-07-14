@@ -76,7 +76,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetViewDraf
                 EmailAddressConfirmed = apprenticeship.EmailAddressConfirmed,
                 DurationReducedByHours = apprenticeship.DurationReducedByHours,
                 IsDurationReducedByRpl = apprenticeship.IsDurationReducedByRpl,
-                TrainingTotalHours = apprenticeship.TrainingTotalHours
+                TrainingTotalHours = apprenticeship.TrainingTotalHours,
+                LearningType = apprenticeship.LearningType
             };
         }
     }
