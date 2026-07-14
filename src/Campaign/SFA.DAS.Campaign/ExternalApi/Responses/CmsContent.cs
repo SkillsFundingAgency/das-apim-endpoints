@@ -206,6 +206,12 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
 
         [JsonPropertyName("cardImage")]
         public LandingPage CardImage { get; set; }
+
+        [JsonPropertyName("videoName")]
+        public string VideoName { get; set; }
+
+        [JsonPropertyName("text")]
+        public string Text { get; set; }
     }
 
     public class PurpleContent
