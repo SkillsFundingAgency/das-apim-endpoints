@@ -10,6 +10,7 @@
         public Guid Id { get; set; }
         public Guid QualificationVersionId { get; set; }
         public string? QualificationNumber { get; init; }
+        public string? QualificationName { get; init; }
         public Guid FundingOfferId { get; set; }
         public string? FundingOfferName { get; init; }
         public string? AcademicYear { get; set; }
