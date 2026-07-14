@@ -5,7 +5,6 @@ namespace SFA.DAS.LearnerData.Responses.LearningInner.GetShortCourseLearnersForE
 {
     public class Learning
     {
-        public Guid LearningKey { get; set; }
         public Guid LearnerKey { get; set; }
         public Learner Learner { get; set; }
         public List<Episode> Episodes { get; set; }
@@ -21,6 +20,7 @@ namespace SFA.DAS.LearnerData.Responses.LearningInner.GetShortCourseLearnersForE
 
     public class Episode
     {
+        public Guid LearningKey { get; set; }
         public string CourseCode { get; set; }
         public decimal Price { get; set; }
         public bool IsApproved { get; set; }
