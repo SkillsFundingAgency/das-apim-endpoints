@@ -28,13 +28,11 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser
             {
                 GovUkIdentifier = command.GovUkIdentifier,
                 EmailAddress = command.EmailAddress,
-                PhoneNumber = command.PhoneNumber,
-                Names = command.Names,
-                DateOfBirth = command.DateOfBirth
+                PhoneNumber = command.PhoneNumber
             });
 
             var response = await _digitalCertificatesApiClient
-                .PostWithResponseCode<PostCreateOrUpdateUserRequestData, CreateOrUpdateUserResponse>(request);
+                .PostWithResponseCode<PostCreateOrUpdateUserRequestData, PostCreateOrUpdateUserResponse>(request);
 
             response.EnsureSuccessStatusCode();
 
