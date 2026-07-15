@@ -36,3 +36,9 @@ Scenario Outline: Price and learning type sent to earnings domain reflect the da
 		| StartDate  | LearningType             | ExpectedPrice |
 		| 2021-06-01 | ApprenticeshipUnit       | 6000          |
 		| 2024-03-01 | FoundationApprenticeship | 9000          |
+
+Scenario: Learning persists a StartDate different from the SLD payload - earnings receives the learning-persisted value, not that from the SLD payload
+	Given there is a provider
+	And learning persists a different StartDate than the SLD payload
+	When a draft short course is created for the provider
+	Then the short course creation request sent to earnings has the learning-persisted StartDate, not the SLD payload's StartDate

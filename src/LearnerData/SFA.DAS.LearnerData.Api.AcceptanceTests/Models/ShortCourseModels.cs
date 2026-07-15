@@ -25,7 +25,7 @@ internal class ShortCourseTestData
         ShortCourseEarnings = new Dictionary<Guid, GetFm99ShortCourseDataResponse>();
         for (var i = 0; i < shortCourseLearnings.Count; i++)
         {
-            ShortCourseEarnings.Add(shortCourseLearnings[i].LearningKey, shortCourseEarnings[i]);
+            ShortCourseEarnings.Add(shortCourseLearnings[i].Episodes.Single().LearningKey, shortCourseEarnings[i]);
         }
     }
 }

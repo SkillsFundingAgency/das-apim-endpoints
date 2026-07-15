@@ -26,6 +26,8 @@ public class CreateDraftShortCourseSteps
     private const string FundingBandsKey = "FundingBands";
     private const string CoursesApiErrorKey = "CoursesApiError";
     private const string OuterApiResponseKey = "OuterApiResponse";
+    private const string ShortCourseRequestKey = "CreateDraftShortCourseRequest";
+    private const string PersistedStartDateOverrideKey = "CreateDraftShortCoursePersistedStartDateOverride";
 
     public CreateDraftShortCourseSteps(TestContext testContext, ScenarioContext scenarioContext)
     {
@@ -67,6 +69,12 @@ public class CreateDraftShortCourseSteps
     public void GivenTheLearningDomainWillReturnNoContentForTheShortCourseCreation()
     {
         _scenarioContext.Set(true, LearningReturnsNoContentKey);
+    }
+
+    [Given(@"learning persists a different StartDate than the SLD payload")]
+    public void GivenLearningPersistsADifferentStartDateThanTheSLDPayload()
+    {
+        _scenarioContext.Set(new DateTime(2020, 1, 1), PersistedStartDateOverrideKey);
     }
 
     [When(@"a draft short course is created for the provider")]
@@ -130,6 +138,23 @@ public class CreateDraftShortCourseSteps
         var body = JsonConvert.DeserializeObject<Requests.EarningsInner.CreateUnapprovedShortCourseLearningRequest>(entry.RequestMessage.Body);
         body.OnProgramme.TotalPrice.Should().Be(expectedPrice);
         body.OnProgramme.LearningType.Should().Be(expectedLearningType);
+    }
+
+    [Then(@"the short course creation request sent to earnings has the learning-persisted StartDate, not the SLD payload's StartDate")]
+    public void ThenTheShortCourseCreationRequestSentToEarningsHasTheLearningPersistedStartDate()
+    {
+        var response = _scenarioContext.Get<HttpResponseMessage>(OuterApiResponseKey);
+        response.IsSuccessStatusCode.Should().BeTrue($"Expected successful response from outer API but got {response.StatusCode}.");
+
+        var persistedStartDate = _scenarioContext.Get<DateTime>(PersistedStartDateOverrideKey);
+        var sldStartDate = _scenarioContext.Get<ShortCourseRequest>(ShortCourseRequestKey).Delivery.OnProgramme.First().StartDate;
+        persistedStartDate.Should().NotBe(sldStartDate, "the test setup should use different dates or this assertion proves nothing");
+
+        var entry = _testContext.EarningsApi.MockServer.LogEntries
+            .Single(r => r.RequestMessage.Url.Contains("shortCourses"));
+
+        var body = JsonConvert.DeserializeObject<Requests.EarningsInner.CreateUnapprovedShortCourseLearningRequest>(entry.RequestMessage.Body);
+        body.OnProgramme.StartDate.Should().Be(persistedStartDate);
     }
 
     private void ConfigureCoursesApi(string learningType = "ApprenticeshipUnit")
@@ -200,10 +225,24 @@ public class CreateDraftShortCourseSteps
         }
         else
         {
+            var episodeKey = Guid.NewGuid();
             var learningResponse = new CreateShortCoursePostResponse
             {
                 LearningKey = Guid.NewGuid(),
-                EpisodeKey = Guid.NewGuid()
+                EpisodeKey = episodeKey,
+                Episodes =
+                [
+                    new LearningInnerShortCourseEpisode
+                    {
+                        EpisodeKey = episodeKey,
+                        Ukprn = _scenarioContext.Get<long>(UkprnKey),
+                        CourseCode = "ZSC00001",
+                        StartDate = _scenarioContext.TryGetValue(PersistedStartDateOverrideKey, out DateTime persistedStartDate)
+                            ? persistedStartDate
+                            : DateTime.UtcNow,
+                        PlannedEndDate = DateTime.UtcNow.AddMonths(6)
+                    }
+                ]
             };
 
             _testContext.ApprenticeshipsApi.MockServer
@@ -237,6 +276,7 @@ public class CreateDraftShortCourseSteps
     {
         var ukprn = _scenarioContext.Get<long>(UkprnKey);
         var requestBody = _fixture.Create<ShortCourseRequest>();
+        _scenarioContext.Set(requestBody, ShortCourseRequestKey);
         var httpContent = new StringContent(JsonConvert.SerializeObject(requestBody), new MediaTypeHeaderValue("application/json"));
         var response = await _testContext.OuterApiClient.PostAsync($"/providers/{ukprn}/shortCourses", httpContent);
         _scenarioContext.Set(response, OuterApiResponseKey);

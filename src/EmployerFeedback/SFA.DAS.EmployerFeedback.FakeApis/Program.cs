@@ -1,10 +1,9 @@
-﻿using System;
+﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 
 namespace SFA.DAS.EmployerFeedback.FakeApis
 {
@@ -87,13 +86,12 @@ namespace SFA.DAS.EmployerFeedback.FakeApis
                             },
                             new GetProvidersResponse
                             {
-                                RegisteredProviders = new List<Provider>
+                                Providers = new List<Provider>
                                 {
                                     new Provider 
                                     {
                                         Name = "Fake Provider",
-                                        Ukprn = 12345678,
-                                        ProviderTypeId = 1
+                                        Ukprn = 12345678
                                     }
                                 }
                             })

@@ -313,7 +313,7 @@ internal class GetFm36QueryTestFixture
         }
 
         var learners = _fm36TestContext.SldLearnerData.Select(x => x.Learner.Uln.ToString());
-        MockDistributedCache.Setup(x => x.GetLearners(ukprn, learners, It.IsAny<CancellationToken>()))
+        MockDistributedCache.Setup(x => x.GetLearners<UpdateLearnerRequest>(ukprn, learners, It.IsAny<CancellationToken>()))
             .ReturnsAsync(_fm36TestContext.SldLearnerData);
     }
 

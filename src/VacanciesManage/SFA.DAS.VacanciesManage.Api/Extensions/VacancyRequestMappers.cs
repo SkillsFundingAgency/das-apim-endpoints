@@ -67,6 +67,7 @@ public static class VacancyRequestMappers
             Subject = source.Subject,
             Weighting = source.Weighting.ToDomainQualificationWeighting(),
             QualificationType = source.QualificationType,
+            OtherQualificationName = source.OtherQualificationName
         };
     }
 
