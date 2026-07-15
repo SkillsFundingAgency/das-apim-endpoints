@@ -40,13 +40,13 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
     {
         _logger.LogInformation("Handling GetShortCourseEarningsQuery for provider {ukprn}", request.Ukprn);
 
-        var (learnings, totalLearners) = await GetLearnings(request);
+        var (learners, totalLearners) = await GetLearnings(request);
 
-        var sldLearners = await _learnerDataCacheService.GetLearners<ShortCourseRequest>(request.Ukprn, learnings.Select(x => x.Learner.Uln).Distinct(), cancellationToken);
+        var sldLearners = await _learnerDataCacheService.GetLearners<ShortCourseRequest>(request.Ukprn, learners.Select(x => x.Learner.Uln).Distinct(), cancellationToken);
 
-        var earningsByKey = await GetEarningsByKey(request, learnings);
+        var earningsByKey = await GetEarningsByKey(request, learners);
 
-        return BuildResponse(request, learnings, earningsByKey, totalLearners, sldLearners);
+        return BuildResponse(request, learners, earningsByKey, totalLearners, sldLearners);
     }
 
     private async Task<(List<Fm99ShortCourseLearning>, int)> GetLearnings(GetShortCourseEarningsQuery request)
@@ -70,44 +70,46 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
         return (paged.Items, paged.TotalItems);
     }
 
-    private async Task<Dictionary<Guid, GetFm99ShortCourseDataResponse>> GetEarningsByKey(GetShortCourseEarningsQuery request, List<Fm99ShortCourseLearning> learnings)
+    private async Task<Dictionary<Guid, GetFm99ShortCourseDataResponse>> GetEarningsByKey(GetShortCourseEarningsQuery request, List<Fm99ShortCourseLearning> learners)
     {
-        var tasks = learnings.Select(async learning =>
+        var learningKeys = learners.SelectMany(l => l.Episodes).Select(e => e.LearningKey).Distinct();
+
+        var tasks = learningKeys.Select(async learningKey =>
         {
             var response = await _earningsApiClient.GetWithResponseCode<GetFm99ShortCourseDataResponse>(
-                new GetFm99ShortCourseDataRequest(request.Ukprn, learning.LearningKey));
+                new GetFm99ShortCourseDataRequest(request.Ukprn, learningKey));
 
             if (!response.StatusCode.IsSuccessStatusCode())
             {
-                _logger.LogError("Failed to retrieve earnings data for {learningKey} from Earnings API. Status code: {statusCode}", learning.LearningKey, response.StatusCode);
+                _logger.LogError("Failed to retrieve earnings data for {learningKey} from Earnings API. Status code: {statusCode}", learningKey, response.StatusCode);
                 throw new ApplicationException($"Failed to retrieve all earnings data for {request.Ukprn} from Earnings API.");
             }
 
-            _logger.LogInformation("Successfully retrieved earnings data for {learningKey} from Earnings API", learning.LearningKey);
-            return (learning.LearningKey, response.Body);
+            _logger.LogInformation("Successfully retrieved earnings data for {learningKey} from Earnings API", learningKey);
+            return (learningKey, response.Body);
         });
 
         var results = await Task.WhenAll(tasks);
-        return results.ToDictionary(x => x.LearningKey, x => x.Body);
+        return results.ToDictionary(x => x.learningKey, x => x.Body);
     }
 
     private static GetShortCourseEarningsQueryResult BuildResponse(
         GetShortCourseEarningsQuery query,
-        List<Fm99ShortCourseLearning> learnings,
+        List<Fm99ShortCourseLearning> learners,
         Dictionary<Guid, GetFm99ShortCourseDataResponse> earningsByKey,
         int totalItems,
         List<ShortCourseRequest> sldLearners)
     {
-        var learnerItems = learnings.Select(learning =>
+        var learnerItems = learners.Select(learner =>
         {
-            var earnings = earningsByKey[learning.LearningKey];
-            var cachedLearner = sldLearners.Single(l => l.Learner.Uln.ToString() == learning.Learner.Uln);
+            var cachedLearner = sldLearners.Single(l => l.Learner.Uln.ToString() == learner.Learner.Uln);
 
             return new ShortCourseEarningsLearner
             {
-                LearningKey = learning.LearningKey.ToString(),
-                LearnerRef = learning.Episodes.FirstOrDefault()?.LearnerRef ?? "",
-                Courses = learning.Episodes.Select(episode => new ShortCourseEarningsCourse
+                Key = learner.LearnerKey.ToString(),
+                LearningKey = learner.LearnerKey.ToString(),
+                LearnerRef = learner.Episodes.FirstOrDefault()?.LearnerRef ?? "",
+                Courses = learner.Episodes.Select(episode => new ShortCourseEarningsCourse
                 {
                     AimSequenceNumber = GetAimSequenceNumber(cachedLearner, episode),
                     FundingLineType = episode.EmployerType == EmployerType.Levy
@@ -115,7 +117,7 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
                         : NonLevyFundingLineType,
                     CoursePrice = episode.Price,
                     Approved = episode.IsApproved,
-                    Earnings = earnings.Earnings.Select(e => new ShortCourseEarningsEarning
+                    Earnings = earningsByKey[episode.LearningKey].Earnings.Select(e => new ShortCourseEarningsEarning
                     {
                         CollectionYear = e.CollectionYear,
                         CollectionPeriod = e.CollectionPeriod,
