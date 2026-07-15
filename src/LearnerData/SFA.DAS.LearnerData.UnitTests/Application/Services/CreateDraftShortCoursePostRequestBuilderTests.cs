@@ -63,7 +63,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
             .Create();
 
         // Act
-        var result = await _sut.Build(request, ukprn);
+        var result = await _sut.Build(request, ukprn, 2526);
 
         // Assert
         result.LearnerUpdateDetails.Uln.Should().Be(learner.Uln);
@@ -112,7 +112,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
             .Create();
 
         // Act
-        await _sut.Build(request, ukprn);
+        await _sut.Build(request, ukprn, 2526);
 
         // Assert
         _shortCourseLookupService.Verify(x => x.GetCourseDetails("ZSC00001", new DateTime(2026, 8, 1)), Times.Once);
@@ -134,7 +134,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
             .Create();
 
         // Act
-        var result = await _sut.Build(request, ukprn);
+        var result = await _sut.Build(request, ukprn, 2526);
 
         // Assert
         result.OnProgramme.Single().Milestones.Should().Contain(Milestone.LearningComplete);
@@ -156,7 +156,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
             .Create();
 
         // Act
-        var result = await _sut.Build(request, ukprn);
+        var result = await _sut.Build(request, ukprn, 2526);
 
         // Assert
         result.OnProgramme.Single().Milestones.Should().ContainSingle(m => m == Milestone.LearningComplete);
@@ -178,7 +178,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
             .Create();
 
         // Act
-        var result = await _sut.Build(request, ukprn);
+        var result = await _sut.Build(request, ukprn, 2526);
 
         // Assert
         result.OnProgramme.Single().Milestones.Should().NotContain(Milestone.LearningComplete);

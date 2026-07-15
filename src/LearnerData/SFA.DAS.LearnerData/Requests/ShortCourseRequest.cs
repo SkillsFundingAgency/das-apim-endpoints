@@ -33,7 +33,7 @@ public class ShortCourseOnProgramme
     public DateTime? WithdrawalDate { get; set; }
     public short? WithdrawalReasonCode { get; set; }
     public List<LearningSupport> LearningSupport { get; set; }
-    public int? AimSequenceNumber { get; set; }
+    public int AimSequenceNumber { get; set; }
     public Milestone[] Milestones { get; set; }
 }
 
