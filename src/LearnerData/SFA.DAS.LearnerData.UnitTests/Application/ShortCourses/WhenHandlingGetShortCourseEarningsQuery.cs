@@ -218,6 +218,24 @@ public class WhenHandlingGetShortCourseEarningsQuery
     }
 
     [Test]
+    public async Task Then_Learner_Is_Omitted_When_Not_Found_In_Cache()
+    {
+        var cachedLearning = BuildLearning(learnerRef: "CACHED");
+        var uncachedLearning = BuildLearning(learnerRef: "UNCACHED");
+        uncachedLearning.Learner.Uln = "8888888888";
+
+        SetupLearningApi([cachedLearning, uncachedLearning]);
+        SetupEarningsApi(cachedLearning.Episodes.Single().LearningKey, []);
+        SetupEarningsApi(uncachedLearning.Episodes.Single().LearningKey, []);
+        SetupCacheService([cachedLearning]);
+
+        var result = await _handler.Handle(BuildQuery(), CancellationToken.None);
+
+        result.Learners.Should().ContainSingle();
+        result.Learners[0].LearnerRef.Should().Be("CACHED");
+    }
+
+    [Test]
     public async Task Then_Pagination_Fields_Are_Mapped_Correctly()
     {
         var learning = BuildLearning();
