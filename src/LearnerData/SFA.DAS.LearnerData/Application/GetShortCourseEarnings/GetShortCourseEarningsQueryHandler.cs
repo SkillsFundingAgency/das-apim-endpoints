@@ -46,7 +46,7 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
 
         var earningsByKey = await GetEarningsByKey(request, learners);
 
-        return BuildResponse(_logger, request, learners, earningsByKey, totalLearners, sldLearners);
+        return BuildResponse(request, learners, earningsByKey, totalLearners, sldLearners);
     }
 
     private async Task<(List<Fm99ShortCourseLearning>, int)> GetLearnings(GetShortCourseEarningsQuery request)
@@ -93,8 +93,7 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
         return results.ToDictionary(x => x.learningKey, x => x.Body);
     }
 
-    private static GetShortCourseEarningsQueryResult BuildResponse(
-        ILogger<GetShortCourseEarningsQueryHandler> logger,
+    private GetShortCourseEarningsQueryResult BuildResponse(
         GetShortCourseEarningsQuery query,
         List<Fm99ShortCourseLearning> learners,
         Dictionary<Guid, GetFm99ShortCourseDataResponse> earningsByKey,
@@ -109,7 +108,7 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
 
             if (cachedLearner == null)
             {
-                logger.LogWarning(
+                _logger.LogWarning(
                     "No cached SLD data found for {ukprn} {uln}. Omitting learner from short course earnings response.",
                     query.Ukprn, learner.Learner.Uln);
                 continue;
