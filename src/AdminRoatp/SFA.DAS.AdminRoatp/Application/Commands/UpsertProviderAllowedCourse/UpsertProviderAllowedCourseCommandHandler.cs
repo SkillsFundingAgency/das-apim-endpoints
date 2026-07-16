@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SFA.DAS.AdminRoatp.InnerApi.Models;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
@@ -10,7 +11,14 @@ public class UpsertProviderAllowedCourseCommandHandler(IRoatpCourseManagementApi
 {
     public async Task Handle(UpsertProviderAllowedCourseCommand command, CancellationToken cancellationToken)
     {
-        var apiRequest = new UpsertProviderAllowedCourseRequest(command);
+        var model = new UpsertProviderAllowedCourseModel()
+        {
+            UserId = command.UserId,
+            UserDisplayName = command.UserDisplayName,
+            LastDateStarts = command.LastDateStarts
+        };
+
+        var apiRequest = new UpsertProviderAllowedCourseRequest(command.Ukprn, command.LarsCode, model);
 
         var response = await _courseManagementApiClient.PostWithResponseCode<Unit>(apiRequest);
 

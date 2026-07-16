@@ -1,4 +1,4 @@
-﻿using SFA.DAS.AdminRoatp.Application.Commands.UpsertProviderAllowedCourse;
+﻿using SFA.DAS.AdminRoatp.InnerApi.Models;
 using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.AdminRoatp.InnerApi.Requests;
@@ -9,10 +9,10 @@ public class UpsertProviderAllowedCourseRequest : IPostApiRequest
     public string LarsCode { get; set; }
     public object Data { get; set; }
     public string PostUrl => $"providers/{Ukprn}/allowed-courses/{LarsCode}";
-    public UpsertProviderAllowedCourseRequest(UpsertProviderAllowedCourseCommand data)
+    public UpsertProviderAllowedCourseRequest(int ukprn, string larsCode, UpsertProviderAllowedCourseModel data)
     {
-        Ukprn = data.Ukprn;
-        LarsCode = data.LarsCode;
+        Ukprn = ukprn;
+        LarsCode = larsCode;
         Data = data;
     }
 }

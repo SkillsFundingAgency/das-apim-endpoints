@@ -4,6 +4,7 @@ using FluentAssertions;
 using MediatR;
 using Moq;
 using SFA.DAS.AdminRoatp.Application.Commands.UpsertProviderAllowedCourse;
+using SFA.DAS.AdminRoatp.InnerApi.Models;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
 using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.Apim.Shared.Models;
@@ -32,7 +33,12 @@ public class UpsertProviderAllowedCourseCommandHandlerTests
 
         // Assert
         apiClientMock.Verify(x => x.PostWithResponseCode<Unit>(
-            It.Is<UpsertProviderAllowedCourseRequest>(x => x.Data == command)),
+            It.Is<UpsertProviderAllowedCourseRequest>(r =>
+                r.Ukprn == command.Ukprn &&
+                r.LarsCode == command.LarsCode &&
+                ((UpsertProviderAllowedCourseModel)r.Data).UserId == command.UserId &&
+                ((UpsertProviderAllowedCourseModel)r.Data).UserDisplayName == command.UserDisplayName &&
+                ((UpsertProviderAllowedCourseModel)r.Data).LastDateStarts == command.LastDateStarts)),
             Times.Once);
     }
 

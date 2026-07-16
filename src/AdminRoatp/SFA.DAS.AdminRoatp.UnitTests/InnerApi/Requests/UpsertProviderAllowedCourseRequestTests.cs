@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using SFA.DAS.AdminRoatp.Application.Commands.UpsertProviderAllowedCourse;
+using SFA.DAS.AdminRoatp.InnerApi.Models;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -9,25 +9,29 @@ public class UpsertProviderAllowedCourseRequestTests
 {
     [Test, MoqAutoData]
     public void WhenBuildingRequest_ThenPropertiesAreMappedFromCommand(
-        UpsertProviderAllowedCourseCommand command)
+        UpsertProviderAllowedCourseModel model,
+        int ukprn,
+        string larsCode)
     {
         // Act
-        var request = new UpsertProviderAllowedCourseRequest(command);
+        var request = new UpsertProviderAllowedCourseRequest(ukprn, larsCode, model);
 
         // Assert
-        request.Ukprn.Should().Be(command.Ukprn);
-        request.LarsCode.Should().Be(command.LarsCode);
-        request.Data.Should().BeSameAs(command);
+        request.Ukprn.Should().Be(ukprn);
+        request.LarsCode.Should().Be(larsCode);
+        request.Data.Should().BeSameAs(model);
     }
 
     [Test, MoqAutoData]
     public void WhenBuildingRequest_ThenPostUrlIsSetCorrectly(
-        UpsertProviderAllowedCourseCommand command)
+        UpsertProviderAllowedCourseModel model,
+        int ukprn,
+        string larsCode)
     {
         // Act
-        var request = new UpsertProviderAllowedCourseRequest(command);
+        var request = new UpsertProviderAllowedCourseRequest(ukprn, larsCode, model);
 
         // Assert
-        request.PostUrl.Should().Be($"providers/{command.Ukprn}/allowed-courses/{command.LarsCode}");
+        request.PostUrl.Should().Be($"providers/{ukprn}/allowed-courses/{larsCode}");
     }
 }
