@@ -46,7 +46,7 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
 
         var earningsByKey = await GetEarningsByKey(request, learners);
 
-        return BuildResponse(request, learners, earningsByKey, totalLearners, sldLearners);
+        return BuildResponse(_logger, request, learners, earningsByKey, totalLearners, sldLearners);
     }
 
     private async Task<(List<Fm99ShortCourseLearning>, int)> GetLearnings(GetShortCourseEarningsQuery request)
@@ -94,17 +94,28 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
     }
 
     private static GetShortCourseEarningsQueryResult BuildResponse(
+        ILogger<GetShortCourseEarningsQueryHandler> logger,
         GetShortCourseEarningsQuery query,
         List<Fm99ShortCourseLearning> learners,
         Dictionary<Guid, GetFm99ShortCourseDataResponse> earningsByKey,
         int totalItems,
         List<ShortCourseRequest> sldLearners)
     {
-        var learnerItems = learners.Select(learner =>
-        {
-            var cachedLearner = sldLearners.Single(l => l.Learner.Uln.ToString() == learner.Learner.Uln);
+        var learnerItems = new List<ShortCourseEarningsLearner>();
 
-            return new ShortCourseEarningsLearner
+        foreach (var learner in learners)
+        {
+            var cachedLearner = sldLearners.SingleOrDefault(l => l.Learner.Uln.ToString() == learner.Learner.Uln);
+
+            if (cachedLearner == null)
+            {
+                logger.LogWarning(
+                    "No cached SLD data found for {ukprn} {uln}. Omitting learner from short course earnings response.",
+                    query.Ukprn, learner.Learner.Uln);
+                continue;
+            }
+
+            learnerItems.Add(new ShortCourseEarningsLearner
             {
                 Key = learner.LearnerKey.ToString(),
                 LearningKey = learner.LearnerKey.ToString(),
@@ -125,8 +136,8 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
                         Amount = e.Amount
                     }).ToList()
                 }).ToList()
-            };
-        }).ToList();
+            });
+        }
 
         return new GetShortCourseEarningsQueryResult
         {
