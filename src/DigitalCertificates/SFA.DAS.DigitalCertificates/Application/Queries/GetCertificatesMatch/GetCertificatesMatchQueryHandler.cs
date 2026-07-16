@@ -35,7 +35,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
 
         public async Task<GetCertificatesMatchResult> Handle(GetCertificatesMatchQuery request, CancellationToken cancellationToken)
         {
-            // Step 1: Lookup user identity from Digi Certs Inner API
+            // lookup user identity from Digi Certs Inner API
             var identityResponse = await _digitalCertificatesApiClient
                 .GetWithResponseCode<GetUserIdentityResponse>(new GetUserIdentityRequest(request.UserId));
 
@@ -47,7 +47,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
             identityResponse.EnsureSuccessStatusCode();
             var identity = identityResponse.Body;
 
-            // If the user is already authorised return 204 (signal via null result)
+            // if the user is already authorised return 204 (signal via null result)
             if (identity.Authorisation != null)
             {
                 return null;
@@ -55,22 +55,21 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
 
             var excludedUlns = identity.Excluded ?? new List<long>();
 
-            // Step 2: Search for certificate matches for each family name + date of birth
+            // search for certificate matches for each family name + date of birth
             var allMatches = new List<CertificateMatchResult>();
 
             if (identity.Identity != null && identity.DateOfBirth.HasValue)
             {
-                var familyNames = identity.Identity
-                    .Select(i => i.FamilyName)
-                    .Where(n => !string.IsNullOrWhiteSpace(n))
-                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                var names = identity.Identity
+                    .Where(n => !string.IsNullOrWhiteSpace(n.FamilyName))
+                    .DistinctBy(n => n.FamilyName)
                     .ToList();
 
-                foreach (var familyName in familyNames)
+                foreach (var name in names)
                 {
                     var searchResponse = await _assessorsApiClient
                         .GetWithResponseCode<GetCertificateSearchResponse>(
-                            new GetCertificateSearchRequest(identity.DateOfBirth.Value, familyName, excludedUlns));
+                            new GetCertificateSearchRequest(identity.DateOfBirth.Value, name.FamilyName, excludedUlns));
 
                     if (searchResponse == null || searchResponse.StatusCode == HttpStatusCode.NotFound)
                     {
@@ -81,7 +80,12 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
 
                     if (searchResponse.Body?.Matches != null)
                     {
-                        allMatches.AddRange(searchResponse.Body.Matches.Select(m => (CertificateMatchResult)m));
+                        allMatches.AddRange(searchResponse.Body.Matches.Select(m =>
+                        {
+                            var match = (CertificateMatchResult)m;
+                            match.UserIdentityId = name.UserIdentityId;
+                            return match;
+                        }));
                     }
                 }
             }
@@ -91,7 +95,15 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
                 return new GetCertificatesMatchResult();
             }
 
-            // Step 3: Collect all ULNs (new matches plus previously excluded) for mask retrieval
+            // retain only the latest match per ULN
+            allMatches = allMatches
+                .GroupBy(m => m.Uln)
+                .Select(g => g
+                    .OrderByDescending(m => m.DateAwarded ?? DateTime.MinValue)
+                    .First())
+                .ToList();
+
+            // collect all ULNs (new matches plus previously excluded) for mask retrieval
 
             var standardMatches = allMatches
                 .Where(m => IsCertificateType(m.CertificateType, CertificateType.Standard))
@@ -111,11 +123,10 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
                 ? frameworkMatches.Union(excludedUlns).Distinct().ToList()
                 : new List<long>();
 
-            // Step 4: Retrieve masking data for standard and/or framework certificates
+            // retrieve masking data for standard and/or framework certificates
             var standardMasksList = new List<CertificateMaskResult>();
             var frameworkMasksList = new List<CertificateMaskResult>();
 
-            // Retrieve masks in parallel where applicable
             var standardTask = standardUlns.Count > 0
                 ? _assessorsApiClient.GetWithResponseCode<GetCertificateMasksResponse>(new GetStandardCertificateMasksRequest(standardUlns))
                 : Task.FromResult<ApiResponse<GetCertificateMasksResponse>>(null);
@@ -149,7 +160,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
             var maxMasks = _configuration?.MaxMasks ?? 5;
             var standardCount = _configuration?.StandardMaskCount ?? 3;
 
-            // Select masks using explicit selection logic: take up to `standardCount` from standard, remaining from framework, total `maxMasks`
+            // select masks using explicit selection logic: take up to `standardCount` from standard, remaining from framework, total `maxMasks`
             var selectedMasks = SelectMasks(standardMasksList, frameworkMasksList, maxMasks, standardCount);
 
             return new GetCertificatesMatchResult

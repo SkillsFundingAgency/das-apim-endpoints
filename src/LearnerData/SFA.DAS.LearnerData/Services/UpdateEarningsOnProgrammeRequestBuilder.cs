@@ -1,4 +1,3 @@
-using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
@@ -6,39 +5,52 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.LearnerData.Requests;
 
 namespace SFA.DAS.LearnerData.Services;
 
 public interface IUpdateEarningsOnProgrammeRequestBuilder
 {
-    Task<UpdateOnProgrammeApiPutRequest> Build(UpdateLearnerCommand command, UpdateLearnerApiPutResponse learningApiPutResponse, UpdateLearningApiPutRequest putRequest);
+    Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, UpdateLearnerRequest updateLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningRequestBody requestBody);
+    Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, CreateLearnerRequest createLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningRequestBody requestBody);
 }
 
 public class UpdateEarningsOnProgrammeRequestBuilder(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient) : IUpdateEarningsOnProgrammeRequestBuilder
 {
-    public async Task<UpdateOnProgrammeApiPutRequest> Build(UpdateLearnerCommand command, UpdateLearnerApiPutResponse learningApiPutResponse,
-        UpdateLearningApiPutRequest putRequest)
+    public async Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, UpdateLearnerRequest updateLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse,
+        UpdateLearningRequestBody requestBody)
+    {
+        return await BuildInternal(learningKey, updateLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(), learningApiPutResponse, requestBody);
+    }
+
+    public async Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, CreateLearnerRequest createLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse,
+        UpdateLearningRequestBody requestBody)
+    {
+        return await BuildInternal(learningKey, createLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(), learningApiPutResponse, requestBody);
+    }
+
+    private async Task<UpdateOnProgrammeApiPutRequest> BuildInternal(Guid learningKey, List<OnProgrammeRequestDetails> onProgramme, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningRequestBody requestBody)
     {
         var fundingBandMaximum = default(int?);
         var includesFundingBandMaximumUpdate = false;
 
-        if (learningApiPutResponse.Changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices)
-            || learningApiPutResponse.Changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate))
+        if (learningApiPutResponse.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.Prices)
+            || learningApiPutResponse.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate))
         {
-            fundingBandMaximum = await GetFundingBandMaximum(command);
+            fundingBandMaximum = await GetFundingBandMaximum(onProgramme);
             includesFundingBandMaximumUpdate = true;
         }
 
         var payload = new UpdateOnProgrammeRequest
         {
-            CompletionDate = putRequest.Data.Learner.CompletionDate,
-            WithdrawalDate = putRequest.Data.Delivery.WithdrawalDate,
-            PauseDate = putRequest.Data.OnProgramme.PauseDate,
-            AchievementDate = putRequest.Data.OnProgramme.AchievementDate,
+            CompletionDate = requestBody.Learner.CompletionDate,
+            WithdrawalDate = requestBody.Delivery.WithdrawalDate,
+            PauseDate = requestBody.OnProgramme.PauseDate,
+            AchievementDate = requestBody.OnProgramme.AchievementDate,
             ApprenticeshipEpisodeKey = learningApiPutResponse.LearningEpisodeKey,
             FundingBandMaximum = fundingBandMaximum,
             IncludesFundingBandMaximumUpdate = includesFundingBandMaximumUpdate,
-            DateOfBirth = putRequest.Data.Learner.DateOfBirth,
+            DateOfBirth = requestBody.Learner.DateOfBirth,
             Prices = learningApiPutResponse.Prices.Select(x => new PriceItem
             {
                 Key = x.Key,
@@ -48,48 +60,44 @@ public class UpdateEarningsOnProgrammeRequestBuilder(ICoursesApiClient<CoursesAp
                 EndPointAssessmentPrice = x.EndPointAssessmentPrice,
                 TotalPrice = x.TotalPrice
             }).ToList(),
-            PeriodsInLearning = GetPeriodsInLearning(command),
-            Care = new Care
+            PeriodsInLearning = GetPeriodsInLearning(onProgramme),
+            Care = new SFA.DAS.LearnerData.Requests.EarningsInner.Care
             {
-                HasEHCP = putRequest.Data.Learner.Care.HasEHCP,
-                IsCareLeaver = putRequest.Data.Learner.Care.IsCareLeaver,
-                CareLeaverEmployerConsentGiven = putRequest.Data.Learner.Care.CareLeaverEmployerConsentGiven
+                HasEHCP = requestBody.Learner.Care.HasEHCP,
+                IsCareLeaver = requestBody.Learner.Care.IsCareLeaver,
+                CareLeaverEmployerConsentGiven = requestBody.Learner.Care.CareLeaverEmployerConsentGiven
             }
         };
 
-        return new UpdateOnProgrammeApiPutRequest(command.LearningKey, payload);
+        return new UpdateOnProgrammeApiPutRequest(learningKey, payload);
     }
 
-    private async Task<int> GetFundingBandMaximum(UpdateLearnerCommand command)
+    private async Task<int> GetFundingBandMaximum(List<OnProgrammeRequestDetails> onProgramme)
     {
-        var onProgramme = command.UpdateLearnerRequest.Delivery.OnProgramme.First();
-        var standardId = onProgramme.StandardCode.ToString();
-        var startDate = onProgramme.StartDate;
+        var firstOnProgramme = onProgramme.First();
+        var standardId = firstOnProgramme.StandardCode.ToString();
+        var startDate = firstOnProgramme.StartDate;
 
         var response = await coursesApiClient.Get<StandardDetailResponse>(new GetStandardDetailsByIdRequest(standardId));
 
         return response.MaxFundingOn(startDate);
     }
 
-    private List<PeriodInLearningItem> GetPeriodsInLearning(UpdateLearnerCommand command)
+    private List<PeriodInLearningItem> GetPeriodsInLearning(List<OnProgrammeRequestDetails> onProgramme)
     {
         var periodsInLearning = new List<PeriodInLearningItem>();
 
-        var agreementId = command.UpdateLearnerRequest.Delivery.OnProgramme.First().AgreementId;
+        var agreementId = onProgramme.First().AgreementId;
 
-        foreach (var onProgramme in command.UpdateLearnerRequest.Delivery.OnProgramme.Where(x => x.AgreementId == agreementId))
+        foreach (var onProg in onProgramme.Where(x => x.AgreementId == agreementId))
         {
-            //todo:  onProgramme.CompletionDate should be included here in the coalescence. currently left
-            //out of here to avoid re-writing the balancing logic in earnings,
-            //when we come to do qualification period logic for each PIL we will have to re-write that logic anyway
-            //and at that point can include CompletionDate in this calculation
-            var endDate = onProgramme.PauseDate ?? onProgramme.WithdrawalDate ?? onProgramme.ExpectedEndDate;
+            var endDate = onProg.PauseDate ?? onProg.WithdrawalDate ?? onProg.CompletionDate;
 
             periodsInLearning.Add(new PeriodInLearningItem
             {
-                StartDate = onProgramme.StartDate,
+                StartDate = onProg.StartDate,
                 EndDate = endDate,
-                OriginalExpectedEndDate = onProgramme.ExpectedEndDate
+                OriginalExpectedEndDate = onProg.ExpectedEndDate
             });
         }
 

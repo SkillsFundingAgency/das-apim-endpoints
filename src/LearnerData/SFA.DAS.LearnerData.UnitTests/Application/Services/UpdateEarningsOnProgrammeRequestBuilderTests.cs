@@ -46,7 +46,7 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
             
 
         // Act
-        var result = await _sut.Build(command, response, putRequest);
+        var result = await _sut.Build(command.LearningKey, command.UpdateLearnerRequest, response, putRequest.Data);
 
         // Assert
         result.PutUrl.Should().Be($"learning/{command.LearningKey}/on-programme");
@@ -67,30 +67,15 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
             TotalPrice = x.TotalPrice
         }));
 
-        if (completion)
-        {
-            result.Data.PeriodsInLearning.Should().BeEquivalentTo(
-                command.UpdateLearnerRequest.Delivery.OnProgramme
-                    .Where(x => x.AgreementId == agreementId)
-                    .Select(x => new PeriodInLearningItem
-                    {
-                        StartDate = x.StartDate,
-                        EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.ExpectedEndDate,
-                        OriginalExpectedEndDate = x.ExpectedEndDate
-                    }));
-        }
-        else
-        {
-            result.Data.PeriodsInLearning.Should().BeEquivalentTo(
-                command.UpdateLearnerRequest.Delivery.OnProgramme
-                    .Where(x => x.AgreementId == agreementId)
-                    .Select(x => new PeriodInLearningItem
-                    {
-                        StartDate = x.StartDate,
-                        EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.ExpectedEndDate,
-                        OriginalExpectedEndDate = x.ExpectedEndDate
-                    }));
-        }
+        result.Data.PeriodsInLearning.Should().BeEquivalentTo(
+            command.UpdateLearnerRequest.Delivery.OnProgramme
+                .Where(x => x.AgreementId == agreementId)
+                .Select(x => new PeriodInLearningItem
+                {
+                    StartDate = x.StartDate,
+                    EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.CompletionDate,
+                    OriginalExpectedEndDate = x.ExpectedEndDate
+                }));
 
 
         result.Data.FundingBandMaximum.Should().BeNull();
@@ -123,7 +108,7 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
                          });
 
         // Act
-        var result = await _sut.Build(command, response, putRequest);
+        var result = await _sut.Build(command.LearningKey, command.UpdateLearnerRequest, response, putRequest.Data);
 
         // Assert
         result.Data.FundingBandMaximum.Should().Be(expectedFundingBand);
@@ -141,7 +126,7 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
                                .Create();
 
         // Act
-        var result = await _sut.Build(command, response, putRequest);
+        var result = await _sut.Build(command.LearningKey, command.UpdateLearnerRequest, response, putRequest.Data);
 
         // Assert
         result.PutUrl.Should().Be($"learning/{command.LearningKey}/on-programme");

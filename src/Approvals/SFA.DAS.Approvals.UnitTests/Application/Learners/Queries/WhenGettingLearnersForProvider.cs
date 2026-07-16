@@ -44,7 +44,7 @@ public class WhenGettingLearnersForProvider
         query.CohortId = null;
         GetLearnersForProviderRequest input;
         learnerDataClient.Setup(x =>
-                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
+                x.PostWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<PostGetLearnersForProviderRequest>()))
             .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
 
         commitmentsClient.Setup(x =>
@@ -115,7 +115,7 @@ public class WhenGettingLearnersForProvider
         };
 
         learnerDataClient.Setup(x =>
-                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
+                x.PostWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<PostGetLearnersForProviderRequest>()))
             .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
 
         commitmentsClient.Setup(x =>
@@ -174,7 +174,7 @@ public class WhenGettingLearnersForProvider
         aleResponse.LevyStatus = ApprenticeshipEmployerType.Levy;
 
         learnerDataClient.Setup(x =>
-                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
+                x.PostWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<PostGetLearnersForProviderRequest>()))
             .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
 
         commitmentsClient.Setup(x =>
@@ -237,7 +237,7 @@ public class WhenGettingLearnersForProvider
         query.AccountLegalEntityId = null;
         GetLearnersForProviderRequest input;
         learnerDataClient.Setup(x =>
-                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
+                x.PostWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<PostGetLearnersForProviderRequest>()))
             .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
 
         commitmentsClient.Setup(x =>
@@ -291,7 +291,7 @@ public class WhenGettingLearnersForProvider
         query.CohortId = null;
 
         learnerDataClient.Setup(x =>
-                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
+                x.PostWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<PostGetLearnersForProviderRequest>()))
             .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse,
                 HttpStatusCode.InternalServerError, "Call to learner data failed"));
 
@@ -327,7 +327,7 @@ public class WhenGettingLearnersForProvider
     {
         query.CohortId = null;
         learnerDataClient.Setup(x =>
-                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
+                x.PostWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<PostGetLearnersForProviderRequest>()))
             .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
 
         commitmentsClient.Setup(x =>
@@ -363,7 +363,7 @@ public class WhenGettingLearnersForProvider
     {
         query.AccountLegalEntityId = null;
         learnerDataClient.Setup(x =>
-                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
+                x.PostWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<PostGetLearnersForProviderRequest>()))
             .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
 
         commitmentsClient.Setup(x =>
@@ -400,7 +400,7 @@ public class WhenGettingLearnersForProvider
     {
         query.CohortId = null;
         learnerDataClient.Setup(x =>
-                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
+                x.PostWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<PostGetLearnersForProviderRequest>()))
             .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
 
         commitmentsClient.Setup(x =>
@@ -454,12 +454,19 @@ public class WhenGettingLearnersForProvider
     )
     {
         query.AccountLegalEntityId = null;
-        IGetApiRequest captured = null;
-        var excludeUlns = string.Join(",", draftApprenticeshipsResponse.DraftApprenticeships.ConvertAll(x => x.Uln));
+        IPostApiRequest captured = null;
+        draftApprenticeshipsResponse.DraftApprenticeships[0].Uln = "123";
+        draftApprenticeshipsResponse.DraftApprenticeships[1].Uln = "234";
+        draftApprenticeshipsResponse.DraftApprenticeships[2].Uln = "345";
+
+        var excludeUlns = draftApprenticeshipsResponse.DraftApprenticeships.Select(x => x.Uln)
+            .Where(x => long.TryParse(x, out _))
+            .Select(long.Parse)
+            .ToList();
 
         learnerDataClient.Setup(x =>
-                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
-                .Callback<IGetApiRequest>(r => captured = r)
+                x.PostWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<PostGetLearnersForProviderRequest>(), It.IsAny<bool>()))
+                .Callback<IPostApiRequest,bool>((r,_) => captured = r)
                 .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
 
         commitmentsClient.Setup(x =>
@@ -479,6 +486,7 @@ public class WhenGettingLearnersForProvider
         var result = await handler.Handle(query, CancellationToken.None);
 
         captured.Should().NotBeNull();
-        captured.GetUrl.Should().Contain($"excludeUlns={excludeUlns}");
+        var request = captured.Data as GetLearnersForProviderRequest;
+        request.ExcludeUlns.Should().Contain(excludeUlns);
     }
 }

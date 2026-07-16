@@ -6,31 +6,21 @@ using NServiceBus;
 using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.Recruit.Contracts.ApiRequests;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitJobs.Api.Models;
-using SFA.DAS.RecruitJobs.Api.Models.Mappers;
 using SFA.DAS.RecruitJobs.Api.Models.Requests;
 using SFA.DAS.RecruitJobs.Api.Models.Vacancies.Responses;
 using SFA.DAS.RecruitJobs.GraphQL;
 using SFA.DAS.RecruitJobs.GraphQL.RecruitInner.Mappers;
-using SFA.DAS.RecruitJobs.InnerApi.Requests.ApplicationReviews;
-using SFA.DAS.RecruitJobs.InnerApi.Requests.DeleteVacancy;
-using SFA.DAS.RecruitJobs.InnerApi.Requests.Vacancy;
-using SFA.DAS.RecruitJobs.InnerApi.Requests.VacancyAnalytics;
-using SFA.DAS.RecruitJobs.InnerApi.Responses.ApplicationReviews;
-using SFA.DAS.RecruitJobs.InnerApi.Responses.Vacancy;
-using SFA.DAS.RecruitJobs.InnerApi.Responses.VacancyAnalytics;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Recruit;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using StrawberryShake;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
-using ArchiveType = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.ArchiveType;
-using Vacancy = SFA.DAS.RecruitJobs.Domain.Vacancy;
-using VacancyStatus = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.VacancyStatus;
+using SFA.DAS.RecruitJobs.Api.Models.Mappers;
+using VacancyStatus = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyStatus;
+using ValidationProblemDetails = Microsoft.AspNetCore.Mvc.ValidationProblemDetails;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
 
@@ -67,11 +57,40 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
     }
 
     [HttpGet]
+    [Route("byRef/{vacancyReference:long}")]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(DataResponse<Vacancy>), StatusCodes.Status200OK)]
+    public async Task<IResult> GetOneByVacancyReference(
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        [FromRoute] long vacancyReference,
+        CancellationToken cancellationToken)
+    {
+        var response = await recruitGqlClient.GetVacancyByReference.ExecuteAsync(vacancyReference, cancellationToken);
+        if (!response.IsSuccessResult())
+        {
+            logger.LogError("Error fetching vacancy '{VacancyReference}':\r\n {Errors}", vacancyReference, response.FormatErrors());
+            return TypedResults.Problem(response.ToProblemDetails());
+        }
+
+        if (response is not { Data.Vacancies.Count: > 0 })
+        {
+            return TypedResults.NotFound();
+        }
+
+        var vacancy = response.Data.Vacancies[0];
+        var domainVacancy = GqlVacancyMapper.From(vacancy);
+
+        return TypedResults.Ok(new DataResponse<Vacancy>(domainVacancy));
+    }
+
+    [HttpGet]
     [Route("{vacancyReference:long}/analytics")]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(GetOneVacancyAnalyticsResponse), StatusCodes.Status200OK)]
-    public async Task<IResult> GetOne([FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+    [ProducesResponseType(typeof(VacancyAnalyticsResponse), StatusCodes.Status200OK)]
+    public async Task<IResult> GetOne(
+        [FromServices] Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
         [FromRoute] long vacancyReference,
         CancellationToken token = default)
     {
@@ -79,15 +98,13 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         {
             logger.LogInformation("Recruit API: Received request to get vacancy analytics for vacancy reference: {VacancyReference}", vacancyReference);
 
-            var result = await recruitApiClient.Get<GetOneVacancyAnalyticsResponse>(new GetOneVacancyAnalyticsApiRequest(vacancyReference));
+            var result = await recruitApiClient.Get<VacancyAnalyticsResponse>(new GetVacancyanalyticsByVacancyReferenceApiRequest(vacancyReference));
 
-            var response = result ?? new GetOneVacancyAnalyticsResponse
+            var response = result ?? new VacancyAnalyticsResponse
             {
                 VacancyReference = vacancyReference,
                 Analytics = []
             };
-
-            response.Analytics ??= [];
 
             return TypedResults.Ok(response);
         }
@@ -104,25 +121,27 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<IResult> PutOne([FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
-        [FromRoute] long vacancyReference, [FromBody] PutVacancyAnalyticsRequest request,
+    public async Task<IResult> PutOne(
+        [FromServices] Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
+        [FromRoute] long vacancyReference, 
+        [FromBody] PutVacancyAnalyticsRequest request,
         CancellationToken token = default)
     {
         try
         {
             logger.LogInformation("Recruit API: Received request to create vacancy analytics for vacancy reference: {VacancyReference}", vacancyReference);
 
-            await recruitApiClient.Put(new PutOneVacancyAnalyticsApiRequest(vacancyReference, new PutOneVacancyAnalyticsApiRequest.VacancyAnalyticsRequestData
+            await recruitApiClient.Put(new PutVacancyanalyticsByVacancyReferenceApiRequest
             {
-                AnalyticsData = request.AnalyticsData
-            }));
+                VacancyReference = vacancyReference,
+                Data = request
+            });
 
             return TypedResults.Created();
         }
         catch (Exception e)
         {
-            logger.LogError(e,
-                "Unable to create vacancy analytics : An error occurred");
+            logger.LogError(e, "Unable to create vacancy analytics : An error occurred");
             return Results.Problem(statusCode: (int)HttpStatusCode.InternalServerError);
         }
     }
@@ -257,10 +276,10 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IResult> DeleteOne(
-        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromServices] Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
         [FromBody, Required] Guid id)
     {
-        var results = await recruitApiClient.DeleteWithResponseCode<NullResponse>(new DeleteVacancyByIdRequest(id));
+        var results = await recruitApiClient.DeleteWithResponseCode<NullResponse>(new DeleteVacanciesByVacancyIdApiRequest(id));
         return Results.StatusCode((int)results.StatusCode);
     }
 
@@ -271,7 +290,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         [FromBody] CloseVacancyRequest request,
         [FromServices] VacancyMapper vacancyMapper,
         [FromServices] IRecruitGqlClient recruitGqlClient,
-        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromServices] Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
         CancellationToken cancellationToken)
     {
         try
@@ -287,7 +306,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
             }
 
             var vacancy = response.Data!.Vacancies.FirstOrDefault();
-            if (vacancy is null || vacancy.VacancyReference != vacancyReference)
+            if(vacancy is null || vacancy.VacancyReference != vacancyReference)
             {
                 logger.LogWarning("Vacancy with id {VacancyId} not found at CloseVacancy", request.VacancyId);
                 return TypedResults.NotFound();
@@ -298,7 +317,14 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
             domainVacancy.Status = VacancyStatus.Closed;
             domainVacancy.ClosedDate = DateTime.UtcNow;
 
-            var putResponse = await recruitApiClient.PutWithResponseCode<PutVacancyResponse>(new PutVacancyRequest(vacancy.Id, VacancyMapper.ToInnerDto(domainVacancy)));
+            var putResponse = await recruitApiClient.PutWithResponseCode<PutVacancyRequest, Vacancy>(
+                new PutVacanciesByVacancyIdApiRequest
+                {
+                    VacancyId = request.VacancyId,
+                    RuleSet = VacancyRuleSet.All,
+                    ValidateOnly = false,
+                    Data = vacancyMapper.ToInnerDto(domainVacancy)
+                });
 
             putResponse.EnsureSuccessStatusCode();
             return TypedResults.NoContent();
@@ -316,7 +342,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
     public async Task<IResult> ApproveVacancy(
         [FromServices] IMessageSession messageSession,
         [FromServices] IRecruitGqlClient recruitGqlClient,
-        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromServices] Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
         [FromRoute] Guid vacancyId,
         CancellationToken cancellationToken)
     {
@@ -334,11 +360,15 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         }
         
         // Patch the Vacancy
-        var patchDocument = new JsonPatchDocument<PatchableVacancyDto>();
-        patchDocument.Replace(x => x.Status, SharedOuterApi.Types.Domain.Recruit.VacancyStatus.Approved);
+        var patchDocument = new JsonPatchDocument<Vacancy>();
+        patchDocument.Replace(x => x.Status, VacancyStatus.Approved);
         patchDocument.Replace(x => x.ApprovedDate, DateTime.UtcNow);
-        var patchRequest = new PatchVacancyRequest(vacancyId, patchDocument);
-        var patchResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<PatchableVacancyDto>, NullResponse>(patchRequest, false);
+        
+        var patchResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<Vacancy>, NullResponse>(new PatchVacanciesByVacancyIdApiRequest
+        {
+            Data = patchDocument,
+            VacancyId = vacancyId
+        }, false);
         patchResponse.EnsureSuccessStatusCode();
         return TypedResults.NoContent();
     }
@@ -349,7 +379,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
     public async Task<IResult> PublishVacancy(
         [FromServices] IMessageSession messageSession,
         [FromServices] IRecruitGqlClient recruitGqlClient,
-        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromServices] Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
         [FromRoute] Guid vacancyId,
         CancellationToken cancellationToken)
     {
@@ -367,21 +397,25 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         }
         
         // Patch the Vacancy
-        var patchDocument = new JsonPatchDocument<PatchableVacancyDto>();
-        patchDocument.Replace(x => x.Status, SharedOuterApi.Types.Domain.Recruit.VacancyStatus.Live);
+        var patchDocument = new JsonPatchDocument<Vacancy>();
+        patchDocument.Replace(x => x.Status, VacancyStatus.Live);
         patchDocument.Replace(x => x.LiveDate, DateTime.UtcNow);
-        var patchRequest = new PatchVacancyRequest(vacancyId, patchDocument);
-        var patchResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<PatchableVacancyDto>, NullResponse>(patchRequest, false);
+
+        var patchResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<Vacancy>, NullResponse>(new PatchVacanciesByVacancyIdApiRequest
+        {
+            Data = patchDocument,
+            VacancyId = vacancyId
+        }, false);
         patchResponse.EnsureSuccessStatusCode();
         return TypedResults.NoContent();
     }
 
     [HttpGet, Route("stale/archive")]
     [ProducesResponseType(typeof(DataResponse<IEnumerable<StaleVacancyIdentifier>>), StatusCodes.Status200OK)]
-    public async Task<IResult> GetClosedVacanciesToArchive([FromQuery, Required] DateTime pointInTime,
-    [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
-    [FromServices] IRecruitGqlClient recruitGqlClient,
-    CancellationToken cancellationToken)
+    public async Task<IResult> GetClosedVacanciesToArchive([FromQuery, Required] DateTime pointInTime, 
+        [FromServices] Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        CancellationToken cancellationToken)
     {
         var response = await recruitGqlClient
             .GetVacanciesToArchive
@@ -397,8 +431,10 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
 
         var tasks = gqlVacancies.Select(async v =>
         {
-            var reviews = await recruitApiClient.GetAll<GetApplicationReviewApiResponse>(
-                new GetManyByVacancyReferenceApiRequest(v.VacancyReference.GetValueOrDefault()));
+            var reviews = await recruitApiClient.Get<List<GetApplicationReviewResponse>>(new GetApplicationreviewsByVacancyReferenceApiRequest(v.VacancyReference.GetValueOrDefault())
+            {
+                VacancyReference = v.VacancyReference.GetValueOrDefault()
+            });
 
             var allHaveOutcome = reviews
                 .All(x =>
@@ -428,7 +464,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         [FromBody] ArchiveVacancyRequest request,
         [FromServices] VacancyMapper vacancyMapper,
         [FromServices] IRecruitGqlClient recruitGqlClient,
-        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromServices] Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
         CancellationToken cancellationToken)
     {
         try
@@ -454,11 +490,18 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
 
             var domainVacancy = GqlVacancyMapper.From(vacancy);
             domainVacancy.Status = VacancyStatus.Archived;
-            domainVacancy.ArchiveType = ArchiveType.Auto;
+            domainVacancy.ArchiveType = Recruit.Contracts.ApiResponses.ArchiveType.Auto;
             domainVacancy.LastUpdatedDate = DateTime.UtcNow;
             domainVacancy.ArchivedDate = DateTime.UtcNow;
 
-            var putResponse = await recruitApiClient.PutWithResponseCode<PutVacancyResponse>(new PutVacancyRequest(vacancy.Id, VacancyMapper.ToInnerDto(domainVacancy)));
+            var putResponse = await recruitApiClient.PutWithResponseCode<PutVacancyRequest, Vacancy>(
+                new PutVacanciesByVacancyIdApiRequest
+                {
+                    VacancyId = request.VacancyId,
+                    RuleSet = VacancyRuleSet.All,
+                    ValidateOnly = false,
+                    Data = vacancyMapper.ToInnerDto(domainVacancy)
+                });
 
             putResponse.EnsureSuccessStatusCode();
             return TypedResults.NoContent();

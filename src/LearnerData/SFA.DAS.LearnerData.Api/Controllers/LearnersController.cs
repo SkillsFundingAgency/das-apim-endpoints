@@ -2,15 +2,12 @@
 using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Application.Fm36;
 using SFA.DAS.LearnerData.Application.GetLearners;
-using SFA.DAS.LearnerData.Application.ProcessLearners;
 using SFA.DAS.LearnerData.Application.RemoveLearner;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses;
 using System.Net;
-using FluentValidation;
-using FluentValidation.Results;
 using MediatR;
 
 namespace SFA.DAS.LearnerData.Api.Controllers;
@@ -19,11 +16,27 @@ namespace SFA.DAS.LearnerData.Api.Controllers;
 [ApiController]
 public class LearnersController(
     IMediator mediator, 
-    IValidator<IEnumerable<LearnerDataRequest>> originalValidator,
     ILogger<LearnersController> logger) : ControllerBase
 {
-    [HttpGet("providers/{ukprn}/academicyears/{academicyear}/learners")]
-    public async Task<IActionResult> GetLearners([FromRoute] string ukprn, [FromRoute] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
+    [HttpGet]
+    [Route("providers/{ukprn}/academicyears/{academicyear}/learners")]
+    public async Task<IActionResult> GetLearners_Legacy([FromRoute] string ukprn, [FromRoute] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
+    {
+        return await GetLearnersInternal(ukprn, academicyear, page, pagesize);
+    }
+
+    /// <summary>
+    /// This is needed because I don't seem to be able to find from both query and route for the same parameter.
+    /// The original method can be removed when SLD stop using it.  At which point, the internal method can also be moved directly into this method.
+    /// </summary>
+    [HttpGet]
+    [Route("/providers/{ukprn}/apprenticeships/learners")]
+    public async Task<IActionResult> GetLearners([FromRoute] string ukprn, [FromQuery] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
+    {
+        return await GetLearnersInternal(ukprn, academicyear, page, pagesize);
+    }
+
+    private async Task<IActionResult> GetLearnersInternal(string ukprn, int academicyear, int page, int? pagesize)
     {
         logger.LogInformation("GetLearners for ukprn {Ukprn}, year {Year}", ukprn, academicyear);
 
@@ -43,43 +56,10 @@ public class LearnersController(
         return Ok((GetLearnersResponse)response);
     }
 
-    [HttpPut]
-    [Route("/provider/{ukprn}/academicyears/{academicyear}/learners")]
-    public async Task<IActionResult> Put([FromRoute] long ukprn, [FromRoute] int academicyear,
-        [FromBody] IEnumerable<LearnerDataRequest> dataRequests)
-    {
-        logger.LogInformation("UpdateLearner invoked with batch of {RequestCount} requests for ukprn {Ukprn}",
-            dataRequests.Count(), ukprn);
-
-        var validatorResult = await originalValidator.ValidateAsync(dataRequests);
-
-        if (!validatorResult.IsValid)
-        {
-            return BuildErrorResponse(validatorResult.Errors);
-        }
-
-        try
-        {
-            var correlationId = Guid.NewGuid();
-            await mediator.Send(new ProcessLearnersCommand
-            {
-                CorrelationId = correlationId,
-                ReceivedOn = DateTime.Now,
-                AcademicYear = academicyear,
-                Learners = dataRequests
-            });
-            return Accepted(new CorrelationResponse { CorrelationId = correlationId });
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, "Internal error occurred when processing learners list");
-            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-        }
-    }
-
     [HttpPost]
     [Route("/providers/{ukprn}/learners")]
-    public async Task<IActionResult> CreateLearningRecord([FromRoute] long ukprn, [FromBody] CreateLearnerRequest dataRequest)
+    [Route("/providers/{ukprn}/apprenticeships")]
+    public async Task<IActionResult> CreateLearningRecord([FromRoute] long ukprn, [FromBody] CreateLearnerRequest dataRequest, [FromQuery] int academicYear = 2526, [FromQuery] int collectionPeriod = 0)
     {
         try
         {
@@ -102,7 +82,8 @@ public class LearnersController(
 
     [HttpPut]
     [Route("/providers/{ukprn}/learning/{learningKey}")]
-    public async Task<IActionResult> UpdateLearner([FromRoute] long ukprn, [FromRoute] Guid learningKey, [FromBody] UpdateLearnerRequest request)
+    [Route("/providers/{ukprn}/apprenticeships/{learningKey}")]
+    public async Task<IActionResult> UpdateLearner([FromRoute] long ukprn, [FromRoute] Guid learningKey, [FromBody] UpdateLearnerRequest request, [FromQuery] int academicyear = 2526, [FromQuery] int collectionPeriod = 0)
     {
         try
         {
@@ -121,10 +102,10 @@ public class LearnersController(
         }
     }
 
-    [HttpDelete("/providers/{ukprn}/learning/{learningKey}")]
-    public async Task<IActionResult> RemoveLearner(
-        [FromRoute] long ukprn,
-        [FromRoute] Guid learningKey)
+    [HttpDelete]
+    [Route("/providers/{ukprn}/learning/{learningKey}")]
+    [Route("/providers/{ukprn}/apprenticeships/{learningKey}")]
+    public async Task<IActionResult> RemoveLearner([FromRoute] long ukprn, [FromRoute] Guid learningKey, [FromQuery] int academicyear = 2526)
     {
         logger.LogInformation(
             "RemoveLearner for provider {ukprn}, apprenticeship {learningKey}",
@@ -159,9 +140,25 @@ public class LearnersController(
     [Route("providers/{ukprn}/collectionPeriod/{collectionYear}/{collectionPeriod}/fm36data")]
     public async Task<IActionResult> GetFm36Learners(long ukprn, int collectionYear, byte collectionPeriod, [FromQuery] int? page, [FromQuery] int? pageSize)
     {
+        return await GetFm36Data_Internal(ukprn, collectionYear, collectionPeriod, page, pageSize);
+    }
+
+    /// <summary>
+    /// This is needed because I don't seem to be able to find from both query and route for the same parameter.
+    /// The original method can be removed when SLD stop using it.  At which point, the internal method can also be moved directly into this method.
+    /// </summary>
+    [HttpGet]
+    [Route("/providers/{ukprn}/fm36data")]
+    public async Task<IActionResult> GetFm36Data(long ukprn, [FromQuery] int academicYear, [FromQuery] byte collectionPeriod, [FromQuery] int? page, [FromQuery] int? pageSize)
+    {
+        return await GetFm36Data_Internal(ukprn, academicYear, collectionPeriod, page, pageSize);
+    }
+
+    private async Task<IActionResult> GetFm36Data_Internal(long ukprn, int collectionYear, byte collectionPeriod, int? page, int? pageSize)
+    {
         try
         {
-            var query = new GetFm36Query(ukprn, collectionYear, collectionPeriod, page, pageSize); 
+            var query = new GetFm36Query(ukprn, collectionYear, collectionPeriod, page, pageSize);
 
             var queryResult = await mediator.Send(query);
 
@@ -180,15 +177,5 @@ public class LearnersController(
             logger.LogError(e, "Error attempting to get all earnings");
             return BadRequest();
         }
-    }
-
-    private IActionResult BuildErrorResponse(List<ValidationFailure> errors)
-    {
-        foreach (var error in errors)
-        {
-            ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-        }
-        return BadRequest(ModelState);
-
     }
 }

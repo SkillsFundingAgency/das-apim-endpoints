@@ -43,6 +43,7 @@ public sealed class CoursesController(IMediator _mediator) : ControllerBase
     [Route("{larscode}/providers")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(GetCourseProvidersResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetCourseProviders(string larscode, [FromQuery] GetCourseProvidersModel model)
     {
         var result = await _mediator.Send(new GetCourseProvidersQuery
@@ -61,7 +62,9 @@ public sealed class CoursesController(IMediator _mediator) : ControllerBase
         });
 
         if (result == null)
+        {
             return NotFound();
+        }
 
         return Ok(result);
     }

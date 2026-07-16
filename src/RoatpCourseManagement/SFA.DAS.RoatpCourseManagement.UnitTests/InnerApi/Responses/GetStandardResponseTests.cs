@@ -25,7 +25,7 @@ public class GetStandardResponseTests
         result.LarsCode.Should().Be(source.LarsCode);
         result.Title.Should().Be(source.Title);
         result.Level.Should().Be(source.Level);
-        result.ApprenticeshipType.Should().Be(source.LearningType);
+        result.LearningType.Should().Be(source.LearningType);
         result.ApprovalBody.Should().Be(source.ApprovalBody);
         result.Route.Should().Be(source.Route);
         result.IsRegulatedForProvider.Should().Be(source.IsRegulatedForProvider);
@@ -55,7 +55,7 @@ public class GetStandardResponseTests
         result.LarsCode.Should().Be(source.LarsCode);
         result.Title.Should().Be(source.Title);
         result.Level.Should().Be(source.Level);
-        result.ApprenticeshipType.Should().Be(source.LearningType);
+        result.LearningType.Should().Be(source.LearningType);
         result.ApprovalBody.Should().Be(source.ApprovalBody);
         result.Route.Should().Be(source.Route);
         result.IsRegulatedForProvider.Should().Be(source.IsRegulatedForProvider);
