@@ -39,15 +39,15 @@ public class CreateUnapprovedShortCourseLearningRequestBuilder : ICreateUnapprov
             }).ToList(),
             OnProgramme = new Requests.EarningsInner.OnProgramme
             {
-                StartDate = onProg.StartDate,
-                CompletionDate = onProg.CompletionDate,
-                CourseCode = onProg.CourseCode,
-                ExpectedEndDate = onProg.ExpectedEndDate,
+                StartDate = resolvedOnProgramme.StartDate,
+                CompletionDate = resolvedOnProgramme.CompletionDate,
+                CourseCode = resolvedOnProgramme.CourseCode,
+                ExpectedEndDate = resolvedOnProgramme.ExpectedEndDate,
                 Milestones = milestones,
                 TotalPrice = resolvedOnProgramme.Price,
                 LearningType = resolvedOnProgramme.LearningType,
                 Ukprn = ukprn,
-                WithdrawalDate = onProg.WithdrawalDate
+                WithdrawalDate = resolvedOnProgramme.WithdrawalDate
             }
         };
     }

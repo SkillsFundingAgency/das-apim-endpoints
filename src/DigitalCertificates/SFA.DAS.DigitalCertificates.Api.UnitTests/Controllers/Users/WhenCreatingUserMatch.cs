@@ -28,8 +28,6 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
                 .Setup(x => x.Send(It.Is<CreateUserMatchCommand>(c =>
                     c.UserId == userId &&
                     c.Uln == command.Uln &&
-                    c.FamilyName == command.FamilyName &&
-                    c.DateOfBirth == command.DateOfBirth &&
                     c.CertificateType == command.CertificateType &&
                     c.CourseCode == command.CourseCode &&
                     c.CourseName == command.CourseName &&

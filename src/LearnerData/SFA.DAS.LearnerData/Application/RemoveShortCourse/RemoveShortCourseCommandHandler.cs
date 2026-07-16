@@ -1,28 +1,19 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
-using NServiceBus;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Application.Requests.Learning;
-using SFA.DAS.LearnerData.Configuration;
-using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
-using SFA.DAS.LearnerData.Services;
-using SFA.DAS.NServiceBus;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using System.Net;
 
 namespace SFA.DAS.LearnerData.Application.RemoveShortCourse;
 
 public class RemoveShortCourseCommandHandler(
     ILogger<RemoveShortCourseCommandHandler> logger,
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
-    IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
-    IMessageSession messageSession,
-    PaymentsConfiguration paymentsConfiguration
-
+    IEarningsApiClient<EarningsApiConfiguration> earningsApiClient
 ) : IRequestHandler<RemoveShortCourseCommand>
 {
     public async Task Handle(RemoveShortCourseCommand command, CancellationToken cancellationToken)
@@ -51,7 +42,6 @@ public class RemoveShortCourseCommandHandler(
                 logger.LogError("Failed to delete short course earnings with key {LearningKey}. Status code: {StatusCode}", item.LearningKey, earningsResponse.StatusCode);
                 throw new Exception($"Failed to delete short course earnings with key {item.LearningKey}. Status code: {earningsResponse.StatusCode}.");
             }
-
         }
 
         logger.LogInformation("Short courses for learner {LearnerKey} deleted from Learning and Earnings successfully", command.LearnerKey);
@@ -71,5 +61,4 @@ public class RemoveShortCourseCommandHandler(
         }
         return learnerRef;
     }
-
 }
