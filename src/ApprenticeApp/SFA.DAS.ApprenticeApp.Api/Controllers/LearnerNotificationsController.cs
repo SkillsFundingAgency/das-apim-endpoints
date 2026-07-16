@@ -86,6 +86,21 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             });
 
             return Ok();
+            
+        }
+
+        [HttpDelete("{notificationIdentifier}")]
+        public async Task<IActionResult> DeleteLearnerNotification(
+            Guid accountIdentifier,
+            long notificationIdentifier)
+        {
+            await _mediator.Send(new DeleteLearnerNotificationCommand
+            {
+                AccountIdentifier = accountIdentifier,
+                NotificationIdentifier = notificationIdentifier
+            });
+
+            return NoContent();
         }
     }
 }
