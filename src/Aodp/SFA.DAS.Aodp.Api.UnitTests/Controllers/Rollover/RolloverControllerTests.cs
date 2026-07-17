@@ -714,5 +714,199 @@ public class RolloverControllerTests
         Assert.That(captured.CandidateIds, Is.EqualTo(candidateIds));
     }
 
+    [Test]
+    public async Task GetLevelsForRolloverQueryBuilder_WhenMediatorReturnsSuccess_ShouldReturnOkWithValue()
+    {
+        // Arrange
+        var response = new BaseMediatrResponse<GetLevelsForRolloverQueryBuilderQueryResponse>
+        {
+            Success = true,
+            Value = new GetLevelsForRolloverQueryBuilderQueryResponse
+            {
+                Levels = new List<RolloverLevel>
+                {
+                    new() { Id = 1, Name = "Level 1" },
+                    new() { Id = 2, Name = "Level 2" }
+                }
+            }
+        };
+
+        _mockMediator.Setup(m => m.Send(It.IsAny<GetLevelsForRolloverQueryBuilderQuery>(), CancellationToken.None))
+                     .ReturnsAsync(response);
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var result = await controller.GetLevelsForRolloverQueryBuilder();
+
+        // Assert
+        Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        var okResult = (OkObjectResult)result;
+
+        Assert.That(okResult.Value, Is.InstanceOf<GetLevelsForRolloverQueryBuilderQueryResponse>());
+        var model = (GetLevelsForRolloverQueryBuilderQueryResponse)okResult.Value;
+        Assert.That(model.Levels.Count(), Is.EqualTo(2));
+    }
+
+    [Test]
+    public async Task GetLevelsForRolloverQueryBuilder_WhenMediatorReturnsFailure_ShouldReturn500()
+    {
+        // Arrange
+        var response = new BaseMediatrResponse<GetLevelsForRolloverQueryBuilderQueryResponse>
+        {
+            Success = false,
+            ErrorMessage = "Failed"
+        };
+
+        _mockMediator.Setup(m => m.Send(It.IsAny<GetLevelsForRolloverQueryBuilderQuery>(), CancellationToken.None))
+                     .ReturnsAsync(response);
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var result = await controller.GetLevelsForRolloverQueryBuilder();
+
+        // Assert
+        const int expectedStatus = StatusCodes.Status500InternalServerError;
+
+        if (result is ObjectResult objectResult)
+            Assert.That(objectResult.StatusCode, Is.EqualTo(expectedStatus));
+        else if (result is StatusCodeResult statusCodeResult)
+            Assert.That(statusCodeResult.StatusCode, Is.EqualTo(expectedStatus));
+        else
+            Assert.Fail($"Expected 500 result, got {result?.GetType().FullName ?? "null"}");
+    }
+
+    [Test]
+    public async Task GetTypesForRolloverQueryBuilder_WhenMediatorReturnsSuccess_ShouldReturnOkWithValue()
+    {
+        // Arrange
+        var filters = new RolloverQueryBuilderTypesRequest(new List<int> { 1 });
+
+        var response = new BaseMediatrResponse<GetTypesForRolloverQueryBuilderQueryResponse>
+        {
+            Success = true,
+            Value = new GetTypesForRolloverQueryBuilderQueryResponse
+            {
+                Types = new List<RolloverType>
+                {
+                    new() { Id = 10, Name = "Type A" }
+                }
+            }
+        };
+
+        _mockMediator.Setup(m => m.Send(It.IsAny<GetTypesForRolloverQueryBuilderQuery>(), CancellationToken.None))
+                     .ReturnsAsync(response);
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var result = await controller.GetTypesForRolloverQueryBuilder(filters);
+
+        // Assert
+        Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        var okResult = (OkObjectResult)result;
+
+        Assert.That(okResult.Value, Is.InstanceOf<GetTypesForRolloverQueryBuilderQueryResponse>());
+        var model = (GetTypesForRolloverQueryBuilderQueryResponse)okResult.Value;
+        Assert.That(model.Types.Count(), Is.EqualTo(1));
+    }
+
+    [Test]
+    public async Task GetTypesForRolloverQueryBuilder_WhenMediatorReturnsFailure_ShouldReturn500()
+    {
+        // Arrange
+        var filters = new RolloverQueryBuilderTypesRequest(new List<int> { 1 });
+
+        var response = new BaseMediatrResponse<GetTypesForRolloverQueryBuilderQueryResponse>
+        {
+            Success = false,
+            ErrorMessage = "Failed"
+        };
+
+        _mockMediator.Setup(m => m.Send(It.IsAny<GetTypesForRolloverQueryBuilderQuery>(), CancellationToken.None))
+                     .ReturnsAsync(response);
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var result = await controller.GetTypesForRolloverQueryBuilder(filters);
+
+        // Assert
+        const int expectedStatus = StatusCodes.Status500InternalServerError;
+
+        if (result is ObjectResult objectResult)
+            Assert.That(objectResult.StatusCode, Is.EqualTo(expectedStatus));
+        else if (result is StatusCodeResult statusCodeResult)
+            Assert.That(statusCodeResult.StatusCode, Is.EqualTo(expectedStatus));
+        else
+            Assert.Fail($"Expected 500 result, got {result?.GetType().FullName ?? "null"}");
+    }
+
+    [Test]
+    public async Task GetSectorSubjectAreaForRolloverQueryBuilder_WhenMediatorReturnsSuccess_ShouldReturnOkWithValue()
+    {
+        // Arrange
+        var filters = new RolloverQueryBuilderSectorSubjectAreaRequest(new List<int> { 1 },new List<int> { 2 });
+
+        var response = new BaseMediatrResponse<GetSectorSubjectAreaForRolloverQueryBuilderQueryResponse>
+        {
+            Success = true,
+            Value = new GetSectorSubjectAreaForRolloverQueryBuilderQueryResponse
+            {
+                SectorSubjectAreas = new List<RolloverSectorSubjectArea>
+                {
+                    new() { Id = "01", Name = "Subject A" }
+                }
+            }
+        };
+
+        _mockMediator.Setup(m => m.Send(It.IsAny<GetSectorSubjectAreaForRolloverQueryBuilderQuery>(), CancellationToken.None))
+                     .ReturnsAsync(response);
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var result = await controller.GetSectorSubjectAreaForRolloverQueryBuilder(filters);
+
+        // Assert
+        Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        var okResult = (OkObjectResult)result;
+
+        Assert.That(okResult.Value, Is.InstanceOf<GetSectorSubjectAreaForRolloverQueryBuilderQueryResponse>());
+        var model = (GetSectorSubjectAreaForRolloverQueryBuilderQueryResponse)okResult.Value;
+        Assert.That(model.SectorSubjectAreas.Count(), Is.EqualTo(1));
+    }
+
+    [Test]
+    public async Task GetSectorSubjectAreaForRolloverQueryBuilder_WhenMediatorReturnsFailure_ShouldReturn500()
+    {
+        // Arrange
+        var filters = new RolloverQueryBuilderSectorSubjectAreaRequest(new List<int> { 1 },new List<int> { 2 });
+
+        var response = new BaseMediatrResponse<GetSectorSubjectAreaForRolloverQueryBuilderQueryResponse>
+        {
+            Success = false,
+            ErrorMessage = "Failed"
+        };
+
+        _mockMediator.Setup(m => m.Send(It.IsAny<GetSectorSubjectAreaForRolloverQueryBuilderQuery>(), CancellationToken.None))
+                     .ReturnsAsync(response);
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var result = await controller.GetSectorSubjectAreaForRolloverQueryBuilder(filters);
+
+        // Assert
+        const int expectedStatus = StatusCodes.Status500InternalServerError;
+
+        if (result is ObjectResult objectResult)
+            Assert.That(objectResult.StatusCode, Is.EqualTo(expectedStatus));
+        else if (result is StatusCodeResult statusCodeResult)
+            Assert.That(statusCodeResult.StatusCode, Is.EqualTo(expectedStatus));
+        else
+            Assert.Fail($"Expected 500 result, got {result?.GetType().FullName ?? "null"}");
+    }
 
 }
