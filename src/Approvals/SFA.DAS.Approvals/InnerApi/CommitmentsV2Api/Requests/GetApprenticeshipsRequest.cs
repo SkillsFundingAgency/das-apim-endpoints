@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+using Microsoft.AspNetCore.WebUtilities;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprenticeships;
 using SFA.DAS.Approvals.Enums;
 
 namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 
-public class GetApprenticeshipsRequest(long? providerId,long? accountId, GetApprenticeshipsQuery request) : IGetApiRequest
+public class GetApprenticeshipsRequest(long? providerId, long? accountId, GetApprenticeshipsQuery request) : IGetApiRequest
 {
     public long? AccountId { get; set; } = accountId;
 
@@ -26,7 +25,7 @@ public class GetApprenticeshipsRequest(long? providerId,long? accountId, GetAppr
 
     public string EmployerName { get; set; } = request.EmployerName;
 
-    public string ProviderName { get; set; }
+    public string ProviderName { get; set; } = request.ProviderName;
 
     public string CourseName { get; set; } = request.CourseName;
 
@@ -47,60 +46,66 @@ public class GetApprenticeshipsRequest(long? providerId,long? accountId, GetAppr
     public ConfirmationStatus? ApprenticeConfirmationStatus { get; set; } = request.ApprenticeConfirmationStatus;
 
     public DeliveryModel? DeliveryModel { get; set; } = request.DeliveryModel;
-    public string GetUrl => ProviderId.HasValue ?  $"api/apprenticeships?providerId={ProviderId}{CreateFilterQuery(this)}" : $"api/apprenticeships?accountId={AccountId}{CreateFilterQuery(this)}";
+    public string GetUrl => QueryHelpers.AddQueryString($"api/apprenticeships", CreateFilterQuery(this));
 
-    private static string CreateFilterQuery(GetApprenticeshipsRequest request)
+    private static Dictionary<string, string> CreateFilterQuery(GetApprenticeshipsRequest request)
     {
-        var queryParameters = new List<string>();
+        var queryParameters = new Dictionary<string, string>();
+
+        if (request.AccountId.HasValue)
+            queryParameters.Add("accountId", request.AccountId.Value.ToString());
+
+        if (request.ProviderId.HasValue)
+            queryParameters.Add("providerId", request.ProviderId.Value.ToString());
 
         if (!string.IsNullOrEmpty(request.SearchTerm))
-            queryParameters.Add($"searchTerm={WebUtility.UrlEncode(request.SearchTerm)}");
+            queryParameters.Add("searchTerm", request.SearchTerm);
 
         if (!string.IsNullOrEmpty(request.EmployerName))
-            queryParameters.Add($"employerName={WebUtility.UrlEncode(request.EmployerName)}");
+            queryParameters.Add("employerName", request.EmployerName);
 
         if (request.PageNumber > 0)
-            queryParameters.Add($"pageNumber={request.PageNumber}");
+            queryParameters.Add("pageNumber", request.PageNumber.ToString());
 
         if (request.PageItemCount > 0)
-            queryParameters.Add($"pageItemCount={request.PageItemCount}");
+            queryParameters.Add("pageItemCount", request.PageItemCount.ToString());
 
         if (!string.IsNullOrEmpty(request.SortField))
-            queryParameters.Add($"sortField={WebUtility.UrlEncode(request.SortField)}");
+            queryParameters.Add("sortField", request.SortField);
 
         if (request.ReverseSort)
-            queryParameters.Add($"reverseSort={request.ReverseSort.ToString().ToLower()}");
+            queryParameters.Add("reverseSort", request.ReverseSort.ToString().ToLower());
 
         if (!string.IsNullOrEmpty(request.CourseName))
-            queryParameters.Add($"courseName={WebUtility.UrlEncode(request.CourseName)}");
+            queryParameters.Add("courseName", request.CourseName);
 
         if (!string.IsNullOrEmpty(request.ProviderName))
-            queryParameters.Add($"providerName={WebUtility.UrlEncode(request.ProviderName)}");
+            queryParameters.Add("providerName", request.ProviderName);
 
         if (request.Status.HasValue)
-            queryParameters.Add($"status={WebUtility.UrlEncode(request.Status.Value.ToString())}");
+            queryParameters.Add("status", request.Status.Value.ToString());
 
         if (request.StartDate.HasValue)
-            queryParameters.Add($"startDate={WebUtility.UrlEncode(request.StartDate.Value.ToString("u"))}");
+            queryParameters.Add("startDate", request.StartDate.Value.ToString("u"));
 
         if (request.EndDate.HasValue)
-            queryParameters.Add($"endDate={WebUtility.UrlEncode(request.EndDate.Value.ToString("u"))}");
+            queryParameters.Add("endDate", request.EndDate.Value.ToString("u"));
 
         if (request.StartDateRangeFrom.HasValue)
-            queryParameters.Add($"startDateRangeFrom={WebUtility.UrlEncode(request.StartDateRangeFrom.Value.ToString("u"))}");
+            queryParameters.Add("startDateRangeFrom", request.StartDateRangeFrom.Value.ToString("u"));
 
         if (request.StartDateRangeTo.HasValue)
-            queryParameters.Add($"startDateRangeTo={WebUtility.UrlEncode(request.StartDateRangeTo.Value.ToString("u"))}");
+            queryParameters.Add("startDateRangeTo", request.StartDateRangeTo.Value.ToString("u"));
 
         if (request.Alert.HasValue)
-            queryParameters.Add($"alert={WebUtility.UrlEncode(request.Alert.Value.ToString())}");
+            queryParameters.Add("alert", request.Alert.Value.ToString());
 
         if (request.ApprenticeConfirmationStatus.HasValue)
-            queryParameters.Add($"apprenticeConfirmationStatus={WebUtility.UrlEncode(request.ApprenticeConfirmationStatus.ToString())}");
+            queryParameters.Add("apprenticeConfirmationStatus", request.ApprenticeConfirmationStatus.ToString());
 
         if (request.DeliveryModel.HasValue)
-            queryParameters.Add($"deliveryModel={WebUtility.UrlEncode(request.DeliveryModel.ToString())}");
+            queryParameters.Add("deliveryModel", request.DeliveryModel.ToString());
 
-        return queryParameters.Any() ? "&" + string.Join("&", queryParameters) : string.Empty;
+        return queryParameters;
     }
 }

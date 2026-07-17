@@ -626,6 +626,7 @@ public class ApprenticesController(
                 SearchTerm = request.SearchTerm,
                 EmployerName = request.EmployerName,
                 CourseName = request.CourseName,
+                ProviderName = request.ProviderName,
                 Status = request.Status,
                 StartDate = request.StartDate,
                 EndDate = request.EndDate,

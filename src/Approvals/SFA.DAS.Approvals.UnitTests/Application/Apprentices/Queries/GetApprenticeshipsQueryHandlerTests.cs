@@ -40,10 +40,10 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
 
             _apiClient.Setup(x =>
                     x.GetWithResponseCode<GetApprenticeshipsResponse>(It.Is<GetApprenticeshipsRequest>(
-                        r => r.ProviderId == _query.ProviderId
+                        r => r.ProviderId == _query.ProviderId && r.AccountId == _query.AccountId
                         && r.SearchTerm == _query.SearchTerm
                         && r.EmployerName == _query.EmployerName
-                        && r.CourseName == _query.CourseName
+                        && r.CourseName == _query.CourseName && r.ProviderName == _query.ProviderName
                         && r.Status == _query.Status
                         && r.StartDate == _query.StartDate
                         && r.EndDate == _query.EndDate
@@ -69,6 +69,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         [Test]
         public async Task Handle_when_apprenticeships_are_returned()
         {
+            _query.AccountId = null;
             var result = await _handler.Handle(_query, CancellationToken.None);
 
             result.Should().NotBeNull();
@@ -78,6 +79,34 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         [Test]
         public async Task Handle_No_apprenticeships_returned()
         {
+            _apiClient.Setup(x =>
+                  x.GetWithResponseCode<GetApprenticeshipsResponse>(It.IsAny<GetApprenticeshipsRequest>()))
+              .ReturnsAsync(new ApiResponse<GetApprenticeshipsResponse>(null, HttpStatusCode.NotFound, string.Empty));
+
+            _apiClient.Setup(x =>
+            x.GetWithResponseCode<GetApprenticeshipsFilterValuesResponse>(It.IsAny<GetApprenticeshipsFilterValuesRequest>()))
+        .ReturnsAsync(new ApiResponse<GetApprenticeshipsFilterValuesResponse>(null, HttpStatusCode.NotFound, string.Empty));
+
+            var result = await _handler.Handle(_query, CancellationToken.None);
+
+            result.Should().BeNull();
+        }
+
+
+        [Test]
+        public async Task Handle_when_apprenticeships_are_returned_For_Employer()
+        {
+            _query.ProviderId = null; 
+            var result = await _handler.Handle(_query, CancellationToken.None);
+
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(_apprenticeships);
+        }
+
+        [Test]
+        public async Task Handle_No_apprenticeships_returned_For_Employer()
+        {
+            _query.ProviderId = null;
             _apiClient.Setup(x =>
                   x.GetWithResponseCode<GetApprenticeshipsResponse>(It.IsAny<GetApprenticeshipsRequest>()))
               .ReturnsAsync(new ApiResponse<GetApprenticeshipsResponse>(null, HttpStatusCode.NotFound, string.Empty));

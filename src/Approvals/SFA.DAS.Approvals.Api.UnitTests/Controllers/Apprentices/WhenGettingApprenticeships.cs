@@ -96,6 +96,10 @@ public class WhenGettingApprenticeships
         model.Should().NotBeNull();
 
         model.Should().BeEquivalentTo(mediatorResult);
+
+        mockMediator.Verify(mediator => mediator.Send(
+            It.Is<GetApprenticeshipsQuery>(q => q.AccountId == accountId && q.ProviderId == null && q.ProviderName == request.ProviderName ),
+            It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test, MoqAutoData]
