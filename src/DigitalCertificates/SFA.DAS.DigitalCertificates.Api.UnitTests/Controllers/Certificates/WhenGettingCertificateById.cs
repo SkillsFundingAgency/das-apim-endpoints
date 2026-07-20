@@ -46,7 +46,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Certificates
             [Greedy] CertificatesController controller)
         {
             // Arrange
-            GetStandardCertificateQueryResult? expectedResponse = null;
+            GetStandardCertificateQueryResult expectedResponse = null;
             mediator
                 .Setup(m => m.Send(It.IsAny<GetStandardCertificateQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedResponse);

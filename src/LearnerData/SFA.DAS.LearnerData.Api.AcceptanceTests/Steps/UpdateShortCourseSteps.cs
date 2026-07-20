@@ -6,6 +6,7 @@ using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.Payments.EarningEvents.Messages.External;
 using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using System.Net;
 using System.Net.Http.Headers;
 using TechTalk.SpecFlow;
@@ -25,6 +26,9 @@ public class UpdateShortCourseSteps
     private const string UkprnKey = "ShortCourseUkprnKey";
     private const string ShortCourseChangesKey = "ShortCourseChanges";
     private const string UpdatedEpisodeKeyKey = "UpdatedEpisodeKey";
+    private const string IsApprovedKey = "ShortCourseIsApproved";
+    private const string ShortCourseRequestKey = "ShortCourseRequest";
+    private const string PersistedStartDateOverrideKey = "PersistedStartDateOverride";
 
     public UpdateShortCourseSteps(TestContext testContext, ScenarioContext scenarioContext)
     {
@@ -35,13 +39,24 @@ public class UpdateShortCourseSteps
     [Given(@"there is a short course learning")]
     public void GivenThereIsAShortCourseLearning()
     {
-        _scenarioContext.Set(Guid.NewGuid(), ShortCourseLearnerKey);
-        _scenarioContext.Set(_fixture.Create<long>(), UkprnKey);
-
+        SetUpShortCourseLearning(isApproved: true);
     }
 
-    [Given(@"the (.*) of short course passed is different to the value in the learning domain")]
-    public void GivenTheDetailsOfShortCoursePassedIsDifferentToTheValueInTheLearningDomain(ShortCourseUpdateChanges change)
+    [Given(@"there is an (approved|unapproved) short course learning")]
+    public void GivenThereIsAnApprovalStateShortCourseLearning(string approvalState)
+    {
+        SetUpShortCourseLearning(isApproved: approvalState == "approved");
+    }
+
+    private void SetUpShortCourseLearning(bool isApproved)
+    {
+        _scenarioContext.Set(Guid.NewGuid(), ShortCourseLearnerKey);
+        _scenarioContext.Set(_fixture.Create<long>(), UkprnKey);
+        _scenarioContext.Set(isApproved, IsApprovedKey);
+    }
+
+    [Given(@"SLD inform us that the (.*) has changed")]
+    public void GivenSLDInformUsThatTheChangeHasChanged(ShortCourseUpdateChanges change)
     {
         List<ShortCourseUpdateChanges> changes;
 
@@ -55,15 +70,23 @@ public class UpdateShortCourseSteps
         _scenarioContext.Set(changes, ShortCourseChangesKey);
     }
 
+    [Given(@"learning ignores the change and persists a different StartDate")]
+    public void GivenLearningIgnoresTheChangeAndPersistsADifferentStartDate()
+    {
+        _scenarioContext.Set(new DateTime(2020, 1, 1), PersistedStartDateOverrideKey);
+    }
+
     [When(@"the short course learning is updated")]
     public async Task WhenTheShortCourseLearningIsUpdated()
     {
         var learningKey = _scenarioContext.Get<Guid>(ShortCourseLearnerKey);
         var ukprn = _scenarioContext.Get<long>(UkprnKey);
         var requestBody = _fixture.Create<ShortCourseRequest>();
+        _scenarioContext.Set(requestBody, ShortCourseRequestKey);
 
         ConfigureLearnerInnerApi(ukprn, learningKey, requestBody);
         ConfigureEarningsInnerApiToRespondeOkToEverything();
+        ConfigureCoursesApi();
         await CallUpdateShortCourseLearningEndpoint(ukprn, learningKey, requestBody);
     }
 
@@ -79,58 +102,72 @@ public class UpdateShortCourseSteps
             $"Expected a request to {requestUrl} but found {requests.Count} requests instead.");
     }
 
-    [Then(@"a short course earnings updated event is published for payments")]
-    public void ThenAShortCourseEarningsUpdatedEventIsPublishedForPayments()
+    [Then(@"the on-programme update sent to earnings has the learning-persisted StartDate, not the SLD payload's StartDate")]
+    public void ThenTheOnProgrammeUpdateSentToEarningsHasTheLearningPersistedStartDate()
     {
-        var learnerKey = _scenarioContext.Get<Guid>(ShortCourseLearnerKey);
-        var calculateGrowthAndSkillsPayments = StubMessageSession.SentMessages
-            .OfType<CalculateGrowthAndSkillsPayments>()
-            .Where(e => e.Learner.LearnerKey == learnerKey)
-            .ToList();
+        var persistedStartDate = _scenarioContext.Get<DateTime>(PersistedStartDateOverrideKey);
+        var sldStartDate = _scenarioContext.Get<ShortCourseRequest>(ShortCourseRequestKey).Delivery.OnProgramme.First().StartDate;
+        persistedStartDate.Should().NotBe(sldStartDate, "the test setup should use different dates or this assertion proves nothing");
 
-        calculateGrowthAndSkillsPayments.Should().NotBeEmpty("Expected a CalculateGrowthAndSkillsPayments command to be sent but none were found.");
-        calculateGrowthAndSkillsPayments.Should().ContainSingle(e => e.Training.CourseType == Payments.EarningEvents.Messages.External.CourseType.ShortCourse,
-            "Expected a CalculateGrowthAndSkillsPayments command for a ShortCourse to be sent but it was not found.");
+        var learnerKey = _scenarioContext.Get<Guid>(ShortCourseLearnerKey);
+        var episodeKey = _scenarioContext.Get<Guid>(UpdatedEpisodeKeyKey);
+        var requestUrl = $"/{learnerKey}/shortCourses/{episodeKey}/on-programme";
+
+        var entry = _testContext.EarningsApi.MockServer.LogEntries
+            .Single(request => request.RequestMessage.Url.Contains(requestUrl));
+
+        var body = JsonConvert.DeserializeObject<SFA.DAS.LearnerData.Requests.LearningInner.UpdateShortCourseOnProgrammeRequestBody>(entry.RequestMessage.Body);
+        body.StartDate.Should().Be(persistedStartDate);
     }
 
     private void ConfigureLearnerInnerApi(long ukprn, Guid learningKey, ShortCourseRequest shortCourseRequest)
     {
         var changes = _scenarioContext.Get<List<ShortCourseUpdateChanges>>(ShortCourseChangesKey);
+        var isApproved = _scenarioContext.Get<bool>(IsApprovedKey);
         var onProgramme = shortCourseRequest.Delivery.OnProgramme.First();
 
         var updatedEpisodeKey = Guid.NewGuid();
         _scenarioContext.Set(updatedEpisodeKey, UpdatedEpisodeKeyKey);
 
-        var response = new UpdateShortCourseLearningPutResponse
+        var response = new UpdateShortCourseLearningResponse
         {
-            UpdatedEpisodeKey = updatedEpisodeKey,
-            LearningKey = learningKey,
-            LearnerKey = learningKey,
-            Changes = changes.Select(x => x.ToString()).ToArray(),
-            Learner = new LearningInnerShortCourseLearner
-            {
-                Uln = shortCourseRequest.Learner.Uln.ToString(),
-                FirstName = shortCourseRequest.Learner.FirstName,
-                LastName = shortCourseRequest.Learner.LastName,
-                DateOfBirth = shortCourseRequest.Learner.Dob,
-            },
-            Episodes = [new LearningInnerShortCourseEpisode
-            {
-                Ukprn = ukprn,
-                EmployerAccountId = 12,
-                CourseCode = "ZSC00001",
-                CourseType = "ShortCourse",
-                LearningType = "ApprenticeshipUnit",
-                StartDate = onProgramme.StartDate,
-                AgeAtStart = 20,
-                PlannedEndDate = onProgramme.ExpectedEndDate,
-                WithdrawalDate = onProgramme.WithdrawalDate,
-                CompletionDate = onProgramme.CompletionDate,
-                IsApproved = true,
-                Price = 1000m,
-                LearnerRef = "LearnerRef",
-                EmployerType = EmployerType.Levy.ToString()
-            }]
+            Results =
+            [
+                new UpdateShortCourseLearningPutResponse
+                {
+                    UpdatedEpisodeKey = updatedEpisodeKey,
+                    LearningKey = learningKey,
+                    LearnerKey = learningKey,
+                    Changes = changes.Select(x => x.ToString()).ToArray(),
+                    Learner = new LearningInnerShortCourseLearner
+                    {
+                        Uln = shortCourseRequest.Learner.Uln.ToString(),
+                        FirstName = shortCourseRequest.Learner.FirstName,
+                        LastName = shortCourseRequest.Learner.LastName,
+                        DateOfBirth = shortCourseRequest.Learner.Dob,
+                    },
+                    Episodes = [new LearningInnerShortCourseEpisode
+                    {
+                        EpisodeKey = updatedEpisodeKey,
+                        Ukprn = ukprn,
+                        EmployerAccountId = 12,
+                        CourseCode = "ZSC00001",
+                        CourseType = "ShortCourse",
+                        LearningType = "ApprenticeshipUnit",
+                        StartDate = _scenarioContext.TryGetValue(PersistedStartDateOverrideKey, out DateTime persistedStartDate)
+                            ? persistedStartDate
+                            : onProgramme.StartDate,
+                        AgeAtStart = 20,
+                        PlannedEndDate = onProgramme.ExpectedEndDate,
+                        WithdrawalDate = onProgramme.WithdrawalDate,
+                        CompletionDate = onProgramme.CompletionDate,
+                        IsApproved = isApproved,
+                        Price = 1000m,
+                        LearnerRef = "LearnerRef",
+                        EmployerType = EmployerType.Levy.ToString()
+                    }]
+                }
+            ]
         };
 
         _testContext.ApprenticeshipsApi.MockServer
@@ -180,6 +217,37 @@ public class UpdateShortCourseSteps
                 Response.Create()
                 .WithStatusCode(200)
                 .WithBodyAsJson(response)
+            );
+    }
+
+    private void ConfigureCoursesApi()
+    {
+        var response = new CourseLookupDetailResponse
+        {
+            LarsCode = _fixture.Create<string>(),
+            Title = _fixture.Create<string>(),
+            LearningType = "ApprenticeshipUnit",
+            CourseType = _fixture.Create<string>(),
+            ApprenticeshipFunding =
+            [
+                new ApprenticeshipFunding
+                {
+                    MaxEmployerLevyCap = 6000,
+                    EffectiveFrom = new DateTime(2020, 1, 1),
+                    EffectiveTo = null
+                }
+            ]
+        };
+
+        _testContext.CoursesApi.MockServer
+            .Given(
+                Request.Create()
+                    .WithPath("/api/courses/lookup/*")
+                    .UsingGet())
+            .RespondWith(
+                Response.Create()
+                    .WithStatusCode(HttpStatusCode.OK)
+                    .WithBodyAsJson(response)
             );
     }
 

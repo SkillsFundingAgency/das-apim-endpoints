@@ -23,8 +23,6 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Requests
             PostCreateUserMatchRequestData requestData = command;
 
             requestData.Uln.Should().Be(command.Uln);
-            requestData.FamilyName.Should().Be(command.FamilyName);
-            requestData.DateOfBirth.Should().Be(command.DateOfBirth);
             requestData.CertificateType.Should().Be(command.CertificateType);
             requestData.CourseCode.Should().Be(command.CourseCode);
             requestData.CourseName.Should().Be(command.CourseName);

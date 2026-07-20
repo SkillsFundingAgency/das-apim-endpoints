@@ -60,32 +60,38 @@ internal class RemoveShortCourseSteps(TestContext testContext, ScenarioContext s
 
         var responseBody = new DeleteShortCourseResponse
         {
-            LearningKey = learningKey,
-            LearnerKey = learningKey,
-            RemovedEpisodeKey = removedEpisodeKey,
-            Learner = new LearningInnerShortCourseLearner
-            {
-                Uln = _fixture.Create<long>().ToString(),
-                FirstName = _fixture.Create<string>(),
-                LastName = _fixture.Create<string>(),
-                DateOfBirth = _fixture.Create<DateTime>()
-            },
-            Episodes =
+            Results =
             [
-                new LearningInnerShortCourseEpisode
+                new DeleteShortCourseItemResponse
                 {
-                    Ukprn = ukprn,
-                    EmployerAccountId = 12,
-                    CourseCode = "ZSC00001",
-                    CourseType = "ShortCourse",
-                    LearningType = "ApprenticeshipUnit",
-                    StartDate = DateTime.UtcNow.AddMonths(-6),
-                    AgeAtStart = 20,
-                    PlannedEndDate = DateTime.UtcNow.AddMonths(6),
-                    IsApproved = true,
-                    Price = 1000m,
-                    LearnerRef = "LearnerRef",
-                    EmployerType = "Levy"
+                    LearningKey = learningKey,
+                    LearnerKey = learningKey,
+                    RemovedEpisodeKey = removedEpisodeKey,
+                    Learner = new LearningInnerShortCourseLearner
+                    {
+                        Uln = _fixture.Create<long>().ToString(),
+                        FirstName = _fixture.Create<string>(),
+                        LastName = _fixture.Create<string>(),
+                        DateOfBirth = _fixture.Create<DateTime>()
+                    },
+                    Episodes =
+                    [
+                        new LearningInnerShortCourseEpisode
+                        {
+                            Ukprn = ukprn,
+                            EmployerAccountId = 12,
+                            CourseCode = "ZSC00001",
+                            CourseType = "ShortCourse",
+                            LearningType = "ApprenticeshipUnit",
+                            StartDate = DateTime.UtcNow.AddMonths(-6),
+                            AgeAtStart = 20,
+                            PlannedEndDate = DateTime.UtcNow.AddMonths(6),
+                            IsApproved = true,
+                            Price = 1000m,
+                            LearnerRef = "LearnerRef",
+                            EmployerType = "Levy"
+                        }
+                    ]
                 }
             ]
         };
