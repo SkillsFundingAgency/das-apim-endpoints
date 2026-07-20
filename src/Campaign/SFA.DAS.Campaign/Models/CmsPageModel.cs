@@ -240,7 +240,8 @@ namespace SFA.DAS.Campaign.Models
                 {
                     Type = contentItem.NodeType,
                     Values = contentItem.BuildParagraph(),
-                    TableValue = contentItem.BuildTable(article)
+                    TableValue = contentItem.BuildTable(article),
+                    VideoTranscripts = contentItem.BuildVideoTranscripts(article)
                 });
             }
         }
