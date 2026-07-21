@@ -2,27 +2,22 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Recruit.Enums;
 using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.Recruit.Application.Queries.GetGeoPoint
 {
-    public class GetGeoPointQueryHandler : IRequestHandler<GetGeoPointQuery, GetGeoPointQueryResult>
+    public class GetGeoPointQueryHandler(ILocationLookupService locationLookupService)
+        : IRequestHandler<GetGeoPointQuery, GetGeoPointQueryResult>
     {
-        private readonly ILocationLookupService _locationLookupService;
-
-        public GetGeoPointQueryHandler(ILocationLookupService locationLookupService)
-        {
-            _locationLookupService = locationLookupService;
-        }
-
         public async Task<GetGeoPointQueryResult> Handle(GetGeoPointQuery request, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(request.Postcode)) throw new ArgumentException($"Postcode is required", nameof(GetGeoPointQuery.Postcode));
+            ArgumentException.ThrowIfNullOrEmpty(request.Postcode);
 
-            var location = await _locationLookupService.GetLocationInformation(request.Postcode, default, default);
+            var location = await locationLookupService.GetLocationInformation(request.Postcode, 0, 0);
 
-            if(location == null)
+            if(location is not {Country: nameof(Country.England)})
             {
                 return new GetGeoPointQueryResult(null);
             }

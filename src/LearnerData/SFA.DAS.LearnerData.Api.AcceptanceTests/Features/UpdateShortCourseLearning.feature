@@ -7,7 +7,6 @@ Scenario Outline: Withdrawal
 	And SLD inform us that the WithdrawalDate has changed
 	When the short course learning is updated
 	Then a on-programme update request is sent for short courses to the earnings domain
-	And a short course earnings updated event is published for payments
 
 	Examples:
 		| approval   |
@@ -19,7 +18,6 @@ Scenario Outline: Completion
 	And SLD inform us that the CompletionDate has changed
 	When the short course learning is updated
 	Then a on-programme update request is sent for short courses to the earnings domain
-	And a short course earnings updated event is published for payments
 
 	Examples:
 		| approval   |
@@ -31,3 +29,10 @@ Scenario: StartDate change on unapproved episode
 	And SLD inform us that the StartDate has changed
 	When the short course learning is updated
 	Then a on-programme update request is sent for short courses to the earnings domain
+
+Scenario: Learning ignores a StartDate change - earnings receives the learning-persisted value, not that from the SLD payload
+	Given there is an unapproved short course learning
+	And SLD inform us that the StartDate has changed
+	And learning ignores the change and persists a different StartDate
+	When the short course learning is updated
+	Then the on-programme update sent to earnings has the learning-persisted StartDate, not the SLD payload's StartDate

@@ -8,21 +8,19 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses;
 
 public interface ICreateUnapprovedShortCourseLearningRequestBuilder
 {
-    CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, Guid learningKey, Guid episodeKey, long ukprn, CreateDraftShortCourseRequest learningRequest);
+    CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, ShortCourseOnProgramme onProg, Guid learningKey, Guid episodeKey, long ukprn, SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme resolvedOnProgramme);
 }
 
 public class CreateUnapprovedShortCourseLearningRequestBuilder : ICreateUnapprovedShortCourseLearningRequestBuilder
 {
-    public CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, Guid learningKey, Guid episodeKey, long ukprn, CreateDraftShortCourseRequest learningRequest)
+    public CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, ShortCourseOnProgramme onProg, Guid learningKey, Guid episodeKey, long ukprn, SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme resolvedOnProgramme)
     {
-        var firstOnProg = request.Delivery.OnProgramme.First();
-
-        var milestones = firstOnProg.Milestones.Select(x =>
+        var milestones = onProg.Milestones.Select(x =>
             x == Milestone.LearningComplete
                 ? Milestone.LearningComplete
                 : Milestone.ThirtyPercentLearningComplete).ToList();
 
-        if (firstOnProg.CompletionDate.HasValue && !firstOnProg.Milestones.Contains(Milestone.LearningComplete))
+        if (onProg.CompletionDate.HasValue && !onProg.Milestones.Contains(Milestone.LearningComplete))
             milestones.Add(Milestone.LearningComplete);
 
         return new CreateUnapprovedShortCourseLearningRequest
@@ -34,22 +32,22 @@ public class CreateUnapprovedShortCourseLearningRequestBuilder : ICreateUnapprov
                 DateOfBirth = request.Learner.Dob,
                 Uln = request.Learner.Uln.ToString()
             },
-            LearningSupport = firstOnProg.LearningSupport.Select(x => new LearningSupport
+            LearningSupport = onProg.LearningSupport.Select(x => new LearningSupport
             {
                 StartDate = x.StartDate,
                 EndDate = x.EndDate
             }).ToList(),
             OnProgramme = new Requests.EarningsInner.OnProgramme
             {
-                StartDate = firstOnProg.StartDate,
-                CompletionDate = firstOnProg.CompletionDate,
-                CourseCode = firstOnProg.CourseCode,
-                ExpectedEndDate = firstOnProg.ExpectedEndDate,
+                StartDate = resolvedOnProgramme.StartDate,
+                CompletionDate = resolvedOnProgramme.CompletionDate,
+                CourseCode = resolvedOnProgramme.CourseCode,
+                ExpectedEndDate = resolvedOnProgramme.ExpectedEndDate,
                 Milestones = milestones,
-                TotalPrice = learningRequest.OnProgramme.Price,
-                LearningType = learningRequest.OnProgramme.LearningType,
+                TotalPrice = resolvedOnProgramme.Price,
+                LearningType = resolvedOnProgramme.LearningType,
                 Ukprn = ukprn,
-                WithdrawalDate = firstOnProg.WithdrawalDate
+                WithdrawalDate = resolvedOnProgramme.WithdrawalDate
             }
         };
     }

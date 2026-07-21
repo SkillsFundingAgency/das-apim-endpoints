@@ -7,19 +7,22 @@ namespace SFA.DAS.LearnerData.Services;
 
 public interface ILearnerDataCacheService
 {
-    Task StoreLearner(UpdateLearnerRequest data, long ukprn, CancellationToken cancellationToken);
-    Task<UpdateLearnerRequest?> GetLearner(long ukprn, string uln, CancellationToken cancellationToken);
-    Task<List<UpdateLearnerRequest>> GetLearners(long ukprn, IEnumerable<string> ulns, CancellationToken cancellationToken);
+    Task StoreLearner<T>(T data, long ukprn, CancellationToken cancellationToken);
+    Task<T?> GetLearner<T>(long ukprn, string uln, CancellationToken cancellationToken) where T : class;
+    Task<List<T>> GetLearners<T>(long ukprn, IEnumerable<string> ulns, CancellationToken cancellationToken) where T : class;
 }
 
 public class LearnerDataCacheService(IDistributedCache cache, ILogger<LearnerDataCacheService> logger) : ILearnerDataCacheService
 {
-    private const int CacheDuration = 4;
-    private static string BuildKey(long ukprn, string uln) => $"{CacheKeys.LearnerDataPrefix}_{ukprn}_{uln}";
+    private const string ApprenticeshipLearnerDataPrefix = "LearnerDataApprenticeship";
+    private const string ShortCourseLearnerDataPrefix = "LearnerDataShortCourse";
 
-    public async Task StoreLearner(UpdateLearnerRequest data, long ukprn, CancellationToken cancellationToken)
+    private const int CacheDuration = 4;
+    private static string BuildKey(string prefix, long ukprn, string uln) => $"{prefix}_{ukprn}_{uln}";
+
+    public async Task StoreLearner<T>(T data, long ukprn, CancellationToken cancellationToken)
     {
-        var key = BuildKey(ukprn, data.Learner.Uln.ToString());
+        var key = GetKey(data, ukprn);
         var json = JsonSerializer.Serialize(data);
 
         logger.LogInformation("CACHE STORE key={Key} size={Size}B", key, json.Length);
@@ -34,9 +37,9 @@ public class LearnerDataCacheService(IDistributedCache cache, ILogger<LearnerDat
             cancellationToken);
     }
 
-    public async Task<UpdateLearnerRequest?> GetLearner(long ukprn, string uln, CancellationToken cancellationToken)
+    public async Task<T?> GetLearner<T>(long ukprn, string uln, CancellationToken cancellationToken) where T : class
     {
-        var key = BuildKey(ukprn, uln);
+        var key = GetKey<T>(ukprn, uln);
 
         logger.LogInformation("CACHE GET key={Key}", key);
 
@@ -52,7 +55,7 @@ public class LearnerDataCacheService(IDistributedCache cache, ILogger<LearnerDat
 
         try
         {
-            return JsonSerializer.Deserialize<UpdateLearnerRequest>(json);
+            return JsonSerializer.Deserialize<T>(json);
         }
         catch (Exception ex)
         {
@@ -61,11 +64,41 @@ public class LearnerDataCacheService(IDistributedCache cache, ILogger<LearnerDat
         }
     }
 
-    public async Task<List<UpdateLearnerRequest>> GetLearners(long ukprn, IEnumerable<string> ulns, CancellationToken cancellationToken)
+    public async Task<List<T>> GetLearners<T>(long ukprn, IEnumerable<string> ulns, CancellationToken cancellationToken) where T : class
     {
-        var tasks = ulns.Select(uln => GetLearner(ukprn, uln, cancellationToken));
+        var tasks = ulns.Select(uln => GetLearner<T>(ukprn, uln, cancellationToken));
         var results = await Task.WhenAll(tasks);
 
         return results.Where(r => r != null).ToList()!;
+    }
+
+    private string GetKey<T>(T data, long ukprn) 
+    {
+        if(data is UpdateLearnerRequest learnerData)
+        {
+            return BuildKey(ApprenticeshipLearnerDataPrefix, ukprn, learnerData.Learner.Uln.ToString());
+        }
+
+        if(data is ShortCourseRequest shortCourseData)
+        {
+            return BuildKey(ShortCourseLearnerDataPrefix, ukprn, shortCourseData.Learner.Uln.ToString());
+        }
+
+        throw new ArgumentException("Unsupported data type", nameof(data));
+    }
+
+    private string GetKey<T>(long ukprn, string uln)
+    {
+        if (typeof(T) == typeof(UpdateLearnerRequest))
+        {
+            return BuildKey(ApprenticeshipLearnerDataPrefix, ukprn, uln);
+        }
+
+        if (typeof(T) == typeof(ShortCourseRequest))
+        {
+            return BuildKey(ShortCourseLearnerDataPrefix, ukprn, uln);
+        }
+
+        throw new ArgumentException("Unsupported data type", nameof(T));
     }
 }

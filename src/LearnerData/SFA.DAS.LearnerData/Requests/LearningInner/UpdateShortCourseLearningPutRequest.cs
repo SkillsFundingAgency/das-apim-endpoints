@@ -23,6 +23,7 @@ public class UpdateShortCourseLearningPutRequest : IPutApiRequest<UpdateShortCou
 public class UpdateShortCourseLearningRequestBody
 {
     public long Ukprn { get; set; }
+    public int AcademicYear { get; set; }
     public ShortCourseLearnerUpdateDetails LearnerUpdateDetails { get; set; }
     public List<ShortCourseOnProgrammeUpdateDetails> OnProgramme { get; set; } = new();
 }
