@@ -15,7 +15,7 @@ public sealed class CachedLocationLookupServiceTests
 {
     [Test]
     [MoqAutoData]
-    public async Task When_Cache_Hit_Then_Location_Is_Returned_From_The_Cache(
+    public async Task WhenCacheHit_ThenLocationIsReturnedFromTheCache(
         string locationName,
         string authorityName,
         LocationItem locationItem,
@@ -47,7 +47,7 @@ public sealed class CachedLocationLookupServiceTests
 
     [Test]
     [MoqAutoData]
-    public async Task When_Cache_Miss_Then_Location_Is_Retrieved_From_Location_API_And_Saved_To_The_Cache(
+    public async Task WhenCacheMiss_ThenLocationIsRetrievedFromLocationApiAndSavedToTheCache(
         string locationName,
         string authorityName,
         LocationItem locationItem,
@@ -84,7 +84,7 @@ public sealed class CachedLocationLookupServiceTests
 
     [Test]
     [MoqAutoData]
-    public async Task When_Cache_Miss_And_Null_Location_API_Response_Then_Null_Is_Returned(
+    public async Task WhenCacheMiss_AndNullLocationApiResponse_ThenNullIsReturned(
         string locationName,
         string authorityName,
         LocationItem locationItem,
@@ -121,7 +121,7 @@ public sealed class CachedLocationLookupServiceTests
 
     [Test]
     [MoqAutoData]
-    public async Task When_Location_Is_Null_Then_Null_Is_Returned(
+    public async Task WhenLocationIsNull_ThenNullIsReturned(
         [Frozen] Mock<ICacheStorageService> _cacheStorageServiceMock,
         [Frozen] Mock<ILocationLookupService> _locationLookupService,
         CachedLocationLookupService sut

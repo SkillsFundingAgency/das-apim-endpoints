@@ -9,7 +9,7 @@ public sealed class GetCourseProviderQueryResultTests
 {
     [Test]
     [MoqAutoData]
-    public void Then_All_Properties_Must_Map_Correctly(GetCourseProviderDetailsResponse response)
+    public void WhenMappingGetCourseProviderDetailsResponse_ThenAllPropertiesMustMapCorrectly(GetCourseProviderDetailsResponse response)
     {
         GetCourseProviderQueryResult sut = response;
 

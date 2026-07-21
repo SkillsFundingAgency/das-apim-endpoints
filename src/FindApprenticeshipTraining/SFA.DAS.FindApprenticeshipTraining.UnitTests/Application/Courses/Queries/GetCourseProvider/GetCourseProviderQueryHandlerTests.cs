@@ -127,7 +127,7 @@ public sealed class GetCourseProviderQueryHandlerTests
 
     [Test]
     [MoqAutoData]
-    public async Task Handle_QueryProvided_CallsCachedLocationApiWithCorrectParameters(
+    public async Task WhenQueryProvided_ThenCallsCachedLocationApiWithCorrectParameters(
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         EmployerFeedbackAnnualDetails employerFeedbackResponse,
@@ -159,7 +159,7 @@ public sealed class GetCourseProviderQueryHandlerTests
 
     [Test]
     [MoqAutoData]
-    public async Task Handle_QueryProvided_CallsRoatpApiWithCorrectParameters(
+    public async Task WhenQueryProvided_ThenCallsRoatpApiWithCorrectParameters(
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         EmployerFeedbackAnnualDetails employerFeedbackResponse,
@@ -197,7 +197,7 @@ public sealed class GetCourseProviderQueryHandlerTests
     }
 
     [Test, AutoData]
-    public async Task Handle_RoatpApiReturnsFailedStatusCode_ThrowsApiResponseException(
+    public async Task WhenRoatpApiReturnsFailedStatusCode_ThenThrowsApiResponseException(
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         GetCourseProviderQuery query,
         EmployerFeedbackAnnualDetails employerFeedbackResponse,
@@ -241,7 +241,7 @@ public sealed class GetCourseProviderQueryHandlerTests
 
     [Test]
     [MoqAutoData]
-    public async Task Handle_QueryProvided_CallsAccessorApiWithCorrectParameters(
+    public async Task WhenQueryProvided_ThenCallsAccessorApiWithCorrectParameters(
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         EmployerFeedbackAnnualDetails employerFeedbackResponse,
@@ -277,7 +277,7 @@ public sealed class GetCourseProviderQueryHandlerTests
 
     [Test]
     [MoqAutoData]
-    public async Task Handle_QueryProvided_CallsFeedbackServiceWithCorrectParameters(
+    public async Task WhenQueryProvided_ThenCallsFeedbackServiceWithCorrectParameters(
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         EmployerFeedbackAnnualDetails employerFeedbackResponse,
@@ -308,7 +308,7 @@ public sealed class GetCourseProviderQueryHandlerTests
 
     [Test]
     [MoqAutoData]
-    public async Task Handle_QueryProvided_CallsRoatpApiForCourseDetailsWithCorrectParameters(
+    public async Task WhenQueryProvided_ThenCallsRoatpApiForCourseDetailsWithCorrectParameters(
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         EmployerFeedbackAnnualDetails employerFeedbackResponse,
@@ -345,7 +345,7 @@ public sealed class GetCourseProviderQueryHandlerTests
 
     [Test]
     [MoqAutoData]
-    public async Task Handle_QueryProvided_CallsRoatpApiForProviderCountWithCorrectParameters(
+    public async Task WhenQueryProvided_ThenCallsRoatpApiForProviderCountWithCorrectParameters(
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         EmployerFeedbackAnnualDetails employerFeedbackResponse,
@@ -386,7 +386,7 @@ public sealed class GetCourseProviderQueryHandlerTests
     [Test]
     [MoqInlineAutoData(HttpStatusCode.NotFound)]
     [MoqInlineAutoData(HttpStatusCode.BadRequest)]
-    public async Task Handle_RoatpApiReturnsNotFoundOrBadRequest_ReturnsNull(
+    public async Task WhenRoatpApiReturnsNotFoundOrBadRequest_ThenReturnsNull(
         HttpStatusCode statusCode,
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,

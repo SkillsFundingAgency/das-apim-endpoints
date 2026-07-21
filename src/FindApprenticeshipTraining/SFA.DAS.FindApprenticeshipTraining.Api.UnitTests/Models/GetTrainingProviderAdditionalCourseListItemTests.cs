@@ -9,7 +9,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
     public class GetTrainingProviderAdditionalCourseListItemTests
     {
         [Test, AutoData]
-        public void Then_The_Fields_Are_Mapped(GetAdditionalCourseListItem source)
+        public void WhenMappingGetTrainingProviderAdditionalCourseListItem_ThenTheFieldsAreMapped(GetAdditionalCourseListItem source)
         {
             var actual = (GetTrainingProviderAdditionalCourseListItem)source;
 

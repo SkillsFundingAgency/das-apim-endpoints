@@ -9,7 +9,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
     public class GetProviderAddressTests
     {
         [Test, AutoData]
-        public void Then_Maps_The_Fields(GetProviderStandardItemAddress source)
+        public void WhenMappingGetProviderStandardItemAddress_ThenMapsTheFields(GetProviderStandardItemAddress source)
         {
             var actual = new GetProviderAddress().Map(source, true);
 
@@ -17,7 +17,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         }
 
         [Test, AutoData]
-        public void Then_No_Location_Sets_Distance_To_Null(GetProviderStandardItemAddress source)
+        public void WhenMappingGetProviderStandardItemAddress_AndNoLocation_ThenSetsDistanceToNull(GetProviderStandardItemAddress source)
         {
             var actual = new GetProviderAddress().Map(source, false);
 

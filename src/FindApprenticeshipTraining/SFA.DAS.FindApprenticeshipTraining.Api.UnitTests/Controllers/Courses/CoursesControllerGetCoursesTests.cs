@@ -14,7 +14,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Courses;
 public sealed class CoursesControllerGetCoursesTests
 {
     [Test, MoqAutoData]
-    public async Task GetCourses_ReturnsOkAndPassesQueryToMediator(
+    public async Task WhenGetCourses_ThenReturnsOkAndPassesQueryToMediator(
         GetCoursesQuery query,
         GetCoursesQueryResult result,
         [Frozen] Mock<IMediator> mockMediator,

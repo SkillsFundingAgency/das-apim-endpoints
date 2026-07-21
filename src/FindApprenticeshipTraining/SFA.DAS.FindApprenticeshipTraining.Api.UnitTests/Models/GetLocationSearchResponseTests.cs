@@ -10,7 +10,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
     public class GetLocationSearchResponseTests
     {
         [Test, AutoData]
-        public void Then_The_Fields_Are_Correctly_Mapped(GetLocationsQueryResponse source)
+        public void WhenMappingGetLocationsQueryResponse_ThenFieldsAreCorrectlyMapped(GetLocationsQueryResponse source)
         {
             //Arrange
             source.Locations = source.Locations.Select(c => { c.Postcode = null; return c; }).ToList();

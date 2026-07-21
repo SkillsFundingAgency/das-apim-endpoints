@@ -9,7 +9,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
     public class GetLocationsListItemTests
     {
         [Test, AutoData]
-        public void Then_The_Fields_are_Correctly_Mapped_When_Postcode_Is_Null(GetLocationsListItem source)
+        public void WhenMappingGetLocationsListItem_AndPostcodeIsNull_ThenFieldsAreCorrectlyMapped(GetLocationsListItem source)
         {
             //Arrange
             source.Postcode = null;
@@ -24,7 +24,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         }
 
         [Test, AutoData]
-        public void Then_The_Fields_are_Correctly_Mapped_When_Postcode_Is_Empty(GetLocationsListItem source)
+        public void WhenMappingGetLocationsListItem_AndPostcodeIsEmpty_ThenFieldsAreCorrectlyMapped(GetLocationsListItem source)
         {
             //Arrange
             source.Postcode = "";
@@ -39,7 +39,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         }
 
         [Test, AutoData]
-        public void Then_The_Fields_are_Correctly_Mapped_When_Postcode_Is_Not_Null(GetLocationsListItem source)
+        public void WhenMappingGetLocationsListItem_AndPostcodeIsNotNull_ThenFieldsAreCorrectlyMapped(GetLocationsListItem source)
         {
             //Act
             source.DistrictName = null;

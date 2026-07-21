@@ -9,7 +9,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
     public class GetTrainingSectorsListItemTests
     {
         [Test, AutoData]
-        public void Then_Maps_Fields_Appropriately(
+        public void WhenMappingGetTrainingSectorsListItem_ThenMapsFieldsAppropriately(
             GetRoutesListItem source
         )
         {

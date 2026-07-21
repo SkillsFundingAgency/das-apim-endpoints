@@ -17,7 +17,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Courses;
 public sealed class CoursesControllerGetCourseByLarsCodeTests
 {
     [Test, MoqAutoData]
-    public async Task GetCourseByLarsCode_ReturnsOkAndCourseFromMediator(
+    public async Task WhenGetCourseByLarsCode_ThenReturnsOkAndCourseFromMediator(
         GetCourseByLarsCodeQuery query,
         GetCourseByLarsCodeQueryResult result,
         [Frozen] Mock<IMediator> mockMediator,
@@ -46,7 +46,7 @@ public sealed class CoursesControllerGetCourseByLarsCodeTests
     }
 
     [Test, MoqAutoData]
-    public async Task GetCourseByLarsCode_ReturnsNotFoundWhenCourseIsNull(
+    public async Task WhenGetCourseByLarsCode_AndCourseIsNull_ThenReturnsNotFound(
         GetCourseByLarsCodeQuery query,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] ILogger<CoursesController> mockLogger,

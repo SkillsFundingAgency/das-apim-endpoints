@@ -8,7 +8,7 @@ public sealed class ProviderCourseModelTests
 {
     [Test]
     [MoqAutoData]
-    public void Then_All_Properties_Must_Map_Correctly(ProviderCourseResponse response)
+    public void WhenMappingProviderCourseResponse_ThenAllPropertiesMustMapCorrectly(ProviderCourseResponse response)
     {
         ProviderCourseModel sut = response;
 

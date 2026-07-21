@@ -19,7 +19,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Courses
     public class CoursesControllerGetCourseProvidersTests
     {
         [Test, MoqAutoData]
-        public async Task GetCourseProviders_ReturnsOkAndModelFromMediator(
+        public async Task WhenGetCourseProviders_ThenReturnsOkAndModelFromMediator(
             string larsCode,
             GetCourseProvidersModel getCourseProvidersModel,
             GetCourseProvidersResponse mediatorResult,
@@ -57,7 +57,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Courses
         }
 
         [Test, MoqAutoData]
-        public async Task GetCourseProviders_ReturnsEmptyResultWhenNoProviders(
+        public async Task WhenGetCourseProviders_AndNoProviders_ThenReturnsEmptyResult(
             int idVal,
             GetCourseProvidersModel getCourseProvidersModel,
             [Frozen] Mock<IMediator> mockMediator,
@@ -83,7 +83,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Courses
         }
 
         [Test, MoqAutoData]
-        public async Task GetCourseProviders_ReturnsNotFoundWhenResponseIsNull(
+        public async Task WhenGetCourseProviders_AndResponseIsNull_ThenReturnsNotFound(
             string id,
             GetCourseProvidersModel getCourseProvidersModel,
             [Frozen] Mock<IMediator> mockMediator,
