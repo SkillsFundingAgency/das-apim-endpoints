@@ -137,7 +137,7 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             }
         }
 
-        [HttpPost("{userId}/actions")]
+        [HttpPost("{userId}/user-actions")]
         public async Task<IActionResult> CreateUserAction([FromRoute] Guid userId, [FromBody] CreateUserActionRequest request)
         {
             try
@@ -155,7 +155,7 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             }
         }
 
-        [HttpGet("{userId}/actions")]
+        [HttpGet("{userId}/user-actions")]
         public async Task<IActionResult> GetUserActions([FromRoute] Guid userId)
         {
             try
