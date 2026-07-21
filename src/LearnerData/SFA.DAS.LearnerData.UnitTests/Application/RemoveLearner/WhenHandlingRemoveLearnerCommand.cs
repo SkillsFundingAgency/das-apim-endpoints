@@ -44,11 +44,11 @@ public class WhenHandlingRemoveLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<RemoveLearnerCommand>();
-        var startDate = DateTime.UtcNow;
+        var removedLearningKeys = _fixture.CreateMany<Guid>(2).ToList();
 
-        _learningApiClient.Setup(x => x.DeleteWithResponseCode<NullResponse>(
+        _learningApiClient.Setup(x => x.DeleteWithResponseCode<List<Guid>>(
                 It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearnerKey == command.LearnerKey), It.IsAny<bool>()))
-            .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
+            .ReturnsAsync(new ApiResponse<List<Guid>>(removedLearningKeys, HttpStatusCode.OK, ""));
 
         _earningsApiClient.Setup(x => x.DeleteWithResponseCode<NullResponse>(
                 It.IsAny<DeleteLearningRequest>(), false))
@@ -58,11 +58,11 @@ public class WhenHandlingRemoveLearnerCommand
         await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        _learningApiClient.Verify(x => x.DeleteWithResponseCode<NullResponse>(
+        _learningApiClient.Verify(x => x.DeleteWithResponseCode<List<Guid>>(
             It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearnerKey == command.LearnerKey && r.Ukprn == command.Ukprn), It.IsAny<bool>()), Times.Once);
 
         _earningsApiClient.Verify(x => x.DeleteWithResponseCode<NullResponse>(
-            It.Is<DeleteLearningRequest>(r => r.LearnerKey == command.LearnerKey), false), Times.Once());
+            It.Is<DeleteLearningRequest>(r => removedLearningKeys.Contains(r.LearningKey)), false), Times.Exactly(removedLearningKeys.Count));
     }
 
     [Test]
@@ -71,9 +71,9 @@ public class WhenHandlingRemoveLearnerCommand
         // Arrange
         var command = _fixture.Create<RemoveLearnerCommand>();
 
-        _learningApiClient.Setup(x => x.DeleteWithResponseCode<NullResponse>(
+        _learningApiClient.Setup(x => x.DeleteWithResponseCode<List<Guid>>(
                 It.IsAny<RemoveLearnerApiDeleteRequest>(), It.IsAny<bool>()))
-            .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.InternalServerError, ""));
+            .ReturnsAsync(new ApiResponse<List<Guid>>(null, HttpStatusCode.InternalServerError, ""));
 
         // Act & Assert
         Assert.ThrowsAsync<Exception>(async () => await _sut.Handle(command, CancellationToken.None));
@@ -84,15 +84,29 @@ public class WhenHandlingRemoveLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<RemoveLearnerCommand>();
-        var startDate = DateTime.UtcNow;
+        var removedLearningKeys = _fixture.CreateMany<Guid>(2).ToList();
 
-        _learningApiClient.Setup(x => x.DeleteWithResponseCode<NullResponse>(
+        _learningApiClient.Setup(x => x.DeleteWithResponseCode<List<Guid>>(
                 It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearnerKey == command.LearnerKey), It.IsAny<bool>()))
-            .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
+            .ReturnsAsync(new ApiResponse<List<Guid>>(removedLearningKeys, HttpStatusCode.OK, ""));
 
         _earningsApiClient.Setup(x => x.DeleteWithResponseCode<NullResponse>(
                 It.IsAny<DeleteLearningRequest>(), false))
             .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.InternalServerError, ""));
+
+        // Act & Assert
+        Assert.ThrowsAsync<Exception>(async () => await _sut.Handle(command, CancellationToken.None));
+    }
+
+    [Test]
+    public void Then_Throws_If_Learning_Response_Body_Is_Null()
+    {
+        // Arrange
+        var command = _fixture.Create<RemoveLearnerCommand>();
+
+        _learningApiClient.Setup(x => x.DeleteWithResponseCode<List<Guid>>(
+                It.IsAny<RemoveLearnerApiDeleteRequest>(), It.IsAny<bool>()))
+            .ReturnsAsync(new ApiResponse<List<Guid>>(null, HttpStatusCode.OK, ""));
 
         // Act & Assert
         Assert.ThrowsAsync<Exception>(async () => await _sut.Handle(command, CancellationToken.None));

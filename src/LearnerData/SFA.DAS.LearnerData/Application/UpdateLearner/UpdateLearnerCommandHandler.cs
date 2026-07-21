@@ -87,9 +87,9 @@ public class UpdateLearnerCommandHandler(
             logger.LogInformation("Skipping apprenticeship learner update for learner {LearnerKey} as feature flag ApprenticeshipUpdateLearner is disabled", command.LearnerKey);
         }
 
-        logger.LogTrace("Publishing LearnerDataEvents");
         foreach (var onProgramme in command.UpdateLearnerRequest.Delivery.OnProgramme)
         {
+            logger.LogInformation("Publishing LearnerDataEvent for AimSequenceNumber {AimSequenceNumber}, StandardCode {StandardCode}, LearnAimRef {LearnAimRef}", onProgramme.AimSequenceNumber, onProgramme.StandardCode, onProgramme.LearnAimRef);
             var @event = MapToEvent(command, onProgramme);
             await messageSession.Publish(@event);
         }

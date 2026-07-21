@@ -1,8 +1,8 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 namespace SFA.DAS.LearnerData.Requests.EarningsInner;
 
-public class DeleteLearningRequest(Guid learnerKey) : IDeleteApiRequest
+public class DeleteLearningRequest(Guid learningKey) : IDeleteApiRequest
 {
-    public Guid LearnerKey { get; set; } = learnerKey;
-    public string DeleteUrl => $"learning/{LearnerKey}";
+    public Guid LearningKey { get; set; } = learningKey;
+    public string DeleteUrl => $"learning/{LearningKey}";
 }
