@@ -14,7 +14,7 @@ namespace SFA.DAS.Vacancies.Api.Models
         /// <summary>
         /// Additional information about pay, such as when the apprentice might get a pay rise. Will be less than or equal to 250 characters.
         /// </summary>
-        [MaxLength(250)]
+        [MaxLength(500)]
         public string WageAdditionalInformation { get; set; }
         /// <summary>
         /// Information about the working schedule, such as daily working hours. Will be less than or equal to 250 characters.

@@ -23,6 +23,7 @@ namespace SFA.DAS.Campaign.Extensions
         public const string UnorderedListNodeTypeKey = "unordered-list";
         public const string OrderedListNodeTypeKey = "ordered-list";
         public const string EmbeddedAssetBlockNodeTypeKey = "embedded-asset-block";
+        public const string VideoTranscriptsContentTypeKey = "videoTranscripts";
 
         public static bool ContentItemsAreNullOrEmpty(this CmsContent pageContent)
         {   
@@ -72,7 +73,7 @@ namespace SFA.DAS.Campaign.Extensions
                 {
                     var linkedItemId = subContentItem.Data.Target.Sys.Id;
                     var item = article.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(linkedItemId, StringComparison.CurrentCultureIgnoreCase));
-                    if (item != null)
+                    if (item?.Fields?.Table?.TableData != null)
                     {
                         data.AddRange(item.Fields.Table.TableData);
                     }
@@ -91,7 +92,7 @@ namespace SFA.DAS.Campaign.Extensions
                 {
                     var linkedItemId = subContentItem.Data.Target.Sys.Id;
                     var item = article.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(linkedItemId, StringComparison.CurrentCultureIgnoreCase));
-                    if (item != null)
+                    if (item?.Fields?.Table?.TableData != null)
                     {
                         data.AddRange(item.Fields.Table.TableData);
                     }
@@ -99,6 +100,86 @@ namespace SFA.DAS.Campaign.Extensions
             }
 
             return data;
+        }
+
+        public static List<VideoTranscript> BuildVideoTranscripts(this SubContentItems contentItem, CmsContent article)
+        {
+            var data = new List<VideoTranscript>();
+            if (contentItem.Content == null)
+            {
+                return data;
+            }
+
+            foreach (var subContentItem in contentItem.Content)
+            {
+                if (subContentItem.NodeType == null
+                    || !subContentItem.NodeType.Equals(EmbeddedEntryInlineNodeTypeKey))
+                {
+                    continue;
+                }
+
+                var linkedItemId = subContentItem.Data?.Target?.Sys?.Id;
+                if (linkedItemId == null)
+                {
+                    continue;
+                }
+
+                var item = article.Includes?.Entry?.FirstOrDefault(c =>
+                    c.Sys?.Id != null && c.Sys.Id.Equals(linkedItemId, StringComparison.CurrentCultureIgnoreCase));
+                if (item?.IsVideoTranscript() == true && item.Fields != null)
+                {
+                    data.Add(new VideoTranscript
+                    {
+                        VideoName = item.Fields.VideoName,
+                        Text = item.Fields.Text
+                    });
+                }
+            }
+
+            return data;
+        }
+
+        public static List<VideoTranscript> BuildVideoTranscripts(this FluffyContent contentItem, CmsContent article)
+        {
+            var data = new List<VideoTranscript>();
+            if (contentItem.Content == null)
+            {
+                return data;
+            }
+
+            foreach (var subContentItem in contentItem.Content)
+            {
+                if (subContentItem.NodeType == null
+                    || !subContentItem.NodeType.Equals(EmbeddedEntryInlineNodeTypeKey))
+                {
+                    continue;
+                }
+
+                var linkedItemId = subContentItem.Data?.Target?.Sys?.Id;
+                if (linkedItemId == null)
+                {
+                    continue;
+                }
+
+                var item = article.Includes?.Entry?.FirstOrDefault(c =>
+                    c.Sys?.Id != null && c.Sys.Id.Equals(linkedItemId, StringComparison.CurrentCultureIgnoreCase));
+                if (item?.IsVideoTranscript() == true && item.Fields != null)
+                {
+                    data.Add(new VideoTranscript
+                    {
+                        VideoName = item.Fields.VideoName,
+                        Text = item.Fields.Text
+                    });
+                }
+            }
+
+            return data;
+        }
+
+        private static bool IsVideoTranscript(this Entry entry)
+        {
+            return entry?.Sys?.ContentType?.Sys?.Id != null
+                   && entry.Sys.ContentType.Sys.Id.Equals(VideoTranscriptsContentTypeKey, StringComparison.CurrentCultureIgnoreCase);
         }
 
         public static bool NodeTypeIsContent(this string nodeType)
@@ -383,7 +464,8 @@ namespace SFA.DAS.Campaign.Extensions
                 {
                     Type = contentItem.NodeType,
                     Values = contentItem.BuildParagraph(),
-                    TableValue = contentItem.BuildTable(article)
+                    TableValue = contentItem.BuildTable(article),
+                    VideoTranscripts = contentItem.BuildVideoTranscripts(article)
                 });
             }
         }
