@@ -34,7 +34,8 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Certificates
             // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().Be(expectedResponse);
+            var expected = (Models.Certificates.GetStandardCertificateResponse)expectedResponse;
+            actual.Value.Should().BeEquivalentTo(expected);
 
             mediator.Verify(m => m.Send(It.Is<GetStandardCertificateQuery>(q => q.Id == id), It.IsAny<CancellationToken>()), Times.Once);
         }
