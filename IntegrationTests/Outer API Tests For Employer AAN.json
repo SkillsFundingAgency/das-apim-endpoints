@@ -778,24 +778,25 @@
 			]
 		},
 		{
-			"name": "EmployerAccounts",
+			"name": "AccountUsers",
 			"item": [
 				{
 					"name": "{userId}",
 					"item": [
 						{
-							"name": "/EmployerAccounts/:userId",
+							"name": "/AccountUsers/:userId/accounts",
 							"request": {
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/EmployerAccounts/:userId?email=<string>",
+									"raw": "{{baseUrl}}/AccountUsers/:userId/accounts?email=<string>",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
-										"EmployerAccounts",
-										":userId"
+										"AccountUsers",
+										":userId",
+										"accounts"
 									],
 									"query": [
 										{
@@ -819,13 +820,14 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "{{baseUrl}}/EmployerAccounts/:userId?email=<string>",
+											"raw": "{{baseUrl}}/AccountUsers/:userId/accounts?email=<string>",
 											"host": [
 												"{{baseUrl}}"
 											],
 											"path": [
-												"EmployerAccounts",
-												":userId"
+												"AccountUsers",
+												":userId",
+												"accounts"
 											],
 											"query": [
 												{
