@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProvider;
 
@@ -12,14 +12,14 @@ public sealed class WhenCreatingGetCourseProviderQuery
         long expectedUkprn = 10012345;
         var expectedLarsCode = "123";
         Guid expectedShortlistUserId = Guid.NewGuid();
-        string expectedLocation = "Manchester";
+        string expectedLocationName = "Manchester";
         int expectedDistance = 10;
 
         var sut = new GetCourseProviderQuery(
             expectedUkprn,
             expectedLarsCode,
             expectedShortlistUserId,
-            expectedLocation,
+            expectedLocationName,
             expectedDistance
         );
 
@@ -28,7 +28,7 @@ public sealed class WhenCreatingGetCourseProviderQuery
             Assert.That(sut.Ukprn, Is.EqualTo(expectedUkprn));
             Assert.That(sut.LarsCode, Is.EqualTo(expectedLarsCode));
             Assert.That(sut.ShortlistUserId, Is.EqualTo(expectedShortlistUserId));
-            Assert.That(sut.Location, Is.EqualTo(expectedLocation));
+            Assert.That(sut.LocationName, Is.EqualTo(expectedLocationName));
             Assert.That(sut.Distance, Is.EqualTo(expectedDistance));
         });
     }

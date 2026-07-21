@@ -8,9 +8,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public Guid ShortlistUserId { get; set; }
         public int Ukprn { get; set; }
         public int Larscode { get; set; }
-        public string LocationDescription { get; set; }
-        public double? Latitude { get; set; }
-        public double? Longitude { get; set; }
+        public string LocationName { get; set; }
+        public decimal? Latitude { get; set; }
+        public decimal? Longitude { get; set; }
         public DateTime CreatedDate { get; set; }
     }
 }

@@ -22,7 +22,7 @@ public sealed class WhenBuildingGetCourseProviderDetailsRequest
         var expected = HttpUtility.UrlEncode("BT47 2DH");
 
         result.Should().StartWith($"api/courses/{larsCode}/providers/{ukprn}/details?");
-        result.Should().Contain($"location={expected}");
+        result.Should().Contain($"locationName={expected}");
     }
 
     [Test, AutoData]
@@ -68,7 +68,7 @@ public sealed class WhenBuildingGetCourseProviderDetailsRequest
         var result = sut.GetUrl;
 
         result.Should().StartWith($"api/courses/{larsCode}/providers/{ukprn}/details?");
-        result.Should().Contain($"location={HttpUtility.UrlEncode(location)}");
+        result.Should().Contain($"locationName={HttpUtility.UrlEncode(location)}");
         result.Should().Contain($"latitude={latitude.ToString(CultureInfo.InvariantCulture)}");
         result.Should().Contain($"longitude={longitude.ToString(CultureInfo.InvariantCulture)}");
         result.Should().Contain($"shortlistUserId={shortlistId}");

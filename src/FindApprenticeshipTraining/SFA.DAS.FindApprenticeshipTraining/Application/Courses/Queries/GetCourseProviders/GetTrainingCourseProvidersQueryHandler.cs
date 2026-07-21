@@ -19,9 +19,9 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
     {
         LocationItem locationItem = null;
 
-        if (!string.IsNullOrWhiteSpace(request.Location))
+        if (!string.IsNullOrWhiteSpace(request.LocationName))
         {
-            locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(request.Location);
+            locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(request.LocationName);
 
             if (locationItem is null)
             {
@@ -53,7 +53,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
                     Distance = request.Distance,
                     Latitude = locationItem?.Latitude,
                     Longitude = locationItem?.Longitude,
-                    Location = request.Location,
+                    LocationName = request.LocationName,
                     DeliveryModes = request.DeliveryModes,
                     EmployerProviderRatings = request.EmployerProviderRatings,
                     ApprenticeProviderRatings = request.ApprenticeProviderRatings,

@@ -33,7 +33,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Courses
                         c.LarsCode.Equals(larsCode)
                         && c.OrderBy.Equals(getCourseProvidersModel.OrderBy)
                         && c.Distance.Equals(getCourseProvidersModel.Distance)
-                        && c.Location.Equals(getCourseProvidersModel.Location)
+                        && c.LocationName.Equals(getCourseProvidersModel.LocationName)
                         && c.DeliveryModes.Equals(getCourseProvidersModel.DeliveryModes)
                         && c.EmployerProviderRatings.Equals(getCourseProvidersModel.EmployerProviderRatings)
                         && c.ApprenticeProviderRatings.Equals(getCourseProvidersModel.ApprenticeProviderRatings)

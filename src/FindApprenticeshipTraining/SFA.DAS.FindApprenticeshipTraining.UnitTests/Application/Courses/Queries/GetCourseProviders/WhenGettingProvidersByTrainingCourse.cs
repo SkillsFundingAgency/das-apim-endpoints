@@ -58,7 +58,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
         )
         {
             cachedLocationLookupService.Setup(
-                client => client.GetCachedLocationInformation(query.Location, false))
+                client => client.GetCachedLocationInformation(query.LocationName, false))
             .ReturnsAsync((LocationItem)null);
 
             coursesApiMock.Setup(
@@ -99,7 +99,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
             CancellationToken cancellationToken
         )
         {
-            query.Location = null;
+            query.LocationName = null;
 
             courseManagementApiMock
                 .Setup(client => client.GetWithResponseCode<GetCourseProvidersResponse>(It.Is<GetProvidersByCourseIdRequest>(
@@ -131,7 +131,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
             CancellationToken cancellationToken
         )
         {
-            query.Location = null;
+            query.LocationName = null;
 
             courseManagementApiMock
                 .Setup(client => client.GetWithResponseCode<GetCourseProvidersResponse>(It.IsAny<GetProvidersByCourseIdRequest>()

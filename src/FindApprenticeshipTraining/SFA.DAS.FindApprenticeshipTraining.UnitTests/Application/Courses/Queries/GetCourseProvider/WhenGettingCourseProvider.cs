@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -51,7 +51,7 @@ public sealed class WhenGettingCourseProvider
         _cachedFeedbackServiceMock = new Mock<ICachedFeedbackService>();
 
         _cachedLocationLookupServiceMock
-            .Setup(x => x.GetCachedLocationInformation(query.Location, false))
+            .Setup(x => x.GetCachedLocationInformation(query.LocationName, false))
             .ReturnsAsync(locationResponse);
 
         if (courseProviderDetailsResponse == null)
@@ -65,7 +65,7 @@ public sealed class WhenGettingCourseProvider
             _roatpClientMock
                 .Setup(x => x.GetWithResponseCode<GetCourseProviderDetailsResponse>(
                     It.Is<GetCourseProviderDetailsRequest>(a =>
-                        a.GetUrl.Contains($"location={query.Location}") &&
+                        a.GetUrl.Contains($"locationName={query.LocationName}") &&
                         a.GetUrl.Contains($"latitude={locationResponse.Latitude}") &&
                         a.GetUrl.Contains($"longitude={locationResponse.Longitude}") &&
                         a.GetUrl.Contains($"shortlistUserId={query.ShortlistUserId}")
@@ -152,7 +152,7 @@ public sealed class WhenGettingCourseProvider
         await sut.Handle(query, CancellationToken.None);
 
         _cachedLocationLookupServiceMock.Verify(
-            x => x.GetCachedLocationInformation(query.Location, false),
+            x => x.GetCachedLocationInformation(query.LocationName, false),
             Times.Once
         );
     }
@@ -186,7 +186,7 @@ public sealed class WhenGettingCourseProvider
 
         _roatpClientMock.Verify(x =>
             x.GetWithResponseCode<GetCourseProviderDetailsResponse>(It.Is<GetCourseProviderDetailsRequest>(a =>
-                a.GetUrl.Contains($"location={query.Location}") &&
+                a.GetUrl.Contains($"locationName={query.LocationName}") &&
                 a.GetUrl.Contains($"latitude={locationResponse.Latitude}") &&
                 a.GetUrl.Contains($"longitude={locationResponse.Longitude}") &&
                 a.GetUrl.Contains($"shortlistUserId={query.ShortlistUserId}")
@@ -226,7 +226,7 @@ public sealed class WhenGettingCourseProvider
 
         _roatpClientMock.Verify(x =>
             x.GetWithResponseCode<GetCourseProviderDetailsResponse>(It.Is<GetCourseProviderDetailsRequest>(a =>
-                a.GetUrl.Contains($"location={query.Location}") &&
+                a.GetUrl.Contains($"locationName={query.LocationName}") &&
                 a.GetUrl.Contains($"latitude={locationResponse.Latitude}") &&
                 a.GetUrl.Contains($"longitude={locationResponse.Longitude}") &&
                 a.GetUrl.Contains($"shortlistUserId={query.ShortlistUserId}")

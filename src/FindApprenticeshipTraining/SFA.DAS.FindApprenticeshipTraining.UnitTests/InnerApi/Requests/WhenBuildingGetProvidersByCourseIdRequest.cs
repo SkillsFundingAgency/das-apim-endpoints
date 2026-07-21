@@ -145,8 +145,8 @@ public class WhenBuildingGetProvidersByCourseIdRequest
     public void GetUrl_WithLocation_AppendsLocation()
     {
         var location = "London";
-        var actual = new GetProvidersByCourseIdRequest() { CourseId = CourseId, OrderBy = OrderBy, Location = location };
-        actual.GetUrl.Should().Be($"{BaseUrl}&location={location}");
+        var actual = new GetProvidersByCourseIdRequest() { CourseId = CourseId, OrderBy = OrderBy, LocationName = location };
+        actual.GetUrl.Should().Be($"{BaseUrl}&locationName={location}");
     }
 
     [Test]

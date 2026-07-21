@@ -8,11 +8,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
     public class WhenBuildingTheGetProviderByCourseAndUkprnRequest
     {
         [Test, AutoData]
-        public void Then_The_Url_Is_Correctly_Build(int providerId, int courseId, double lat, double lon)
+        public void Then_The_Url_Is_Correctly_Build(int providerId, int courseId, decimal lat, decimal lon)
         {
             var actual = new GetProviderByCourseAndUkprnRequest(providerId, courseId, lat,lon);
 
-            actual.GetUrl.Should().Be($"api/courses/{courseId}/providers/{providerId}?lat={lat}&lon={lon}");
+            actual.GetUrl.Should().Be($"api/courses/{courseId}/providers/{providerId}?latitude={lat}&longitude={lon}");
         }
         
         [Test, AutoData]
@@ -20,7 +20,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
         {
             var actual = new GetProviderByCourseAndUkprnRequest(providerId, courseId);
 
-            actual.GetUrl.Should().Be($"api/courses/{courseId}/providers/{providerId}?lat=&lon=");
+            actual.GetUrl.Should().Be($"api/courses/{courseId}/providers/{providerId}?latitude=&longitude=");
         }
     }
 }

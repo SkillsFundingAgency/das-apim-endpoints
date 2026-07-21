@@ -374,13 +374,13 @@ public sealed class WhenGettingCourseByLarsCode
         GetCourseTrainingProvidersCountResponse courseTrainingProvidersCountResponse
     )
     {
-        var query = new GetCourseByLarsCodeQuery { LarsCode = "456", Location = "sw1", Distance = 10 };
+        var query = new GetCourseByLarsCodeQuery { LarsCode = "456", LocationName = "sw1", Distance = 10 };
         var expectedLatitude = locationItem.Latitude;
         var expectedLongitude = locationItem.Longitude;
         GetCourseTrainingProvidersCountRequest capturedRequest = null;
 
         _cachedLocationLookupService.Setup(x =>
-            x.GetCachedLocationInformation(query.Location, false)
+            x.GetCachedLocationInformation(query.LocationName, false)
         ).ReturnsAsync(locationItem);
 
         _cachedStandardDetailsService
@@ -411,7 +411,7 @@ public sealed class WhenGettingCourseByLarsCode
         Assert.That(sut, Is.Not.Null);
 
         _cachedLocationLookupService.Verify(x =>
-            x.GetCachedLocationInformation(query.Location, false
+            x.GetCachedLocationInformation(query.LocationName, false
         ), Times.Once);
 
         Assert.Multiple(() =>

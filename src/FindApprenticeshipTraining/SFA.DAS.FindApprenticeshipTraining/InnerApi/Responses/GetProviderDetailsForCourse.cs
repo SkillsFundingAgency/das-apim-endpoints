@@ -22,8 +22,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 
         public string StandardInfoUrl { get; set; }
         public string MarketingInfo { get; set; }
-        public double? Latitude { get; set; }
-        public double? Longitude { get; set; }
+        public decimal? Latitude { get; set; }
+        public decimal? Longitude { get; set; }
         public decimal? ProviderHeadOfficeDistanceInMiles { get; set; }
         public string DeliveryModes { get; set; }
 

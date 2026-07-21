@@ -1,4 +1,4 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -31,7 +31,7 @@ public sealed class CoursesControllerGetCourseProviderTests
                     q.LarsCode == larsCode &&
                     q.Ukprn == ukprn &&
                     q.ShortlistUserId == request.ShortlistUserId &&
-                    q.Location == request.Location &&
+                    q.LocationName == request.LocationName &&
                     q.Distance == request.Distance
                 ),
                 It.IsAny<CancellationToken>()
@@ -45,7 +45,7 @@ public sealed class CoursesControllerGetCourseProviderTests
                     q.LarsCode == larsCode &&
                     q.Ukprn == ukprn &&
                     q.ShortlistUserId == request.ShortlistUserId &&
-                    q.Location == request.Location &&
+                    q.LocationName == request.LocationName &&
                     q.Distance == request.Distance
                 ),
                 It.IsAny<CancellationToken>()

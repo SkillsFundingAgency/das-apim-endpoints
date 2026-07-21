@@ -42,7 +42,7 @@ public sealed class WhenGettingCourses
             RouteIds = [1],
             Levels = [2],
             Distance = 40,
-            Location = "SW1",
+            LocationName = "SW1",
             LearningTypes = learningTypes
         };
 
@@ -109,12 +109,12 @@ public sealed class WhenGettingCourses
             RouteIds = [1],
             Levels = [2],
             Distance = 40,
-            Location = "SW1"
+            LocationName = "SW1"
         };
 
         _locationLookupService
             .Setup(a =>
-                a.GetLocationInformation(query.Location, 0, 0, false)
+                a.GetLocationInformation(query.LocationName, 0, 0, false)
             )
             .ReturnsAsync((LocationItem)null);
 
@@ -188,12 +188,12 @@ public sealed class WhenGettingCourses
             RouteIds = [1],
             Levels = [2],
             Distance = 40,
-            Location = "SW1"
+            LocationName = "SW1"
         };
 
         _locationLookupService
             .Setup(a =>
-                a.GetLocationInformation(query.Location, 0, 0, false)
+                a.GetLocationInformation(query.LocationName, 0, 0, false)
             )
             .ReturnsAsync(locationItem);
 
@@ -265,7 +265,7 @@ public sealed class WhenGettingCourses
             RouteIds = [1],
             Levels = [2],
             Distance = 40,
-            Location = "SW1"
+            LocationName = "SW1"
         };
 
         var pagedStandards = coursesResponse.Courses
@@ -293,7 +293,7 @@ public sealed class WhenGettingCourses
 
         _locationLookupService
             .Setup(a =>
-                a.GetLocationInformation(query.Location, 0, 0, false)
+                a.GetLocationInformation(query.LocationName, 0, 0, false)
             )
             .ReturnsAsync(locationItem);
 
@@ -344,7 +344,7 @@ public sealed class WhenGettingCourses
             RouteIds = [1],
             Levels = [2],
             Distance = 40,
-            Location = "SW1"
+            LocationName = "SW1"
         };
 
         var pagedStandards = coursesResponse.Courses
@@ -353,7 +353,7 @@ public sealed class WhenGettingCourses
 
         _locationLookupService
             .Setup(a =>
-                a.GetLocationInformation(query.Location, 0, 0, false)
+                a.GetLocationInformation(query.LocationName, 0, 0, false)
             )
         .ReturnsAsync(locationItem);
 
@@ -426,7 +426,7 @@ public sealed class WhenGettingCourses
             RouteIds = [1],
             Levels = [2],
             Distance = 40,
-            Location = "SW1",
+            LocationName = "SW1",
             Page = 43431
         };
 
@@ -436,7 +436,7 @@ public sealed class WhenGettingCourses
 
         _locationLookupService
             .Setup(a =>
-                a.GetLocationInformation(query.Location, 0, 0, false)
+                a.GetLocationInformation(query.LocationName, 0, 0, false)
             )
         .ReturnsAsync(locationItem);
 

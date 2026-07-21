@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -30,12 +30,12 @@ public sealed class CoursesControllerGetCourseByLarsCodeTests
                 It.Is<GetCourseByLarsCodeQuery>(c =>
                     c.LarsCode.Equals(query.LarsCode) &&
                     c.Distance.Equals(query.Distance) &&
-                    c.Location.Equals(query.Location)
+                    c.LocationName.Equals(query.LocationName)
                 ),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(result);
 
-        var sut = await controller.GetCourseByLarsCode(query.LarsCode, query.Distance, query.Location) as ObjectResult;
+        var sut = await controller.GetCourseByLarsCode(query.LarsCode, query.Distance, query.LocationName) as ObjectResult;
 
         Assert.That(sut, Is.Not.Null);
         Assert.That(sut.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
@@ -58,12 +58,12 @@ public sealed class CoursesControllerGetCourseByLarsCodeTests
                 It.Is<GetCourseByLarsCodeQuery>(c =>
                     c.LarsCode.Equals(query.LarsCode) &&
                     c.Distance.Equals(query.Distance) &&
-                    c.Location.Equals(query.Location)
+                    c.LocationName.Equals(query.LocationName)
                 ),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync((GetCourseByLarsCodeQueryResult)null);
 
-        var sut = await controller.GetCourseByLarsCode(query.LarsCode, query.Distance, query.Location) as NotFoundResult;
+        var sut = await controller.GetCourseByLarsCode(query.LarsCode, query.Distance, query.LocationName) as NotFoundResult;
 
         Assert.That(sut, Is.Not.Null);
         Assert.That(sut.StatusCode, Is.EqualTo((int)HttpStatusCode.NotFound));
