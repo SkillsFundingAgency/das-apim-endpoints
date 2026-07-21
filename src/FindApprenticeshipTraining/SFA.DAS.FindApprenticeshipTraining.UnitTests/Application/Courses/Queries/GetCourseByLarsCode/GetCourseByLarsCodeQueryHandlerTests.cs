@@ -22,7 +22,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queries.GetCourseByLarsCode;
 
-public sealed class WhenGettingCourseByLarsCode
+public sealed class GetCourseByLarsCodeQueryHandlerTests
 {
     private Mock<ICachedStandardDetailsService> _cachedStandardDetailsService;
     private Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> _roatpCourseManagementApiClientMock;

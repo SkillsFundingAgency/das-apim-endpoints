@@ -6,13 +6,13 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 {
-    public class WhenCastingGetProviderStandardItemAddressToGetProviderAddress
+    public class GetProviderAddressTests
     {
         [Test, AutoData]
         public void Then_Maps_The_Fields(GetProviderStandardItemAddress source)
         {
             var actual = new GetProviderAddress().Map(source, true);
-            
+
             actual.Should().BeEquivalentTo(source);
         }
 

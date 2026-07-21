@@ -8,7 +8,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queries.GetCourseByLarsCode;
 
-public sealed class WhenCreatingGetCourseByLarsCodeQueryResult
+public sealed class GetCourseByLarsCodeQueryResultTests
 {
     [Test, MoqAutoData]
     public void ImplicitConversion_StandardDetailsLookupResponse_MapsAllProperties(GetCourseLookupResponse response)

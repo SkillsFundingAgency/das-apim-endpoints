@@ -5,7 +5,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queries.GetCourseProvider;
 
-public sealed class WhenMappingGetCourseProviderQueryResultFromModel
+public sealed class GetCourseProviderQueryResultTests
 {
     [Test]
     [MoqAutoData]

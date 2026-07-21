@@ -6,14 +6,14 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 {
-    public class WhenCastingGetTrainingCourseResponseToLevels
+    public class GetTrainingLevelsListItemTests
     {
         [Test, AutoData]
         public void Then_Maps_Fields_Appropriately(
             GetLevelsListItem source)
         {
-            var response = (GetTrainingLevelsListItem) source;
-            
+            var response = (GetTrainingLevelsListItem)source;
+
             response.Should().BeEquivalentTo(source);
         }
     }

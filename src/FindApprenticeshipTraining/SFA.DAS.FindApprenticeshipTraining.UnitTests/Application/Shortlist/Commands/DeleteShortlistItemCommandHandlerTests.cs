@@ -4,19 +4,16 @@ using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteShortlistItem;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Commands;
 
-public class WhenDeletingShortlistItem
+public class DeleteShortlistItemCommandHandlerTests
 {
     [Test, MoqAutoData]
     public async Task Then_Deletes_The_Shortlist_Item_From_The_Request_Calling_Shortlist_Api(

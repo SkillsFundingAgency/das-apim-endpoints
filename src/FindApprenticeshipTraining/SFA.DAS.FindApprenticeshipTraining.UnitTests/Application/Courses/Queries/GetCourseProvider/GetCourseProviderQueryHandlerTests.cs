@@ -27,7 +27,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queries.GetCourseProvider;
 
-public sealed class WhenGettingCourseProvider
+public sealed class GetCourseProviderQueryHandlerTests
 {
     private Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> _roatpClientMock;
     private Mock<IAssessorsApiClient<AssessorsApiConfiguration>> _assessorClientMock;

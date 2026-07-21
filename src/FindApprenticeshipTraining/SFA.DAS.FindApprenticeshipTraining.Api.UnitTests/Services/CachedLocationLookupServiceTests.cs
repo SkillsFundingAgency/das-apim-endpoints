@@ -1,23 +1,22 @@
-﻿using AutoFixture.NUnit3;
+﻿using System;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
-using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Services;
 
-public sealed class WhenCallingCachedLocationLookupService
+public sealed class CachedLocationLookupServiceTests
 {
     [Test]
     [MoqAutoData]
     public async Task When_Cache_Hit_Then_Location_Is_Returned_From_The_Cache(
-        string locationName, 
+        string locationName,
         string authorityName,
         LocationItem locationItem,
         [Frozen] Mock<ICacheStorageService> _cacheStorageServiceMock,
@@ -66,7 +65,7 @@ public sealed class WhenCallingCachedLocationLookupService
         _locationLookupService
             .Setup(a => a.GetLocationInformation(location, 0, 0, false)
         ).ReturnsAsync(locationItem);
-        
+
         var result = await sut.GetCachedLocationInformation(location);
 
         Assert.That(result, Is.Not.Null);
@@ -135,7 +134,7 @@ public sealed class WhenCallingCachedLocationLookupService
         _cacheStorageServiceMock.Verify(x =>
             x.RetrieveFromCache<LocationItem>(
                 It.IsAny<string>()
-            ), 
+            ),
             Times.Never
         );
 

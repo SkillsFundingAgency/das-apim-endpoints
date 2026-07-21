@@ -19,7 +19,7 @@ using GetStandardRequest = SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests.
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queries.GetCourseProviders
 {
-    public class WhenGettingProvidersByTrainingCourse
+    public class GetTrainingCourseProvidersQueryHandlerTests
     {
         [Test, MoqAutoData]
         public async Task Handle_ReturnsExpectedReponse(

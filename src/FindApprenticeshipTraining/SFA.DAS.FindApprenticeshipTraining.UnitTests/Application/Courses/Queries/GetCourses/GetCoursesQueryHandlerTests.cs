@@ -21,7 +21,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queries.GetCourses;
 
-public sealed class WhenGettingCourses
+public sealed class GetCoursesQueryHandlerTests
 {
     [Test, MoqAutoData]
     public async Task Handle_ValidQuery_CallsCoursesApiWithExpectedRequest(

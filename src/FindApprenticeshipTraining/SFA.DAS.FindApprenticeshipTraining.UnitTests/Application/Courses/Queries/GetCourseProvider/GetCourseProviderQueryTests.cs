@@ -4,7 +4,7 @@ using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCoursePr
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queries.GetCourseProvider;
 
-public sealed class WhenCreatingGetCourseProviderQuery
+public sealed class GetCourseProviderQueryTests
 {
     [Test]
     public void Then_The_Constructor_Sets_All_Properties_Correctly()

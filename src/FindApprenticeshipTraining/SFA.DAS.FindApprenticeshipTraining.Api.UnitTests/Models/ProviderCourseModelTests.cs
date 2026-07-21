@@ -4,7 +4,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models;
 
-public sealed class WhenCastingProviderCourseResponseToProviderCourseModel
+public sealed class ProviderCourseModelTests
 {
     [Test]
     [MoqAutoData]

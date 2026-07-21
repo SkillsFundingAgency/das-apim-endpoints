@@ -6,7 +6,7 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 {
-    public class WhenCastingGetLocationSearchResponseItemFromGetLocationsListItem
+    public class GetLocationsListItemTests
     {
         [Test, AutoData]
         public void Then_The_Fields_are_Correctly_Mapped_When_Postcode_Is_Null(GetLocationsListItem source)
