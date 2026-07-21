@@ -5,7 +5,7 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests;
 
-public class WhenBuildingTheGetCourseLookupRequest
+public class GetCourseLookupRequestUrlTests
 {
     [Test, AutoData]
     public void GetUrl_WhenBuildingLookupRequest_ReturnsExpectedUrl(GetCourseLookupRequest actual)

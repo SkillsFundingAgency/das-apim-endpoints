@@ -6,10 +6,10 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests;
 
-public class WhenBuildingTheGetShortlistForUserIdRequest
+public class GetShortlistForUserIdRequestTests
 {
     [Test, AutoData]
-    public void Then_The_Url_Is_Correctly_Built(Guid shortlistUserId)
+    public void WhenBuildingGetShortlistForUserIdRequest_ReturnsExpectedUrl(Guid shortlistUserId)
     {
         var actual = new GetShortlistForUserIdRequest(shortlistUserId);
 

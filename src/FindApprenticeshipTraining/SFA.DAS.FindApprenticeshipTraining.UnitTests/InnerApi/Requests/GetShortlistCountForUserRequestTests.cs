@@ -5,10 +5,11 @@ using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests;
-public class WhenBuildingTheGetShortlistCountForUserRequest
+
+public class GetShortlistCountForUserRequestTests
 {
     [Test, AutoData]
-    public void Then_Builds_Url(Guid shortlistUserId)
+    public void WhenBuildingShortlistCountRequest_ReturnsExpectedUrl(Guid shortlistUserId)
     {
         var actual = new GetShortlistCountForUserRequest(shortlistUserId);
 

@@ -6,10 +6,10 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests;
 
-public class WhenBuildingDeleteShortlistItemRequest
+public class DeleteShortlistItemRequestTests
 {
     [Test, AutoData]
-    public void Then_The_Url_Is_Correctly_Constructed(Guid id)
+    public void WhenBuildingDeleteShortlistItemRequest_ReturnsExpectedUrl(Guid id)
     {
         //Act
         var sut = new DeleteShortlistItemRequest(id);

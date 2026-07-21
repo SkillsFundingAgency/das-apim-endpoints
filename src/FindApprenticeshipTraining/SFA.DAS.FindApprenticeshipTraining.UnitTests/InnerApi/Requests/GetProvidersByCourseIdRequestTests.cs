@@ -8,7 +8,7 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests;
 
-public class WhenBuildingGetProvidersByCourseIdRequest
+public class GetProvidersByCourseIdRequestTests
 {
     private const string CourseId = "1";
     private ProviderOrderBy OrderBy = ProviderOrderBy.Distance;

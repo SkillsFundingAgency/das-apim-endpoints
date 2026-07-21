@@ -10,7 +10,7 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests;
 
 [TestFixture]
-public sealed class WhenBuildingGetCourseProviderDetailsRequest
+public sealed class GetCourseProviderDetailsRequestTests
 {
     [Test, AutoData]
     public void GetUrl_LocationProvided_ReturnsUrlWithEncodedLocation(string larsCode, long ukprn, decimal? longitude, decimal? latitude)

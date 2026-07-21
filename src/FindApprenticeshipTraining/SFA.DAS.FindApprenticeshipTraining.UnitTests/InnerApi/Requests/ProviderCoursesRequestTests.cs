@@ -6,10 +6,10 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests;
 
-public sealed class WhenBuildingProviderCoursesRequest
+public sealed class ProviderCoursesRequestTests
 {
     [Test, AutoData]
-    public void GetUrl_WithUkprn_ReturnsExpectedUrl(long ukprn)
+    public void WhenBuildingProviderCoursesRequest_ReturnsExpectedUrl(long ukprn)
     {
         var sut = new ProviderCoursesRequest(ukprn);
 
@@ -17,7 +17,7 @@ public sealed class WhenBuildingProviderCoursesRequest
     }
 
     [Test, AutoData]
-    public void Version_Default_ReturnsApiVersionTwo(long ukprn)
+    public void WhenBuildingProviderCoursesRequest_ReturnsExpectedApiVersion(long ukprn)
     {
         var sut = new ProviderCoursesRequest(ukprn);
 
