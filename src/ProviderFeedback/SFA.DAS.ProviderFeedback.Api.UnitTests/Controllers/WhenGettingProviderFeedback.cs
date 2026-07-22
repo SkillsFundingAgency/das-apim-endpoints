@@ -9,7 +9,7 @@ using SFA.DAS.ProviderFeedback.Api.Models;
 using SFA.DAS.ProviderFeedback.Application.Queries.GetProviderFeedback;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
+namespace SFA.DAS.ProviderFeedback.Api.UnitTests.Controllers
 {
     [TestFixture]
     public class WhenGettingProviderFeedback

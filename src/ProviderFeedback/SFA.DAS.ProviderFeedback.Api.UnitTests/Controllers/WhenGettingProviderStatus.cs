@@ -10,7 +10,7 @@ using SFA.DAS.ProviderFeedback.Application.Queries.GetProvider;
 using SFA.DAS.Testing.AutoFixture;
 using FluentAssertions;
 
-namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.ProviderAccounts
+namespace SFA.DAS.ProviderFeedback.Api.UnitTests.Controllers
 {
     public class WhenGettingProviderStatus
     {
