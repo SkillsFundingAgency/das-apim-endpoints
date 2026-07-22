@@ -26,16 +26,7 @@ namespace SFA.DAS.DigitalCertificates.Models
                 EmailAddress = source.EmailAddress,
                 PhoneNumber = source.PhoneNumber,
                 LastLoginAt = source.LastLoginAt,
-                IsLocked = source.IsLocked,
-                DateOfBirth = source.DateOfBirth,
-                Names = source.Names?.Select(n => new Name
-                {
-                    UserIdentityId =  n.UserIdentityId,
-                    ValidSince = n.ValidSince,
-                    ValidUntil = n.ValidUntil,
-                    FamilyName = n.FamilyName,
-                    GivenNames = n.GivenNames
-                }).ToList() ?? new List<Name>()
+                IsLocked = source.IsLocked
             };
         }
     }

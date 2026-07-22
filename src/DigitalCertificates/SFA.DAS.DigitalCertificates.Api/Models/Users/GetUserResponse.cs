@@ -13,8 +13,7 @@ namespace SFA.DAS.DigitalCertificates.Api.Models.Users
         public string PhoneNumber { get; set; }
         public DateTime? LastLoginAt { get; set; }
         public bool IsLocked { get; set; }
-        public DateTime? DateOfBirth { get; set; }
-        public List<NameRecord> Names { get; set; } = new List<NameRecord>();
+        
 
         public static implicit operator GetUserResponse(User source)
         {
@@ -27,26 +26,8 @@ namespace SFA.DAS.DigitalCertificates.Api.Models.Users
                 EmailAddress = source.EmailAddress,
                 PhoneNumber = source.PhoneNumber,
                 LastLoginAt = source.LastLoginAt,
-                IsLocked = source.IsLocked,
-                DateOfBirth = source.DateOfBirth,
-                Names = source.Names?.Select(n => new NameRecord
-                {
-                    UserIdentityId = n.UserIdentityId,
-                    ValidSince = n.ValidSince,
-                    ValidUntil = n.ValidUntil,
-                    FamilyName = n.FamilyName,
-                    GivenNames = n.GivenNames
-                }).ToList() ?? new List<NameRecord>()
+                IsLocked = source.IsLocked
             };
         }
-    }
-
-    public class NameRecord
-    {
-        public Guid UserIdentityId { get; set; }
-        public DateTime? ValidSince { get; set; }
-        public DateTime? ValidUntil { get; set; }
-        public required string FamilyName { get; set; }
-        public required string GivenNames { get; set; }
     }
 }

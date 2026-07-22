@@ -34,7 +34,17 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
             // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var expected = (Models.Users.GetUserResponse)queryResult.User;
+            var user = queryResult.User;
+            var expected = new Models.Users.GetUserResponse
+            {
+                Id = user.Id,
+                GovUkIdentifier = user.GovUkIdentifier,
+                EmailAddress = user.EmailAddress,
+                PhoneNumber = user.PhoneNumber,
+                LastLoginAt = user.LastLoginAt,
+                IsLocked = user.IsLocked
+            };
+
             actual.Value.Should().BeEquivalentTo(expected);
         }
 
