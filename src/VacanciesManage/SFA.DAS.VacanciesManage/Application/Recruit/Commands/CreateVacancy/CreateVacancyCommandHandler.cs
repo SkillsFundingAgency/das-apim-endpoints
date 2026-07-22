@@ -38,7 +38,8 @@ public class CreateVacancyCommandHandler(
     IAccountLegalEntityPermissionService accountLegalEntityPermissionService,
     ICourseService courseService,
     ISlaService slaService,
-    IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient)
+    IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient,
+    ILocationLookupService locationLookupService)
     : IRequestHandler<CreateVacancyCommand, CreateVacancyCommandResponse>
 {
 
@@ -71,6 +72,9 @@ public class CreateVacancyCommandHandler(
         // apply vacancy status based on employer approval requirement
         ApplyVacancyStatus(vacancy, requiresEmployerApproval, dateTimeNow);
 
+        // apply geo coordinates to employer locations
+        await ApplyGeoCoordinates(vacancy);
+
         vacancy.Id = request.Id;
         var result = await CreateVacancy(vacancy, request.IsSandbox);
         HandleHttpResponseError(result);
@@ -97,8 +101,8 @@ public class CreateVacancyCommandHandler(
         var vacancyUser = new VacancyUser
         {
             UserId = vacancy.SubmittedByUserId.ToString(),
-            Name = vacancy.Contact.Name,
-            Email = vacancy.Contact.Email,
+            Name = vacancy.Contact?.Name,
+            Email = vacancy.Contact?.Email,
         };
         
         var vacancyNode = JsonSerializer.SerializeToNode(vacancy, snapshotOptions)!.AsObject();
@@ -119,12 +123,12 @@ public class CreateVacancyCommandHandler(
                 CreatedDate = createdDate,
                 Status = ReviewStatus.New,
                 VacancySnapshot = vacancyNode.ToJsonString(snapshotOptions),
-                SubmittedByUserEmail = vacancy.Contact.Email,
+                SubmittedByUserEmail = vacancy.Contact?.Email,
                 SubmissionCount = 1,
                 SlaDeadLine = slaDeadline,
                 UpdatedFieldIdentifiers = [],
                 DismissedAutomatedQaOutcomeIndicators = [],
-                Ukprn = vacancy.TrainingProvider.Ukprn!.Value,
+                Ukprn = vacancy.TrainingProvider!.Ukprn!.Value,
                 AccountId = vacancy.AccountId!.Value,
                 AccountLegalEntityId = vacancy.AccountLegalEntityId!.Value,
                 OwnerType = vacancy.OwnerType,
@@ -139,7 +143,7 @@ public class CreateVacancyCommandHandler(
 
     private static void ValidateUkprn(PostVacancyRequest vacancy)
     {
-        if (vacancy.TrainingProvider.Ukprn is null)
+        if (vacancy.TrainingProvider?.Ukprn is null)
         {
             throw new HttpRequestContentException("Training Provider UKPRN not valid", HttpStatusCode.NotFound);
         }
@@ -312,6 +316,25 @@ public class CreateVacancyCommandHandler(
         vacancy.Status = VacancyStatus.Submitted;
         vacancy.SubmittedDate = now;
         vacancy.ArchiveType = null;
+    }
+
+    private async Task ApplyGeoCoordinates(PostVacancyRequest vacancy)
+    {
+        var employerLocations = vacancy.EmployerLocations;
+        if (employerLocations is null || employerLocations.Count == 0)
+        {
+            return;
+        }
+
+        var lookupTasks = employerLocations.Select(async location =>
+        {
+            var postcodeInfo = await locationLookupService.GetPostcodeInfoAsync(location.Postcode);
+
+            location.Latitude = postcodeInfo?.Latitude;
+            location.Longitude = postcodeInfo?.Longitude;
+        });
+
+        await Task.WhenAll(lookupTasks);
     }
 
     private async Task<ApiResponse<Vacancy>> CreateVacancy(PostVacancyRequest vacancy, bool isSandbox)
