@@ -9,7 +9,6 @@ namespace SFA.DAS.DigitalCertificates.Api.Models.Sharing
 
         public static implicit operator CreateSharingAccessCommand(CreateSharingAccessRequest source)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
             return new CreateSharingAccessCommand
             {
                 SharingId = source.SharingId,

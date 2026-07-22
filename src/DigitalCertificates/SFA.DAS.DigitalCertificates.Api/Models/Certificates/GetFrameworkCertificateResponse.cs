@@ -6,7 +6,6 @@ namespace SFA.DAS.DigitalCertificates.Api.Models.Certificates
 {
     public class GetFrameworkCertificateResponse
     {
-
         public string FamilyName { get; set; }
         public string GivenNames { get; set; }
         public long? Uln { get; set; }

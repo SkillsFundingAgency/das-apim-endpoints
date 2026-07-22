@@ -19,8 +19,6 @@ namespace SFA.DAS.DigitalCertificates.Api.Models.Users
 
         public static implicit operator CreateUserMatchCommand(CreateUserMatchRequest source)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-
             return new CreateUserMatchCommand
             {
                 Uln = source.Uln,

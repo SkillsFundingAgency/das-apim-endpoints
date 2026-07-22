@@ -14,8 +14,6 @@ namespace SFA.DAS.DigitalCertificates.Api.Models.Users
 
         public static implicit operator CreateUserActionCommand(CreateUserActionRequest source)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-
             return new CreateUserActionCommand
             {
                 ActionType = source.ActionType,

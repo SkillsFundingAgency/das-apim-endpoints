@@ -13,8 +13,6 @@ namespace SFA.DAS.DigitalCertificates.Api.Models.Users
 
         public static implicit operator UpdateUserIdentityCommand(UpdateUserIdentityRequest source)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-
             return new UpdateUserIdentityCommand
             {
                 Names = source.Names?.Select(n => new Name

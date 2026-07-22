@@ -11,8 +11,6 @@ namespace SFA.DAS.DigitalCertificates.Api.Models.Users
 
         public static implicit operator CreateOrUpdateUserCommand(CreateOrUpdateUserRequest source)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-
             return new CreateOrUpdateUserCommand
             {
                 GovUkIdentifier = source.GovUkIdentifier,

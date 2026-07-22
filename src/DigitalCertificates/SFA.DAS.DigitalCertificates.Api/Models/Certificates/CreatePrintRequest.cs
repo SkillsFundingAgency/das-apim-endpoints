@@ -30,7 +30,6 @@ namespace SFA.DAS.DigitalCertificates.Api.Models.Certificates
 
         public static implicit operator CreateCertificatePrintRequestCommand(CreatePrintRequest source)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
             return new CreateCertificatePrintRequestCommand
             {
                 CertificateId = source.CertificateId,

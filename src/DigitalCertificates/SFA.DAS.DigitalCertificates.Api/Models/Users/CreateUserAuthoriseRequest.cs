@@ -9,7 +9,6 @@ namespace SFA.DAS.DigitalCertificates.Api.Models.Users
 
         public static implicit operator CreateUserAuthoriseCommand(CreateUserAuthoriseRequest source)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
             return new CreateUserAuthoriseCommand
             {
                 Uln = source.Uln
