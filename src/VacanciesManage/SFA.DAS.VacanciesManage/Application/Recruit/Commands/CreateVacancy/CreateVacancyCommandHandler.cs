@@ -12,6 +12,7 @@ using SFA.DAS.VacanciesManage.InnerApi.Requests;
 using SFA.DAS.VacanciesManage.InnerApi.Responses;
 using SFA.DAS.VacanciesManage.Services;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Security;
@@ -19,17 +20,19 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.Results;
 using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
-using EmployerNameOption = SFA.DAS.Recruit.Contracts.ApiResponses.EmployerNameOption;
 using HttpRequestContentException = SFA.DAS.Apim.Shared.Infrastructure.HttpRequestContentException;
-using IRecruitApiClient = SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>;
-using Operation = SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships.Operation;
-using OwnerType = SFA.DAS.Recruit.Contracts.ApiResponses.OwnerType;
 using PutVacancyReviewRequest = SFA.DAS.Recruit.Contracts.ApiResponses.PutVacancyReviewRequest;
-using ReviewStatus = SFA.DAS.Recruit.Contracts.ApiResponses.ReviewStatus;
 using TrainingProvider = SFA.DAS.Recruit.Contracts.ApiResponses.TrainingProvider;
 using Vacancy = SFA.DAS.Recruit.Contracts.ApiResponses.Vacancy;
+using IRecruitApiClient = SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>;
 using VacancyStatus = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyStatus;
+using EmployerNameOption = SFA.DAS.Recruit.Contracts.ApiResponses.EmployerNameOption;
+using ReviewStatus = SFA.DAS.Recruit.Contracts.ApiResponses.ReviewStatus;
+using Operation = SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships.Operation;
+using OwnerType = SFA.DAS.Recruit.Contracts.ApiResponses.OwnerType;
 
 namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy;
 
@@ -332,6 +335,14 @@ public class CreateVacancyCommandHandler(
 
             location.Latitude = postcodeInfo?.Latitude;
             location.Longitude = postcodeInfo?.Longitude;
+
+            if (postcodeInfo != null && postcodeInfo.Country != Constants.EnglandCountryCode)
+            {
+                throw new ValidationException("EmployerAddress", new List<ValidationFailure>
+                {
+                    new("Postcode", "Postcode must be in England")
+                });
+            }
         });
 
         await Task.WhenAll(lookupTasks);
