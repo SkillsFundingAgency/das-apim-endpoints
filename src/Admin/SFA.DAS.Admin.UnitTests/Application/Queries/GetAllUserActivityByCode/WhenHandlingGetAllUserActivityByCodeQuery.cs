@@ -15,7 +15,7 @@ using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Apim.Shared.Exceptions;
 using GetUserActionByCodeResponse = SFA.DAS.DigitalCertificates.Contracts.ApiResponses.GetUserActionByCodeResponse;
 using GetUserActionsResponse = SFA.DAS.DigitalCertificates.Contracts.ApiResponses.GetUserActionsResponse;
-using GetUserByIdResponse = SFA.DAS.DigitalCertificates.Contracts.ApiResponses.GetUserByIdQueryResult;
+using GetUserByIdResponse = SFA.DAS.DigitalCertificates.Contracts.ApiResponses.GetUserByIdResponse;
 
 namespace SFA.DAS.Admin.UnitTests.Application.Queries.GetAllUserActivityByCode
 {

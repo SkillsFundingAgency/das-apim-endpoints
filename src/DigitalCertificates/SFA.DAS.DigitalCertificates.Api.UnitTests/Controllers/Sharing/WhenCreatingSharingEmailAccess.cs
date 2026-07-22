@@ -10,6 +10,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Api.Controllers;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingEmailAccess;
+using SFA.DAS.DigitalCertificates.Api.Models.Sharing;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
@@ -18,28 +19,28 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
     {
         [Test, MoqAutoData]
         public async Task Then_Returns_Ok_And_Mediator_Send_Called(
-            CreateSharingEmailAccessCommand command,
+            CreateSharingEmailAccessRequest request,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] SharingController controller)
         {
             // Arrange
             mediator
-                .Setup(x => x.Send(It.Is<CreateSharingEmailAccessCommand>(c => c.SharingEmailId == command.SharingEmailId), CancellationToken.None))
+                .Setup(x => x.Send(It.Is<CreateSharingEmailAccessCommand>(c => c.SharingEmailId == request.SharingEmailId), CancellationToken.None))
                 .ReturnsAsync(Unit.Value);
 
             // Act
-            var actual = await controller.CreateSharingEmailAccess(command) as NoContentResult;
+            var actual = await controller.CreateSharingEmailAccess(request) as NoContentResult;
 
             // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
 
-            mediator.Verify(m => m.Send(It.Is<CreateSharingEmailAccessCommand>(c => c.SharingEmailId == command.SharingEmailId), It.IsAny<CancellationToken>()), Times.Once);
+            mediator.Verify(m => m.Send(It.Is<CreateSharingEmailAccessCommand>(c => c.SharingEmailId == request.SharingEmailId), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
-            CreateSharingEmailAccessCommand command,
+            CreateSharingEmailAccessRequest request,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] SharingController controller)
         {
@@ -48,7 +49,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
                 .ThrowsAsync(new Exception());
 
             // Act
-            var actual = await controller.CreateSharingEmailAccess(command) as StatusCodeResult;
+            var actual = await controller.CreateSharingEmailAccess(request) as StatusCodeResult;
 
             // Assert
             actual.Should().NotBeNull();

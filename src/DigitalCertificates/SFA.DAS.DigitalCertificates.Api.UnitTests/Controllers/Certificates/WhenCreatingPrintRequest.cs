@@ -19,7 +19,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Certificates
         [Test, MoqAutoData]
         public async Task Then_Returns_NoContent_And_Mediator_Send_Called(
             Guid id,
-            CreateCertificatePrintRequestCommand command,
+            Models.Certificates.CreatePrintRequest request,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] CertificatesController controller)
         {
@@ -29,7 +29,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Certificates
                 .ReturnsAsync(Unit.Value);
 
             // Act
-            var actual = await controller.CreatePrintRequest(id, command) as NoContentResult;
+            var actual = await controller.CreatePrintRequest(id, request) as NoContentResult;
 
             // Assert
             actual.Should().NotBeNull();
@@ -41,7 +41,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Certificates
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             Guid id,
-            CreateCertificatePrintRequestCommand command,
+            Models.Certificates.CreatePrintRequest request,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] CertificatesController controller)
         {
@@ -50,7 +50,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Certificates
                 .ThrowsAsync(new Exception());
 
             // Act
-            var actual = await controller.CreatePrintRequest(id, command) as StatusCodeResult;
+            var actual = await controller.CreatePrintRequest(id, request) as StatusCodeResult;
 
             // Assert
             actual.Should().NotBeNull();
@@ -62,7 +62,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Certificates
         [Test, MoqAutoData]
         public async Task Then_BadRequest_Returned_If_ArgumentException_Thrown(
             Guid id,
-            CreateCertificatePrintRequestCommand command,
+            Models.Certificates.CreatePrintRequest request,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] CertificatesController controller)
         {
@@ -71,7 +71,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Certificates
                 .ThrowsAsync(new ArgumentException());
 
             // Act
-            var actual = await controller.CreatePrintRequest(id, command) as BadRequestResult;
+            var actual = await controller.CreatePrintRequest(id, request) as BadRequestResult;
 
             // Assert
             actual.Should().NotBeNull();

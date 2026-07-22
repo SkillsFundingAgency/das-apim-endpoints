@@ -2,6 +2,7 @@
 using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.DigitalCertificates.Contracts.Client;
+using GetUserByIdResponse = SFA.DAS.DigitalCertificates.Contracts.ApiResponses.GetUserByIdResponse;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,7 +40,7 @@ namespace SFA.DAS.Admin.Application.Queries.GetAllUserActivityByCode
             var userId = codeBody.UserId;
 
             var userActionsTask = _digitalCertificatesApiClient.GetWithResponseCode<GetUserActionsResponse>(new GetUsersByUserIdUserActionsApiRequest(userId));
-            var userDetailsTask = _digitalCertificatesApiClient.GetWithResponseCode<GetUserByIdQueryResult>(new GetUsersIdByUserIdApiRequest(userId));
+            var userDetailsTask = _digitalCertificatesApiClient.GetWithResponseCode<GetUserByIdResponse>(new GetUsersIdByUserIdApiRequest(userId));
 
             await Task.WhenAll(userActionsTask, userDetailsTask);
 
@@ -69,7 +70,7 @@ namespace SFA.DAS.Admin.Application.Queries.GetAllUserActivityByCode
             var userMatches = userDetailsBody.UserMatches?
                 .Where(m => m != null)
                 .OrderByDescending(m => m.EventTime)
-                .ToList() ?? new List<UserMatchDetail>();
+                .ToList() ?? new List<UserMatchDetailDto>();
 
             var userActions = userActionsBody?.UserActions?
                 .OrderByDescending(ua => ua.ActionTime)

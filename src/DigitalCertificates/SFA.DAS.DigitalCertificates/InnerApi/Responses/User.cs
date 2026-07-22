@@ -13,8 +13,6 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Responses
         public string PhoneNumber { get; set; }
         public DateTime? LastLoginAt { get; set; }
         public bool IsLocked { get; set; }
-        public DateTime? DateOfBirth { get; set; }
-        public List<NameRecord> Names { get; set; } = new List<NameRecord>();
     }
     
     public class NameRecord

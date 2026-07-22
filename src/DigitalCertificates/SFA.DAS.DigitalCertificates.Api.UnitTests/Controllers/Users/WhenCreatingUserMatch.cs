@@ -40,7 +40,22 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
                 .ReturnsAsync(Unit.Value);
 
             // Act
-            var actual = await controller.CreateUserMatch(userId, command) as NoContentResult;
+            var apiRequest = new Models.Users.CreateUserMatchRequest
+            {
+                Uln = command.Uln,
+                UserIdentityId = command.UserIdentityId,
+                CertificateType = command.CertificateType,
+                CourseCode = command.CourseCode,
+                CourseName = command.CourseName,
+                CourseLevel = command.CourseLevel,
+                YearAwarded = command.YearAwarded,
+                ProviderName = command.ProviderName,
+                Ukprn = command.Ukprn,
+                IsMatched = command.IsMatched,
+                IsFailed = command.IsFailed
+            };
+
+            var actual = await controller.CreateUserMatch(userId, apiRequest) as NoContentResult;
 
             // Assert
             actual.Should().NotBeNull();
@@ -61,7 +76,22 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
                 .ThrowsAsync(new Exception());
 
             // Act
-            var actual = await controller.CreateUserMatch(userId, command) as StatusCodeResult;
+            var apiRequest = new Models.Users.CreateUserMatchRequest
+            {
+                Uln = command.Uln,
+                UserIdentityId = command.UserIdentityId,
+                CertificateType = command.CertificateType,
+                CourseCode = command.CourseCode,
+                CourseName = command.CourseName,
+                CourseLevel = command.CourseLevel,
+                YearAwarded = command.YearAwarded,
+                ProviderName = command.ProviderName,
+                Ukprn = command.Ukprn,
+                IsMatched = command.IsMatched,
+                IsFailed = command.IsFailed
+            };
+
+            var actual = await controller.CreateUserMatch(userId, apiRequest) as StatusCodeResult;
 
             // Assert
             actual.Should().NotBeNull();
