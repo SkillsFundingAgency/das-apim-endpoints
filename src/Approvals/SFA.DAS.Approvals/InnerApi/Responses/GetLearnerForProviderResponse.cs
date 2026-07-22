@@ -17,7 +17,6 @@ public record GetLearnerForProviderResponse
     public DateTime PlannedEndDate { get; set; }
     public int EpaoPrice { get; set; }
     public int TrainingPrice { get; set; }
-    public int StandardCode { get; set; }
     public string? TrainingCode { get; set; }
     public string? TrainingName { get; set; }
 
