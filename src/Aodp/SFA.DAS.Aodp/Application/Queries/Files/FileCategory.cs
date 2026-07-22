@@ -10,6 +10,7 @@ namespace SFA.DAS.Aodp.Application.Queries.Files
         Pldns,
         DefundingList,
         ApprovedFunding,
-        ArchivedFunding
+        ArchivedFunding,
+        FundingOutput
     }
 }
