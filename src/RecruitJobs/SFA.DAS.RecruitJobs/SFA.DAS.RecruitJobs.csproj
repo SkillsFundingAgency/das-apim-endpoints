@@ -33,7 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="10.0.9" />
-    <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.106-prerelease-8" />
+    <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.111-prerelease-3" />
     <PackageReference Include="StrawberryShake.Blazor" Version="16.3.0" />
   </ItemGroup>
   <ItemGroup>
