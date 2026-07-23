@@ -7,7 +7,6 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-
 namespace SFA.DAS.ApprenticeApp.Api.Controllers
 {
     [ApiController]
@@ -36,10 +35,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 Statuses = statuses
             });
 
-            if (result?.Notifications == null)
-                return NotFound();
-
-            return Ok(result.Notifications);
+            return Ok(result?.Notifications ?? new List<LearnerNotification>());
         }
 
         [HttpGet("{notificationIdentifier}")]
