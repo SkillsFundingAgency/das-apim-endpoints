@@ -6,4 +6,5 @@ public static class Constants
     /// number of days
     /// </summary>
     public const int QualifyingPeriod = 42;
+    public const string EnglandCountryCode = "England";
 }
