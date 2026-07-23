@@ -6,7 +6,7 @@ public class GetCourseByLarsCodeQuery : IRequest<GetCourseByLarsCodeQueryResult>
 {
     public string LarsCode { get; set; }
 
-    public string Location { get; set; }
+    public string LocationName { get; set; }
 
     public int? Distance { get; set; }
 }
