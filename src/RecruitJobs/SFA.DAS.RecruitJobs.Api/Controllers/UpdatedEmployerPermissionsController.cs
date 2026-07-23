@@ -1,9 +1,13 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitJobs.Api.Models.Requests;
+using SFA.DAS.RecruitJobs.Domain;
 using SFA.DAS.RecruitJobs.GraphQL;
+using SFA.DAS.RecruitJobs.GraphQL.RecruitInner.Mappers;
 using SFA.DAS.RecruitJobs.Handlers;
 using StrawberryShake;
 
@@ -42,5 +46,37 @@ public class UpdatedEmployerPermissionsController: ControllerBase
         await handler.HandleAsync(vacancyId, transferRequest.TransferReason, cancellationToken);
         return Results.Ok();
     }
-}
+    
+    [HttpGet, Route("vacancies/transferable/in-review")]
+    [ProducesResponseType(typeof(IEnumerable<Vacancy>), StatusCodes.Status200OK)]
+    public async Task<IResult> GetProviderOwnedVacanciesInReview(
+        [FromQuery, Required] int ukprn,
+        [FromQuery, Required] long legalEntityId,
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        CancellationToken cancellationToken)
+    {
+        var response = await recruitGqlClient.GetProviderOwnedVacanciesInReview.ExecuteAsync(ukprn, legalEntityId, cancellationToken);
+        if (!response.IsSuccessResult())
+        {
+            return TypedResults.Problem(response.ToProblemDetails());
+        }
 
+        var data = response.Data?.Vacancies.Select(x => x.Id) ?? [];
+        return TypedResults.Ok(data);
+    }
+    
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [Route("vacancies/{vacancyId:guid}/transfer/in-review")]
+    public async Task<IResult> TransferVacancyToQaReview(
+        [FromServices] ITransferProviderVacancyToQaReviewHandler handler,        
+        [FromRoute] Guid vacancyId,
+        [FromQuery, Required] Guid? userReference,
+        [FromQuery, Required] string? userEmailAddress,
+        CancellationToken cancellationToken)
+    {
+        await handler.HandleAsync(vacancyId, userReference!.Value, userEmailAddress, cancellationToken);
+        return Results.NoContent();
+    }
+}
