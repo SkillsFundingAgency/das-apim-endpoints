@@ -28,6 +28,7 @@ pr:
 variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
+- group: RELEASE das-apim-endpoints-LearnerData
 
 resources:
   repositories:
@@ -49,7 +50,7 @@ resources:
     branch: master
 
 stages:
-- template: ../../pipeline-templates/stage/outerapi-pipeline.yml
+- template: outerapi-pipeline.yml
   parameters:
     OuterApiName: LearnerData
     ConfigurationSecrets:
