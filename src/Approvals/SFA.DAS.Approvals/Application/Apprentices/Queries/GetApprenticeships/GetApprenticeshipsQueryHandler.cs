@@ -17,7 +17,7 @@ public class GetApprenticeshipsQueryHandler(
     public async Task<GetApprenticeshipsQueryResult> Handle(GetApprenticeshipsQuery request, CancellationToken cancellationToken)
     {
         var apprenticeshipResponseTask = apiClient.GetWithResponseCode<GetApprenticeshipsResponse>(
-            new GetApprenticeshipsRequest(request.ProviderId.Value, request));
+            new GetApprenticeshipsRequest(request.ProviderId ?? null, request.AccountId ?? null, request));
 
         var filtersTask = apiClient.GetWithResponseCode<GetApprenticeshipsFilterValuesResponse>(
             new GetApprenticeshipsFilterValuesRequest(request.ProviderId, request.AccountId));
