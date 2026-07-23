@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
@@ -7,9 +7,10 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.JsonPatch.SystemTextJson" Version="10.0.7" />
         <PackageReference Include="OpenTelemetry.Api" Version="1.16.0" />
-        <PackageReference Include="SFA.DAS.Apim.Shared" Version="17.1.198" />
+        <PackageReference Include="SFA.DAS.Apim.Shared" Version="17.1.202" />
         <PackageReference Include="SFA.DAS.Apprenticeships.Types" Version="6.8.14" />
         <PackageReference Include="MediatR" Version="12.5.0" />
+        <PackageReference Include="SFA.DAS.Common.Domain" Version="1.4.308" />
         <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.8" />
     </ItemGroup>
 </Project>

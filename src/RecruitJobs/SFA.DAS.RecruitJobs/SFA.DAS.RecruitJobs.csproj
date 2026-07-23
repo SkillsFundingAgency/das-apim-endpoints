@@ -28,6 +28,7 @@
     <GraphQL Remove="GraphQL\RecruitInner\Queries\GetVacancyByReference.graphql" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Recruit\SFA.DAS.SharedOuterApi.Recruit.csproj" />
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
   </ItemGroup>
   <ItemGroup>
