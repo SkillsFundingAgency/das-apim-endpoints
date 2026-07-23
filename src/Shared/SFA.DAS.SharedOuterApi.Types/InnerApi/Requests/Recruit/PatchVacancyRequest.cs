@@ -12,6 +12,9 @@ public class PatchableVacancyDto
     public DateTime LiveDate { get; init; }
     public List<Address> EmployerLocations { get; set; }
     public GeoCodeMethod? GeoCodeMethod { get; set; }
+    public DateTime SubmittedDate { get; set; }
+    public DateTime LastUpdatedDate { get; set; }
+    public Guid SubmittedByUserId { get; set; }
 }
 
 public sealed class PatchVacancyRequest(Guid vacancyId, JsonPatchDocument<PatchableVacancyDto> data): IPatchApiRequest<JsonPatchDocument<PatchableVacancyDto>>
