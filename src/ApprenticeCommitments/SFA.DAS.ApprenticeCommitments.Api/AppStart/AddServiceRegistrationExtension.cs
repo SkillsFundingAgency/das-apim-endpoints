@@ -1,18 +1,16 @@
+using System.Net.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.ApprenticeCommitments.Api.Controllers;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
-using SFA.DAS.ApprenticeCommitments.Application.Services.ApprenticeLogin;
 using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
-
 using SFA.DAS.SharedOuterApi.Types.Services;
-using System.Net.Http;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.AppStart
 {
@@ -23,12 +21,9 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AppStart
             services.AddHttpClient();
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
 
-            services.AddTransient<ApprenticeLoginClient>();
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
-            services.AddTransient<IInternalApiClient<ApprenticeLoginConfiguration>, ApprenticeLoginClient>();
             services.AddTransient<CourseApiClient>();
             services.AddTransient<ApprenticeCommitmentsService>();
-            services.AddTransient<ApprenticeLoginService>();
             services.AddTransient<CommitmentsV2Service>();
             services.AddTransient<ITrainingProviderApiClient<TrainingProviderConfiguration>, TrainingProviderApiClient>();
             services.AddTransient<TrainingProviderService>();
