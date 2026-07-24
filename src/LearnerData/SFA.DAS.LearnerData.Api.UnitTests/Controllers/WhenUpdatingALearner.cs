@@ -17,23 +17,25 @@ public class WhenUpdatingALearner
 {
     [Test, MoqAutoData]
     public async Task And_when_successful_Then_Accepted_returned(
-        Guid learningKey,
+        Guid learnerKey,
         long ukprn,
         UpdateLearnerRequest request,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ILogger<LearnersController>> mockLogger,
-        [Greedy] LearnersController sut)
+        [Frozen] Mock<ILogger<ApprenticeshipsController>> mockLogger,
+        [Greedy] ApprenticeshipsController sut)
     {
         // Act
-        var result = await sut.UpdateLearner(ukprn, learningKey, request) as AcceptedResult;
+        var result = await sut.UpdateLearner(ukprn, learnerKey, request) as AcceptedResult;
 
         // Assert
         result!.StatusCode.Should().Be((int)HttpStatusCode.Accepted);
 
         mockMediator.Verify(x => x.Send(
             It.Is<UpdateLearnerCommand>(c =>
-                c.LearningKey == learningKey &&
-                c.UpdateLearnerRequest == request), It.IsAny<CancellationToken>()), Times.Once);
+                c.LearnerKey == learnerKey &&
+                c.UpdateLearnerRequest == request &&
+                c.CorrelationId != Guid.Empty &&
+                c.ReceivedOn != default), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test, MoqAutoData]
@@ -42,8 +44,8 @@ public class WhenUpdatingALearner
         long ukprn,
         UpdateLearnerRequest request,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ILogger<LearnersController>> mockLogger,
-        [Greedy] LearnersController sut)
+        [Frozen] Mock<ILogger<ApprenticeshipsController>> mockLogger,
+        [Greedy] ApprenticeshipsController sut)
     {
         // Arrange
         mockMediator.Setup(x => x.Send(It.IsAny<UpdateLearnerCommand>(), It.IsAny<CancellationToken>()))

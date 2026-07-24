@@ -4,7 +4,6 @@ namespace SFA.DAS.LearnerData.Requests;
 
 public class CreateLearnerRequest : UpdateLearnerRequest
 {
-    public string ConsumerReference { get; set; }
     public new LearnerDetails Learner { get; set; }
 
     public new DeliveryDetails Delivery { get; set; }
@@ -23,13 +22,7 @@ public class CreateLearnerRequest : UpdateLearnerRequest
 
     public class DeliveryDetails : UpdateLearnerRequestDeliveryDetails
     {
-        public new List<OnProgrammeDetails> OnProgramme { get; set; }
-    }
-
-    public class OnProgrammeDetails : OnProgrammeRequestDetails
-    {
-        public int PercentageOfTrainingLeft { get; set; }
-        public bool? IsFlexiJob { get; set; }
+        public new List<OnProgrammeRequestDetails> OnProgramme { get; set; }
     }
 }
 

@@ -41,7 +41,8 @@ public class OuterApi
                 {"CoursesApiConfiguration:url", _context?.CoursesApi?.BaseAddress + "/"},
                 {"AzureAD:tenant", ""},
                 {"AzureAD:identifier", ""},
-                {"PaymentsConfiguration:PaymentsEndpoint", "stub"}
+                {"PaymentsConfiguration:PaymentsEndpoint", "stub"},
+                {"FeatureFlags:ApprenticeshipUpdateLearner", "true"}
             };
 
 

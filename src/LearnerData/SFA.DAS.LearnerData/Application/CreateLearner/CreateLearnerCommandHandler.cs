@@ -1,15 +1,17 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.Apim.Shared.Models;
 
 namespace SFA.DAS.LearnerData.Application.CreateLearner;
 
@@ -40,14 +42,16 @@ public class CreateLearnerCommandHandler(
         //    await earningsApiClient.Put(earningsOnProgrammeApiRequest);
         //}
 
-        logger.LogTrace("Publishing LearnerDataEvent");
-        var evt = MapToEvent(command);
-        await messageSession.Publish(evt);
+        foreach (var onProgramme in command.Request.Delivery.OnProgramme)
+        {
+            logger.LogInformation("Publishing LearnerDataEvent for AimSequenceNumber {AimSequenceNumber}, StandardCode {StandardCode}, LearnAimRef {LearnAimRef}", onProgramme.AimSequenceNumber, onProgramme.StandardCode, onProgramme.LearnAimRef);
+            var @event = MapToEvent(command, onProgramme);
+            await messageSession.Publish(@event);
+        }
     }
 
-    private LearnerDataEvent MapToEvent(CreateLearnerCommand command)
+    private LearnerDataEvent MapToEvent(CreateLearnerCommand command, OnProgrammeRequestDetails onProgramme)
     {
-        var onProgramme = command.Request.Delivery.OnProgramme.First();
         var cost = onProgramme.Costs.GetCostsOrDefault(onProgramme.StartDate).First();
 
         return new LearnerDataEvent
@@ -58,14 +62,14 @@ public class CreateLearnerCommandHandler(
             LastName = command.Request.Learner.LastName,
             Email = command.Request.Learner.Email,
             DoB = command.Request.Learner.Dob!.Value,
-            StartDate = command.Request.Delivery.OnProgramme.First().StartDate,
-            PlannedEndDate = command.Request.Delivery.OnProgramme.First().ExpectedEndDate,
-            PercentageLearningToBeDelivered = command.Request.Delivery.OnProgramme.First().PercentageOfTrainingLeft,
+            StartDate = onProgramme.StartDate,
+            PlannedEndDate = onProgramme.ExpectedEndDate,
+            PercentageLearningToBeDelivered = onProgramme.PercentageOfTrainingLeft,
             EpaoPrice = cost.EpaoPrice ?? 0,
             TrainingPrice = cost.TrainingPrice,
-            AgreementId = command.Request.Delivery.OnProgramme.First().AgreementId,
-            IsFlexiJob = command.Request.Delivery.OnProgramme.First().IsFlexiJob!.Value,
-            StandardCode = command.Request.Delivery.OnProgramme.First().StandardCode,
+            AgreementId = onProgramme.AgreementId!,
+            IsFlexiJob = onProgramme.IsFlexiJob!.Value,
+            StandardCode = onProgramme.StandardCode,
             CorrelationId = command.CorrelationId,
             ReceivedDate = command.ReceivedOn,
             ConsumerReference = command.Request.ConsumerReference,
