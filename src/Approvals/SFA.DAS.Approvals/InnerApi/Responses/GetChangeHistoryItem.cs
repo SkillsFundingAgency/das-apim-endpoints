@@ -12,4 +12,5 @@ public class GetChangeHistoryItem
     public Guid Id { get; set; }
     public DateTime Created { get; set; }
     public string EmployerName { get; set; }
+    public string ProviderName { get; set; }
 }
