@@ -42,9 +42,9 @@ public class CreateLearnerCommandHandler(
         //    await earningsApiClient.Put(earningsOnProgrammeApiRequest);
         //}
 
-        logger.LogTrace("Publishing LearnerDataEvents");
         foreach (var onProgramme in command.Request.Delivery.OnProgramme)
         {
+            logger.LogInformation("Publishing LearnerDataEvent for AimSequenceNumber {AimSequenceNumber}, StandardCode {StandardCode}, LearnAimRef {LearnAimRef}", onProgramme.AimSequenceNumber, onProgramme.StandardCode, onProgramme.LearnAimRef);
             var @event = MapToEvent(command, onProgramme);
             await messageSession.Publish(@event);
         }
