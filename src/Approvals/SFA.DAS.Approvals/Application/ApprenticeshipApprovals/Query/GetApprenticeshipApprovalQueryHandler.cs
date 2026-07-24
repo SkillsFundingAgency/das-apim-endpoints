@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -9,18 +10,23 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 namespace SFA.DAS.Approvals.Application.ApprenticeshipApprovals.Query;
 
 public class GetApprenticeshipApprovalQueryHandler(
-    ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient) : IRequestHandler<GetApprenticeshipApprovalQuery, GetApprenticeshipApprovalResponse?>
+    ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient) : IRequestHandler<GetApprenticeshipApprovalQuery, GetApprenticeshipApprovalResponse>
 {
-    public async Task<GetApprenticeshipApprovalResponse?> Handle(GetApprenticeshipApprovalQuery request, CancellationToken cancellationToken)
+    public async Task<GetApprenticeshipApprovalResponse> Handle(GetApprenticeshipApprovalQuery request, CancellationToken cancellationToken)
     {
-        var result = await apiClient.Get<GetApprenticeshipApprovalResponse>(new GetApprenticeshipApprovalRequest(request.ApprenticeshipId, request.ApprovalRequestId));
+        var result = await apiClient.GetWithResponseCode<GetApprenticeshipApprovalResponse>(new GetApprenticeshipApprovalRequest(request.ApprenticeshipId, request.ApprovalRequestId));
 
-        if (result == null) 
+        if (result.StatusCode == HttpStatusCode.NotFound) 
             return null;
 
-        if(result.AccountId != request.EmployerAccountId)
-            throw new UnauthorizedAccessException("This Employer does not have access to this apprenticeship approval.");
+        if(result.StatusCode == HttpStatusCode.OK)
+        {
+            if (result.Body.AccountId != request.EmployerAccountId)
+                throw new UnauthorizedAccessException("This Employer does not have access to this apprenticeship approval.");
 
-        return result;
+            return result.Body;
+        }
+
+        throw new Exception("An unexpected Status code was returned from the API.");
     }
 }

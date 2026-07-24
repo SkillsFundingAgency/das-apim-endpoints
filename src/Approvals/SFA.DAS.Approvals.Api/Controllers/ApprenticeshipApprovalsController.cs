@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Application.ApprenticeshipApprovals.Query;
@@ -24,18 +25,17 @@ public class ApprenticeshipApprovalsController(
             {
                 return NotFound();
             }
-
             return Ok(result);
         }
         catch (UnauthorizedAccessException e)
         {
             logger.LogError(e, "Access denied in GetApprenticeshipApproval {apprenticeshipId} for account {accountId}", apprenticeshipId, accountId);
-            return Forbid();
+            return StatusCode(StatusCodes.Status403Forbidden);
         }
         catch (Exception e)
         {
             logger.LogError(e, "Error in GetApprenticeshipApproval {apprenticeshipId}", apprenticeshipId);
-            return BadRequest();
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
 }
