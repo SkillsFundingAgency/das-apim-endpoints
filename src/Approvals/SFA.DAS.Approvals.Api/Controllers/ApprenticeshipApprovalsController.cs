@@ -14,7 +14,7 @@ public class ApprenticeshipApprovalsController(
     IMediator mediator) : ControllerBase
 {
     [HttpGet]
-    [Route("/employer/{accountId:long}/apprentices/{apprenticeshipId:long}/approvals/{approvalRequestId:guid}")]
+    [Route("/employers/{accountId:long}/apprenticeships/{apprenticeshipId:long}/approvals/{approvalRequestId:guid}")]
     public async Task<IActionResult> GetApprenticeshipApproval(long accountId, long apprenticeshipId, Guid approvalRequestId)
     {
         try
