@@ -27,7 +27,7 @@ public class RemoveLearnerCommandHandler(
 
         var removeRequest = new RemoveLearnerApiDeleteRequest(command.LearnerKey, command.Ukprn);
 
-        var response = await learningApiClient.DeleteWithResponseCode<List<Guid>>(removeRequest);
+        var response = await learningApiClient.DeleteWithResponseCode<List<Guid>>(removeRequest, true);
 
         if (!response.StatusCode.IsSuccessStatusCode())
         {
