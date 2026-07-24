@@ -124,4 +124,13 @@ public class RolloverController : BaseController
     {
         return await SendRequestAsync(new GetAwardingOrganisationsForRolloverQueryBuilderQuery(filters));
     }
+
+    [HttpGet("/api/rollover/startsummary")]
+    [ProducesResponseType(typeof(GetRolloverStartSummaryQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetRolloverStartSummary()
+    {
+        return await SendRequestAsync(new GetRolloverStartSummaryQuery());
+    }
 }

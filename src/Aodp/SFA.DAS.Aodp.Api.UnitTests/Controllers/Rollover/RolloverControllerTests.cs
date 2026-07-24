@@ -909,4 +909,53 @@ public class RolloverControllerTests
             Assert.Fail($"Expected 500 result, got {result?.GetType().FullName ?? "null"}");
     }
 
+    [Test]
+    public async Task GetRolloverStartSummary_WhenMediatorReturnsSuccess_ShouldReturnOk()
+    {
+        var payload = new GetRolloverStartSummaryQueryResponse
+        {
+            TotalCandidatesCount = 10
+        };
+
+        var mediatorResponse = new BaseMediatrResponse<GetRolloverStartSummaryQueryResponse>
+        {
+            Success = true,
+            Value = payload
+        };
+
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<GetRolloverStartSummaryQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatorResponse);
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        var result = await controller.GetRolloverStartSummary();
+
+        Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        var ok = (OkObjectResult)result;
+        Assert.That(ok.Value, Is.EqualTo(payload));
+    }
+
+    [Test]
+    public async Task GetRolloverStartSummary_WhenMediatorReturnsFailure_ShouldReturn500()
+    {
+        var mediatorResponse = new BaseMediatrResponse<GetRolloverStartSummaryQueryResponse>
+        {
+            Success = false,
+            ErrorMessage = "error"
+        };
+
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<GetRolloverStartSummaryQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatorResponse);
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        var result = await controller.GetRolloverStartSummary();
+
+        Assert.That(result, Is.InstanceOf<StatusCodeResult>());
+        var status = (StatusCodeResult)result;
+        Assert.That(status.StatusCode, Is.EqualTo(500));
+    }
+
 }
