@@ -49,6 +49,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetUserActio
             actualFirst.Id.Should().Be(expected.Id);
             actualFirst.UserId.Should().Be(expected.UserId);
             actualFirst.ActionCode.Should().Be(expected.ActionCode);
+            actualFirst.Uln.Should().Be(expected.Uln);
         }
 
         [Test, MoqAutoData]
