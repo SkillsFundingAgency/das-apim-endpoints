@@ -15,7 +15,7 @@ public interface IUpdateEarningsOnProgrammeRequestBuilder
     Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, CreateLearnerRequest createLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningRequestBody requestBody);
 }
 
-public class UpdateEarningsOnProgrammeRequestBuilder(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient) : IUpdateEarningsOnProgrammeRequestBuilder
+public class UpdateEarningsOnProgrammeRequestBuilder(ICourseService courseService) : IUpdateEarningsOnProgrammeRequestBuilder
 {
     public async Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, UpdateLearnerRequest updateLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse,
         UpdateLearningRequestBody requestBody)
@@ -78,7 +78,7 @@ public class UpdateEarningsOnProgrammeRequestBuilder(ICoursesApiClient<CoursesAp
         var standardId = firstOnProgramme.StandardCode.ToString();
         var startDate = firstOnProgramme.StartDate;
 
-        var response = await coursesApiClient.Get<StandardDetailResponse>(new GetStandardDetailsByIdRequest(standardId));
+        var response = await courseService.GetStandardDetailsById(standardId);
 
         return response.MaxFundingOn(startDate);
     }

@@ -26,6 +26,7 @@ public static class AddApiServicesExtension
         services.AddTransient<ILearningSupportService, LearningSupportService>();
         services.AddTransient<IBreaksInLearningService, BreaksInLearningService>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
+        services.AddTransient<ICourseService, CourseService>();
         services.AddTransient<IUpdateLearningRequestBodyBuilder, UpdateLearningRequestBodyBuilder>();
         services.AddTransient<ICreateDraftLearningApiPostRequestBuilder, CreateDraftLearningApiPostRequestBuilder>();
         services.AddTransient<IUpdateLearningPutRequestBuilder, UpdateLearningPutRequestBuilder>();
