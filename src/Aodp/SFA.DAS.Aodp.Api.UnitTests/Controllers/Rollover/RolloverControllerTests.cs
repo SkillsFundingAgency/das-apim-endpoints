@@ -813,6 +813,40 @@ public class RolloverControllerTests
     }
 
     [Test]
+    public async Task GetQualificationVersionsForRolloverQueryBuilder_WhenFormFiltersAreProvided_ShouldSendCompleteQuery()
+    {
+        // Arrange
+        var filters = new RolloverQueryBuilderRequest
+        {
+            LevelIds = new List<int> { 1, 2 },
+            TypeIds = new List<int> { 3, 4 },
+            SectorSubjectAreaIds = new List<string> { "01", "02" },
+            AwardingOrganisationIds = new List<string> { "AO1", "AO2" }
+        };
+        var response = new BaseMediatrResponse<GetQualificationVersionsForRolloverQueryBuilderQueryResponse>
+        {
+            Success = true,
+            Value = new GetQualificationVersionsForRolloverQueryBuilderQueryResponse()
+        };
+
+        _mockMediator
+            .Setup(m => m.Send(
+                It.Is<GetQualificationVersionsForRolloverQueryBuilderQuery>(query => query.Filters == filters),
+                CancellationToken.None))
+            .ReturnsAsync(response);
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var result = await controller.GetQualificationVersionsForRolloverQueryBuilder(filters);
+
+        // Assert
+        Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        _mockMediator.Verify(m => m.Send(
+            It.Is<GetQualificationVersionsForRolloverQueryBuilderQuery>(query => query.Filters == filters),
+            CancellationToken.None), Times.Once);
+    }
+
+    [Test]
     public async Task GetTypesForRolloverQueryBuilder_WhenMediatorReturnsFailure_ShouldReturn500()
     {
         // Arrange
