@@ -32,7 +32,7 @@ public class ShortlistLocationModel
     public int Ordering { get; set; }
     public decimal? Latitude { get; set; }
     public decimal? Longitude { get; set; }
-    public string LocationDescription { get; set; }
+    public string LocationName { get; set; }
     public List<ShortlistProviderModel> Providers { get; set; } = [];
 }
 

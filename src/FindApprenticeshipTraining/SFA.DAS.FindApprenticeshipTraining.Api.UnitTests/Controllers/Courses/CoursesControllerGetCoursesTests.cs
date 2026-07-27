@@ -1,4 +1,4 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using MediatR;
@@ -14,7 +14,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Courses;
 public sealed class CoursesControllerGetCoursesTests
 {
     [Test, MoqAutoData]
-    public async Task GetCourses_ReturnsOkAndPassesQueryToMediator(
+    public async Task WhenGetCourses_ThenReturnsOkAndPassesQueryToMediator(
         GetCoursesQuery query,
         GetCoursesQueryResult result,
         [Frozen] Mock<IMediator> mockMediator,
@@ -29,7 +29,7 @@ public sealed class CoursesControllerGetCoursesTests
                     c.Levels.Equals(query.Levels) &&
                     c.OrderBy.Equals(query.OrderBy) &&
                     c.Distance.Equals(query.Distance) &&
-                    c.Location.Equals(query.Location) &&
+                    c.LocationName.Equals(query.LocationName) &&
                     c.Page.Equals(query.Page) &&
                     c.PageSize.Equals(query.PageSize)
                 ),
@@ -47,7 +47,7 @@ public sealed class CoursesControllerGetCoursesTests
                     c.Levels.Equals(query.Levels) &&
                     c.OrderBy.Equals(query.OrderBy) &&
                     c.Distance.Equals(query.Distance) &&
-                    c.Location.Equals(query.Location) &&
+                    c.LocationName.Equals(query.LocationName) &&
                     c.Page.Equals(query.Page) &&
                     c.PageSize.Equals(query.PageSize)
                 ),

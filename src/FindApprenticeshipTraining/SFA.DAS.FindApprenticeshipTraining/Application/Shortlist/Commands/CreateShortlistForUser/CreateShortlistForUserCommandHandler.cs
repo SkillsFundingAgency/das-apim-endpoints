@@ -28,7 +28,7 @@ public class CreateShortlistForUserCommandHandler(
                     Latitude = locationItem?.Latitude,
                     Longitude = locationItem?.Longitude,
                     Ukprn = request.Ukprn,
-                    LocationDescription = request.LocationName,
+                    LocationName = request.LocationName,
                     LarsCode = request.LarsCode,
                     UserId = request.ShortlistUserId
                 }
