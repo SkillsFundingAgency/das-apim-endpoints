@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Application.Queries.GetAlertsByUkprn;
 using SFA.DAS.Recruit.Application.Queries.GetApplicationReviewsCountByUkprn;
@@ -155,9 +154,6 @@ public class ProvidersController(IMediator mediator, ILogger<ProvidersController
     {
         try
         {
-            logger.LogTrace("GetApplicationReviewCount endpoint called for the ukprn : {ukprn}", ukprn);
-            logger.LogTrace("GetApplicationReviewCount endpoint called for the payload : {payload}", JsonConvert.SerializeObject(vacancyReferences));
-
             var queryResult = await mediator.Send(new GetApplicationReviewsCountByUkprnQuery(ukprn, vacancyReferences));
 
             return Ok(queryResult);

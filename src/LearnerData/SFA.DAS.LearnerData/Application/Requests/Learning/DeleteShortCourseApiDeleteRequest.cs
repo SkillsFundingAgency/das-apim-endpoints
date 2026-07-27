@@ -4,13 +4,15 @@ namespace SFA.DAS.LearnerData.Application.Requests.Learning;
 
 public class DeleteShortCourseApiDeleteRequest : IDeleteApiRequest
 {
-    public DeleteShortCourseApiDeleteRequest(long ukprn, Guid learningKey)
+    public DeleteShortCourseApiDeleteRequest(long ukprn, Guid learnerKey, int academicYear)
     {
         Ukprn = ukprn;
-        LearningKey = learningKey;
+        LearnerKey = learnerKey;
+        AcademicYear = academicYear;
     }
 
     public long Ukprn { get; }
-    public Guid LearningKey { get; }
-    public string DeleteUrl => $"{Ukprn}/shortCourses/{LearningKey}";
+    public Guid LearnerKey { get; }
+    public int AcademicYear { get; }
+    public string DeleteUrl => $"{Ukprn}/shortCourses/{LearnerKey}?academicYear={AcademicYear}";
 }

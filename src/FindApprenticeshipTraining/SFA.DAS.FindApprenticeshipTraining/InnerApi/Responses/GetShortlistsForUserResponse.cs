@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using SFA.DAS.Apim.Shared.Common;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
@@ -24,7 +23,7 @@ public class ShortlistCourseModel
     public string LarsCode { get; set; }
     public string StandardName { get; set; }
     public CourseType CourseType { get; set; }
-    public LearningType ApprenticeshipType { get; set; }
+    public LearningType LearningType { get; set; }
     public List<ShortlistLocationModel> Locations { get; set; } = [];
 }
 
@@ -33,7 +32,7 @@ public class ShortlistLocationModel
     public int Ordering { get; set; }
     public decimal? Latitude { get; set; }
     public decimal? Longitude { get; set; }
-    public string LocationDescription { get; set; }
+    public string LocationName { get; set; }
     public List<ShortlistProviderModel> Providers { get; set; } = [];
 }
 

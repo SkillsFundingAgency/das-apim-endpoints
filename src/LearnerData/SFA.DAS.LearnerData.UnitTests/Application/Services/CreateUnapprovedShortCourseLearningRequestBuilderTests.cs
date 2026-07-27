@@ -1,7 +1,6 @@
 using AutoFixture;
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.LearnerData.Shared;
 using SFA.DAS.SharedOuterApi.Types.Constants;
@@ -24,16 +23,65 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
         _sut = new CreateUnapprovedShortCourseLearningRequestBuilder();
     }
 
-    private static CreateDraftShortCourseRequest BuildLearningRequest(decimal price = ExpectedPrice, LearningType learningType = ExpectedLearningType)
+    private static Requests.LearningInner.OnProgramme BuildResolvedOnProgramme(decimal price = ExpectedPrice, LearningType learningType = ExpectedLearningType)
     {
-        return new CreateDraftShortCourseRequest
+        return new Requests.LearningInner.OnProgramme
         {
-            OnProgramme = new Requests.LearningInner.OnProgramme
-            {
-                Price = price,
-                LearningType = learningType
-            }
+            Price = price,
+            LearningType = learningType
         };
+    }
+
+    [Test]
+    public void Build_Sources_Dates_And_CourseCode_From_ResolvedOnProgramme_Not_RawOnProg()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var learningKey = Guid.NewGuid();
+        var episodeKey = Guid.NewGuid();
+
+        var rawStartDate = new DateTime(2025, 1, 1);
+        var rawExpectedEndDate = new DateTime(2025, 12, 31);
+        var rawCompletionDate = new DateTime(2025, 11, 1);
+        var rawWithdrawalDate = new DateTime(2025, 10, 1);
+        var rawCourseCode = "RAW-CODE";
+
+        var persistedStartDate = new DateTime(2025, 2, 1);
+        var persistedExpectedEndDate = new DateTime(2026, 1, 31);
+        var persistedCompletionDate = new DateTime(2025, 12, 1);
+        var persistedWithdrawalDate = new DateTime(2025, 11, 1);
+        var persistedCourseCode = "PERSISTED-CODE";
+
+        var onProgramme = _fixture.Build<ShortCourseOnProgramme>()
+            .With(x => x.CourseCode, rawCourseCode)
+            .With(x => x.StartDate, rawStartDate)
+            .With(x => x.ExpectedEndDate, rawExpectedEndDate)
+            .With(x => x.CompletionDate, rawCompletionDate)
+            .With(x => x.WithdrawalDate, rawWithdrawalDate)
+            .With(x => x.LearningSupport, new List<LearningSupport>())
+            .With(x => x.Milestones, Array.Empty<Milestone>())
+            .Create();
+
+        var request = _fixture.Build<ShortCourseRequest>()
+            .With(x => x.Delivery, new ShortCourseDelivery { OnProgramme = [onProgramme] })
+            .Create();
+
+        var resolvedOnProgramme = BuildResolvedOnProgramme();
+        resolvedOnProgramme.CourseCode = persistedCourseCode;
+        resolvedOnProgramme.StartDate = persistedStartDate;
+        resolvedOnProgramme.ExpectedEndDate = persistedExpectedEndDate;
+        resolvedOnProgramme.CompletionDate = persistedCompletionDate;
+        resolvedOnProgramme.WithdrawalDate = persistedWithdrawalDate;
+
+        // Act
+        var result = _sut.Build(request, onProgramme, learningKey, episodeKey, ukprn, resolvedOnProgramme);
+
+        // Assert: Earnings must reflect the Learning - persisted values, not the potentially - ignored SLD payload
+        result.OnProgramme.CourseCode.Should().Be(persistedCourseCode);
+        result.OnProgramme.StartDate.Should().Be(persistedStartDate);
+        result.OnProgramme.ExpectedEndDate.Should().Be(persistedExpectedEndDate);
+        result.OnProgramme.CompletionDate.Should().Be(persistedCompletionDate);
+        result.OnProgramme.WithdrawalDate.Should().Be(persistedWithdrawalDate);
     }
 
     [Test]
@@ -74,8 +122,15 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
             .With(x => x.Delivery, new ShortCourseDelivery { OnProgramme = [onProgramme] })
             .Create();
 
+        var resolvedOnProgramme = BuildResolvedOnProgramme();
+        resolvedOnProgramme.CourseCode = onProgramme.CourseCode;
+        resolvedOnProgramme.StartDate = onProgramme.StartDate;
+        resolvedOnProgramme.ExpectedEndDate = onProgramme.ExpectedEndDate;
+        resolvedOnProgramme.CompletionDate = onProgramme.CompletionDate;
+        resolvedOnProgramme.WithdrawalDate = onProgramme.WithdrawalDate;
+
         // Act
-        var result = _sut.Build(request, learningKey, episodeKey, ukprn, BuildLearningRequest());
+        var result = _sut.Build(request, onProgramme, learningKey, episodeKey, ukprn, resolvedOnProgramme);
 
         // Assert
         result.LearningKey.Should().Be(learningKey);
@@ -124,7 +179,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
             .Create();
 
         // Act
-        var result = _sut.Build(request, learningKey, Guid.NewGuid(), ukprn, BuildLearningRequest());
+        var result = _sut.Build(request, onProgramme, learningKey, Guid.NewGuid(), ukprn, BuildResolvedOnProgramme());
 
         // Assert
         result.OnProgramme.Milestones.Should().Contain(Milestone.LearningComplete);
@@ -147,7 +202,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
             .Create();
 
         // Act
-        var result = _sut.Build(request, learningKey, Guid.NewGuid(), ukprn, BuildLearningRequest());
+        var result = _sut.Build(request, onProgramme, learningKey, Guid.NewGuid(), ukprn, BuildResolvedOnProgramme());
 
         // Assert
         result.OnProgramme.Milestones.Should().ContainSingle(m =>
@@ -171,7 +226,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
             .Create();
 
         // Act
-        var result = _sut.Build(request, learningKey, Guid.NewGuid(), ukprn, BuildLearningRequest());
+        var result = _sut.Build(request, onProgramme, learningKey, Guid.NewGuid(), ukprn, BuildResolvedOnProgramme());
 
         // Assert
         result.OnProgramme.Milestones.Should().NotContain(Milestone.LearningComplete);

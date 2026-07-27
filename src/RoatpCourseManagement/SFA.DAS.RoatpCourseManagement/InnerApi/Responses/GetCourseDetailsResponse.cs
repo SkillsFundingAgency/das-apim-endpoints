@@ -3,6 +3,7 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi;
 using DurationUnits = SFA.DAS.SharedOuterApi.Types.Constants.DurationUnits;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
+
 public class GetCourseDetailsResponse
 {
     public string StandardUId { get; set; }
@@ -15,7 +16,7 @@ public class GetCourseDetailsResponse
     public int Duration { get; set; }
     public DurationUnits DurationUnits { get; set; }
     public string Route { get; set; }
-    public LearningType ApprenticeshipType { get; set; }
+    public LearningType LearningType { get; set; }
     public CourseType CourseType { get; set; }
     public bool IsActiveAvailable { get; set; }
 }

@@ -103,7 +103,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             // Arrange
             query.UserId = userId;
             identityBody.Authorisation = null;
-            identityBody.DateOfBirth = new DateTime(1990, 1, 1);
+            identityBody.DateOfBirth = new DateTime(1990, 1, 1, 0, 0, 0, DateTimeKind.Unspecified);
             identityBody.Identity = [new IdentityName { FamilyName = "Smith", GivenNames = "John" }];
             identityBody.Excluded = [];
 
@@ -131,6 +131,114 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             actual.Matches.Should().BeEmpty();
             actual.Masks.Should().BeEmpty();
         }
+        
+        [Test, MoqAutoData]
+        public async Task Then_Returns_Only_The_Latest_Match_Per_Uln(
+            Guid userId,
+            GetCertificatesMatchQuery query,
+            [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
+            [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
+            [Frozen] DigitalCertificatesConfiguration configuration,
+            GetCertificatesMatchQueryHandler handler)
+        {
+            // Arrange
+            query.UserId = userId;
+
+            var identityBody = new GetUserIdentityResponse
+            {
+                Authorisation = null,
+                DateOfBirth = new DateTime(1990, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                Identity = [new IdentityName { FamilyName = "Smith", GivenNames = "John" }],
+                Excluded = []
+            };
+
+            var identityResponse = new ApiResponse<GetUserIdentityResponse>(identityBody, HttpStatusCode.OK, string.Empty);
+
+            mockDigitalCertificatesApiClient
+                .Setup(c => c.GetWithResponseCode<GetUserIdentityResponse>(
+                    It.Is<GetUserIdentityRequest>(r => r.UserId == userId)))
+                .ReturnsAsync(identityResponse);
+
+            var olderMatch = new CertificateSearchMatch
+            {
+                Uln = 1000000001,
+                CertificateType = "Standard",
+                CourseCode = "OLD",
+                CourseName = "Older Course",
+                CourseLevel = "2",
+                DateAwarded = new DateTime(2022, 1, 1),
+                ProviderName = "Provider A",
+                Ukprn = "10000001"
+            };
+
+            var latestMatch = new CertificateSearchMatch
+            {
+                Uln = 1000000001,
+                CertificateType = "Standard",
+                CourseCode = "NEW",
+                CourseName = "Latest Course",
+                CourseLevel = "3",
+                DateAwarded = new DateTime(2024, 1, 1),
+                ProviderName = "Provider B",
+                Ukprn = "10000002"
+            };
+
+            var differentUlnMatch = new CertificateSearchMatch
+            {
+                Uln = 1000000002,
+                CertificateType = "Standard",
+                CourseCode = "OTHER",
+                CourseName = "Other Course",
+                CourseLevel = "4",
+                DateAwarded = new DateTime(2023, 1, 1),
+                ProviderName = "Provider C",
+                Ukprn = "10000003"
+            };
+
+            var searchBody = new GetCertificateSearchResponse
+            {
+                Matches = [olderMatch, latestMatch, differentUlnMatch]
+            };
+
+            var searchResponse = new ApiResponse<GetCertificateSearchResponse>(searchBody, HttpStatusCode.OK, string.Empty);
+
+            mockAssessorsApiClient
+                .Setup(c => c.GetWithResponseCode<GetCertificateSearchResponse>(It.IsAny<GetCertificateSearchRequest>()))
+                .ReturnsAsync(searchResponse);
+
+            var masksResponse = new ApiResponse<GetCertificateMasksResponse>(
+                new GetCertificateMasksResponse { Masks = [] },
+                HttpStatusCode.OK,
+                string.Empty);
+
+            mockAssessorsApiClient
+                .Setup(c => c.GetWithResponseCode<GetCertificateMasksResponse>(It.IsAny<GetStandardCertificateMasksRequest>()))
+                .ReturnsAsync(masksResponse);
+
+            configuration.MaxMasks = 5;
+            configuration.StandardMaskCount = 3;
+
+            // Act
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            // Assert
+            actual.Should().NotBeNull();
+            actual.Matches.Should().HaveCount(2);
+
+            actual.Matches.Should().ContainSingle(m =>
+                m.Uln == 1000000001 &&
+                m.CourseCode == "NEW" &&
+                m.CourseName == "Latest Course" &&
+                m.DateAwarded == new DateTime(2024, 1, 1));
+
+            actual.Matches.Should().ContainSingle(m =>
+                m.Uln == 1000000002 &&
+                m.CourseCode == "OTHER");
+
+            actual.Matches.Should().NotContain(m =>
+                m.Uln == 1000000001 &&
+                m.CourseCode == "OLD");
+        }
 
         [Test, MoqAutoData]
         public async Task Then_Returns_Matches_And_Standard_Masks_When_Standard_Certificates_Found(
@@ -148,7 +256,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             var identityBody = new GetUserIdentityResponse
             {
                 Authorisation = null,
-                DateOfBirth = new DateTime(1990, 1, 1),
+                DateOfBirth = new DateTime(1990, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
                 Identity = [new IdentityName { FamilyName = "Smith", GivenNames = "John" }],
                 Excluded = []
             };
@@ -211,7 +319,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             var identityBody = new GetUserIdentityResponse
             {
                 Authorisation = null,
-                DateOfBirth = new DateTime(1990, 1, 1),
+                DateOfBirth = new DateTime(1990, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
                 Identity = [new IdentityName { FamilyName = "Jones", GivenNames = "Jane" }],
                 Excluded = []
             };
@@ -273,7 +381,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             var identityBody = new GetUserIdentityResponse
             {
                 Authorisation = null,
-                DateOfBirth = new DateTime(1990, 1, 1),
+                DateOfBirth = new DateTime(1990, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
                 Identity = [new IdentityName { FamilyName = "Taylor", GivenNames = "Alex" }],
                 Excluded = []
             };

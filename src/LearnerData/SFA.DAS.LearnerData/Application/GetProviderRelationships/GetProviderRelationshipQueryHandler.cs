@@ -15,29 +15,32 @@ public class GetProviderRelationshipQueryHandler(
 {
     public async Task<GetProviderRelationshipQueryResponse?> Handle(GetProviderRelationshipQuery request, CancellationToken cancellationToken)
     {
-        var providerDetails = await getProviderRelationshipService.GetAllProviderRelationShipDetails(request.Ukprn);
+        var providerDetailsTask = getProviderRelationshipService.GetAllProviderRelationShipDetails(request.Ukprn, cancellationToken);
+        var providerSummaryTask = GetRegisteredProviderDetails(request.Ukprn, cancellationToken);
 
+        await Task.WhenAll(providerDetailsTask, providerSummaryTask);
+
+        var providerDetails = await providerDetailsTask;
         if (providerDetails is null)
         {
             return null;
         }
-        var provider = await GetRegisteredProviderDetails(request.Ukprn);
 
+        var provider = await providerSummaryTask;
         if (provider is null)
         {
             return null;
         }
 
-        var coursesForProviderTask = getProviderRelationshipService.GetCoursesForProviderByUkprn(request.Ukprn);
-
-        var employerDetailsTask = getProviderRelationshipService.GetEmployerDetails(providerDetails);
+        var coursesForProviderTask = getProviderRelationshipService.GetCoursesForProviderByUkprn(request.Ukprn, cancellationToken);
+        var employerDetailsTask = getProviderRelationshipService.GetEmployerDetails(providerDetails, cancellationToken);
 
         await Task.WhenAll(coursesForProviderTask, employerDetailsTask);
 
         var employers = await employerDetailsTask;
         var coursesForProvider = await coursesForProviderTask;
 
-        return new GetProviderRelationshipQueryResponse()
+        return new GetProviderRelationshipQueryResponse
         {
             Ukprn = request.Ukprn,
             Status = Enum.GetName(typeof(ProviderStatusType), provider.StatusId) ?? string.Empty,
@@ -47,9 +50,9 @@ public class GetProviderRelationshipQueryHandler(
         };
     }
 
-    private async Task<GetProviderSummaryResponse> GetRegisteredProviderDetails(int ukprn)
+    private async Task<GetProviderSummaryResponse?> GetRegisteredProviderDetails(int ukprn, CancellationToken cancellationToken)
     {
-        var providerDetails = await roatpService.GetProviderSummary(ukprn);
-        return providerDetails;
+        cancellationToken.ThrowIfCancellationRequested();
+        return await roatpService.GetProviderSummary(ukprn);
     }
 }

@@ -1,15 +1,6 @@
-﻿using System.Text.Encodings.Web;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePostcodeAddress;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
+﻿using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePostcodeAddress;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries;
 public class WhenHandlingGetCandidatePostcodeAddressQuery
@@ -17,47 +8,37 @@ public class WhenHandlingGetCandidatePostcodeAddressQuery
     [Test, MoqAutoData]
     public async Task Then_Gets_Locations_From_Location_Api(
         GetCandidatePostcodeAddressQuery query,
-        GetLocationByFullPostcodeRequestV2Response response,
-        [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockApiClient,
-        GetCandidatePostcodeAddressQueryHandler handler)
+        PostcodeInfo response,
+        [Frozen] Mock<ILocationLookupService> mockLocationLookupService,
+        [Greedy] GetCandidatePostcodeAddressQueryHandler handler)
     {
         // arrange
-        GetLocationByFullPostcodeRequestV2? capturedRequest = null;
-        mockApiClient
-            .Setup(x => x.Get<GetLocationByFullPostcodeRequestV2Response>(It.IsAny<GetLocationByFullPostcodeRequestV2>()))
-            .Callback<IGetApiRequest>(x => capturedRequest = x as GetLocationByFullPostcodeRequestV2)
+        mockLocationLookupService
+            .Setup(x => x.GetPostcodeInfoAsync(query.Postcode))
             .ReturnsAsync(response);
         
         // act
         var result = await handler.Handle(query, CancellationToken.None);
 
         // act
-        capturedRequest.Should().NotBeNull();
-        capturedRequest.GetUrl.Should().Be($"api/postcodes?postcode={UrlEncoder.Default.Encode(query.Postcode)}");
-        
         result.PostcodeExists.Should().BeTrue();
     }
 
     [Test, MoqAutoData]
     public async Task Then_No_Address_Returned_So_PostcodeExists_Is_False(
         GetCandidatePostcodeAddressQuery query,
-        [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockApiClient,
-        GetCandidatePostcodeAddressQueryHandler handler)
+        [Frozen] Mock<ILocationLookupService> mockLocationLookupService,
+        [Greedy] GetCandidatePostcodeAddressQueryHandler handler)
     {
         // arrange
-        GetLocationByFullPostcodeRequestV2? capturedRequest = null;
-        mockApiClient
-            .Setup(x => x.Get<GetLocationByFullPostcodeRequestV2Response>(It.IsAny<GetLocationByFullPostcodeRequestV2>()))
-            .Callback<IGetApiRequest>(x => capturedRequest = x as GetLocationByFullPostcodeRequestV2)
+        mockLocationLookupService
+            .Setup(x => x.GetPostcodeInfoAsync(query.Postcode))
             .ReturnsAsync(() => null!);
 
         // act
         var result = await handler.Handle(query, CancellationToken.None);
 
         // act
-        capturedRequest.Should().NotBeNull();
-        capturedRequest.GetUrl.Should().Be($"api/postcodes?postcode={UrlEncoder.Default.Encode(query.Postcode)}");
-        
         result.PostcodeExists.Should().BeFalse();
     }
 }

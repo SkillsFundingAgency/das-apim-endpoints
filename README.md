@@ -331,30 +331,6 @@ Data: {
 }
 ```
 
-### Forecasting
-
-The forecasting outer api relies on the following inner api:
-
-* [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
-
-You are able to run the API by doing the following:
-
-
-* In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev.
-```
-ParitionKey: LOCAL
-RowKey: SFA.DAS.Forecasting.OuterApi_1.0
-Data: {
-    "CoursesApiConfiguration": {
-        "url":"https://localhost:5001/",
-        "identifier":"https://**********.onmicrosoft.com/*******"
-    }
-}
-```
-* Start the api project ```SFA.DAS.Forecasting.Api```
-
-Starting the API will then show the swagger definition with the available operations. The outer API is used to populate standards and frameworks in the forecasting database.
-
 ### Funding
 
 The Funding outer api relies on the following inner api:
@@ -394,7 +370,7 @@ Data: {{
 ```
 * Start the api project ```SFA.DAS.Funding.Api```
 
-Starting the API will then show the swagger definition with the available operations. The outer API is used to populate standards and frameworks in the forecasting database.
+Starting the API will then show the swagger definition with the available operations.
 
 ### Manage Apprenticeships
 
@@ -509,7 +485,6 @@ Starting the API will then show the swagger definition with the available operat
 
 The Employer Finance outer api relies on the following inner apis:
 
-* [das-forecasting-api](https://github.com/SkillsFundingAgency/das-forecasting-api)
 * [das-apprentice-accounts-api](https://github.com/SkillsFundingAgency/
 das-apprentice-accounts-api)
 * [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
@@ -527,10 +502,6 @@ ParitionKey: LOCAL
 RowKey: SFA.DAS.EmployerFinance.OuterApi_1.0
 Data: {
          {
-            "ForecastingApiConfiguration": {
-                "url": "https://****:****/",
-                "identifier": "https://******.onmicrosoft.com/*****"
-            },
             "AccountsApiConfiguration": {
                 "url": "https://****:****/",
                 "identifier": "https://******.onmicrosoft.com/*****"
@@ -904,7 +875,6 @@ The Levy Transfer Matching outer api relies on the following inner apis:
 
 * [das-employer-accounts](https://github.com/SkillsFundingAgency/das-employer-accounts)
 * [das-employer-finance](https://github.com/SkillsFundingAgency/das-employer-finance)
-* [das-forecasting-api](https://github.com/SkillsFundingAgency/das-forecasting-api)
 * [das-levy-transfer-matching-api](https://github.com/SkillsFundingAgency/das-levy-transfer-matching-api)
 * [das-location-api](https://github.com/SkillsFundingAgency/das-location-api)
 * [das-employerusers](https://github.com/SkillsFundingAgency/das-employerusers)
@@ -924,10 +894,6 @@ Data: {
         "identifier": "https://******.onmicrosoft.com/*****"
     },
     "FinanceApiConfiguration": {
-        "url": "https://****:****/",
-        "identifier": "https://******.onmicrosoft.com/*****"
-    },
-    "ForecastingApiConfiguration": {
         "url": "https://****:****/",
         "identifier": "https://******.onmicrosoft.com/*****"
     },

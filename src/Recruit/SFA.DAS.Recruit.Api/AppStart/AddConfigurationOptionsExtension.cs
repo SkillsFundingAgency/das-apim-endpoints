@@ -33,6 +33,8 @@ namespace SFA.DAS.Recruit.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitApiConfiguration>>().Value);
             services.Configure<BusinessMetricsConfiguration>(configuration.GetSection(nameof(BusinessMetricsConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<BusinessMetricsConfiguration>>().Value);
+            services.Configure<ProviderRelationshipsApiConfiguration>(configuration.GetSection("ProviderRelationshipsApi"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderRelationshipsApiConfiguration>>().Value);
         }
     }
 }

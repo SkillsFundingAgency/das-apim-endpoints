@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -72,5 +73,37 @@ public class WhenHandlingGetEmployerVacanciesQuery
         var actual = await handler.Handle(query, CancellationToken.None);
 
         actual.Vacancies.Should().BeEmpty();
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_The_Request_Is_Handled_And_Archived_Vacancy_Returned_If_Single_Vacancy(
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> apiClient,
+        GetEmployerVacanciesQuery query,
+        GetEmployerVacanciesQueryHandler handler)
+    {
+        var apiResponse = new GetPagedVacancySummaryApiResponse
+        {
+            PageInfo = new GetPagedVacancySummaryApiResponse.Info { TotalCount = 1 },
+            Items =
+            [
+                new VacancySummary
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Archived vacancy",
+                    Status = VacancyStatus.Archived
+                }
+            ]
+        };
+
+        apiClient.Setup(x =>
+                x.GetWithResponseCode<GetPagedVacancySummaryApiResponse>(
+                    It.Is<GetVacanciesByAccountIdApiRequest>(c => c.GetUrl.Contains(query.AccountId.ToString()))))
+            .ReturnsAsync(new ApiResponse<GetPagedVacancySummaryApiResponse>(apiResponse, HttpStatusCode.OK, ""));
+
+        var actual = await handler.Handle(query, CancellationToken.None);
+
+        actual.Vacancies.Should().HaveCount(1);
+        actual.Vacancies[0].Status.Should().Be(VacancyStatus.Archived);
+        actual.Vacancies[0].Title.Should().Be("Archived vacancy");
     }
 }

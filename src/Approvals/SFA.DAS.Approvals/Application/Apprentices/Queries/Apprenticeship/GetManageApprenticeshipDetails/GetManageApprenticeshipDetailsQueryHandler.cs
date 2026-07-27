@@ -99,9 +99,26 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         result.CanActualStartDateBeChanged = canActualStartDateBeChanged;
         result.PendingPriceChange = null;
         result.PendingStartDateChange = null;
-        result.PaymentsStatus = new PaymentsStatus { PaymentsFrozen = false };
+        result.PaymentsStatus = new PaymentsStatus
+        {
+            FreezeStatus = apprenticeship.PaymentFreezeDate.HasValue,
+            PaymentFreezeDate = apprenticeship.PaymentFreezeDate,
+            ReasonFrozen = GetReasonFrozenDisplayText(apprenticeship.FreezePaymentsReason)
+        };
         result.LearnerStatusDetails = new LearnerStatusDetails { LearnerStatus = LearnerStatus.None };
         return result;
+    }
+
+    private static string GetReasonFrozenDisplayText(byte? freezePaymentsReason)
+    {
+        return freezePaymentsReason switch
+        {
+            1 => "Learner is on a break",
+            2 => "Learner has withdrawn",
+            3 => "There is a change to training details",
+            4 => "You disagree with an auto approved change",
+            _ => null
+        };
     }
 
     private async Task<bool?> CanActualStartDateBeChanged(DateTime? actualStartDate)

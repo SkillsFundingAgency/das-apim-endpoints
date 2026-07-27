@@ -34,8 +34,8 @@ public class LocationLookupService(ILocationApiClient<LocationApiConfiguration> 
 
         if (Regex.IsMatch(location, PostcodeRegex, RegexOptions.None, RegexTimeOut))
         {
-            var result = await locationApiClient.Get<GetLocationByFullPostcodeRequestV2Response>(new GetLocationByFullPostcodeRequestV2(location));
-            getLocationsListItem = result?.ToGetLocationsListItem() ?? new GetLocationsListItem();
+            var postcodeInfo = await GetPostcodeInfoAsync(location);
+            getLocationsListItem = ToGetLocationsListItem(postcodeInfo) ?? new GetLocationsListItem();
             getLocationsListItem.IncludeDistrictNameInPostcodeDisplayName = includeDistrictNameInPostcodeDisplayName;
             location = getLocationsListItem.DisplayName;
         }
@@ -96,9 +96,39 @@ public class LocationLookupService(ILocationApiClient<LocationApiConfiguration> 
 
     public async Task<PostcodeInfo?> GetPostcodeInfoAsync(string postcode)
     {
-        var response = await locationApiClient.GetWithResponseCode<GetLookupPostcodeResponse>(new GetLookupPostcodeRequest(postcode));
-        return response.StatusCode == HttpStatusCode.NotFound
+        // Attempt to get postcode info from v2 endpoint first
+        var primary = await locationApiClient.GetWithResponseCode<GetLookupPostcodeResponse>(
+            new GetLookupPostcodeRequest(postcode));
+
+        if (primary.StatusCode != HttpStatusCode.NotFound && primary.Body?.Postcode is not null)
+            return PostcodeInfo.From(primary.Body);
+
+        // Fallback to v1 endpoint if v2 returns 404
+        var fallback = await locationApiClient.GetWithResponseCode<GetLookupPostcodeResponseV1>(
+            new GetLookupPostcodeRequestV1(postcode));
+
+        return fallback.StatusCode == HttpStatusCode.NotFound
             ? null
-            : PostcodeInfo.From(response.Body);
+            : PostcodeInfo.From(fallback.Body);
+    }
+
+    private static GetLocationsListItem ToGetLocationsListItem(PostcodeInfo source)
+    {
+        var result = new GetLocationsListItem
+        {
+            Postcode = source.Postcode,
+            Country = source.Country,
+            DistrictName = source.DistrictName,
+        };
+
+        if (source.Latitude is not null && source.Longitude is not null)
+        {
+            result.Location = new GetLocationsListItem.Coordinates
+            {
+                GeoPoint = [source.Latitude.Value, source.Longitude.Value],
+            };
+        }
+
+        return result;
     }
 }

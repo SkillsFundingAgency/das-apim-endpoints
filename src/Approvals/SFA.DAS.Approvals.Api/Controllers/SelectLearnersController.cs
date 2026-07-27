@@ -11,11 +11,11 @@ namespace SFA.DAS.Approvals.Api.Controllers;
 [ApiController]
 public class SelectLearnersController(IMediator mediator, ILogger<SelectLearnersController> logger) : Controller
 {
-    [HttpGet]
+    [HttpPost]
     [Route("/providers/{providerId}/unapproved/add/learners/select")]
     public async Task<IActionResult> Get(
         long providerId,
-        [FromQuery] SearchLearnersRequest request)
+        SearchLearnersRequest request)
     {
         try
         {
@@ -33,14 +33,15 @@ public class SelectLearnersController(IMediator mediator, ILogger<SelectLearners
                 StartMonth = request.StartMonth,
                 StartYear = request.StartYear,
                 CourseCode = request.CourseCode,
-                LearningType = request.LearningType
+                LearningType = request.LearningType,
+                ExcludeUlns = request.ExcludeUlns
             });
             return Ok(result);
         }
         catch (Exception e)
         {
             logger.LogError(e, "Error when getting  ILR records for Provider {providerId}", providerId);
-            return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
 
@@ -63,7 +64,7 @@ public class SelectLearnersController(IMediator mediator, ILogger<SelectLearners
         catch (Exception e)
         {
             logger.LogError(e, "Error when getting  ILR record for Learner {learnerId}", learnerId);
-            return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
 }

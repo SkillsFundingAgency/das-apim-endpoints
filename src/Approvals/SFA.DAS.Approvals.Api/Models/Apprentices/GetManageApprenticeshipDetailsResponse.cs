@@ -5,8 +5,6 @@ using Newtonsoft.Json.Converters;
 using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Types;
-using System;
-using System.Collections.Generic;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.Approvals.Api.Models.Apprentices;
@@ -22,11 +20,8 @@ public class GetManageApprenticeshipDetailsResponse
     public IReadOnlyCollection<ChangeOfEmployerLink> ChangeOfEmployerChain { get; set; }
     public IReadOnlyCollection<ApprenticeshipOverlappingTrainingDateRequest> OverlappingTrainingDateRequest { get; set; }
     public bool HasMultipleDeliveryModelOptions { get; set; }
-    public PendingPriceChangeDetails PendingPriceChange { get; set; }
-    public PendingStartDateChangeDetails PendingStartDateChange { get; set; }
     public bool? CanActualStartDateBeChanged { get; set; }
     public PaymentsStatusDetails PaymentsStatus { get; set; }
-    public LearnerStatusDetails LearnerStatusDetails { get; set; }
 
     public class ApprenticeshipDetails
     {
@@ -56,6 +51,7 @@ public class GetManageApprenticeshipDetailsResponse
         public string ProviderReference { get; set; }
         public short Status { get; set; }
         public DateTime? StopDate { get; set; }
+        public int? WithdrawnReasonCode { get; set; }
         public DateTime? PauseDate { get; set; }
         public DateTime? CompletionDate { get; set; }
         public string EndpointAssessorName { get; set; }
@@ -85,6 +81,7 @@ public class GetManageApprenticeshipDetailsResponse
         public LearningType? LearningType { get; set; }
         public int? EmployerVerificationStatus { get; set; }
         public string EmployerVerificationNotes { get; set; }
+        public bool HasChangeHistory {  get; set; }
     }
 
     public class PriceEpisode
@@ -203,9 +200,9 @@ public class GetManageApprenticeshipDetailsResponse
 
     public class PaymentsStatusDetails
     {
-        public bool PaymentsFrozen { get; set; }
+        public bool FreezeStatus { get; set; }
         public string ReasonFrozen { get; set; }
-        public DateTime? FrozenOn { get; set; }
+        public DateTime? PaymentFreezeDate { get; set; }
     }
 }
 

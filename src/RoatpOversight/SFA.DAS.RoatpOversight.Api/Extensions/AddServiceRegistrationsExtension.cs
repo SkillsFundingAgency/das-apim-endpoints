@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using RestEase.HttpClientFactory;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.RoatpOversight.Api.AppStart;
 using SFA.DAS.RoatpOversight.Api.HealthCheck;
 using SFA.DAS.RoatpOversight.Infrastructure;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.RoatpOversight.Api.Extensions;
 
@@ -25,7 +25,7 @@ public static class AddServiceRegistrationsExtension
     {
         var apiConfig = GetApiConfiguration(configuration, "RoatpV2ApiConfiguration");
         services.AddRestEaseClient<IRoatpV2ApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(configuration), apiConfig.Identifier));
     }
 
     public static IServiceCollection AddServiceHealthChecks(this IServiceCollection services)

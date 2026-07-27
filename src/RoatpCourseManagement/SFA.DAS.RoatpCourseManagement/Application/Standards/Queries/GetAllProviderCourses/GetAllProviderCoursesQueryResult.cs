@@ -1,4 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.Types.InnerApi;
+﻿using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProviderCourses
 {
@@ -14,5 +15,20 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProv
         public bool HasLocations { get; set; }
         public bool HasOnlineDeliveryOption { get; set; }
         public CourseType CourseType { get; set; }
+
+        public static implicit operator GetAllProviderCoursesQueryResult(GetAllProviderCoursesResponse sourse) =>
+            new()
+            {
+                ProviderCourseId = sourse.ProviderCourseId,
+                CourseName = sourse.CourseName,
+                Level = sourse.Level,
+                LarsCode = sourse.LarsCode,
+                ApprovalBody = sourse.ApprovalBody,
+                IsApprovedByRegulator = sourse.IsApprovedByRegulator,
+                IsRegulatedForProvider = sourse.IsRegulatedForProvider,
+                HasLocations = sourse.HasLocations,
+                HasOnlineDeliveryOption = sourse.HasOnlineDeliveryOption,
+                CourseType = sourse.CourseType
+            };
     }
 }

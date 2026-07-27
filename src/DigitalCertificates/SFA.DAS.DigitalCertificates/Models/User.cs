@@ -30,6 +30,7 @@ namespace SFA.DAS.DigitalCertificates.Models
                 DateOfBirth = source.DateOfBirth,
                 Names = source.Names?.Select(n => new Name
                 {
+                    UserIdentityId =  n.UserIdentityId,
                     ValidSince = n.ValidSince,
                     ValidUntil = n.ValidUntil,
                     FamilyName = n.FamilyName,

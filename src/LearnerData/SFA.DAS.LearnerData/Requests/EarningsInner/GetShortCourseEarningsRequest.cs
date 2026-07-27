@@ -1,16 +1,16 @@
-﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.LearnerData.Requests.EarningsInner;
 
 public class GetShortCourseEarningsRequest : IGetApiRequest
 {
     public string LearningKey { get; }
-    public long Ukprn { get; }
-    public string GetUrl => $"{LearningKey}/shortCourses?ukprn={Ukprn}";
+    public string EpisodeKey { get; }
+    public string GetUrl => $"{LearningKey}/shortCourses/{EpisodeKey}";
 
-    public GetShortCourseEarningsRequest(long ukprn, Guid learningKey)
+    public GetShortCourseEarningsRequest(Guid learningKey, Guid episodeKey)
     {
-        Ukprn = ukprn;
         LearningKey = learningKey.ToString();
+        EpisodeKey = episodeKey.ToString();
     }
 }

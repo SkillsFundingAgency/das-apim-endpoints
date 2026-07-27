@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 
@@ -18,4 +19,5 @@ public class SearchLearnersRequest
     public string SearchTerm { get; set; } = string.Empty;
     [JsonConverter(typeof(StringEnumConverter))]
     public LearningType? LearningType { get; set; }
+    public List<long> ExcludeUlns { get; set; } = new();
 }

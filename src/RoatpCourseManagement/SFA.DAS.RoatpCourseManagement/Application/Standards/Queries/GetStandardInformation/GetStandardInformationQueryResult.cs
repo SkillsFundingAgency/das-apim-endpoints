@@ -12,7 +12,7 @@ public class GetStandardInformationQueryResult
     public string LarsCode { get; set; }
     public string Title { get; set; }
     public int Level { get; set; }
-    public LearningType ApprenticeshipType { get; set; }
+    public LearningType LearningType { get; set; }
     public string ApprovalBody { get; set; }
     public string Route { get; set; }
     public int Duration { get; set; }
@@ -29,7 +29,7 @@ public class GetStandardInformationQueryResult
             LarsCode = source.LarsCode,
             Title = source.Title,
             Level = source.Level,
-            ApprenticeshipType = source.ApprenticeshipType,
+            LearningType = source.LearningType,
             ApprovalBody = source.ApprovalBody,
             Route = source.Route,
             Duration = source.Duration,

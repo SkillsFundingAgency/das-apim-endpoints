@@ -18,7 +18,8 @@ namespace SFA.DAS.ApprenticeApp.Validators
         "/lastName",
         "/email",
         "/dateOfBirth",
-        "/termsOfUseAccepted"
+        "/termsOfUseAccepted",
+        "/appLastLoggedIn"
     };
 
         private static readonly Regex NameRegex = new(@"^[\p{L}\p{M} '\-]+$", RegexOptions.Compiled, TimeSpan.FromMicroseconds(500));
@@ -167,6 +168,27 @@ namespace SFA.DAS.ApprenticeApp.Validators
                     if (valueProp.ValueKind is not JsonValueKind.True and not JsonValueKind.False)
                     {
                         context.AddFailure($"{path} must be a boolean.");
+                    }
+
+                    break;
+
+                case "/appLastLoggedIn":
+                    if (valueProp.ValueKind != JsonValueKind.String)
+                    {
+                        context.AddFailure($"{path} must be a date string.");
+                        return;
+                    }
+
+                    var appLastLoggedInText = valueProp.GetString();
+                    if (!DateTime.TryParse(appLastLoggedInText, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var appLastLoggedIn))
+                    {
+                        context.AddFailure($"{path} must be a valid date.");
+                        return;
+                    }
+
+                    if (appLastLoggedIn > DateTime.UtcNow.Date)
+                    {
+                        context.AddFailure($"{path} cannot be in the future.");
                     }
 
                     break;

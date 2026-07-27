@@ -38,7 +38,7 @@ public class WhenGettingProviderRelationships
         roatpService.Setup(t => t.GetProviderSummary(request.Ukprn)).
             ReturnsAsync(providerSummary);
 
-        getProviderRelationshipService.Setup(t => t.GetEmployerDetails(providerLegalEntitiesresponse)).
+        getProviderRelationshipService.Setup(t => t.GetEmployerDetails(providerLegalEntitiesresponse, It.IsAny<CancellationToken>())).
             ReturnsAsync(employers);
 
         // Act

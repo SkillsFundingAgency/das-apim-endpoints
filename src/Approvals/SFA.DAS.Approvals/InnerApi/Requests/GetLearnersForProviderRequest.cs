@@ -1,13 +1,20 @@
 ﻿using System;
-using System.Globalization;
-using System.Web;
-using SFA.DAS.Apim.Shared.Interfaces;
+using System.Collections.Generic;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 
-namespace SFA.DAS.Approvals.InnerApi.Requests
+namespace SFA.DAS.Approvals.InnerApi.Requests;
+
+public class GetLearnersForProviderRequest
 {
-    public class GetLearnersForProviderRequest(long providerId, string filter, string sortColumn, bool sortDescending, int page, int? pagesize, int? startMonth, int startYear, DateTime? maxStartDate, string excludeUlns, string courseCode, LearningType? learningType) : IGetApiRequest
-    {
-        public string GetUrl => $"providers/{providerId}/learners?filter={HttpUtility.UrlEncode(filter)}&sortColumn={sortColumn}&sortDescending={sortDescending}&page={page}&pageSize={pagesize}&startMonth={startMonth}&startYear={startYear}&maxStartDate={maxStartDate?.ToString(CultureInfo.InvariantCulture)}&excludeUlns={excludeUlns}&coursecode={courseCode}&learningType={learningType}";
-    }
+    public string Filter { get; set; }
+    public string SortColumn { get; set; }
+    public bool SortDescending { get; set; }
+    public int Page { get; set; }
+    public int? PageSize { get; set; }
+    public int? StartMonth { get; set; }
+    public int StartYear { get; set; }
+    public DateTime? MaxStartDate { get; set; }
+    public List<long> ExcludeUlns { get; set; }
+    public string CourseCode { get; set; }
+    public LearningType? LearningType { get; set; }
 }

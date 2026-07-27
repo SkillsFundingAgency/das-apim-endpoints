@@ -2,16 +2,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.Approvals.Api.AppStart;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprenticeshipsCSV;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
 {
@@ -54,7 +51,6 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             var mappingConfig = new MapperConfiguration(mc => { mc.AddProfile(new MappingProfile()); });
             var mapper = mappingConfig.CreateMapper();
 
-
             _handler = new GetApprenticeshipsCSVQueryResultHandler(_apiClient.Object, mapper);
         }
 
@@ -64,14 +60,12 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             var result = await _handler.Handle(_query, CancellationToken.None);
 
             result.Should().NotBeNull();
-            result.Should().BeEquivalentTo(_apprenticeships);
-
+            result.Should().BeEquivalentTo(_apprenticeships, o => o.Excluding(x => x.HasChangeHistory));
         }
 
         [Test]
         public async Task Handle_No_apprenticeships_returned()
         {
-
             _apiClient.Setup(x =>
                   x.GetWithResponseCode<GetApprenticeshipsResponse>(It.IsAny<GetApprenticeshipsCSVRequest>()))
               .ReturnsAsync(new ApiResponse<GetApprenticeshipsResponse>(null, HttpStatusCode.NotFound, string.Empty));

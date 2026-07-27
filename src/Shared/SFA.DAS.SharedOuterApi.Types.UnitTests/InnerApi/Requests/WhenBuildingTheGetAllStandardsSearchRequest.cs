@@ -47,7 +47,7 @@ public class WhenBuildingTheGetAllStandardsSearchRequest
     }
 
     [Test, AutoData]
-    public void GetUrl_ApprenticeshipTypeProvided_IncludesLearningTypeQueryParameter(LearningType type)
+    public void GetUrl_LearningTypeProvided_IncludesLearningTypeQueryParameter(LearningType type)
     {
         var _sut = new GetActiveStandardsSearchRequest
         {

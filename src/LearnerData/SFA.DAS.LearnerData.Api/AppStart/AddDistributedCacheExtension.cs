@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using SFA.DAS.Apim.Shared.AppStart;
+using SFA.DAS.LearnerData.Configuration;
 
 namespace SFA.DAS.LearnerData.Api.AppStart;
 
@@ -8,26 +9,23 @@ public static class AddDistributedCacheExtension
 {
     public static void AddDistributedCache(this WebApplicationBuilder builder, IConfigurationRoot config)
     {
-
-        var useInMemoryCache = config.IsLocalAcceptanceTests() || config.IsLocal();
-
-        if(useInMemoryCache)
+        if (config.IsLocalOrDev())
         {
             builder.Services.AddDistributedMemoryCache();
+            return;
         }
-        else
-        {
-            AddRedisCache(builder, config);
-        }
+
+        AddRedisCache(builder, config);
     }
 
     private static void AddRedisCache(WebApplicationBuilder builder, IConfigurationRoot config)
     {
         var cacheConfiguration = config.GetSection(nameof(CacheConfiguration)).Get<CacheConfiguration>();
 
-        if(cacheConfiguration == null || string.IsNullOrEmpty(cacheConfiguration.ApimEndpointsRedisConnectionString))
+        if (cacheConfiguration is null || string.IsNullOrWhiteSpace(cacheConfiguration.ApimEndpointsRedisConnectionString))
         {
-            throw new InvalidOperationException("Redis cache configuration is not set up correctly");
+            throw new InvalidOperationException(
+                $"{nameof(CacheConfiguration)}:{nameof(CacheConfiguration.ApimEndpointsRedisConnectionString)} must be configured for non-local environments.");
         }
 
         builder.Services.AddStackExchangeRedisCache(options =>
@@ -36,10 +34,3 @@ public static class AddDistributedCacheExtension
         });
     }
 }
-
-#pragma warning disable CS8618
-public class CacheConfiguration
-{
-    public string ApimEndpointsRedisConnectionString { get; set; }
-}
-#pragma warning restore CS8618

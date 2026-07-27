@@ -16,7 +16,7 @@ public sealed class GetCourseProviderQueryResult
     public ContactModel Contact { get; set; }
     public string CourseName { get; set; }
     public CourseType CourseType { get; set; }
-    public LearningType ApprenticeshipType { get; set; }
+    public LearningType LearningType { get; set; }
     public bool IsActiveAvailable { get; set; }
     public int Level { get; set; }
     public string LarsCode { get; set; }
@@ -41,7 +41,7 @@ public sealed class GetCourseProviderQueryResult
             Contact = source.Contact,
             CourseName = source.CourseName,
             CourseType = source.CourseType,
-            ApprenticeshipType = source.ApprenticeshipType,
+            LearningType = source.LearningType,
             IsActiveAvailable = source.IsActiveAvailable,
             Level = source.Level,
             LarsCode = source.LarsCode,

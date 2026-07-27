@@ -85,7 +85,7 @@ public class CommitmentsV2ApiClient(IInternalApiClient<CommitmentsV2ApiConfigura
 
     public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
     {
-        throw new NotImplementedException();
+        return apiClient.PatchWithResponseCode<TData, TResponse>(request, includeResponse);
     }
 
     public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)

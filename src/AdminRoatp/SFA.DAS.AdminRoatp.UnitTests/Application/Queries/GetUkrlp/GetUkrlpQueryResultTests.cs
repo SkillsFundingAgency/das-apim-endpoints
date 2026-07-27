@@ -1,36 +1,24 @@
 ﻿using FluentAssertions;
 using SFA.DAS.AdminRoatp.Application.Queries.GetUkrlp;
+using SFA.DAS.AdminRoatp.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp;
 
 namespace SFA.DAS.AdminRoatp.UnitTests.Application.Queries.GetUkrlp;
+
 public class GetUkrlpQueryResultTests
 {
     [Test]
     public void ImplicitConversion_AllDataPresent_MapsAllDataCorrectly()
     {
         // Arrange
-        var providerDetails = new UkrlpProviderDetails
+        var providerDetails = new UkrlpProviderModel
         {
-            ProviderName = "TestName1",
-            ProviderAliases = new List<ProviderAlias>
+            LegalName = "TestName1",
+            TradingName = "TestAlias1",
+            VerificationDetails = new List<VerificationInfo>
             {
-                new ProviderAlias
-                {
-                    Alias = "TestAlias1"
-                },
-            },
-            VerificationDetails = new List<VerificationDetails>
-            {
-                new VerificationDetails
-                {
-                    VerificationAuthority = "charity commission",
-                    VerificationId = "12345"
-                },
-                new VerificationDetails
-                {
-                    VerificationAuthority = "companies house",
-                    VerificationId = "67890"
-                }
+                new(VerificationAuthority.CharityCommission, "12345", false),
+                new(VerificationAuthority.CompaniesHouse, "67890", false)
             }
         };
 
@@ -44,30 +32,20 @@ public class GetUkrlpQueryResultTests
         sut.CompanyNumber.Should().Be("67890");
     }
 
-    [TestCase("Charity Commission", "12345", "12345", null)]
-    [TestCase("Companies House", "67890", null, "67890")]
+    [TestCase(VerificationAuthority.CharityCommission, "12345", "12345", null)]
+    [TestCase(VerificationAuthority.CompaniesHouse, "67890", null, "67890")]
     [TestCase("Test Authority", "54321", null, null)]
     [TestCase(null, null, null, null)]
     public void ImplicitConversion_VariationOfVerificationDetails_MapsCharityAndCompanyNumberCorrectly(string? verificationAuthority, string? verificationId, string? expectedCharityNumber, string? expectedCompanyNumber)
     {
         // Arrange
-        var providerDetails = new UkrlpProviderDetails
+        var providerDetails = new UkrlpProviderModel
         {
-            ProviderName = "TestName1",
-            ProviderAliases = new List<ProviderAlias>
+            LegalName = "TestName1",
+            TradingName = "TestAlias1",
+            VerificationDetails = new List<VerificationInfo>
             {
-                new ProviderAlias
-                {
-                    Alias = "TestAlias1"
-                },
-            },
-            VerificationDetails = new List<VerificationDetails>
-            {
-                new VerificationDetails
-                {
-                    VerificationAuthority = verificationAuthority,
-                    VerificationId = verificationId
-                }
+                new(verificationAuthority, verificationId, false)
             }
         };
 
@@ -85,10 +63,10 @@ public class GetUkrlpQueryResultTests
     public void ImplicitConversion_DataIsNull_MapsNullValues()
     {
         // Arrange
-        var providerDetails = new UkrlpProviderDetails
+        var providerDetails = new UkrlpProviderModel
         {
-            ProviderName = null,
-            ProviderAliases = null,
+            LegalName = null,
+            TradingName = null,
             VerificationDetails = null
         };
 
@@ -106,11 +84,11 @@ public class GetUkrlpQueryResultTests
     public void ImplicitConversion_DataIsEmpty_MapsNullValues()
     {
         // Arrange
-        var providerDetails = new UkrlpProviderDetails
+        var providerDetails = new UkrlpProviderModel
         {
-            ProviderName = "TestName1",
-            ProviderAliases = new List<ProviderAlias>(),
-            VerificationDetails = new List<VerificationDetails>()
+            LegalName = "TestName1",
+            TradingName = null,
+            VerificationDetails = new List<VerificationInfo>()
         };
 
         // Act

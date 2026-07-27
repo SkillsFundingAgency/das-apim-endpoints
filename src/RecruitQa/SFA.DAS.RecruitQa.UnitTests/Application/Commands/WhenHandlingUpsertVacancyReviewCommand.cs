@@ -12,13 +12,12 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Domain;
-using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.RecruitQa.UnitTests.Application.Commands;
 
 public class WhenHandlingUpsertVacancyReviewCommand
 {
-    [Test, MoqAutoData]
+    [Test, RecursiveMoqAutoData]
     public async Task Then_The_Command_Is_Handled_And_Api_Called_For_Providers(
         UpsertVacancyReviewCommand command,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
@@ -41,7 +40,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
         recruitApiClient.Verify(x => x.PutWithResponseCode<NullResponse>(It.Is<PutCreateVacancyReviewRequest>(c => c.PutUrl == expectedPutRequest.PutUrl)), Times.Once);
     }
     
-    [Test, MoqAutoData]
+    [Test, RecursiveMoqAutoData]
     public async Task Then_The_Command_Is_An_Exception_Thrown_When_The_Call_Fails(
         UpsertVacancyReviewCommand command,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,

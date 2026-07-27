@@ -5,7 +5,7 @@ namespace SFA.DAS.Recruit.UnitTests.InnerApi;
 
 public class WhenBuildingPutCreateVacancyReviewRequest
 {
-    [Test, AutoData]
+    [Test, RecursiveMoqAutoData]
     public void Then_the_Url_And_Data_Are_Constructed_And_Sent(VacancyReviewDto data, Guid id)
     {
         var actual = new PutCreateVacancyReviewRequest(id, data);

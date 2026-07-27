@@ -24,8 +24,17 @@ public class ProvidersController(IMediator _mediator) : ControllerBase
     [Route("{ukprn:int}")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(GetProviderSummaryQueryResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetProviderSummary([FromRoute] int ukprn, CancellationToken cancellationToken)
     {
-        return Ok(await _mediator.Send(new GetProviderSummaryQuery(ukprn), cancellationToken));
+        var result = await _mediator.Send(new GetProviderSummaryQuery(ukprn), cancellationToken);
+
+
+        if (result == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
     }
 }
