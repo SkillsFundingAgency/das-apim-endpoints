@@ -39,8 +39,6 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
             {
                 Uln = command.Uln,
                 UserId = command.UserId,
-                FamilyName = command.FamilyName,
-                DateOfBirth = command.DateOfBirth,
                 CertificateType = command.CertificateType,
                 CourseCode = command.CourseCode,
                 CourseName = command.CourseName,

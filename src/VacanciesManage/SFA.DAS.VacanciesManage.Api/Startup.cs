@@ -11,6 +11,7 @@ using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 using SFA.DAS.VacanciesManage.Api.AppStart;
 using SFA.DAS.VacanciesManage.Api.Filters;
+using SFA.DAS.VacanciesManage.Api.Middlewares;
 using SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetQualifications;
 using SFA.DAS.VacanciesManage.Configuration;
 using System;
@@ -107,6 +108,7 @@ public static class Startup
         }
 
         app.UseRouting();
+        app.UseMiddleware<ExceptionMiddleware>();
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllerRoute(

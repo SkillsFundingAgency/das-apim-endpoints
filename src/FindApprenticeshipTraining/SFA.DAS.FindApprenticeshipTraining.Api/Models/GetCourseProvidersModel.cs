@@ -12,7 +12,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         [FromQuery]
         public decimal? Distance { get; set; }
         [FromQuery]
-        public string Location { get; set; }
+        public string LocationName { get; set; }
 
         [FromQuery]
         public List<DeliveryMode?> DeliveryModes { get; set; }

@@ -29,8 +29,6 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
             {
                 UserId = userId,
                 Uln = uln,
-                FamilyName = familyName,
-                DateOfBirth = dateOfBirth,
                 CertificateType = certificateType,
                 CourseCode = courseCode,
                 CourseName = courseName,
@@ -45,8 +43,6 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
             // Assert
             command.UserId.Should().Be(userId);
             command.Uln.Should().Be(uln);
-            command.FamilyName.Should().Be(familyName);
-            command.DateOfBirth.Should().Be(dateOfBirth);
             command.CertificateType.Should().Be(certificateType);
             command.CourseCode.Should().Be(courseCode);
             command.CourseName.Should().Be(courseName);

@@ -28,6 +28,7 @@ pr:
 variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
+- group: RELEASE das-apim-endpoints-LearnerData
 
 resources:
   repositories:
@@ -35,7 +36,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/2.2.19
+    ref: refs/tags/3.0.37
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github
@@ -49,7 +50,7 @@ resources:
     branch: master
 
 stages:
-- template: ../../pipeline-templates/stage/outerapi-pipeline.yml
+- template: outerapi-pipeline.yml
   parameters:
     OuterApiName: LearnerData
     ConfigurationSecrets:

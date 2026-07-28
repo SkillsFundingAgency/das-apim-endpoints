@@ -8,6 +8,7 @@ namespace SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
 public class CreateDraftShortCourseCommand : IRequest<CreateDraftShortCourseResult>
 {
     public long Ukprn { get; set; }
+    public int AcademicYear { get; set; }
     public ShortCourseRequest ShortCourseRequest { get; set; }
 }
 #pragma warning restore CS8618

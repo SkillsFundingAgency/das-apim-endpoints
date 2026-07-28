@@ -30,7 +30,7 @@ public class LearnerDataCacheServiceTests
     {
         var ukprn = _fixture.Create<long>();
         var request = _fixture.Create<UpdateLearnerRequest>();
-        var expectedKey = $"LearnerData_{ukprn}_{request.Learner.Uln}";
+        var expectedKey = $"LearnerDataApprenticeship_{ukprn}_{request.Learner.Uln}";
 
         byte[]? storedBytes = null;
         DistributedCacheEntryOptions? storedOptions = null;
@@ -67,7 +67,7 @@ public class LearnerDataCacheServiceTests
         _cache.Setup(c => c.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((byte[]?)null);
 
-        var result = await _sut.GetLearner(12345, "9999999999", CancellationToken.None);
+        var result = await _sut.GetLearner<UpdateLearnerRequest>(12345, "9999999999", CancellationToken.None);
 
         result.Should().BeNull();
     }
@@ -82,7 +82,7 @@ public class LearnerDataCacheServiceTests
         _cache.Setup(c => c.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(bytes);
 
-        var result = await _sut.GetLearner(12345, expected.Learner.Uln.ToString(), CancellationToken.None);
+        var result = await _sut.GetLearner<UpdateLearnerRequest>(12345, expected.Learner.Uln.ToString(), CancellationToken.None);
 
         result.Should().BeEquivalentTo(expected);
     }
@@ -95,7 +95,7 @@ public class LearnerDataCacheServiceTests
         _cache.Setup(c => c.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(bytes);
 
-        var result = await _sut.GetLearner(12345, "1234567890", CancellationToken.None);
+        var result = await _sut.GetLearner<UpdateLearnerRequest>(12345, "1234567890", CancellationToken.None);
 
         result.Should().BeNull();
 
@@ -123,7 +123,7 @@ public class LearnerDataCacheServiceTests
             .ReturnsAsync((byte[]?)null)
             .ReturnsAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(learner3)));
 
-        var results = await _sut.GetLearners(ukprn, ulns, CancellationToken.None);
+        var results = await _sut.GetLearners<UpdateLearnerRequest>(ukprn, ulns, CancellationToken.None);
 
         results.Should().HaveCount(2);
         results.Should().ContainEquivalentOf(learner1);

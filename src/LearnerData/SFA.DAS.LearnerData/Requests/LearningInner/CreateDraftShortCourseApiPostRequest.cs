@@ -22,6 +22,11 @@ public class CreateDraftShortCourseRequest
     public long Ukprn { get; set; }
 
     /// <summary>
+    /// Academic year (e.g. 2526)
+    /// </summary>
+    public int AcademicYear { get; set; }
+
+    /// <summary>
     /// Learner details to be updated
     /// </summary>
     public ShortCourseLearningUpdateDetails LearnerUpdateDetails { get; set; }
