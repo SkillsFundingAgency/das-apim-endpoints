@@ -31,7 +31,8 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
 
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().Be(queryResult);
+            var expected = (Models.Users.GetCertificatesResponse)queryResult;
+            actual.Value.Should().BeEquivalentTo(expected);
         }
 
         [Test, MoqAutoData]

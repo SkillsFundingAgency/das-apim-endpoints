@@ -34,7 +34,8 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
             // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().Be(expectedResponse);
+            var expected = (Models.Sharing.GetSharedStandardCertificateResponse)expectedResponse;
+            actual.Value.Should().BeEquivalentTo(expected);
 
             mediator.Verify(m => m.Send(It.Is<GetSharedStandardCertificateQuery>(q => q.Id == id), It.IsAny<CancellationToken>()), Times.Once);
         }
