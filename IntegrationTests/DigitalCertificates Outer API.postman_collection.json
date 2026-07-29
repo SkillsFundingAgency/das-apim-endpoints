@@ -1,9 +1,10 @@
 {
   "info": {
-    "_postman_id": "8f55dd1a-612b-4ae4-bc3a-ec5ad7188d28",
+    "_postman_id": "2bbbd3ef-3352-4854-9e1c-3a77da9c90b4",
     "name": "DigitalCertificates Outer API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "1033522"
+    "_exporter_id": "56424886",
+    "_collection_link": "https://go.postman.co/collection/56424886-2bbbd3ef-3352-4854-9e1c-3a77da9c90b4?source=collection_link"
   },
   "item": [
     {
@@ -305,6 +306,50 @@
           "path": [
             "sharing",
             "sharingemailaccess"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UpdateUserIdentity",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"names\": [\r\n    {\r\n      \"userIdentityId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n      \"validSince\": \"2026-07-22T12:51:56.759Z\",\r\n      \"validUntil\": \"2026-07-22T12:51:56.759Z\",\r\n      \"familyName\": \"Test\",\r\n      \"givenNames\": \"Test\"\r\n    }\r\n  ],\r\n  \"dateOfBirth\": \"2026-07-22T12:51:56.759Z\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk//users/{{UserId}}/identity",
+          "protocol": "https",
+          "host": [
+            "{{Environment}}-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "",
+            "users",
+            "{{UserId}}",
+            "identity"
           ]
         }
       },
