@@ -20,6 +20,7 @@ public class GetApprenticeshipApprovalResponse
     public long AccountLegalEntityId { get; set; }
     public long AccountId { get; set; }
     public bool ExceedsFundingCap { get; set; } = false;
+    public int? FundingCap { get; set; }
 
     public class ChangeItem
     {

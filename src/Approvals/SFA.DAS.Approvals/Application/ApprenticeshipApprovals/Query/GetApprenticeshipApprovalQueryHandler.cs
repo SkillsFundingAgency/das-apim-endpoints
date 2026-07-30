@@ -35,8 +35,9 @@ public class GetApprenticeshipApprovalQueryHandler(
             if (course == null || !response.StartDate.HasValue)
                 return response;    
 
-            var fundingCap = MaxFundingOn(course.TrainingProgramme.FundingPeriods, response.StartDate.Value);   
+            var fundingCap = MaxFundingOn(course.TrainingProgramme.FundingPeriods, response.StartDate.Value);
 
+            response.FundingCap = fundingCap;
             response.ExceedsFundingCap = IsFundingBandExceeded(response, fundingCap);
 
             return response;
