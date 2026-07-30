@@ -1,0 +1,159 @@
+{
+  "info": {
+    "_postman_id": "8f383b51-0d80-497e-ba5d-2a42a800b155",
+    "name": "Admin Outer API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56424886",
+    "_collection_link": "https://go.postman.co/collection/56424886-8f383b51-0d80-497e-ba5d-2a42a800b155?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "GetUserActionByCode",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://{{Environment}}-apim-adm-api.apprenticeships.education.gov.uk/user-actions/{{UserActionCode}}",
+          "protocol": "https",
+          "host": [
+            "{{Environment}}-apim-adm-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "user-actions",
+            "{{UserActionCode}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetAllUserActivityByCode",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://{{Environment}}-apim-adm-api.apprenticeships.education.gov.uk/user-actions/{{UserActionCode}}/all-activity",
+          "protocol": "https",
+          "host": [
+            "{{Environment}}-apim-adm-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "user-actions",
+            "{{UserActionCode}}",
+            "all-activity"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CheckUserActionByCode",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"string\",\r\n  \"userActionId\": 50\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://{{Environment}}-apim-adm-api.apprenticeships.education.gov.uk/user-actions/{{UserActionCode}}/search",
+          "protocol": "https",
+          "host": [
+            "{{Environment}}-apim-adm-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "user-actions",
+            "{{UserActionCode}}",
+            "search"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "UserActionCode",
+      "value": ""
+    },
+    {
+      "key": "Environment",
+      "value": ""
+    }
+  ]
+}
