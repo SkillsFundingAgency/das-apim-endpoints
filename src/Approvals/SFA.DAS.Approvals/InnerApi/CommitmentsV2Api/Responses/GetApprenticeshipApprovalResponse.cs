@@ -11,12 +11,15 @@ public class GetApprenticeshipApprovalResponse
     public virtual ICollection<ChangeItem> Items { get; set; }
     public string Name { get; set; }
     public string ULN { get; set; }
+    public DateTime? StartDate { get; set; }
+    public string CourseCode { get; set; }
     public string CourseName { get; set; }
     public string ProviderName { get; set; }
     public long UKPRN { get; set; }
     public string AccountLegalEntityName { get; set; }
     public long AccountLegalEntityId { get; set; }
     public long AccountId { get; set; }
+    public bool ExceedsFundingCap { get; set; } = false;
 
     public class ChangeItem
     {
