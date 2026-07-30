@@ -19,6 +19,7 @@ public class LearningInnerShortCourseLearner
 
 public class LearningInnerShortCourseEpisode
 {
+    public Guid EpisodeKey { get; set; }
     public long Ukprn { get; set; }
     public long EmployerAccountId { get; set; }
     public string EmployerType { get; set; }

@@ -28,11 +28,12 @@
     <GraphQL Remove="GraphQL\RecruitInner\Queries\GetVacancyByReference.graphql" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Recruit\SFA.DAS.SharedOuterApi.Recruit.csproj" />
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="10.0.9" />
-    <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.106-prerelease-8" />
+    <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.111-prerelease-3" />
     <PackageReference Include="StrawberryShake.Blazor" Version="16.3.0" />
   </ItemGroup>
   <ItemGroup>

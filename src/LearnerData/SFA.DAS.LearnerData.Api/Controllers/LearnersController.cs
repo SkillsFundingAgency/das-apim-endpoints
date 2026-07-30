@@ -30,7 +30,7 @@ public class LearnersController(
     /// The original method can be removed when SLD stop using it.  At which point, the internal method can also be moved directly into this method.
     /// </summary>
     [HttpGet]
-    [Route("providers/{ukprn}/apprenticeships/learners")]
+    [Route("/providers/{ukprn}/apprenticeships/learners")]
     public async Task<IActionResult> GetLearners([FromRoute] string ukprn, [FromQuery] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
     {
         return await GetLearnersInternal(ukprn, academicyear, page, pagesize);
@@ -148,7 +148,7 @@ public class LearnersController(
     /// The original method can be removed when SLD stop using it.  At which point, the internal method can also be moved directly into this method.
     /// </summary>
     [HttpGet]
-    [Route("providers/{ukprn}/fm36data")]
+    [Route("/providers/{ukprn}/fm36data")]
     public async Task<IActionResult> GetFm36Data(long ukprn, [FromQuery] int academicYear, [FromQuery] byte collectionPeriod, [FromQuery] int? page, [FromQuery] int? pageSize)
     {
         return await GetFm36Data_Internal(ukprn, academicYear, collectionPeriod, page, pageSize);

@@ -46,7 +46,7 @@ public class CreateShortlistForUserCommandHandlerTests
                    ((PostShortlistData)c.Data).Ukprn.Equals(command.Ukprn)
                 && ((PostShortlistData)c.Data).Latitude.Equals(locationItem.Latitude)
                 && ((PostShortlistData)c.Data).Longitude.Equals(locationItem.Longitude)
-                && ((PostShortlistData)c.Data).LocationDescription.Equals(command.LocationName)
+                && ((PostShortlistData)c.Data).LocationName.Equals(command.LocationName)
                 && ((PostShortlistData)c.Data).LarsCode.Equals(command.LarsCode)
                 && ((PostShortlistData)c.Data).UserId.Equals(command.ShortlistUserId)), true));
         actualResult.Should().BeEquivalentTo(expectedResult);
@@ -79,7 +79,7 @@ public class CreateShortlistForUserCommandHandlerTests
                    ((PostShortlistData)c.Data).Ukprn.Equals(command.Ukprn)
                 && ((PostShortlistData)c.Data).Latitude.Equals(null)
                 && ((PostShortlistData)c.Data).Longitude.Equals(null)
-                && ((PostShortlistData)c.Data).LocationDescription.Equals(command.LocationName)
+                && ((PostShortlistData)c.Data).LocationName.Equals(command.LocationName)
                 && ((PostShortlistData)c.Data).LarsCode.Equals(command.LarsCode)
                 && ((PostShortlistData)c.Data).UserId.Equals(command.ShortlistUserId)), true));
         actualResult.Should().BeEquivalentTo(expectedResult);
