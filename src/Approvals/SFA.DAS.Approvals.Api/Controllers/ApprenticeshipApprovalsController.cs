@@ -4,6 +4,8 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Approvals.Api.Models.Apprentices;
+using SFA.DAS.Approvals.Application.Apprentices.Commands.ProcessApprenticeshipApproval;
 using SFA.DAS.Approvals.Application.ApprenticeshipApprovals.Query;
 namespace SFA.DAS.Approvals.Api.Controllers;
 
@@ -35,6 +37,29 @@ public class ApprenticeshipApprovalsController(
         catch (Exception e)
         {
             logger.LogError(e, "Error in GetApprenticeshipApproval {apprenticeshipId}", apprenticeshipId);
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+    }
+
+
+    [HttpPost]
+    [Route("/employers/{accountId:long}/apprenticeships/{apprenticeshipId:long}/approvals/{approvalRequestId:guid}")]
+    public async Task<IActionResult> PostApprenticeshipApproval(long accountId, long apprenticeshipId, Guid approvalRequestId, ProcessApprenticeshipApprovalRequest request)
+    {
+        try
+        {
+            await mediator.Send(new ProcessApprenticeshipApprovalCommand { 
+                ApprovalRequestId = approvalRequestId, 
+                ApprenticeshipId = apprenticeshipId, 
+                ApplyChanges = request.ApplyChanges, 
+                UserInfo = request.UserInfo 
+            });
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error in PostApprenticeshipApproval {apprenticeshipId}", apprenticeshipId);
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
