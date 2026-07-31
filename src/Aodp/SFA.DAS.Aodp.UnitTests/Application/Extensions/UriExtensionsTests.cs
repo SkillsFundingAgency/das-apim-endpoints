@@ -1,6 +1,4 @@
 ﻿using System.Collections.Specialized;
-using AutoFixture;
-using AutoFixture.AutoMoq;
 using SFA.DAS.Aodp.Application.Extensions;
 
 namespace SFA.DAS.Aodp.UnitTests.Application.Extensions

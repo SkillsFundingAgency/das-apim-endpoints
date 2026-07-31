@@ -4,7 +4,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCour
 
 public sealed class GetCourseProviderRequest
 {
-    public string Location { get; set; }
+    public string LocationName { get; set; }
     public int? Distance { get; set; }
     public Guid ShortlistUserId { get; set; }
 }
