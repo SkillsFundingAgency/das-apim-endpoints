@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
@@ -52,6 +53,12 @@ builder.Services
     });
 
 builder.Services.AddApplicationInsightsTelemetry(configuration);
+
+builder.Services.Configure<FormOptions>(options =>
+{
+    // A rollover batch can contain 10,000 candidates with several fields per candidate.
+    options.ValueCountLimit = 100_000;
+});
 
 builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);

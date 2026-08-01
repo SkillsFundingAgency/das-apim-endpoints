@@ -23,10 +23,10 @@ namespace SFA.DAS.AODP.Application.Commands.Rollover
 
             try
             {
-                var result = await _apiClient.PostWithResponseCode<SubmitRolloverExtensionCommandResponse>(new SubmitRolloverExtensionApiRequest()
+                var result = await _apiClient.PostWithResponseCodeAsMultipart<SubmitRolloverExtensionCommandResponse>(new SubmitRolloverExtensionApiRequest()
                 {
                     Data = request
-                });
+                }, cancellationToken);
 
                 response.Value =  result.Body;
                 response.Success = true;

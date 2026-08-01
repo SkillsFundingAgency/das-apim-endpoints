@@ -63,15 +63,16 @@ public class RolloverController : BaseController
     [HttpPost("/api/rollover/validaterolloverextension")]
     [ProducesResponseType(typeof(ValidateRolloverExtensionCommandResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> ValidateRolloverExtension(ValidateRolloverExtensionCommand validateFundingExtensionCandidatesCommand)
+    public async Task<IActionResult> ValidateRolloverExtension([FromForm] ValidateRolloverExtensionCommand validateFundingExtensionCandidatesCommand)
     {
         return await SendRequestAsync(validateFundingExtensionCandidatesCommand);
     }
 
     [HttpPost("/api/rollover/submitrolloverextension")]
+    [Consumes("multipart/form-data")]
     [ProducesResponseType(typeof(SubmitRolloverExtensionCommandResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> SubmitRolloverExtension(SubmitRolloverExtensionCommand submitRolloverExtensionCommand)
+    public async Task<IActionResult> SubmitRolloverExtension([FromForm] SubmitRolloverExtensionCommand submitRolloverExtensionCommand)
     {
         return await SendRequestAsync(submitRolloverExtensionCommand);
     }
