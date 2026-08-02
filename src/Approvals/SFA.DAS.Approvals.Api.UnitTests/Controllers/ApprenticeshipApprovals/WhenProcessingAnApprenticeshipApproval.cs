@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Approvals.Api.Models.Apprentices;
-using SFA.DAS.Approvals.Application.Apprentices.Commands.ProcessApprenticeshipApproval;
+using SFA.DAS.Approvals.Application.ApprenticeshipApprovals.Commands.ProcessApprenticeshipApproval;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.ApprenticeshipApprovals;
 

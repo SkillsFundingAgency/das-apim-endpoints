@@ -7,7 +7,7 @@ using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
-namespace SFA.DAS.Approvals.Application.Apprentices.Commands.ProcessApprenticeshipApproval;
+namespace SFA.DAS.Approvals.Application.ApprenticeshipApprovals.Commands.ProcessApprenticeshipApproval;
 
 public class ProcessApprenticeshipApprovalCommandHandler(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsApiClient)
