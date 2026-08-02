@@ -62,6 +62,7 @@ public class RolloverController : BaseController
     }
 
     [HttpPost("/api/rollover/validaterolloverextension")]
+    [Consumes("multipart/form-data")]
     [ProducesResponseType(typeof(ValidateRolloverExtensionCommandResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
