@@ -4,11 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 namespace SFA.DAS.Aodp.InnerApi.AodpApi.Rollover;
 
 [ExcludeFromCodeCoverage]
-public class ValidateRolloverExtensionApiRequest : IPostMultipartFormDataApiRequest
+public class ValidateRolloverExtensionApiRequest : IPostMultipartJsonFileApiRequest
 {
     public string PostUrl => "api/rollover/validaterolloverextension";
 
     public object Data { get; set; }
-
-    public IEnumerable<KeyValuePair<string, string>> FormData => MultipartFormDataMapper.Map(Data);
 }

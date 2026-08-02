@@ -23,7 +23,7 @@ namespace SFA.DAS.AODP.Application.Commands.Rollover
 
             try
             {
-                var result = await _apiClient.PostWithResponseCodeAsMultipart<SubmitRolloverExtensionCommandResponse>(new SubmitRolloverExtensionApiRequest()
+                var result = await _apiClient.PostWithResponseCodeAsJsonFile<SubmitRolloverExtensionCommandResponse>(new SubmitRolloverExtensionApiRequest()
                 {
                     Data = request
                 }, cancellationToken);

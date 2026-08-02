@@ -15,6 +15,9 @@ public interface IAodpApiClient<T> : IInternalApiClient<T>
     Task<ApiResponse<TResponse>> PostWithResponseCodeAsMultipart<TResponse>(
         IPostMultipartFormDataApiRequest request,
         CancellationToken cancellationToken = default);
+    Task<ApiResponse<TResponse>> PostWithResponseCodeAsJsonFile<TResponse>(
+        IPostMultipartJsonFileApiRequest request,
+        CancellationToken cancellationToken = default);
 }
 
 public class AodpApiClient : IAodpApiClient<AodpApiConfiguration>
@@ -112,6 +115,45 @@ public class AodpApiClient : IAodpApiClient<AodpApiConfiguration>
         {
             multipartContent.Add(new StringContent(field.Value, Encoding.UTF8), field.Key);
         }
+
+        using var requestMessage = new HttpRequestMessage(HttpMethod.Post, request.PostUrl)
+        {
+            Content = multipartContent
+        };
+        requestMessage.Headers.Add("X-Version", "1.0");
+
+        if (!string.IsNullOrWhiteSpace(_configuration.Identifier))
+        {
+            var accessToken = await _azureClientCredentialHelper
+                .GetAccessTokenAsync(_configuration.Identifier);
+            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        }
+
+        var client = _httpClientFactory.CreateClient();
+        client.BaseAddress = new Uri(_configuration.Url);
+
+        using var response = await client.SendAsync(requestMessage, cancellationToken);
+        var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+        var body = string.IsNullOrWhiteSpace(responseContent)
+            ? default
+            : JsonSerializer.Deserialize<TResponse>(responseContent, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+        return new ApiResponse<TResponse>(body!, response.StatusCode, responseContent);
+    }
+
+    public async Task<ApiResponse<TResponse>> PostWithResponseCodeAsJsonFile<TResponse>(
+        IPostMultipartJsonFileApiRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        using var multipartContent = new MultipartFormDataContent();
+        var jsonContent = new StringContent(
+            JsonSerializer.Serialize(request.Data),
+            Encoding.UTF8,
+            "application/json");
+        multipartContent.Add(jsonContent, "payload", "payload.json");
 
         using var requestMessage = new HttpRequestMessage(HttpMethod.Post, request.PostUrl)
         {

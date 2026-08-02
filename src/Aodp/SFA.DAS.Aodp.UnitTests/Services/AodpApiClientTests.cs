@@ -61,10 +61,43 @@ public class AodpApiClientTests
         });
     }
 
+    [Test]
+    public async Task PostWithResponseCodeAsJsonFile_WhenRequestIsProvided_SendsOneJsonFile()
+    {
+        // Arrange
+        var messageHandler = new RecordingMessageHandler();
+        var httpClientFactory = new Mock<IHttpClientFactory>();
+        httpClientFactory.Setup(factory => factory.CreateClient(string.Empty))
+            .Returns(new HttpClient(messageHandler));
+        var sut = new AodpApiClient(
+            Mock.Of<IInternalApiClient<AodpApiConfiguration>>(),
+            httpClientFactory.Object,
+            new AodpApiConfiguration { Url = "https://inner-api.test/" },
+            Mock.Of<IAzureClientCredentialHelper>());
+        var request = new TestJsonFileRequest(
+            "api/rollover/submitrolloverextension",
+            new { Items = new[] { new { Qan = "12345678" } } });
+
+        // Act
+        await sut.PostWithResponseCodeAsJsonFile<TestResponse>(request);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(messageHandler.ContentType, Does.StartWith("multipart/form-data"));
+            Assert.That(messageHandler.Body, Does.Contain("name=payload; filename=payload.json"));
+            Assert.That(messageHandler.Body, Does.Contain("Content-Type: application/json"));
+            Assert.That(messageHandler.Body, Does.Contain("\"Qan\":\"12345678\""));
+        });
+    }
+
     private sealed record TestMultipartRequest(
         string PostUrl,
         IEnumerable<KeyValuePair<string, string>> FormData)
         : IPostMultipartFormDataApiRequest;
+
+    private sealed record TestJsonFileRequest(string PostUrl, object Data)
+        : IPostMultipartJsonFileApiRequest;
 
     private sealed class TestResponse
     {

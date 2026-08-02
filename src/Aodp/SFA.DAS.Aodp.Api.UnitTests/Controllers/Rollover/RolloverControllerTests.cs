@@ -10,6 +10,8 @@ using SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification;
 using SFA.DAS.Aodp.Application.Commands.Rollover;
 using SFA.DAS.Aodp.Application.Queries.Rollover;
 using SFA.DAS.AODP.Application.Commands.Rollover;
+using System.Text;
+using System.Text.Json;
 
 namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Rollover;
 
@@ -372,7 +374,7 @@ public class RolloverControllerTests
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
 
         // Act
-        var result = await controller.ValidateRolloverExtension(command);
+        var result = await controller.ValidateRolloverExtension(CreateJsonFile(command), CancellationToken.None);
 
         // Assert
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
@@ -415,7 +417,7 @@ public class RolloverControllerTests
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
 
         // Act
-        var result = await controller.ValidateRolloverExtension(command);
+        var result = await controller.ValidateRolloverExtension(CreateJsonFile(command), CancellationToken.None);
 
         // Assert
         const int expectedStatus = StatusCodes.Status500InternalServerError;
@@ -457,11 +459,11 @@ public class RolloverControllerTests
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
 
         // Act
-        await controller.ValidateRolloverExtension(command);
+        await controller.ValidateRolloverExtension(CreateJsonFile(command), CancellationToken.None);
 
         // Assert
         Assert.That(captured, Is.Not.Null);
-        Assert.That(captured, Is.EqualTo(command));
+        Assert.That(captured!.RolloverCandidates.Single().Qan, Is.EqualTo(command.RolloverCandidates.Single().Qan));
     }
 
     [Test]
@@ -500,7 +502,7 @@ public class RolloverControllerTests
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
 
         // Act
-        var result = await controller.SubmitRolloverExtension(command);
+        var result = await controller.SubmitRolloverExtension(CreateJsonFile(command), CancellationToken.None);
 
         // Assert
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
@@ -548,7 +550,7 @@ public class RolloverControllerTests
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
 
         // Act
-        var result = await controller.SubmitRolloverExtension(command);
+        var result = await controller.SubmitRolloverExtension(CreateJsonFile(command), CancellationToken.None);
 
         // Assert
         const int expectedStatus = StatusCodes.Status500InternalServerError;
@@ -596,11 +598,11 @@ public class RolloverControllerTests
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
 
         // Act
-        await controller.SubmitRolloverExtension(command);
+        await controller.SubmitRolloverExtension(CreateJsonFile(command), CancellationToken.None);
 
         // Assert
         Assert.That(captured, Is.Not.Null);
-        Assert.That(captured, Is.EqualTo(command));
+        Assert.That(captured!.Items.Single().Qan, Is.EqualTo(command.Items.Single().Qan));
     }
 
     [Test]
@@ -990,6 +992,16 @@ public class RolloverControllerTests
         Assert.That(result, Is.InstanceOf<StatusCodeResult>());
         var status = (StatusCodeResult)result;
         Assert.That(status.StatusCode, Is.EqualTo(500));
+    }
+
+    private static IFormFile CreateJsonFile<T>(T value)
+    {
+        var stream = new MemoryStream(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(value)));
+        return new FormFile(stream, 0, stream.Length, "payload", "payload.json")
+        {
+            Headers = new HeaderDictionary(),
+            ContentType = "application/json"
+        };
     }
 
 }
