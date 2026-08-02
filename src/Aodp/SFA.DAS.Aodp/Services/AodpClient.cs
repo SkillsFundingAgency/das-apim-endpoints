@@ -148,7 +148,7 @@ public class AodpApiClient : IAodpApiClient<AodpApiConfiguration>
         IPostMultipartJsonFileApiRequest request,
         CancellationToken cancellationToken = default)
     {
-        using var multipartContent = new MultipartFormDataContent();
+        using var multipartContent = CreateWafCompatibleMultipartContent();
         var jsonContent = new StringContent(
             JsonSerializer.Serialize(request.Data),
             Encoding.UTF8,
@@ -181,6 +181,21 @@ public class AodpApiClient : IAodpApiClient<AodpApiConfiguration>
             });
 
         return new ApiResponse<TResponse>(body!, response.StatusCode, responseContent);
+    }
+
+    private static MultipartFormDataContent CreateWafCompatibleMultipartContent()
+    {
+        var boundary = $"---------------------------{Guid.NewGuid():N}";
+        var content = new MultipartFormDataContent(boundary);
+        var boundaryParameter = content.Headers.ContentType?.Parameters
+            .Single(parameter => string.Equals(parameter.Name, "boundary", StringComparison.OrdinalIgnoreCase));
+
+        if (boundaryParameter is not null)
+        {
+            boundaryParameter.Value = boundary;
+        }
+
+        return content;
     }
 
     public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)

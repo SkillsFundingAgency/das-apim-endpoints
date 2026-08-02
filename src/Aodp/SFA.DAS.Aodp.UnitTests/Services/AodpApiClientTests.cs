@@ -85,6 +85,7 @@ public class AodpApiClientTests
         Assert.Multiple(() =>
         {
             Assert.That(messageHandler.ContentType, Does.StartWith("multipart/form-data"));
+            Assert.That(messageHandler.ContentType, Does.Not.Contain("\""));
             Assert.That(messageHandler.Body, Does.Contain("name=payload; filename=payload.json"));
             Assert.That(messageHandler.Body, Does.Contain("Content-Type: application/json"));
             Assert.That(messageHandler.Body, Does.Contain("\"Qan\":\"12345678\""));
