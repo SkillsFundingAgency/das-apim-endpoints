@@ -202,5 +202,7 @@
                 "[variables('resourceGroupName')]"
             ]
         }
-    ]
+    ],
+    "outputs": {
+    }
 }
