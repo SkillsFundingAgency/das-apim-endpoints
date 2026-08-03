@@ -130,7 +130,7 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2022-09-01",
-            "name": "[concat( parameters('serviceAppServicePlanSuffixes')[copyIndex('serviceAppServicePlanNames')], '-', parameters('utcValue'))]",
+            "name": "[concat(parameters('serviceAppServicePlanSuffixes')[copyIndex('serviceAppServicePlanNames')], '-', parameters('utcValue'))]",
             "resourceGroup": "[variables('resourceGroupName')]",
             "copy": {
                 "name": "serviceAppServicePlanNames",
@@ -160,7 +160,7 @@
         },
         {
             "apiVersion": "2022-09-01",
-            "name": "[concat(copyIndex('serviceSubnetLoop'), '-', parameters('utcValue'))]",
+            "name": "[concat(parameters('serviceSubnetNames')[copyIndex('serviceSubnetNames')], '-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "copy": {
