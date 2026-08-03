@@ -815,7 +815,7 @@ public class RolloverControllerTests
     }
 
     [Test]
-    public async Task GetQualificationVersionsForRolloverQueryBuilder_WhenFormFiltersAreProvided_ShouldSendCompleteQuery()
+    public async Task GetQualificationVersionsForRolloverQueryBuilder_WhenJsonFileIsProvided_ShouldSendCompleteQuery()
     {
         // Arrange
         var filters = new RolloverQueryBuilderRequest
@@ -830,22 +830,49 @@ public class RolloverControllerTests
             Success = true,
             Value = new GetQualificationVersionsForRolloverQueryBuilderQueryResponse()
         };
+        GetQualificationVersionsForRolloverQueryBuilderQuery? capturedQuery = null;
 
         _mockMediator
             .Setup(m => m.Send(
-                It.Is<GetQualificationVersionsForRolloverQueryBuilderQuery>(query => query.Filters == filters),
+                It.IsAny<GetQualificationVersionsForRolloverQueryBuilderQuery>(),
                 CancellationToken.None))
+            .Callback<IRequest<BaseMediatrResponse<GetQualificationVersionsForRolloverQueryBuilderQueryResponse>>, CancellationToken>(
+                (query, _) => capturedQuery = query as GetQualificationVersionsForRolloverQueryBuilderQuery)
             .ReturnsAsync(response);
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
 
         // Act
-        var result = await controller.GetQualificationVersionsForRolloverQueryBuilder(filters);
+        var result = await controller.GetQualificationVersionsForRolloverQueryBuilder(
+            CreateJsonFile(filters),
+            CancellationToken.None);
 
         // Assert
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
-        _mockMediator.Verify(m => m.Send(
-            It.Is<GetQualificationVersionsForRolloverQueryBuilderQuery>(query => query.Filters == filters),
-            CancellationToken.None), Times.Once);
+        Assert.That(capturedQuery, Is.Not.Null);
+        Assert.That(capturedQuery!.Filters.LevelIds, Is.EqualTo(filters.LevelIds));
+        Assert.That(capturedQuery.Filters.TypeIds, Is.EqualTo(filters.TypeIds));
+        Assert.That(capturedQuery.Filters.SectorSubjectAreaIds, Is.EqualTo(filters.SectorSubjectAreaIds));
+        Assert.That(capturedQuery.Filters.AwardingOrganisationIds, Is.EqualTo(filters.AwardingOrganisationIds));
+    }
+
+    [Test]
+    public async Task GetQualificationVersionsForRolloverQueryBuilder_WhenJsonFileIsInvalid_ShouldReturnBadRequest()
+    {
+        // Arrange
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var result = await controller.GetQualificationVersionsForRolloverQueryBuilder(
+            CreateJsonFile("invalid"),
+            CancellationToken.None);
+
+        // Assert
+        Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
+        _mockMediator.Verify(
+            mediator => mediator.Send(
+                It.IsAny<GetQualificationVersionsForRolloverQueryBuilderQuery>(),
+                It.IsAny<CancellationToken>()),
+            Times.Never);
     }
 
     [Test]

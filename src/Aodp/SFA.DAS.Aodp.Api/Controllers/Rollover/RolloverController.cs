@@ -102,10 +102,16 @@ public class RolloverController : BaseController
     [HttpPost("/api/rollover/querybuilder/qualificationversions")]
     [Consumes("multipart/form-data")]
     [ProducesResponseType(typeof(GetQualificationVersionsForRolloverQueryBuilderQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetQualificationVersionsForRolloverQueryBuilder([FromForm] RolloverQueryBuilderRequest filters)
+    public async Task<IActionResult> GetQualificationVersionsForRolloverQueryBuilder(
+        IFormFile payload,
+        CancellationToken cancellationToken)
     {
-        return await SendRequestAsync(new GetQualificationVersionsForRolloverQueryBuilderQuery(filters));
+        var filters = await ReadCommand<RolloverQueryBuilderRequest>(payload, cancellationToken);
+        return filters is null
+            ? BadRequest("The JSON payload is missing or invalid.")
+            : await SendRequestAsync(new GetQualificationVersionsForRolloverQueryBuilderQuery(filters));
     }
 
     [HttpGet("/api/rollover/querybuilder/levels")]
