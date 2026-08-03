@@ -268,6 +268,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             changes.Contains(ShortCourseUpdateChanges.CompletionDate) ||
             changes.Contains(ShortCourseUpdateChanges.Reinstated) ||
             changes.Contains(ShortCourseUpdateChanges.StartDate) ||
-            changes.Contains(ShortCourseUpdateChanges.ExpectedEndDate);
+            changes.Contains(ShortCourseUpdateChanges.ExpectedEndDate) ||
+            changes.Contains(ShortCourseUpdateChanges.ForceEarningsSync);
     }
 }
