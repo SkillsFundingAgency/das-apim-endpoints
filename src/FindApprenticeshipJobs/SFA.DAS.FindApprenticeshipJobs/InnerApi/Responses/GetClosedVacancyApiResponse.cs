@@ -1,2 +1,0 @@
-namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
-public record GetClosedVacancyApiResponse;

@@ -1,9 +1,0 @@
-using SFA.DAS.Apim.Shared.Interfaces;
-
-namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
-{
-    public class GetLevelsListRequest : IGetApiRequest
-    {
-        public string GetUrl => "api/courses/levels";
-    }
-}

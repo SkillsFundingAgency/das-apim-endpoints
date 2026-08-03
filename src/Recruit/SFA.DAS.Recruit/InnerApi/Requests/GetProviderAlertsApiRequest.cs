@@ -1,8 +1,0 @@
-﻿using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
-
-namespace SFA.DAS.Recruit.InnerApi.Requests;
-public record GetProviderAlertsApiRequest(int Ukprn, string UserId) : IGetApiRequest
-{
-    public string GetUrl => $"api/provider/{Ukprn}/alerts?userId={UserId}";
-}

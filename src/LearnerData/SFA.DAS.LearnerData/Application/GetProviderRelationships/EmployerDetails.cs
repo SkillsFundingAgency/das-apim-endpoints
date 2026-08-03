@@ -1,8 +1,0 @@
-﻿namespace SFA.DAS.LearnerData.Application.GetProviderRelationships;
-
-public class EmployerDetails
-{
-    public string AgreementId { get; set; }
-    public bool IsLevy { get; set; }
-    public bool IsFlexiEmployer { get; set; }
-}

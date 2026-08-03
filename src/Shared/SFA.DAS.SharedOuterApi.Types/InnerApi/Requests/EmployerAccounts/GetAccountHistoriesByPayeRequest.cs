@@ -1,8 +1,0 @@
-﻿using SFA.DAS.Apim.Shared.Interfaces;
-
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerAccounts;
-
-public record GetAccountHistoriesByPayeRequest(string PayeRef) : IGetApiRequest
-{
-    public string GetUrl => $"api/accounthistories?payeref={PayeRef}";
-}
