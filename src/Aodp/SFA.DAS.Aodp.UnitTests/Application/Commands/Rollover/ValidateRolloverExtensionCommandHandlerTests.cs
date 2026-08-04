@@ -3,9 +3,9 @@ using AutoFixture.AutoMoq;
 using Moq;
 using SFA.DAS.Aodp.Application.Commands.Rollover;
 using SFA.DAS.Aodp.Configuration;
+using SFA.DAS.Aodp.InnerApi;
 using SFA.DAS.Aodp.InnerApi.AodpApi.Rollover;
 using SFA.DAS.Aodp.Services;
-using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using System.Net;
 
@@ -49,8 +49,8 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Rollover
                string.Empty);
 
             _apiClientMock
-                .Setup(c => c.PostWithResponseCode<ValidateRolloverExtensionCommandResponse>(
-                    It.IsAny<ValidateRolloverExtensionApiRequest>(), true))
+                .Setup(c => c.PostWithResponseCodeAsJsonFile<ValidateRolloverExtensionCommandResponse>(
+                    It.IsAny<ValidateRolloverExtensionApiRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(apiResponse);
 
 
@@ -58,8 +58,8 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Rollover
             var result = await _handler.Handle(command, CancellationToken.None);
 
             _apiClientMock.Verify(c =>
-                c.PostWithResponseCode<ValidateRolloverExtensionCommandResponse>(
-                    It.IsAny<ValidateRolloverExtensionApiRequest>(), true),
+                c.PostWithResponseCodeAsJsonFile<ValidateRolloverExtensionCommandResponse>(
+                    It.IsAny<ValidateRolloverExtensionApiRequest>(), It.IsAny<CancellationToken>()),
                 Times.Once);
 
             // Assert
@@ -85,8 +85,8 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Rollover
             var command = _fixture.Create<ValidateRolloverExtensionCommand>();
 
             _apiClientMock
-                .Setup(x => x.PostWithResponseCode<ValidateRolloverExtensionCommandResponse>(
-                    It.IsAny<ValidateRolloverExtensionApiRequest>()))
+                .Setup(x => x.PostWithResponseCodeAsJsonFile<ValidateRolloverExtensionCommandResponse>(
+                    It.IsAny<ValidateRolloverExtensionApiRequest>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception("API failure"));
 
             // Act
@@ -97,8 +97,8 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Rollover
             Assert.That(result.ErrorMessage, Is.EqualTo("API failure"));
 
             _apiClientMock.Verify(x =>
-                x.PostWithResponseCode<ValidateRolloverExtensionCommandResponse>(
-                    It.IsAny<ValidateRolloverExtensionApiRequest>()),
+                x.PostWithResponseCodeAsJsonFile<ValidateRolloverExtensionCommandResponse>(
+                    It.IsAny<ValidateRolloverExtensionApiRequest>(), It.IsAny<CancellationToken>()),
                 Times.Once);
         }
 
@@ -111,9 +111,9 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Rollover
             ValidateRolloverExtensionApiRequest? capturedRequest = null;
 
             _apiClientMock
-                .Setup(x => x.PostWithResponseCode<ValidateRolloverExtensionCommandResponse>(
-                    It.IsAny<IPostApiRequest>(), true))
-                .Callback<IPostApiRequest, bool>((req, _) =>
+                .Setup(x => x.PostWithResponseCodeAsJsonFile<ValidateRolloverExtensionCommandResponse>(
+                    It.IsAny<IPostMultipartJsonFileApiRequest>(), It.IsAny<CancellationToken>()))
+                .Callback<IPostMultipartJsonFileApiRequest, CancellationToken>((req, _) =>
                 {
                     capturedRequest = req as ValidateRolloverExtensionApiRequest;
                 })

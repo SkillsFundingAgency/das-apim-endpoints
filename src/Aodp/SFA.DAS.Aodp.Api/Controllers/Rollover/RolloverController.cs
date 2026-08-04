@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 using SFA.DAS.Aodp.Application.Commands.Rollover;
 using SFA.DAS.Aodp.Application.Queries.Rollover;
 using SFA.DAS.AODP.Application.Commands.Rollover;
@@ -61,19 +62,33 @@ public class RolloverController : BaseController
     }
 
     [HttpPost("/api/rollover/validaterolloverextension")]
+    [Consumes("multipart/form-data")]
     [ProducesResponseType(typeof(ValidateRolloverExtensionCommandResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> ValidateRolloverExtension(ValidateRolloverExtensionCommand validateFundingExtensionCandidatesCommand)
+    public async Task<IActionResult> ValidateRolloverExtension(
+        IFormFile payload,
+        CancellationToken cancellationToken)
     {
-        return await SendRequestAsync(validateFundingExtensionCandidatesCommand);
+        var command = await ReadCommand<ValidateRolloverExtensionCommand>(payload, cancellationToken);
+        return command is null
+            ? BadRequest("The JSON payload is missing or invalid.")
+            : await SendRequestAsync(command);
     }
 
     [HttpPost("/api/rollover/submitrolloverextension")]
+    [Consumes("multipart/form-data")]
     [ProducesResponseType(typeof(SubmitRolloverExtensionCommandResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> SubmitRolloverExtension(SubmitRolloverExtensionCommand submitRolloverExtensionCommand)
+    public async Task<IActionResult> SubmitRolloverExtension(
+        IFormFile payload,
+        CancellationToken cancellationToken)
     {
-        return await SendRequestAsync(submitRolloverExtensionCommand);
+        var command = await ReadCommand<SubmitRolloverExtensionCommand>(payload, cancellationToken);
+        return command is null
+            ? BadRequest("The JSON payload is missing or invalid.")
+            : await SendRequestAsync(command);
     }
 
     [HttpPost("/api/rollover/removepreviousworkflowcandidates")]
@@ -85,11 +100,18 @@ public class RolloverController : BaseController
     }
 
     [HttpPost("/api/rollover/querybuilder/qualificationversions")]
+    [Consumes("multipart/form-data")]
     [ProducesResponseType(typeof(GetQualificationVersionsForRolloverQueryBuilderQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetQualificationVersionsForRolloverQueryBuilder([FromBody] RolloverQueryBuilderRequest filters)
+    public async Task<IActionResult> GetQualificationVersionsForRolloverQueryBuilder(
+        IFormFile payload,
+        CancellationToken cancellationToken)
     {
-        return await SendRequestAsync(new GetQualificationVersionsForRolloverQueryBuilderQuery(filters));
+        var filters = await ReadCommand<RolloverQueryBuilderRequest>(payload, cancellationToken);
+        return filters is null
+            ? BadRequest("The JSON payload is missing or invalid.")
+            : await SendRequestAsync(new GetQualificationVersionsForRolloverQueryBuilderQuery(filters));
     }
 
     [HttpGet("/api/rollover/querybuilder/levels")]
@@ -123,6 +145,30 @@ public class RolloverController : BaseController
         [FromBody] RolloverQueryBuilderAwardingOrganisationsRequest filters)
     {
         return await SendRequestAsync(new GetAwardingOrganisationsForRolloverQueryBuilderQuery(filters));
+    }
+    private static async Task<TCommand?> ReadCommand<TCommand>(
+        IFormFile payload,
+        CancellationToken cancellationToken)
+    {
+        if (payload is null ||
+            payload.Length == 0 ||
+            !payload.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase))
+        {
+            return default;
+        }
+
+        try
+        {
+            await using var stream = payload.OpenReadStream();
+            return await JsonSerializer.DeserializeAsync<TCommand>(stream, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            }, cancellationToken);
+        }
+        catch (JsonException)
+        {
+            return default;
+        }
     }
 
     [HttpGet("/api/rollover/startsummary")]
