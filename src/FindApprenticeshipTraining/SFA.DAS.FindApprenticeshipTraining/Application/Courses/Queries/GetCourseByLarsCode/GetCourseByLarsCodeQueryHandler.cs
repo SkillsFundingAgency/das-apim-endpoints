@@ -23,7 +23,7 @@ public sealed class GetCourseByLarsCodeQueryHandler(
 
     public async Task<GetCourseByLarsCodeQueryResult> Handle(GetCourseByLarsCodeQuery query, CancellationToken cancellationToken)
     {
-        LocationItem locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(query.Location);
+        LocationItem locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(query.LocationName);
 
         var courseTrainingProvidersCountResponse =
             await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
