@@ -10,6 +10,8 @@ using SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification;
 using SFA.DAS.Aodp.Application.Commands.Rollover;
 using SFA.DAS.Aodp.Application.Queries.Rollover;
 using SFA.DAS.AODP.Application.Commands.Rollover;
+using System.Text;
+using System.Text.Json;
 
 namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Rollover;
 
@@ -372,7 +374,7 @@ public class RolloverControllerTests
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
 
         // Act
-        var result = await controller.ValidateRolloverExtension(command);
+        var result = await controller.ValidateRolloverExtension(CreateJsonFile(command), CancellationToken.None);
 
         // Assert
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
@@ -415,7 +417,7 @@ public class RolloverControllerTests
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
 
         // Act
-        var result = await controller.ValidateRolloverExtension(command);
+        var result = await controller.ValidateRolloverExtension(CreateJsonFile(command), CancellationToken.None);
 
         // Assert
         const int expectedStatus = StatusCodes.Status500InternalServerError;
@@ -457,11 +459,11 @@ public class RolloverControllerTests
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
 
         // Act
-        await controller.ValidateRolloverExtension(command);
+        await controller.ValidateRolloverExtension(CreateJsonFile(command), CancellationToken.None);
 
         // Assert
         Assert.That(captured, Is.Not.Null);
-        Assert.That(captured, Is.EqualTo(command));
+        Assert.That(captured!.RolloverCandidates.Single().Qan, Is.EqualTo(command.RolloverCandidates.Single().Qan));
     }
 
     [Test]
@@ -500,7 +502,7 @@ public class RolloverControllerTests
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
 
         // Act
-        var result = await controller.SubmitRolloverExtension(command);
+        var result = await controller.SubmitRolloverExtension(CreateJsonFile(command), CancellationToken.None);
 
         // Assert
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
@@ -548,7 +550,7 @@ public class RolloverControllerTests
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
 
         // Act
-        var result = await controller.SubmitRolloverExtension(command);
+        var result = await controller.SubmitRolloverExtension(CreateJsonFile(command), CancellationToken.None);
 
         // Assert
         const int expectedStatus = StatusCodes.Status500InternalServerError;
@@ -596,11 +598,11 @@ public class RolloverControllerTests
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
 
         // Act
-        await controller.SubmitRolloverExtension(command);
+        await controller.SubmitRolloverExtension(CreateJsonFile(command), CancellationToken.None);
 
         // Assert
         Assert.That(captured, Is.Not.Null);
-        Assert.That(captured, Is.EqualTo(command));
+        Assert.That(captured!.Items.Single().Qan, Is.EqualTo(command.Items.Single().Qan));
     }
 
     [Test]
@@ -813,6 +815,67 @@ public class RolloverControllerTests
     }
 
     [Test]
+    public async Task GetQualificationVersionsForRolloverQueryBuilder_WhenJsonFileIsProvided_ShouldSendCompleteQuery()
+    {
+        // Arrange
+        var filters = new RolloverQueryBuilderRequest
+        {
+            LevelIds = new List<int> { 1, 2 },
+            TypeIds = new List<int> { 3, 4 },
+            SectorSubjectAreaIds = new List<string> { "01", "02" },
+            AwardingOrganisationIds = new List<string> { "AO1", "AO2" }
+        };
+        var response = new BaseMediatrResponse<GetQualificationVersionsForRolloverQueryBuilderQueryResponse>
+        {
+            Success = true,
+            Value = new GetQualificationVersionsForRolloverQueryBuilderQueryResponse()
+        };
+        GetQualificationVersionsForRolloverQueryBuilderQuery? capturedQuery = null;
+
+        _mockMediator
+            .Setup(m => m.Send(
+                It.IsAny<GetQualificationVersionsForRolloverQueryBuilderQuery>(),
+                CancellationToken.None))
+            .Callback<IRequest<BaseMediatrResponse<GetQualificationVersionsForRolloverQueryBuilderQueryResponse>>, CancellationToken>(
+                (query, _) => capturedQuery = query as GetQualificationVersionsForRolloverQueryBuilderQuery)
+            .ReturnsAsync(response);
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var result = await controller.GetQualificationVersionsForRolloverQueryBuilder(
+            CreateJsonFile(filters),
+            CancellationToken.None);
+
+        // Assert
+        Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        Assert.That(capturedQuery, Is.Not.Null);
+        Assert.That(capturedQuery!.Filters.LevelIds, Is.EqualTo(filters.LevelIds));
+        Assert.That(capturedQuery.Filters.TypeIds, Is.EqualTo(filters.TypeIds));
+        Assert.That(capturedQuery.Filters.SectorSubjectAreaIds, Is.EqualTo(filters.SectorSubjectAreaIds));
+        Assert.That(capturedQuery.Filters.AwardingOrganisationIds, Is.EqualTo(filters.AwardingOrganisationIds));
+    }
+
+    [Test]
+    public async Task GetQualificationVersionsForRolloverQueryBuilder_WhenJsonFileIsInvalid_ShouldReturnBadRequest()
+    {
+        // Arrange
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var result = await controller.GetQualificationVersionsForRolloverQueryBuilder(
+            CreateJsonFile("invalid"),
+            CancellationToken.None);
+
+        // Assert
+        Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
+        _mockMediator.Verify(
+            mediator => mediator.Send(
+                It.IsAny<GetQualificationVersionsForRolloverQueryBuilderQuery>(),
+                It.IsAny<CancellationToken>()),
+            Times.Never);
+    }
+
+    [Test]
     public async Task GetTypesForRolloverQueryBuilder_WhenMediatorReturnsFailure_ShouldReturn500()
     {
         // Arrange
@@ -956,6 +1019,16 @@ public class RolloverControllerTests
         Assert.That(result, Is.InstanceOf<StatusCodeResult>());
         var status = (StatusCodeResult)result;
         Assert.That(status.StatusCode, Is.EqualTo(500));
+    }
+
+    private static IFormFile CreateJsonFile<T>(T value)
+    {
+        var stream = new MemoryStream(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(value)));
+        return new FormFile(stream, 0, stream.Length, "payload", "payload.json")
+        {
+            Headers = new HeaderDictionary(),
+            ContentType = "application/json"
+        };
     }
 
 }
