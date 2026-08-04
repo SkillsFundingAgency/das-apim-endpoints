@@ -4,5 +4,5 @@ public class ProviderModel
 {
     public int Ukprn { get; set; }
     public string ProviderName { get; set; } = string.Empty;
-    public DateTime? DateLastStarts { get; set; }
+    public DateTime? LastDateStarts { get; set; }
 }
