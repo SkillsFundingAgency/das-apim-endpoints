@@ -1,14 +1,11 @@
 using AutoFixture;
 using Microsoft.Extensions.Logging;
-using NServiceBus;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Application.RemoveShortCourse;
 using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Application.Requests.Learning;
-using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
-using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Net;
@@ -23,9 +20,7 @@ public class WhenHandlingRemoveShortCourseCommand
     private Mock<ILearningApiClient<LearningApiConfiguration>> _learningApiClient;
     private Mock<IEarningsApiClient<EarningsApiConfiguration>> _earningsApiClient;
     private Mock<ILogger<RemoveShortCourseCommandHandler>> _logger;
-    private Mock<IMessageSession> _messageSession;
     private RemoveShortCourseCommandHandler _sut;
-    private PaymentsConfiguration _configuration;
     private string _learnerRef;
 #pragma warning restore CS8618
 
@@ -35,12 +30,9 @@ public class WhenHandlingRemoveShortCourseCommand
         _learningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _earningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
         _logger = new Mock<ILogger<RemoveShortCourseCommandHandler>>();
-        _configuration = new PaymentsConfiguration { PaymentsEndpoint = "destination" };
-
-        _messageSession = new Mock<IMessageSession>();
 
         _sut = new RemoveShortCourseCommandHandler(
-            _logger.Object, _learningApiClient.Object, _earningsApiClient.Object, _messageSession.Object, _configuration);
+            _logger.Object, _learningApiClient.Object, _earningsApiClient.Object);
 
         _learnerRef = "someLearnerRef";
     }

@@ -4,7 +4,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.AdminRoatp.Api.Controllers;
-using SFA.DAS.AdminRoatp.Application.Queries.GetAllowedProviders;
+using SFA.DAS.AdminRoatp.Application.Queries.GetProvidersAllowedToDeliverCourse;
+using SFA.DAS.AdminRoatp.Application.Queries.GetProvidersNotAllowedToDeliverCourse;
 using SFA.DAS.AdminRoatp.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -16,11 +17,11 @@ public class CourseControllerGetTests
     public async Task WhenGetAllowedProvidersByCourseIsInvoked_ThenReturnsOkResult(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] CourseController sut,
-        GetAllowedProvidersResponse expected,
-        GetAllowedProvidersQuery query)
+        RestrictedCourseDetailsModel expected,
+        GetProvidersAllowedToDeliverCourseQuery query)
     {
         // Arrange
-        mediatorMock.Setup(m => m.Send(It.IsAny<GetAllowedProvidersQuery>(), It.IsAny<CancellationToken>()))
+        mediatorMock.Setup(m => m.Send(It.IsAny<GetProvidersAllowedToDeliverCourseQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(expected);
 
         // Act
@@ -28,5 +29,57 @@ public class CourseControllerGetTests
 
         // Assert
         result.As<OkObjectResult>().Value.Should().Be(expected);
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenGetAllowedProvidersByCourseIsInvoked_AndResultIsNull_ThenReturnsNotFoundResult(
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] CourseController sut,
+        GetProvidersAllowedToDeliverCourseQuery query)
+    {
+        // Arrange
+        mediatorMock.Setup(m => m.Send(It.IsAny<GetProvidersAllowedToDeliverCourseQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(() => null!);
+
+        // Act
+        var result = await sut.GetAllowedProvidersByCourse(query.larsCode);
+
+        // Assert
+        result.Should().BeOfType<NotFoundResult>();
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenGetProvidersNotAllowedByCourseIsInvoked_ThenReturnsOkResult(
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] CourseController sut,
+        RestrictedCourseDetailsModel expected,
+        GetProvidersNotAllowedToDeliverCourseQuery query)
+    {
+        // Arrange
+        mediatorMock.Setup(m => m.Send(It.IsAny<GetProvidersNotAllowedToDeliverCourseQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expected);
+
+        // Act
+        var result = await sut.GetProvidersNotAllowedByCourse(query.larsCode);
+
+        // Assert
+        result.As<OkObjectResult>().Value.Should().Be(expected);
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenGetProvidersNotAllowedByCourseIsInvoked_AndResultIsNull_ThenReturnsNotFoundResult(
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] CourseController sut,
+        GetProvidersNotAllowedToDeliverCourseQuery query)
+    {
+        // Arrange
+        mediatorMock.Setup(m => m.Send(It.IsAny<GetProvidersNotAllowedToDeliverCourseQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(() => null!);
+
+        // Act
+        var result = await sut.GetProvidersNotAllowedByCourse(query.larsCode);
+
+        // Assert
+        result.Should().BeOfType<NotFoundResult>();
     }
 }

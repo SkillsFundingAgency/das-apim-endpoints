@@ -60,17 +60,16 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
 
             if (identity.Identity != null && identity.DateOfBirth.HasValue)
             {
-                var familyNames = identity.Identity
-                    .Select(i => i.FamilyName)
-                    .Where(n => !string.IsNullOrWhiteSpace(n))
-                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                var names = identity.Identity
+                    .Where(n => !string.IsNullOrWhiteSpace(n.FamilyName))
+                    .DistinctBy(n => n.FamilyName)
                     .ToList();
 
-                foreach (var familyName in familyNames)
+                foreach (var name in names)
                 {
                     var searchResponse = await _assessorsApiClient
                         .GetWithResponseCode<GetCertificateSearchResponse>(
-                            new GetCertificateSearchRequest(identity.DateOfBirth.Value, familyName, excludedUlns));
+                            new GetCertificateSearchRequest(identity.DateOfBirth.Value, name.FamilyName, excludedUlns));
 
                     if (searchResponse == null || searchResponse.StatusCode == HttpStatusCode.NotFound)
                     {
@@ -81,7 +80,12 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
 
                     if (searchResponse.Body?.Matches != null)
                     {
-                        allMatches.AddRange(searchResponse.Body.Matches.Select(m => (CertificateMatchResult)m));
+                        allMatches.AddRange(searchResponse.Body.Matches.Select(m =>
+                        {
+                            var match = (CertificateMatchResult)m;
+                            match.UserIdentityId = name.UserIdentityId;
+                            return match;
+                        }));
                     }
                 }
             }

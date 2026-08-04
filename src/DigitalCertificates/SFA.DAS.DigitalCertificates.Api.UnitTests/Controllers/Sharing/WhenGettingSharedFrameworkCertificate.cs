@@ -46,7 +46,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
             [Greedy] SharingController controller)
         {
             // Arrange
-            GetSharedFrameworkCertificateQueryResult? expectedResponse = null;
+            GetSharedFrameworkCertificateQueryResult expectedResponse = null;
             mediator
                 .Setup(m => m.Send(It.IsAny<GetSharedFrameworkCertificateQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedResponse);

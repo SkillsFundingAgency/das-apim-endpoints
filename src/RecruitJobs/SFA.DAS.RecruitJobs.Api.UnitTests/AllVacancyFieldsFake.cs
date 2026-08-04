@@ -1,8 +1,20 @@
 using AutoFixture;
-using SFA.DAS.RecruitJobs.Domain;
 using System.Text.Json;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitJobs.GraphQL;
-using Address = SFA.DAS.RecruitJobs.Domain.Address;
+using ApplicationMethod = SFA.DAS.RecruitJobs.GraphQL.ApplicationMethod;
+using ApprenticeshipTypes = SFA.DAS.RecruitJobs.GraphQL.ApprenticeshipTypes;
+using ArchiveType = SFA.DAS.RecruitJobs.GraphQL.ArchiveType;
+using AvailableWhere = SFA.DAS.RecruitJobs.GraphQL.AvailableWhere;
+using ClosureReason = SFA.DAS.RecruitJobs.GraphQL.ClosureReason;
+using DurationUnit = SFA.DAS.RecruitJobs.GraphQL.DurationUnit;
+using EmployerNameOption = SFA.DAS.RecruitJobs.GraphQL.EmployerNameOption;
+using GeoCodeMethod = SFA.DAS.RecruitJobs.GraphQL.GeoCodeMethod;
+using OwnerType = SFA.DAS.RecruitJobs.GraphQL.OwnerType;
+using SourceOrigin = SFA.DAS.RecruitJobs.GraphQL.SourceOrigin;
+using SourceType = SFA.DAS.RecruitJobs.GraphQL.SourceType;
+using VacancyStatus = SFA.DAS.RecruitJobs.GraphQL.VacancyStatus;
+using WageType = SFA.DAS.RecruitJobs.GraphQL.WageType;
 
 
 namespace SFA.DAS.RecruitJobs.Api.UnitTests;

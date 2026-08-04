@@ -13,6 +13,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Responses
 
     public class IdentityName
     {
+        public Guid UserIdentityId { get; set; }
         public DateTime? ValidFrom { get; set; }
         public string FamilyName { get; set; }
         public string GivenNames { get; set; }

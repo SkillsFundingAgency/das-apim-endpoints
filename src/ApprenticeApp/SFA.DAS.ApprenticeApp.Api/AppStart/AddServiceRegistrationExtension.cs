@@ -8,6 +8,7 @@ using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts;
 using SFA.DAS.ApprenticeApp.Services;
 using SFA.DAS.ApprenticeApp.Validators;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Services;
@@ -35,8 +36,9 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
             services.AddTransient<ICourseService, CourseService>();
             services.AddTransient<SubscriptionService>();
             services.AddTransient<ContentService>();
-            services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
             services.AddTransient<IValidator<ApprenticePatchCommand>, ApprenticePatchCommandValidator>();
+            services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>(); 
+            services.AddTransient<ILearnerNotificationsInnerApiClient<LearnerNotificationsApiConfiguration>, LearnerNotificationsInnerApiClient>();
         }
     }
 }

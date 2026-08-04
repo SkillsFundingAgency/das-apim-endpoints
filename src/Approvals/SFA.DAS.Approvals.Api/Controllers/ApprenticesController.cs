@@ -7,13 +7,13 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models.Apprentices;
 using SFA.DAS.Approvals.Api.Models.Apprentices.ChangeEmployer;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.ChangeEmployer.Confirm;
+using SFA.DAS.Approvals.Application.Apprentices.Commands.ChangePayments;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.ConfirmEditApprenticeship;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.EditApprenticeship;
-using SFA.DAS.Approvals.Application.Apprentices.Commands.ChangePayments;
-using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetChangePayments;
 using SFA.DAS.Approvals.Application.Apprentices.Queries;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.ApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditApprenticeship;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetChangePayments;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetApprenticeship;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetEditApprenticeshipCourse;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
@@ -21,10 +21,10 @@ using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Apprentic
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.ConfirmEmployer;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Inform;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.SelectDeliveryModel;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprenticeships;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprenticeshipsCSV;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprenticeshipUpdates;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetSelectNewEmployer;
-using SFA.DAS.Approvals.Exceptions;
 using SFA.DAS.Approvals.Exceptions;
 
 namespace SFA.DAS.Approvals.Api.Controllers;
@@ -511,7 +511,6 @@ public class ApprenticesController(
         return await ConfirmEditApprenticeshipInternal(apprenticeshipId, null, accountId, request);
     }
 
-
     [HttpGet]
     [Route("/employer/{accountId}/apprentices/{apprenticeshipId}/payments")]
     public async Task<IActionResult> GetChangePaymentsEmployer(
@@ -609,25 +608,46 @@ public class ApprenticesController(
     }
 
     [HttpGet]
-    [Route("/provider/{providerId}/apprentices/{apprenticeshipId}")]
-    public async Task<IActionResult> GetApprenticeship(long apprenticeshipId)
+    [Route("/provider/{providerId}/apprentices")]
+    [Route("/employer/{accountId}/apprentices")]
+    public async Task<IActionResult> GetApprenticeships(long? providerId, long? accountId, [FromQuery] InnerApi.Requests.GetApprenticeshipsRequest request)
     {
         try
         {
-            var result = await mediator.Send(new GetApprenticeshipQuery { ApprenticeshipId = apprenticeshipId });
+            logger.LogInformation("GetApprenticeships starting for providerId {Id}", providerId);
 
-            if (result == null)
+            var query = new GetApprenticeshipsQuery
+            {
+                AccountId = accountId,
+                ProviderId = providerId,
+                PageNumber = request.PageNumber,
+                PageItemCount = request.PageItemCount,
+                SortField = request.SortField,
+                ReverseSort = request.ReverseSort,
+                SearchTerm = request.SearchTerm,
+                EmployerName = request.EmployerName,
+                CourseName = request.CourseName,
+                ProviderName = request.ProviderName,
+                Status = request.Status,
+                StartDate = request.StartDate,
+                EndDate = request.EndDate,
+                Alert = request.Alert,
+                ApprenticeConfirmationStatus = request.ApprenticeConfirmationStatus,
+                DeliveryModel = request.DeliveryModel
+            };
+
+            var apprenticesData = await mediator.Send(query);
+
+            if (apprenticesData == null)
             {
                 return NotFound();
             }
 
-            var response = mapper.Map<GetApprenticeshipResponse>(result);
-
-            return Ok(response);
+            return Ok(apprenticesData);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            logger.LogError(e, $"Error in GetApprenticeship {apprenticeshipId}");
+            logger.LogError(ex, "Error in GetApprenticeships for provider Id: {providerId}", providerId);
             return BadRequest();
         }
     }
@@ -674,6 +694,30 @@ public class ApprenticesController(
         catch (Exception e)
         {
             logger.LogError(e, $"Error confirming edit apprenticeship {apprenticeshipId}");
+            return BadRequest();
+        }
+    }
+
+    [HttpGet]
+    [Route("/provider/{providerId}/apprentices/{apprenticeshipId}")]
+    public async Task<IActionResult> GetApprenticeship(long apprenticeshipId)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetApprenticeshipQuery { ApprenticeshipId = apprenticeshipId });
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            var response = mapper.Map<GetApprenticeshipResponse>(result);
+
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, $"Error in GetApprenticeship {apprenticeshipId}");
             return BadRequest();
         }
     }
