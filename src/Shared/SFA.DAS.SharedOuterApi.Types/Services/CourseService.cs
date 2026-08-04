@@ -1,4 +1,4 @@
-
+using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
@@ -57,23 +57,38 @@ public class CourseService(ICoursesApiClient<CoursesApiConfiguration> coursesApi
         return apiCourses;
     }
 
-    public async Task<CourseLookupDetailResponse> GetCourseLookupDetailsById(string courseCode)
+    public async Task<CourseLookupResult> GetCourseLookupDetailsById(string courseCode)
     {
-        string cacheItemName = nameof(CourseLookupDetailResponse) + "_" + courseCode;
-        var response = await cacheStorageService.RetrieveFromCache<CourseLookupDetailResponse>(cacheItemName);
+        var cacheItemName = nameof(CourseLookupDetailResponse) + "_" + courseCode;
+        var cached = await cacheStorageService.RetrieveFromCache<CourseLookupDetailResponse>(cacheItemName);
 
-        if (response == null)
+        if (cached != null)
         {
-            response = await coursesApiClient.Get<CourseLookupDetailResponse>(new GetCourseLookupDetailsByIdRequest(courseCode));
-            await cacheStorageService.SaveToCache(cacheItemName, response, CourseCacheExpiryInHours);
+            return new CourseLookupResult(CourseLookupStatus.Found, cached);
         }
 
-        return response;
+        var response = await coursesApiClient.GetWithResponseCode<CourseLookupDetailResponse>(new GetCourseLookupDetailsByIdRequest(courseCode));
+
+        if (response.StatusCode.IsSuccessStatusCode())
+        {
+            // Only cache successful lookups - caching a not-found or transient-failure response
+            // would keep returning that failure for the cache lifetime even after it clears.
+            if (response.Body != null)
+            {
+                await cacheStorageService.SaveToCache(cacheItemName, response.Body, CourseCacheExpiryInHours);
+            }
+
+            return new CourseLookupResult(CourseLookupStatus.Found, response.Body);
+        }
+
+        return (int)response.StatusCode >= 500
+            ? new CourseLookupResult(CourseLookupStatus.Unavailable, null)
+            : new CourseLookupResult(CourseLookupStatus.NotFound, null);
     }
 
     public async Task<StandardDetailResponse> GetStandardDetailsById(string standardId)
     {
-        string cacheItemName = nameof(StandardDetailResponse) + "_" + standardId;
+        var cacheItemName = nameof(StandardDetailResponse) + "_" + standardId;
         var response = await cacheStorageService.RetrieveFromCache<StandardDetailResponse>(cacheItemName);
 
         if (response == null)

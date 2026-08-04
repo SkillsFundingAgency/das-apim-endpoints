@@ -24,20 +24,16 @@ public class ShortCourseLookupServiceTests
     {
         _courseService
             .Setup(x => x.GetCourseLookupDetailsById(It.IsAny<string>()))
-            .ReturnsAsync(
+            .ReturnsAsync(new CourseLookupResult(CourseLookupStatus.Found,
                 new CourseLookupDetailResponse
                 {
                     LearningType = "ApprenticeshipUnit",
                     ApprenticeshipFunding =
                     [
-                        new ApprenticeshipFunding
-                        {
-                            MaxEmployerLevyCap = 6000, EffectiveFrom = new DateTime(2020, 1, 1),
-                            EffectiveTo = new DateTime(2022, 12, 31)
-                        },
+                        new ApprenticeshipFunding { MaxEmployerLevyCap = 6000, EffectiveFrom = new DateTime(2020, 1, 1), EffectiveTo = new DateTime(2022, 12, 31) },
                         new ApprenticeshipFunding { MaxEmployerLevyCap = 9000, EffectiveFrom = new DateTime(2023, 1, 1), EffectiveTo = null }
                     ]
-                });
+                }));
 
         var result = await _sut.GetCourseDetails("ZSC00001", new DateTime(2024, 6, 1));
 
@@ -49,7 +45,7 @@ public class ShortCourseLookupServiceTests
     {
         _courseService
             .Setup(x => x.GetCourseLookupDetailsById(It.IsAny<string>()))
-            .ReturnsAsync(
+            .ReturnsAsync(new CourseLookupResult(CourseLookupStatus.Found,
                 new CourseLookupDetailResponse
                 {
                     LearningType = "FoundationApprenticeship",
@@ -57,7 +53,7 @@ public class ShortCourseLookupServiceTests
                     [
                         new ApprenticeshipFunding { MaxEmployerLevyCap = 6000, EffectiveFrom = new DateTime(2020, 1, 1), EffectiveTo = null }
                     ]
-                });
+                }));
 
         var result = await _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow);
 
@@ -69,7 +65,7 @@ public class ShortCourseLookupServiceTests
     {
         _courseService
             .Setup(x => x.GetCourseLookupDetailsById(It.IsAny<string>()))
-            .ReturnsAsync(
+            .ReturnsAsync(new CourseLookupResult(CourseLookupStatus.Found,
                 new CourseLookupDetailResponse
                 {
                     LearningType = "ApprenticeshipUnit",
@@ -77,7 +73,7 @@ public class ShortCourseLookupServiceTests
                     [
                         new ApprenticeshipFunding { MaxEmployerLevyCap = 5000, EffectiveFrom = new DateTime(2020, 1, 1), EffectiveTo = null }
                     ]
-                });
+                }));
 
         await _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow);
 
@@ -85,11 +81,52 @@ public class ShortCourseLookupServiceTests
     }
 
     [Test]
-    public async Task GetCourseDetails_WhenServiceReturnsNull_ThrowsInvalidOperationException()
+    public async Task GetCourseDetails_WhenServiceThrowsNetworkError_ThrowsCoursesApiUnavailableException()
     {
         _courseService
             .Setup(x => x.GetCourseLookupDetailsById(It.IsAny<string>()))
-            .ReturnsAsync((CourseLookupDetailResponse)null);
+            .ThrowsAsync(new HttpRequestException("Service unavailable"));
+
+        await FluentActions.Invoking(() => _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow))
+            .Should().ThrowAsync<CoursesApiUnavailableException>()
+            .WithMessage("*ZSC00001*");
+    }
+
+    [Test]
+    public async Task GetCourseDetails_WhenCourseCodeNotFound_ThrowsInvalidCourseException()
+    {
+        _courseService
+            .Setup(x => x.GetCourseLookupDetailsById(It.IsAny<string>()))
+            .ReturnsAsync(new CourseLookupResult(CourseLookupStatus.NotFound, null));
+
+        await FluentActions.Invoking(() => _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow))
+            .Should().ThrowAsync<InvalidCourseException>()
+            .WithMessage("*ZSC00001*");
+    }
+
+    [Test]
+    public async Task GetCourseDetails_WhenServiceReturnsUnavailable_ThrowsCoursesApiUnavailableExceptionAfterRetries()
+    {
+        _courseService
+            .Setup(x => x.GetCourseLookupDetailsById(It.IsAny<string>()))
+            .ReturnsAsync(new CourseLookupResult(CourseLookupStatus.Unavailable, null));
+
+        await FluentActions.Invoking(() => _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow))
+            .Should().ThrowAsync<CoursesApiUnavailableException>()
+            .WithMessage("*ZSC00001*");
+
+        // 1 initial attempt + 3 retries
+        _courseService.Verify(
+            x => x.GetCourseLookupDetailsById(It.IsAny<string>()),
+            Times.Exactly(4));
+    }
+
+    [Test]
+    public async Task GetCourseDetails_WhenFoundResultHasNoBody_ThrowsInvalidOperationException()
+    {
+        _courseService
+            .Setup(x => x.GetCourseLookupDetailsById(It.IsAny<string>()))
+            .ReturnsAsync(new CourseLookupResult(CourseLookupStatus.Found, null));
 
         await FluentActions.Invoking(() => _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow))
             .Should().ThrowAsync<InvalidOperationException>()
@@ -101,12 +138,12 @@ public class ShortCourseLookupServiceTests
     {
         _courseService
             .Setup(x => x.GetCourseLookupDetailsById(It.IsAny<string>()))
-            .ReturnsAsync(
+            .ReturnsAsync(new CourseLookupResult(CourseLookupStatus.Found,
                 new CourseLookupDetailResponse
                 {
                     LearningType = "FoundationApprenticeship",
                     ApprenticeshipFunding = []
-                });
+                }));
 
         await FluentActions.Invoking(() => _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow))
             .Should().ThrowAsync<InvalidCourseException>()
@@ -118,7 +155,7 @@ public class ShortCourseLookupServiceTests
     {
         _courseService
             .Setup(x => x.GetCourseLookupDetailsById(It.IsAny<string>()))
-            .ReturnsAsync(
+            .ReturnsAsync(new CourseLookupResult(CourseLookupStatus.Found,
                 new CourseLookupDetailResponse
                 {
                     LearningType = "SomethingUnknown",
@@ -126,7 +163,7 @@ public class ShortCourseLookupServiceTests
                     [
                         new ApprenticeshipFunding { MaxEmployerLevyCap = 5000, EffectiveFrom = new DateTime(2020, 1, 1), EffectiveTo = null }
                     ]
-                });
+                }));
 
         await FluentActions.Invoking(() => _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow))
             .Should().ThrowAsync<InvalidOperationException>()
