@@ -75,9 +75,9 @@ public class CreateDraftShortCourseCommandHandler(
     private async Task HandleRemovedLearning(CreateShortCoursePostResponse removedResult, string learnerRef)
     {
         logger.LogInformation("Removing omitted Learning {LearningKey} / {CourseCode} from Earnings",
-            removedResult.LearningKey, removedResult.CourseCode);
+            removedResult.LearningKey, removedResult.Episode!.CourseCode);
 
-        var earningsRequest = new DeleteShortCourseEarningsRequest(removedResult.LearningKey, removedResult.EpisodeKey, removedResult.LearnerKey, learnerRef);
+        var earningsRequest = new DeleteShortCourseEarningsRequest(removedResult.LearningKey, removedResult.Episode!.EpisodeKey, removedResult.LearnerKey, learnerRef);
         var earningsResponse = await earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest, true);
 
         if (!earningsResponse.StatusCode.IsSuccessStatusCode())
@@ -95,7 +95,7 @@ public class CreateDraftShortCourseCommandHandler(
         var earningsOnProg = ResolveOnProgrammeFromLearningResponse(requestOnProg, result);
         var earningsPutBody = updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(earningsOnProg, result.LearnerKey, command.ShortCourseRequest.Learner.LearnerRef);
         await earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
-            new UpdateShortCourseOnProgrammeEarningPutRequest(result.LearningKey, result.EpisodeKey, earningsPutBody));
+            new UpdateShortCourseOnProgrammeEarningPutRequest(result.LearningKey, result.Episode!.EpisodeKey, earningsPutBody));
     }
 
     private async Task HandleNewLearning(
@@ -107,7 +107,7 @@ public class CreateDraftShortCourseCommandHandler(
         Guid correlationId)
     {
         var earningsOnProg = ResolveOnProgrammeFromLearningResponse(requestOnProg, result);
-        var earningsRequestData = createUnapprovedShortCourseLearningRequestBuilder.Build(command.ShortCourseRequest, onProg, result.LearningKey, result.EpisodeKey, command.Ukprn, earningsOnProg);
+        var earningsRequestData = createUnapprovedShortCourseLearningRequestBuilder.Build(command.ShortCourseRequest, onProg, result.LearningKey, result.Episode!.EpisodeKey, command.Ukprn, earningsOnProg);
         await earningsApiClient.Post(new SFA.DAS.LearnerData.Requests.EarningsInner.PostCreateUnapprovedShortCourseLearningRequest(earningsRequestData));
 
         await messageSession.Publish(MapToEvent(command.Ukprn, requestData, onProg, earningsOnProg, command.ShortCourseRequest.ConsumerReference, correlationId));
@@ -115,7 +115,7 @@ public class CreateDraftShortCourseCommandHandler(
 
     private static OnProgramme ResolveOnProgrammeFromLearningResponse(OnProgramme requestOnProg, CreateShortCoursePostResponse result)
     {
-        var episode = result.Episodes.Single(e => e.EpisodeKey == result.EpisodeKey);
+        var episode = result.Episode!;
 
         return new OnProgramme
         {

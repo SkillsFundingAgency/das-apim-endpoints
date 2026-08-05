@@ -116,8 +116,13 @@ public class WhenHandlingUpdateShortCourseLearningCommand
                 {
                     Results =
                     [
-                        new UpdateShortCourseLearningPutResponse { LearningKey = _learnerKey, CourseCode = "123", Changes = [] },
-                        new UpdateShortCourseLearningPutResponse { IsRemoved = true, LearningKey = removedLearningKey, UpdatedEpisodeKey = removedEpisodeKey, CourseCode = "TEST02" }
+                        new UpdateShortCourseLearningPutResponse { LearningKey = _learnerKey, Changes = [] },
+                        new UpdateShortCourseLearningPutResponse
+                        {
+                            IsRemoved = true,
+                            LearningKey = removedLearningKey,
+                            Episode = new LearningInnerShortCourseEpisode { EpisodeKey = removedEpisodeKey, CourseCode = "TEST02" }
+                        }
                     ]
                 },
                 HttpStatusCode.OK, string.Empty));
@@ -148,21 +153,16 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = _learnerKey,
-            UpdatedEpisodeKey = episodeKey,
-            CourseCode = "123",
             Changes = [ShortCourseUpdateChanges.CompletionDate.ToString()],
-            Episodes =
-            [
-                new LearningInnerShortCourseEpisode
-                {
+            Episode = new LearningInnerShortCourseEpisode
+            {
                     EpisodeKey = episodeKey,
                     Ukprn = _ukprn,
                     CourseCode = "123",
                     StartDate = new DateTime(2025, 1, 1),
                     PlannedEndDate = new DateTime(2025, 12, 31),
                     CompletionDate = _completionDate
-                }
-            ]
+            }
         };
 
         _learningApiClient
@@ -202,13 +202,9 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = _learnerKey,
-            UpdatedEpisodeKey = episodeKey,
-            CourseCode = onProg.CourseCode,
             Changes = [ShortCourseUpdateChanges.ExpectedEndDate.ToString()],
-            Episodes =
-            [
-                new LearningInnerShortCourseEpisode
-                {
+            Episode = new LearningInnerShortCourseEpisode
+            {
                     EpisodeKey = episodeKey,
                     Ukprn = _ukprn,
                     CourseCode = onProg.CourseCode,
@@ -216,8 +212,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
                     PlannedEndDate = learningPersistedEndDate,
                     CompletionDate = onProg.CompletionDate,
                     WithdrawalDate = null
-                }
-            ]
+            }
         };
 
         _learningApiClient
@@ -261,7 +256,6 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = _learnerKey,
-            CourseCode = "123",
             Changes = []
         };
 
@@ -291,7 +285,6 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = _learnerKey,
-            CourseCode = "123",
             Changes = []
         };
 
@@ -317,21 +310,16 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = _learnerKey,
-            UpdatedEpisodeKey = episodeKey,
-            CourseCode = "123",
             Changes = [ShortCourseUpdateChanges.CompletionDate.ToString()],
-            Episodes =
-            [
-                new LearningInnerShortCourseEpisode
-                {
+            Episode = new LearningInnerShortCourseEpisode
+            {
                     EpisodeKey = episodeKey,
                     Ukprn = _ukprn,
                     CourseCode = "123",
                     StartDate = new DateTime(2025, 1, 1),
                     PlannedEndDate = new DateTime(2025, 12, 31),
                     CompletionDate = _completionDate
-                }
-            ]
+            }
         };
 
         _learningApiClient
@@ -372,20 +360,15 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = learningKey,
-            UpdatedEpisodeKey = episodeKey,
-            CourseCode = "123",
             Changes = [ShortCourseUpdateChanges.Reinstated.ToString()],
-            Episodes =
-            [
-                new LearningInnerShortCourseEpisode
-                {
+            Episode = new LearningInnerShortCourseEpisode
+            {
                     EpisodeKey = episodeKey,
                     Ukprn = _ukprn,
                     CourseCode = "123",
                     StartDate = new DateTime(2025, 1, 1),
                     PlannedEndDate = new DateTime(2025, 12, 31)
-                }
-            ]
+            }
         };
 
         _learningApiClient
@@ -416,20 +399,15 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = learningKey,
-            UpdatedEpisodeKey = episodeKey,
-            CourseCode = "123",
             Changes = [ShortCourseUpdateChanges.Reinstated.ToString()],
-            Episodes =
-            [
-                new LearningInnerShortCourseEpisode
-                {
+            Episode = new LearningInnerShortCourseEpisode
+            {
                     EpisodeKey = episodeKey,
                     Ukprn = _ukprn,
                     CourseCode = "123",
                     StartDate = new DateTime(2025, 1, 1),
                     PlannedEndDate = new DateTime(2025, 12, 31)
-                }
-            ]
+            }
         };
 
         _learningApiClient
@@ -462,14 +440,10 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = learningKey,
-            UpdatedEpisodeKey = episodeKey,
-            CourseCode = onProg.CourseCode,
             IsNewLearning = true,
             Changes = [],
-            Episodes =
-            [
-                new LearningInnerShortCourseEpisode
-                {
+            Episode = new LearningInnerShortCourseEpisode
+            {
                     EpisodeKey = episodeKey,
                     Ukprn = _ukprn,
                     CourseCode = onProg.CourseCode,
@@ -477,8 +451,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
                     PlannedEndDate = onProg.ExpectedEndDate,
                     CompletionDate = onProg.CompletionDate,
                     WithdrawalDate = onProg.WithdrawalDate
-                }
-            ]
+            }
         };
 
         _learningApiClient
@@ -506,7 +479,6 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = _learnerKey,
-            CourseCode = onProg.CourseCode,
             IsNewLearning = false,
             Changes = []
         };
@@ -536,7 +508,6 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = _learnerKey,
-            CourseCode = onProg.CourseCode,
             Changes = []
         };
 
@@ -567,14 +538,10 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = learningKey,
-            UpdatedEpisodeKey = episodeKey,
-            CourseCode = onProg.CourseCode,
             IsNewLearning = true,
             Changes = [],
-            Episodes =
-            [
-                new LearningInnerShortCourseEpisode
-                {
+            Episode = new LearningInnerShortCourseEpisode
+            {
                     EpisodeKey = episodeKey,
                     Ukprn = _ukprn,
                     CourseCode = onProg.CourseCode,
@@ -582,8 +549,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
                     PlannedEndDate = onProg.ExpectedEndDate,
                     CompletionDate = onProg.CompletionDate,
                     WithdrawalDate = onProg.WithdrawalDate
-                }
-            ]
+            }
         };
 
         _learningApiClient
@@ -622,15 +588,11 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = learningKey,
-            UpdatedEpisodeKey = episodeKey,
-            CourseCode = onProg.CourseCode,
             IsNewLearning = false,
             IsNewEpisode = true,
             Changes = [],
-            Episodes =
-            [
-                new LearningInnerShortCourseEpisode
-                {
+            Episode = new LearningInnerShortCourseEpisode
+            {
                     EpisodeKey = episodeKey,
                     Ukprn = _ukprn,
                     CourseCode = onProg.CourseCode,
@@ -638,8 +600,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
                     PlannedEndDate = onProg.ExpectedEndDate,
                     CompletionDate = onProg.CompletionDate,
                     WithdrawalDate = onProg.WithdrawalDate
-                }
-            ]
+            }
         };
 
         _learningApiClient
@@ -678,14 +639,10 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = Guid.NewGuid(),
-            UpdatedEpisodeKey = episodeKey,
-            CourseCode = onProg.CourseCode,
             IsNewLearning = true,
             Changes = [],
-            Episodes =
-            [
-                new LearningInnerShortCourseEpisode
-                {
+            Episode = new LearningInnerShortCourseEpisode
+            {
                     EpisodeKey = episodeKey,
                     Ukprn = _ukprn,
                     CourseCode = onProg.CourseCode,
@@ -693,8 +650,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
                     PlannedEndDate = onProg.ExpectedEndDate,
                     CompletionDate = onProg.CompletionDate,
                     WithdrawalDate = onProg.WithdrawalDate
-                }
-            ]
+            }
         };
 
         _learningApiClient
@@ -726,14 +682,10 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = Guid.NewGuid(),
-            UpdatedEpisodeKey = episodeKey,
-            CourseCode = onProg.CourseCode,
             IsNewLearning = true,
             Changes = [],
-            Episodes =
-            [
-                new LearningInnerShortCourseEpisode
-                {
+            Episode = new LearningInnerShortCourseEpisode
+            {
                     EpisodeKey = episodeKey,
                     Ukprn = _ukprn,
                     CourseCode = onProg.CourseCode,
@@ -741,8 +693,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
                     PlannedEndDate = onProg.ExpectedEndDate,
                     CompletionDate = onProg.CompletionDate,
                     WithdrawalDate = onProg.WithdrawalDate
-                }
-            ]
+            }
         };
 
         _learningApiClient

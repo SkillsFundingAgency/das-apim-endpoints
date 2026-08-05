@@ -133,21 +133,17 @@ public class WhenHandlingCreateDraftShortCourseCommand
                     new CreateShortCoursePostResponse
                     {
                         LearningKey = _learningKey,
-                        EpisodeKey = _episodeKey,
                         LearnerKey = _learnerKey,
-                        Episodes =
-                        [
-                            new LearningInnerShortCourseEpisode
-                            {
-                                EpisodeKey = _episodeKey,
-                                Ukprn = _ukprn,
-                                CourseCode = _resolvedOnProg.CourseCode,
-                                StartDate = _resolvedOnProg.StartDate,
-                                PlannedEndDate = _resolvedOnProg.ExpectedEndDate,
-                                CompletionDate = _resolvedOnProg.CompletionDate,
-                                WithdrawalDate = _resolvedOnProg.WithdrawalDate
-                            }
-                        ]
+                        Episode = new LearningInnerShortCourseEpisode
+                        {
+                            EpisodeKey = _episodeKey,
+                            Ukprn = _ukprn,
+                            CourseCode = _resolvedOnProg.CourseCode,
+                            StartDate = _resolvedOnProg.StartDate,
+                            PlannedEndDate = _resolvedOnProg.ExpectedEndDate,
+                            CompletionDate = _resolvedOnProg.CompletionDate,
+                            WithdrawalDate = _resolvedOnProg.WithdrawalDate
+                        }
                     }
                 ]
             },
@@ -287,21 +283,17 @@ public class WhenHandlingCreateDraftShortCourseCommand
                     new CreateShortCoursePostResponse
                     {
                         LearningKey = _learningKey,
-                        EpisodeKey = _episodeKey,
                         LearnerKey = _learnerKey,
-                        Episodes =
-                        [
-                            new LearningInnerShortCourseEpisode
-                            {
-                                EpisodeKey = _episodeKey,
-                                Ukprn = _ukprn,
-                                CourseCode = persistedCourseCode,
-                                StartDate = persistedStartDate,
-                                PlannedEndDate = persistedExpectedEndDate,
-                                CompletionDate = persistedCompletionDate,
-                                WithdrawalDate = persistedWithdrawalDate
-                            }
-                        ]
+                        Episode = new LearningInnerShortCourseEpisode
+                        {
+                            EpisodeKey = _episodeKey,
+                            Ukprn = _ukprn,
+                            CourseCode = persistedCourseCode,
+                            StartDate = persistedStartDate,
+                            PlannedEndDate = persistedExpectedEndDate,
+                            CompletionDate = persistedCompletionDate,
+                            WithdrawalDate = persistedWithdrawalDate
+                        }
                     }
                 ]
             },
@@ -349,22 +341,18 @@ public class WhenHandlingCreateDraftShortCourseCommand
                     new CreateShortCoursePostResponse
                     {
                         LearningKey = _learningKey,
-                        EpisodeKey = _episodeKey,
                         IsReinstated = true,
                         LearnerKey = _learnerKey,
-                        Episodes =
-                        [
-                            new LearningInnerShortCourseEpisode
-                            {
-                                EpisodeKey = _episodeKey,
-                                Ukprn = _ukprn,
-                                CourseCode = persistedCourseCode,
-                                StartDate = persistedStartDate,
-                                PlannedEndDate = persistedExpectedEndDate,
-                                CompletionDate = persistedCompletionDate,
-                                WithdrawalDate = persistedWithdrawalDate
-                            }
-                        ]
+                        Episode = new LearningInnerShortCourseEpisode
+                        {
+                            EpisodeKey = _episodeKey,
+                            Ukprn = _ukprn,
+                            CourseCode = persistedCourseCode,
+                            StartDate = persistedStartDate,
+                            PlannedEndDate = persistedExpectedEndDate,
+                            CompletionDate = persistedCompletionDate,
+                            WithdrawalDate = persistedWithdrawalDate
+                        }
                     }
                 ]
             },
@@ -461,18 +449,14 @@ public class WhenHandlingCreateDraftShortCourseCommand
                     new CreateShortCoursePostResponse
                     {
                         LearningKey = secondLearningKey,
-                        EpisodeKey = secondEpisodeKey,
-                        Episodes =
-                        [
-                            new LearningInnerShortCourseEpisode
-                            {
-                                EpisodeKey = secondEpisodeKey,
-                                Ukprn = _ukprn,
-                                CourseCode = secondResolvedOnProg.CourseCode,
-                                StartDate = secondResolvedOnProg.StartDate,
-                                PlannedEndDate = secondResolvedOnProg.ExpectedEndDate
-                            }
-                        ]
+                        Episode = new LearningInnerShortCourseEpisode
+                        {
+                            EpisodeKey = secondEpisodeKey,
+                            Ukprn = _ukprn,
+                            CourseCode = secondResolvedOnProg.CourseCode,
+                            StartDate = secondResolvedOnProg.StartDate,
+                            PlannedEndDate = secondResolvedOnProg.ExpectedEndDate
+                        }
                     }
                 ]
             },
@@ -509,20 +493,21 @@ public class WhenHandlingCreateDraftShortCourseCommand
                     new CreateShortCoursePostResponse
                     {
                         LearningKey = _learningKey,
-                        EpisodeKey = _episodeKey,
-                        Episodes =
-                        [
-                            new LearningInnerShortCourseEpisode
-                            {
-                                EpisodeKey = _episodeKey,
-                                Ukprn = _ukprn,
-                                CourseCode = _resolvedOnProg.CourseCode,
-                                StartDate = _resolvedOnProg.StartDate,
-                                PlannedEndDate = _resolvedOnProg.ExpectedEndDate
-                            }
-                        ]
+                        Episode = new LearningInnerShortCourseEpisode
+                        {
+                            EpisodeKey = _episodeKey,
+                            Ukprn = _ukprn,
+                            CourseCode = _resolvedOnProg.CourseCode,
+                            StartDate = _resolvedOnProg.StartDate,
+                            PlannedEndDate = _resolvedOnProg.ExpectedEndDate
+                        }
                     },
-                    new CreateShortCoursePostResponse { IsRemoved = true, LearningKey = removedLearningKey, EpisodeKey = removedEpisodeKey, CourseCode = "TEST02" }
+                    new CreateShortCoursePostResponse
+                    {
+                        IsRemoved = true,
+                        LearningKey = removedLearningKey,
+                        Episode = new LearningInnerShortCourseEpisode { EpisodeKey = removedEpisodeKey, CourseCode = "TEST02" }
+                    }
                 ]
             },
             HttpStatusCode.Created, "");
@@ -558,22 +543,18 @@ public class WhenHandlingCreateDraftShortCourseCommand
                     new CreateShortCoursePostResponse
                     {
                         LearningKey = _learningKey,
-                        EpisodeKey = _episodeKey,
                         IsReinstated = true,
                         LearnerKey = _learnerKey,
-                        Episodes =
-                        [
-                            new LearningInnerShortCourseEpisode
-                            {
-                                EpisodeKey = _episodeKey,
-                                Ukprn = _ukprn,
-                                CourseCode = _resolvedOnProg.CourseCode,
-                                StartDate = _resolvedOnProg.StartDate,
-                                PlannedEndDate = _resolvedOnProg.ExpectedEndDate,
-                                CompletionDate = _resolvedOnProg.CompletionDate,
-                                WithdrawalDate = _resolvedOnProg.WithdrawalDate
-                            }
-                        ]
+                        Episode = new LearningInnerShortCourseEpisode
+                        {
+                            EpisodeKey = _episodeKey,
+                            Ukprn = _ukprn,
+                            CourseCode = _resolvedOnProg.CourseCode,
+                            StartDate = _resolvedOnProg.StartDate,
+                            PlannedEndDate = _resolvedOnProg.ExpectedEndDate,
+                            CompletionDate = _resolvedOnProg.CompletionDate,
+                            WithdrawalDate = _resolvedOnProg.WithdrawalDate
+                        }
                     }
                 ]
             },
