@@ -288,7 +288,6 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
     public async Task<IResult> CloseVacancy(
         [FromRoute] long vacancyReference,
         [FromBody] CloseVacancyRequest request,
-        [FromServices] VacancyMapper vacancyMapper,
         [FromServices] IRecruitGqlClient recruitGqlClient,
         [FromServices] Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
         CancellationToken cancellationToken)
@@ -312,21 +311,20 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
                 return TypedResults.NotFound();
             }
 
-            var domainVacancy = GqlVacancyMapper.From(vacancy);
-            domainVacancy.ClosureReason = request.ClosureReason;
-            domainVacancy.Status = VacancyStatus.Closed;
-            domainVacancy.ClosedDate = DateTime.UtcNow;
+            // Patch the Vacancy
+            var patchDocument = new JsonPatchDocument<Vacancy>();
+            patchDocument.Replace(x => x.ClosureReason, request.ClosureReason);
+            patchDocument.Replace(x => x.Status, VacancyStatus.Closed);
+            patchDocument.Replace(x => x.ClosedDate, DateTime.UtcNow);
+            var patchRequest = new PatchVacanciesByVacancyIdApiRequest
+            {
+                Data = patchDocument,
+                VacancyId = vacancy.Id
+            };
 
-            var putResponse = await recruitApiClient.PutWithResponseCode<PutVacancyRequest, Vacancy>(
-                new PutVacanciesByVacancyIdApiRequest
-                {
-                    VacancyId = request.VacancyId,
-                    RuleSet = VacancyRuleSet.All,
-                    ValidateOnly = false,
-                    Data = vacancyMapper.ToInnerDto(domainVacancy)
-                });
+            var patchResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<Vacancy>, NullResponse>(patchRequest, false);
+            patchResponse.EnsureSuccessStatusCode();
 
-            putResponse.EnsureSuccessStatusCode();
             return TypedResults.NoContent();
         }
         catch (ApiResponseException ex)
