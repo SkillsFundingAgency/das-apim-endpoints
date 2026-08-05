@@ -14,31 +14,6 @@
         "serviceSubnetNames": {
             "type": "array"
         },
-        "appServicePlanSku": {
-            "type": "object",
-            "defaultValue": {
-                "tier": "Standard",
-                "size": "1",
-                "instances": 1
-            },
-            "metadata": {
-                "description": "SKU information for the existing ASP."
-            }
-        },
-        "appServicePlanSkus": {
-            "type": "array",
-            "defaultValue": [
-                {
-                    "identifier": 0,
-                    "tier": "Standard",
-                    "size": "1",
-                    "instances": 1
-                }
-            ],
-            "metadata": {
-                "description": "Takes an array of objects: '[{\"identifier\": 0,\"tier\": \"Basic\",\"size\": \"1\",\"instances\": 1}]. Removing the backslash. The identifier helps map the values to the deployed ASP."
-            }
-        },
         "serviceAppServicePlansSku": {
             "type": "object",
             "defaultValue": {
@@ -69,14 +44,6 @@
                 "description": "Prefix address space of the Vnet"
             }
         },
-        "subnetCount": {
-            "type": "int",
-            "defaultValue": 1,
-            "maxValue": 5,
-            "metadata": {
-                "description": "Number of subnets to deploy. Normally one per deployed ASP."
-            }
-        },
         "subnetAddressSpaceCIDR": {
             "type": "string",
             "defaultValue": "/24",
@@ -101,26 +68,9 @@
         "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'), '-', parameters('serviceName')))]",
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
-        "appServicePlanNamePrefix": "[concat(variables('resourceNamePrefix'), '-asp-')]",
-        "appServicePlanName": "[concat(variables('resourceNamePrefix'), '-asp')]",
-        "subnetNamePrefix": "apimendp-sn",
         "emptyArray": [],
         "emptyObject": {},
         "copy": [
-            {
-                "name": "subnetCopy",
-                "count": "[if(greater(parameters('subnetCount'), 0), parameters('subnetCount'), 1)]",
-                "input": {
-                    "name": "[concat(variables('subnetNamePrefix'), '-', copyIndex('subnetCopy'))]",
-                    "properties": {
-                        "addressPrefix": "[blocks.getNextAddressRange(parameters('sharedEnvVirtualNetworkAddressPrefix'), 25, copyIndex('subnetCopy'), parameters('subnetAddressSpaceCIDR'))]",
-                        "serviceEndpointList": "[parameters('subnetServiceEndpointList')]",
-                        "delegations": "[parameters('subnetDelegations')]",
-                        "networkSecurityGroup": "[variables('emptyObject')]",
-                        "routeTable": "[variables('emptyObject')]"
-                    }
-                }
-            },
             {
                 "name": "serviceSubnetCopy",
                 "count": "[length(parameters('serviceSubnetNames'))]",
@@ -135,10 +85,7 @@
                     }
                 }
             }
-        ],
-
-        "apimSubnets": "[if(greater(parameters('subnetCount'), 0), variables('subnetCopy'), variables('emptyArray'))]",
-        "subnetConfiguration": "[variables('apimSubnets')]"
+        ]
     },
     "functions": [
         {
@@ -181,33 +128,6 @@
             "properties": {}
         },
         {
-            "apiVersion": "2022-09-01",
-            "name": "[concat('apim-endpoint-app-service-plan-', parameters('utcValue'))]",
-            "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[variables('resourceGroupName')]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('deploymentUrlBase'),'app-service-plan.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "appServicePlanName": {
-                        "value": "[variables('appServicePlanName')]"
-                    },
-                    "aspSize": {
-                        "value": "[parameters('appServicePlanSku').size]"
-                    },
-                    "aspInstances": {
-                        "value": "[parameters('appServicePlanSku').instances]"
-                    },
-                    "nonASETier": {
-                        "value": "[parameters('appServicePlanSku').tier]"
-                    }
-                }
-            }
-        },
-        {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2022-09-01",
             "name": "[concat( parameters('serviceAppServicePlanSuffixes')[copyIndex('serviceAppServicePlanNames')], '-', parameters('utcValue'))]",
@@ -239,84 +159,8 @@
             }
         },
         {
-            "type": "Microsoft.Resources/deployments",
             "apiVersion": "2022-09-01",
-            "name": "[concat('apim-endpoint-app-service-plan-', copyIndex('appServicePlanLoop'), '-', parameters('utcValue'))]",
-            "resourceGroup": "[variables('resourceGroupName')]",
-            "copy": {
-                "name": "appServicePlanLoop",
-                "count": "[length(parameters('appServicePlanSkus'))]"
-            },
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('deploymentUrlBase'),'app-service-plan.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "appServicePlanName": {
-                        "value": "[concat(variables('appServicePlanNamePrefix'), copyIndex('appServicePlanLoop'))]"
-
-                    },
-                    "aspSize": {
-                        "value": "[parameters('appServicePlanSkus')[copyIndex('appServicePlanLoop')].size]"
-                    },
-                    "aspInstances": {
-                        "value": "[parameters('appServicePlanSkus')[copyIndex('appServicePlanLoop')].instances]"
-                    },
-                    "nonASETier": {
-                        "value": "[parameters('appServicePlanSkus')[copyIndex('appServicePlanLoop')].tier]"
-                    }
-                }
-            }
-        },
-        {
-            "apiVersion": "2022-09-01",
-            "name": "[concat(variables('subnetConfiguration')[copyIndex('subnetLoop')].name, '-', parameters('utcValue'))]",
-            "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
-            "copy": {
-                "name": "subnetLoop",
-                "count": "[length(variables('subnetConfiguration'))]",
-                "mode": "Serial"
-            },
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('deploymentUrlBase'),'subnet.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "virtualNetworkName": {
-                        "value": "[parameters('sharedEnvVirtualNetworkName')]"
-                    },
-                    "subnetName": {
-                        "value": "[variables('subnetConfiguration')[copyIndex('subnetLoop')].name]"
-                    },
-                    "subnetAddressPrefix": {
-                        "value": "[variables('subnetConfiguration')[copyIndex('subnetLoop')].properties.addressPrefix]"
-                    },
-                    "serviceEndpointList": {
-                        "value": "[variables('subnetConfiguration')[copyIndex('subnetLoop')].properties.serviceEndpointList]"
-                    },
-                    "delegations": {
-                        "value": "[variables('subnetConfiguration')[copyIndex('subnetLoop')].properties.delegations]"
-                    },
-                    "networkSecurityGroup": {
-                        "value": "[if(empty(variables('subnetConfiguration')[copyIndex('subnetLoop')].properties.networkSecurityGroup), variables('emptyObject'), variables('subnetConfiguration')[copyIndex('subnetLoop')].properties.networkSecurityGroup)]"
-                    },
-                    "routeTable": {
-                        "value": "[if(empty(variables('subnetConfiguration')[copyIndex('subnetLoop')].properties.routeTable), variables('emptyObject'), variables('subnetConfiguration')[copyIndex('subnetLoop')].properties.routeTable)]"
-                    }
-                }
-            },
-            "dependsOn": [
-                "[variables('resourceGroupName')]"
-            ]
-        },
-        {
-            "apiVersion": "2022-09-01",
-            "name": "[concat(copyIndex('serviceSubnetLoop'), '-', parameters('utcValue'))]",
+            "name": "[concat(variables('serviceSubnetCopy')[copyIndex('serviceSubnetLoop')].name, '-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "copy": {
@@ -360,13 +204,5 @@
         }
     ],
     "outputs": {
-        "appServicePlanSkus": {
-            "type": "array",
-            "value": "[parameters('appServicePlanSkus')]"
-        },
-        "subnetRangeOverRun": {
-            "type": "bool",
-            "value": "[greater(length(parameters('appServicePlanSkus')), 5)]"
-        }
     }
 }
