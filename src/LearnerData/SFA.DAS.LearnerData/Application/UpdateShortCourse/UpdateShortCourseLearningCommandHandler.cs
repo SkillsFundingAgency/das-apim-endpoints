@@ -12,7 +12,6 @@ using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Services.ShortCourses;
-using LearningInnerOnProgramme = SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using EarningsOnProgramme = SFA.DAS.LearnerData.Requests.EarningsInner.OnProgramme;
@@ -143,7 +142,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         }
     }
 
-    private static LearningInnerOnProgramme ResolveOnProgrammeFromLearningResponse(ShortCourseOnProgramme onProg, UpdateShortCourseLearningPutResponse learningResponse)
+    private static ResolvedOnProgramme ResolveOnProgrammeFromLearningResponse(ShortCourseOnProgramme onProg, UpdateShortCourseLearningPutResponse learningResponse)
     {
         var episode = learningResponse.Episode!;
 
@@ -151,10 +150,9 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         if (episode.CompletionDate.HasValue && !milestones.Contains(Milestone.LearningComplete))
             milestones.Add(Milestone.LearningComplete);
 
-        return new LearningInnerOnProgramme
+        return new ResolvedOnProgramme
         {
             CourseCode = episode.CourseCode,
-            Ukprn = episode.Ukprn,
             StartDate = episode.StartDate,
             ExpectedEndDate = episode.PlannedEndDate,
             CompletionDate = episode.CompletionDate,
@@ -182,7 +180,6 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
 
                 return new ShortCourseOnProgrammeUpdateDetails
                 {
-                    Ukprn = command.Ukprn,
                     CourseCode = onProg.CourseCode,
                     StartDate = onProg.StartDate,
                     ExpectedEndDate = onProg.ExpectedEndDate,
@@ -202,7 +199,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
     private CreateUnapprovedShortCourseLearningRequest BuildCreateEarningsRequest(
         UpdateShortCourseLearningCommand command,
         ShortCourseOnProgramme onProg,
-        LearningInnerOnProgramme resolvedOnProg,
+        ResolvedOnProgramme resolvedOnProg,
         UpdateShortCourseLearningPutResponse learningResponse,
         decimal price,
         SharedLearningType learningType)
@@ -220,7 +217,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             OnProgramme = new EarningsOnProgramme
             {
                 CourseCode = resolvedOnProg.CourseCode,
-                Ukprn = resolvedOnProg.Ukprn,
+                Ukprn = command.Ukprn,
                 StartDate = resolvedOnProg.StartDate,
                 ExpectedEndDate = resolvedOnProg.ExpectedEndDate,
                 CompletionDate = resolvedOnProg.CompletionDate,
@@ -232,7 +229,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         };
     }
 
-    private static LearnerDataEvent MapToLearnerDataEvent(UpdateShortCourseLearningCommand command, ShortCourseOnProgramme onProg, LearningInnerOnProgramme resolvedOnProg, decimal price, Guid correlationId)
+    private static LearnerDataEvent MapToLearnerDataEvent(UpdateShortCourseLearningCommand command, ShortCourseOnProgramme onProg, ResolvedOnProgramme resolvedOnProg, decimal price, Guid correlationId)
     {
         return new LearnerDataEvent
         {

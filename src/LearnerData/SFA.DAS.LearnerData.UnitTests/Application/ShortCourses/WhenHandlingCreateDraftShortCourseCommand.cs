@@ -154,7 +154,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
             .ReturnsAsync(apiResponse);
 
         _createUnapprovedShortCourseLearningRequestBuilder
-            .Setup(x => x.Build(_shortCourseRequest, _onProg, _learningKey, _episodeKey, _ukprn, It.IsAny<OnProgramme>()))
+            .Setup(x => x.Build(_shortCourseRequest, _onProg, _learningKey, _episodeKey, _ukprn, It.IsAny<ResolvedOnProgramme>()))
             .Returns(_builtEarningsRequest);
     }
 
@@ -303,7 +303,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
             .ReturnsAsync(apiResponse);
 
         _createUnapprovedShortCourseLearningRequestBuilder
-            .Setup(x => x.Build(_shortCourseRequest, _onProg, _learningKey, _episodeKey, _ukprn, It.IsAny<OnProgramme>()))
+            .Setup(x => x.Build(_shortCourseRequest, _onProg, _learningKey, _episodeKey, _ukprn, It.IsAny<ResolvedOnProgramme>()))
             .Returns(_builtEarningsRequest);
 
         // Act
@@ -312,7 +312,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
         // Assert: Earnings must reflect the Learning - persisted values, not the potentially - ignored SLD payload
         _createUnapprovedShortCourseLearningRequestBuilder.Verify(x =>
             x.Build(_shortCourseRequest, _onProg, _learningKey, _episodeKey, _ukprn,
-                It.Is<OnProgramme>(o =>
+                It.Is<ResolvedOnProgramme>(o =>
                     o.CourseCode == persistedCourseCode &&
                     o.StartDate == persistedStartDate &&
                     o.ExpectedEndDate == persistedExpectedEndDate &&
@@ -362,7 +362,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
             .ReturnsAsync(reinstatedResponse);
 
         _updateShortCourseOnProgrammeEarningPutRequestBuilder
-            .Setup(x => x.Build(It.IsAny<OnProgramme>(), _learnerKey, _learnerRef))
+            .Setup(x => x.Build(It.IsAny<ResolvedOnProgramme>(), _learnerKey, _learnerRef))
             .Returns(new UpdateShortCourseOnProgrammeRequestBody { Milestones = [] });
 
         _earningsApiClient
@@ -376,7 +376,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
         // Assert: Earnings must reflect the Learning - persisted values, not the potentially - ignored SLD payload
         _updateShortCourseOnProgrammeEarningPutRequestBuilder.Verify(x =>
             x.Build(
-                It.Is<OnProgramme>(o =>
+                It.Is<ResolvedOnProgramme>(o =>
                     o.CourseCode == persistedCourseCode &&
                     o.StartDate == persistedStartDate &&
                     o.ExpectedEndDate == persistedExpectedEndDate &&
@@ -397,7 +397,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
 
         var builtBody = new UpdateShortCourseOnProgrammeRequestBody { Milestones = [] };
         _updateShortCourseOnProgrammeEarningPutRequestBuilder
-            .Setup(x => x.Build(It.IsAny<OnProgramme>(), _learnerKey, _learnerRef))
+            .Setup(x => x.Build(It.IsAny<ResolvedOnProgramme>(), _learnerKey, _learnerRef))
             .Returns(builtBody);
 
         _earningsApiClient
@@ -466,7 +466,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
             .ReturnsAsync(apiResponse);
 
         _createUnapprovedShortCourseLearningRequestBuilder
-            .Setup(x => x.Build(_shortCourseRequest, secondOnProg, secondLearningKey, secondEpisodeKey, _ukprn, It.IsAny<OnProgramme>()))
+            .Setup(x => x.Build(_shortCourseRequest, secondOnProg, secondLearningKey, secondEpisodeKey, _ukprn, It.IsAny<ResolvedOnProgramme>()))
             .Returns(new CreateUnapprovedShortCourseLearningRequest());
 
         // Act

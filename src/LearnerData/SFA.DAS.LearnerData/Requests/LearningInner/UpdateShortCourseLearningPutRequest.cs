@@ -37,7 +37,6 @@ public class ShortCourseLearnerUpdateDetails
 
 public class ShortCourseOnProgrammeUpdateDetails
 {
-    public long Ukprn { get; set; }
     public string CourseCode { get; set; } = "";
     public DateTime StartDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }

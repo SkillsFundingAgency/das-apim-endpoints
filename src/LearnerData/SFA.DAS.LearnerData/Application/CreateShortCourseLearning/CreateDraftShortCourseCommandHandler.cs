@@ -113,14 +113,13 @@ public class CreateDraftShortCourseCommandHandler(
         await messageSession.Publish(MapToEvent(command.Ukprn, requestData, onProg, earningsOnProg, command.ShortCourseRequest.ConsumerReference, correlationId));
     }
 
-    private static OnProgramme ResolveOnProgrammeFromLearningResponse(OnProgramme requestOnProg, CreateShortCoursePostResponse result)
+    private static ResolvedOnProgramme ResolveOnProgrammeFromLearningResponse(OnProgramme requestOnProg, CreateShortCoursePostResponse result)
     {
         var episode = result.Episode!;
 
-        return new OnProgramme
+        return new ResolvedOnProgramme
         {
             CourseCode = episode.CourseCode,
-            Ukprn = episode.Ukprn,
             EmployerId = requestOnProg.EmployerId,
             StartDate = episode.StartDate,
             ExpectedEndDate = episode.PlannedEndDate,
@@ -137,7 +136,7 @@ public class CreateDraftShortCourseCommandHandler(
         long ukprn,
         CreateDraftShortCourseRequest request,
         ShortCourseOnProgramme onProg,
-        OnProgramme earningsOnProg,
+        ResolvedOnProgramme earningsOnProg,
         string consumerReference,
         Guid correlationId)
     {

@@ -17,7 +17,7 @@ using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SharedLearningType = SFA.DAS.SharedOuterApi.Types.Constants.LearningType;
-using LearningOnProgramme = SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme;
+using LearningOnProgramme = SFA.DAS.LearnerData.Services.ShortCourses.ResolvedOnProgramme;
 using SFA.DAS.LearnerData.Services;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.ShortCourses;
@@ -47,9 +47,6 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         _learningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _earningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
         _updateShortCourseOnProgrammeEarningPutRequestBuilder = new Mock<IUpdateShortCourseOnProgrammeEarningPutRequestBuilder>();
-        _updateShortCourseOnProgrammeEarningPutRequestBuilder
-            .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>(), It.IsAny<Guid>(), It.IsAny<string>()))
-            .Returns(new UpdateShortCourseOnProgrammeRequestBody { Milestones = [] });
         _shortCourseLookupService = new Mock<IShortCourseLookupService>();
         _shortCourseLookupService
             .Setup(x => x.GetCourseDetails(It.IsAny<string>(), It.IsAny<DateTime>()))
@@ -240,10 +237,6 @@ public class WhenHandlingUpdateShortCourseLearningCommand
                 It.IsAny<Guid>(),
                 It.IsAny<string>()),
             Times.Once);
-
-        _updateShortCourseOnProgrammeEarningPutRequestBuilder.Verify(x =>
-            x.Build(It.IsAny<ShortCourseOnProgramme>(), It.IsAny<Guid>(), It.IsAny<string>()),
-            Times.Never);
     }
 
     [Test]
