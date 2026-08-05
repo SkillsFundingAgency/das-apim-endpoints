@@ -2,7 +2,6 @@
 using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.DigitalCertificates.Contracts.Client;
-using GetUserByIdResponse = SFA.DAS.DigitalCertificates.Contracts.ApiResponses.GetUserByIdResponse;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,34 +39,34 @@ namespace SFA.DAS.Admin.Application.Queries.GetAllUserActivityByCode
             var userId = codeBody.UserId;
 
             var userActionsTask = _digitalCertificatesApiClient.GetWithResponseCode<GetUserActionsResponse>(new GetUsersByUserIdUserActionsApiRequest(userId));
-            var userDetailsTask = _digitalCertificatesApiClient.GetWithResponseCode<GetUserByIdResponse>(new GetUsersIdByUserIdApiRequest(userId));
+            var userMatchesTask = _digitalCertificatesApiClient.GetWithResponseCode<GetUserMatchesResponse>(new GetUsersByUserIdMatchesApiRequest(userId));
 
-            await Task.WhenAll(userActionsTask, userDetailsTask);
+            await Task.WhenAll(userActionsTask, userMatchesTask);
 
             var userActionsResponse = userActionsTask.Result;
-            var userDetailsResponse = userDetailsTask.Result;
+            var userMatchesResponse = userMatchesTask.Result;
 
             userActionsResponse?.EnsureSuccessStatusCode();
-            userDetailsResponse?.EnsureSuccessStatusCode();
+            userMatchesResponse?.EnsureSuccessStatusCode();
 
             var userActionsBody = userActionsResponse?.Body;
-            var userDetailsBody = userDetailsResponse?.Body;
+            var userMatchesBody = userMatchesResponse?.Body;
 
-            if (userDetailsBody == null) return null;
+            if (userMatchesBody == null) return null;
 
             var result = new GetAllUserActivityByCodeQueryResult
             {
-                UserId = userDetailsBody.UserId,
-                GovUKIdentifier = userDetailsBody.GovUkIdentifier,
-                EmailAddress = userDetailsBody.EmailAddress,
-                PhoneNumber = userDetailsBody.PhoneNumber,
-                CreatedAt = userDetailsBody.CreatedAt,
-                LastLoginAt = userDetailsBody.LastLoginAt,
-                IsLocked = userDetailsBody.IsLocked,
+                UserId = userMatchesBody.UserId,
+                GovUKIdentifier = userMatchesBody.GovUkIdentifier,
+                EmailAddress = userMatchesBody.EmailAddress,
+                PhoneNumber = userMatchesBody.PhoneNumber,
+                CreatedAt = userMatchesBody.CreatedAt,
+                LastLoginAt = userMatchesBody.LastLoginAt,
+                IsLocked = userMatchesBody.IsLocked,
                 UserActions = new List<GetAllUserActivityByCodeQueryResult.UserAction>()
             };
 
-            var userMatches = userDetailsBody.UserMatches?
+            var userMatches = userMatchesBody.UserMatches?
                 .Where(m => m != null)
                 .OrderByDescending(m => m.EventTime)
                 .ToList() ?? new List<UserMatchDetailDto>();
