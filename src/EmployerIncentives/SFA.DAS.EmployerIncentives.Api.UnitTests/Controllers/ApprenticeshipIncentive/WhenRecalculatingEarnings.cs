@@ -11,7 +11,7 @@ using SFA.DAS.EmployerIncentives.Api.Controllers;
 using SFA.DAS.EmployerIncentives.Application.Commands.RecalculateEarnings;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.RecalculateEarnings;
 using SFA.DAS.Testing.AutoFixture;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure;
 using AutoFixture;
 
 namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.ApprenticeshipIncentive

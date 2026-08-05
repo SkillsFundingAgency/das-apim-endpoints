@@ -1,5 +1,5 @@
 ﻿using System;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 public class GetCandidatePreferencesApiRequest : IGetApiRequest

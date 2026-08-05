@@ -50,7 +50,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             return Ok(queryResult.Apprentices);
         }
 
-        [HttpPatch("/apprentices/{id}")]
+        [HttpPatch("/apprentices/{id}"), Consumes("application/json", "application/json-patch+json", "text/json", "application/*+json")]
         public async Task<IActionResult> UpdateApprentice([Path] Guid id, [Body] object patch)
         {
             await _mediator.Send(new ApprenticePatchCommand

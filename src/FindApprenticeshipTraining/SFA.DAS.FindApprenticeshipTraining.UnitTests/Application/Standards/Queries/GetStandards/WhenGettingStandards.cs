@@ -8,29 +8,33 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Standards.Queries.GetStandards;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Standards.Queries.GetStandards;
 
 public class WhenGettingStandards
 {
     [Test, AutoData]
-    public async Task Then_Gets_Standards_From_Courses_Api(GetStandardsListResponse expectedResponse)
+    public async Task Handle_WhenCalled_ReturnsStandardsFromCoursesApi(GetStandardsListResponse expectedResponse)
     {
         // Arrange
         var query = new GetStandardsQuery();
 
         var mockApiClient = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();
         mockApiClient
-            .Setup(client => client.GetWithResponseCode<GetStandardsListResponse>(It.IsAny<GetActiveStandardsListRequest>()))
+            .Setup(client => client.GetWithResponseCode<GetStandardsListResponse>(It.IsAny<GetActiveStandardsSearchRequest>()))
             .ReturnsAsync(new ApiResponse<GetStandardsListResponse>(expectedResponse, System.Net.HttpStatusCode.OK, null));
         var handler = new GetStandardsQueryHandler(mockApiClient.Object);
         // Act
         var result = await handler.Handle(query, CancellationToken.None);
         // Assert
-        result.Standards.Count.Should().Be(expectedResponse.Standards.Count());
+        result.Standards.Count.Should().Be(expectedResponse.Courses.Count());
     }
 }

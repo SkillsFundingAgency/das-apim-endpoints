@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using static SFA.DAS.Recruit.InnerApi.Requests.GetAllAccountLegalEntitiesApiRequest;
 
 namespace SFA.DAS.Recruit.InnerApi.Requests

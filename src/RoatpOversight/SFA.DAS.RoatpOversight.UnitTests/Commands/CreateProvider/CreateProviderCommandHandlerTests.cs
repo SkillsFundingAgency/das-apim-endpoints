@@ -1,12 +1,13 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Net;
+using AutoFixture.NUnit4;
 using FluentAssertions;
 using Moq;
 using SFA.DAS.RoatpOversight.Application.Commands.CreateProvider;
 using SFA.DAS.RoatpOversight.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
-using System.Net;
 
 namespace SFA.DAS.RoatpOversight.UnitTests.Commands.CreateProvider;
+
 public class CreateProviderCommandHandlerTests
 {
     [Test, MoqAutoData]

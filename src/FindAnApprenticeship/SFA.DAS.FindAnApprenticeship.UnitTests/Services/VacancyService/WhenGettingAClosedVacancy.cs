@@ -1,7 +1,9 @@
 ﻿using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Services.VacancyService
 {

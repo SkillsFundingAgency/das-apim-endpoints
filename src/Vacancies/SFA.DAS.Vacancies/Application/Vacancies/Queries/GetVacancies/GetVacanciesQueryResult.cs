@@ -5,7 +5,7 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancies
 {
     public class GetVacanciesQueryResult
     {
-        public IEnumerable<GetVacanciesListItem> Vacancies { get; set; }
+        public IEnumerable<GetVacancyApiResponse> Vacancies { get; set; }
         public long Total { get ; set ; }
         public long TotalFiltered { get ; set ; }
         public int TotalPages { get ; set ; }

@@ -46,7 +46,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             return new OkObjectResult($"/accounts/{request.AccountId}/applications/{request.ApplicationId}");
         }
 
-        [HttpPatch]
+        [HttpPatch, Consumes("application/json", "application/json-patch+json", "text/json", "application/*+json")]
         [Route("/accounts/{accountId}/applications")]
         public async Task<IActionResult> ConfirmApplication(ConfirmApplicationRequest request)
         {
@@ -106,7 +106,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPatch]
+        [HttpPatch, Consumes("application/json", "application/json-patch+json", "text/json", "application/*+json")]
         [Route("/accounts/{accountId}/applications/{applicationId}/apprenticeships")]
         public async Task<IActionResult> SaveApprenticeshipDetailsDetails(long accountId, Guid applicationId, [FromBody] ApprenticeshipDetailsRequest request)
         {

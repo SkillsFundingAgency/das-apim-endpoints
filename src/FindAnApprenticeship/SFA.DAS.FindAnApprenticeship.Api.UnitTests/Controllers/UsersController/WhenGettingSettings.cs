@@ -1,13 +1,6 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 using System.Net;
-using System.Threading.Tasks;
-using System;
 using System.Threading;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetSettings;
 

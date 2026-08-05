@@ -10,15 +10,16 @@ using SFA.DAS.EmployerAccounts.ExternalApi;
 using SFA.DAS.EmployerAccounts.ExternalApi.Requests;
 using SFA.DAS.EmployerAccounts.ExternalApi.Responses;
 using SFA.DAS.EmployerAccounts.Helpers;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Charities;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EducationalOrganisations;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.PublicSectorOrganisations;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Charities;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EducationalOrganisation;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.PublicSectorOrganisation;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Charities;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EducationalOrganisations;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.PublicSectorOrganisations;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Charities;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EducationalOrganisation;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.PublicSectorOrganisation;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations;
 

@@ -1,13 +1,6 @@
-﻿using AutoFixture.NUnit3;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
-using System;
 using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SavedVacanciesController

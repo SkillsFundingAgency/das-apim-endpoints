@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
-using SFA.DAS.SharedOuterApi.Domain;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using System.Text.Json.Serialization;
 using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.SharedOuterApi.Types.Domain;
+using SFA.DAS.SharedOuterApi.Types.Extensions;
 using AvailableWhere = SFA.DAS.FindApprenticeshipJobs.Application.Shared.AvailableWhere;
 
 namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
@@ -125,6 +125,7 @@ public class Qualification
     public string Subject { get; set; } = null!;
     public string Grade { get; set; } = null!;
     public QualificationWeighting? Weighting { get; set; }
+    public string? OtherQualificationName { get; set; }
 }
 
 public record ContactDetail

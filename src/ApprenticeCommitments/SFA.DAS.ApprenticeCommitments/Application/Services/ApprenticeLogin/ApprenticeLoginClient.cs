@@ -2,7 +2,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.ApprenticeCommitments.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure;
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Services.ApprenticeLogin
 {

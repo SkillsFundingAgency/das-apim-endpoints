@@ -1,4 +1,8 @@
-﻿using AutoFixture.NUnit3;
+﻿using System;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit4;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -7,10 +11,6 @@ using SFA.DAS.RoatpProviderModeration.Application.Infrastructure;
 using SFA.DAS.RoatpProviderModeration.Application.InnerApi.Responses;
 using SFA.DAS.RoatpProviderModeration.Application.Provider.Queries.GetProvider;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpProviderModeration.Application.UnitTests.Providers.Queries;
 

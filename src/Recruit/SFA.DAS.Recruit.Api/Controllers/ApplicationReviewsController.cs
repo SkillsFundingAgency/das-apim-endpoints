@@ -15,6 +15,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewsByVacancyId;
 
 namespace SFA.DAS.Recruit.Api.Controllers
 {
@@ -32,6 +33,25 @@ namespace SFA.DAS.Recruit.Api.Controllers
             try
             {
                 var result = await mediator.Send(new GetApplicationReviewsByVacancyReferenceQuery(vacancyReference), token);
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error getting application reviews");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("vacancyId/{vacancyId:guid}")]
+        public async Task<IActionResult> GetApplicationReviewsByVacancyId(
+            [FromRoute, Required] Guid vacancyId,
+            CancellationToken token = default)
+        {
+            try
+            {
+                var result = await mediator.Send(new GetApplicationReviewsByVacancyIdQuery(vacancyId), token);
 
                 return Ok(result);
             }

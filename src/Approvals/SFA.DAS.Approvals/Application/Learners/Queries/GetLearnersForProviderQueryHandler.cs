@@ -12,9 +12,11 @@ using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Reservations;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Reservations;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using GetAllStandardsRequest = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses.GetAllStandardsRequest;
 
 namespace SFA.DAS.Approvals.Application.Learners.Queries;
@@ -79,8 +81,12 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
             {
                 throw new ApplicationException($"Getting Draft Apprenticeships Failed. Status Code {draftApprenticeshipsResponse.StatusCode} Error : {draftApprenticeshipsResponse.ErrorContent}");
             }
-            var selectedUlns = draftApprenticeshipsResponse.Body.DraftApprenticeships.Select(x => x.Uln).ToList();
-            request.ExcludeUlns = selectedUlns;
+            var selectedUlns = draftApprenticeshipsResponse.Body.DraftApprenticeships
+                .Where(x => long.TryParse(x.Uln, out _))
+                .Select(x => long.Parse(x.Uln))
+                .ToList();
+
+            request.ExcludeUlns.AddRange(selectedUlns);
         }
 
         var learnerDataTask = GetLearnerData(request);
@@ -113,20 +119,23 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
     {
         logger.LogInformation("Getting Learner Data for Provider {ProviderId}", request.ProviderId);
 
-        var response = await learnerDataClient.GetWithResponseCode<GetLearnersForProviderResponse>(
-            new GetLearnersForProviderRequest(
-                request.ProviderId,
-                request.SearchTerm,
-                request.SortField,
-                request.SortDescending,
-                request.Page,
-                request.PageSize,
-                request.StartMonth,
-                request.StartYear,
-                request.MaxStartDate,
-                string.Join(",", request.ExcludeUlns),
-                request.CourseCode
-            ));
+        var requestData = new GetLearnersForProviderRequest
+        {
+            Filter = request.SearchTerm,
+            SortColumn = request.SortField,
+            SortDescending = request.SortDescending,
+            Page = request.Page,
+            PageSize = request.PageSize,
+            StartMonth = request.StartMonth,
+            StartYear = request.StartYear,
+            MaxStartDate = request.MaxStartDate,
+            ExcludeUlns = request.ExcludeUlns,
+            CourseCode = request.CourseCode,
+            LearningType = request.LearningType
+        };
+
+        var response = await learnerDataClient.PostWithResponseCode<GetLearnersForProviderResponse>(
+            new PostGetLearnersForProviderRequest(request.ProviderId, requestData));
 
         if (!string.IsNullOrEmpty(response.ErrorContent))
         {

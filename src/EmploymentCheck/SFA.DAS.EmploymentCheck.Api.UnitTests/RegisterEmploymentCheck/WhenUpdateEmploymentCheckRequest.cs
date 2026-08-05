@@ -7,7 +7,7 @@ using NUnit.Framework;
 using SFA.DAS.EmploymentCheck.Api.Controllers;
 using SFA.DAS.EmploymentCheck.Api.Models;
 using SFA.DAS.EmploymentCheck.Application.Commands.RegisterCheck;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 using System.Threading;

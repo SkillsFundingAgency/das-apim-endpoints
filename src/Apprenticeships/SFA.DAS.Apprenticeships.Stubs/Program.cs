@@ -4,7 +4,6 @@ using AutoFixture;
 using SFA.DAS.Apprenticeships.InnerApi;
 using SFA.DAS.Apprenticeships.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -153,32 +152,6 @@ namespace SFA.DAS.Apprenticeships.Stubs
                         .WithHeader("Content-Type", "application/json")
                         .WithBody(JsonSerializer.Serialize(new Fixture().Create<Guid>())));
 
-            _fakeApprenticeshipsApi.Given(
-                    Request.Create().WithPath($"/*/price")
-                )
-                .RespondWith(
-                    Response.Create()
-                        .WithStatusCode((int)HttpStatusCode.OK)
-                        .WithHeader("Content-Type", "application/json")
-                        .WithBody(JsonSerializer.Serialize(new Fixture().Create<GetLearningPriceResponse>())));
-
-            _fakeApprenticeshipsApi.Given(
-                    Request.Create().WithPath($"/*/startDate")
-                )
-                .RespondWith(
-                    Response.Create()
-                        .WithStatusCode((int)HttpStatusCode.OK)
-                        .WithHeader("Content-Type", "application/json")
-                        .WithBody(JsonSerializer.Serialize(new Fixture().Create<GetLearningStartDateResponse>())));
-
-            _fakeApprenticeshipsApi.Given(
-                    Request.Create().WithPath($"/*/priceHistory").UsingPost()
-                )
-                .RespondWith(
-                    Response.Create()
-                        .WithStatusCode((int)HttpStatusCode.OK)
-                        .WithHeader("Content-Type", "application/json")
-                        .WithBody(JsonSerializer.Serialize(new Fixture().Create<PostCreateApprenticeshipPriceChangeApiResponse>())));
 
             _fakeApprenticeshipsApi.Given(
                     Request.Create().WithPath($"/*/startDateChange").UsingPost()
@@ -188,24 +161,6 @@ namespace SFA.DAS.Apprenticeships.Stubs
                         .WithStatusCode((int)HttpStatusCode.OK)
                         .WithHeader("Content-Type", "application/json")
                         .WithBody("{}"));
-
-            _fakeApprenticeshipsApi.Given(
-                    Request.Create().WithPath($"/*/priceHistory/pending").UsingGet()
-                )
-                .RespondWith(
-                    Response.Create()
-                        .WithStatusCode((int)HttpStatusCode.OK)
-                        .WithHeader("Content-Type", "application/json")
-                        .WithBody(JsonSerializer.Serialize(new Fixture().Create<GetPendingPriceChangeApiResponse>())));
-
-            _fakeApprenticeshipsApi.Given(
-                    Request.Create().WithPath($"/*/startDateChange/pending").UsingGet()
-                )
-                .RespondWith(
-                    Response.Create()
-                        .WithStatusCode((int)HttpStatusCode.OK)
-                        .WithHeader("Content-Type", "application/json")
-                        .WithBody(JsonSerializer.Serialize(new Fixture().Create<GetPendingStartDateChangeApiResponse>())));
 
             _fakeApprenticeshipsApi.Given(
                     Request.Create().WithPath($"/*/priceHistory/pending").UsingDelete()

@@ -1,6 +1,6 @@
 using System;
 using System.Text.Json.Serialization;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.ApimDeveloper.InnerApi.Requests
 {

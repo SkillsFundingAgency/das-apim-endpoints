@@ -4,12 +4,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetFeedbackTransactionsBatch;
 using SFA.DAS.EmployerFeedback.InnerApi.Requests;
 using SFA.DAS.EmployerFeedback.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries.GetFeedbackTransactionsBatch
 {
@@ -57,7 +61,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries.GetFeedbackTran
                 .Setup(x => x.GetWithResponseCode<GetFeedbackTransactionsBatchResponse>(It.Is<GetFeedbackTransactionsBatchRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
                 .ReturnsAsync(apiResponse);
 
-            Assert.ThrowsAsync<SharedOuterApi.Exceptions.ApiResponseException>(async () =>
+            Assert.ThrowsAsync<ApiResponseException>(async () =>
                 await _handler.Handle(new GetFeedbackTransactionsBatchQuery(batchSize), CancellationToken.None));
             _apiClientMock.Verify(x => x.GetWithResponseCode<GetFeedbackTransactionsBatchResponse>(It.IsAny<GetFeedbackTransactionsBatchRequest>()), Times.Once);
         }

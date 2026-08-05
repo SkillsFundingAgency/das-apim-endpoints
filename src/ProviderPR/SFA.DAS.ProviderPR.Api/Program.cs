@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.Authorization;
 using SFA.DAS.ProviderPR.Api.AppStart;
-using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.Apim.Shared.AppStart;
 
 var builder = WebApplication.CreateBuilder(args);
 

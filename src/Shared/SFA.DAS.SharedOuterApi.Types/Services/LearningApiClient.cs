@@ -1,0 +1,102 @@
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using System.Diagnostics.CodeAnalysis;
+using System.Net;
+
+namespace SFA.DAS.SharedOuterApi.Types.Services;
+
+[ExcludeFromCodeCoverage]
+public class LearningApiClient(IInternalApiClient<LearningApiConfiguration> apiClient)
+    : ILearningApiClient<LearningApiConfiguration>
+{
+    public async Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
+    {
+        return await apiClient.GetAll<TResponse>(request);
+    }
+
+    public async Task<TResponse> Get<TResponse>(IGetApiRequest request)
+    {
+        var result = await apiClient.GetWithResponseCode<TResponse>(request);
+        if (result.StatusCode == HttpStatusCode.Unauthorized) throw new ApiUnauthorizedException();
+        return result.Body;
+    }
+
+    public async Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
+    {
+        return await apiClient.GetResponseCode(request);
+    }
+
+    public async Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
+    {
+        return await apiClient.GetWithResponseCode<TResponse>(request);
+    }
+
+    public async Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
+    {
+        return await apiClient.GetPaged<TResponse>(request);
+    }
+
+    public async Task<TResponse> Post<TResponse>(IPostApiRequest request)
+    {
+        return (await apiClient.PostWithResponseCode<TResponse>(request, true)).Body;
+    }
+
+    public Task Post<TData>(IPostApiRequest<TData> request)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task Delete(IDeleteApiRequest request)
+    {
+        await apiClient.Delete(request);
+    }
+
+    public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
+    {
+        return apiClient.DeleteWithResponseCode<TResponse>(request, includeResponse);
+    }
+
+    public async Task Patch<TData>(IPatchApiRequest<TData> request)
+    {
+        await apiClient.Patch(request);
+    }
+
+    public async Task Put(IPutApiRequest request)
+    {
+        await apiClient.Put(request);
+    }
+
+    public async Task Put<TData>(IPutApiRequest<TData> request)
+    {
+        await apiClient.Put(request);
+    }
+
+    public async Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
+    {
+        return await apiClient.PostWithResponseCode<TResponse>(request, includeResponse);
+    }
+
+    public async Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
+    {
+        return await apiClient.PatchWithResponseCode(request);
+    }
+
+    public async Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
+    {
+        return await apiClient.PutWithResponseCode<TResponse>(request);
+    }
+
+    public async Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+    {
+        return await apiClient.PatchWithResponseCode<TData, TResponse>(request, includeResponse);
+    }
+
+    public async Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
+    {
+        return await apiClient.PutWithResponseCode<TData, TResponse>(request);
+    }
+}
+
+public class ApiUnauthorizedException : Exception;

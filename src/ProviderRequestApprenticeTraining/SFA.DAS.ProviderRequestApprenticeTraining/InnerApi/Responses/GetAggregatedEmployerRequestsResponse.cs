@@ -1,7 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
-
-namespace SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Responses
+﻿namespace SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Responses
 {
     public class GetAggregatedEmployerRequestsResponse 
     {

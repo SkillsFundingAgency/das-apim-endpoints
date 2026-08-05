@@ -5,7 +5,7 @@ using SFA.DAS.EmployerAccounts.ExternalApi;
 using SFA.DAS.EmployerAccounts.ExternalApi.Requests;
 using SFA.DAS.EmployerAccounts.ExternalApi.Responses;
 using SFA.DAS.EmployerAccounts.Helpers;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ReferenceData;
 
 namespace SFA.DAS.EmployerAccounts.Strategies
 {

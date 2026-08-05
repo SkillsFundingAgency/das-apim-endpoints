@@ -8,9 +8,12 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System.Collections.Generic;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkCertificate;
@@ -48,7 +51,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetFramework
             var apiResponse = new ApiResponse<GetFrameworkCertificateResponse>(responseBody, HttpStatusCode.OK, string.Empty);
 
             mockAssessorsApiClient
-                .Setup(c => c.GetWithResponseCode<GetFrameworkCertificateResponse>(It.Is<GetFrameworkCertificateRequest>(r => r.Id == id)))
+                .Setup(c => c.GetWithResponseCode<GetFrameworkCertificateResponse>(It.Is<GetFrameworkCertificateRequest>(r => r.Id == id && r.IncludeLogs)))
                 .ReturnsAsync(apiResponse);
 
             // Act
@@ -71,6 +74,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetFramework
             actual.QualificationsAndAwardingBodies[0].Name.Should().Be("Qual1");
             actual.PrintRequestedAt.Should().Be(responseBody.PrintRequestedAt);
             actual.PrintRequestedBy.Should().Be(responseBody.PrintRequestedBy);
+            actual.DeliveryInformation.Should().NotBeNull();
         }
 
         [Test, MoqAutoData]

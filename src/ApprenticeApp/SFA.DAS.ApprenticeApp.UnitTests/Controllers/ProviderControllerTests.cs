@@ -8,7 +8,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Api.Controllers;
 using SFA.DAS.ApprenticeApp.Application.Queries.GetRoatpProviders;
-using SFA.DAS.ApprenticeApp.Models;
 
 namespace SFA.DAS.ApprenticeApp.Api.UnitTests.Controllers
 {

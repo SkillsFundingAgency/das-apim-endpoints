@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Locations.GetLocations
 {

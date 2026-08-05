@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.InnerApi.Requests.EmployerAccounts
 {

@@ -1,8 +1,8 @@
 using Microsoft.OpenApi.Models;
+using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.RoatpOversight.Api.Extensions;
 using SFA.DAS.RoatpOversight.Api.HealthCheck;
 using SFA.DAS.RoatpOversight.Application.Commands.CreateProvider;
-using SFA.DAS.SharedOuterApi.AppStart;
 
 var builder = WebApplication.CreateBuilder(args);
 

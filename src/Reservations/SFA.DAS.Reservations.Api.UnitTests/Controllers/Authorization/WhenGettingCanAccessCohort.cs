@@ -10,7 +10,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Reservations.Api.Controllers;
 using SFA.DAS.Reservations.Application.Cohorts.Queries.GetCohortAccess;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Reservations.Api.UnitTests.Controllers.Authorization;

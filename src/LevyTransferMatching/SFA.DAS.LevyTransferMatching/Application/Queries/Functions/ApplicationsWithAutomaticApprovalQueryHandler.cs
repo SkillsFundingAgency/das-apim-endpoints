@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
-using AutomaticApprovalOption = SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching.AutomaticApprovalOption;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching;
+using AutomaticApprovalOption = SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching.AutomaticApprovalOption;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
 {

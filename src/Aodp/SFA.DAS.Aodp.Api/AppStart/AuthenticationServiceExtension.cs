@@ -1,7 +1,7 @@
 ﻿using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.SharedOuterApi.AppStart;
 using System.Diagnostics.CodeAnalysis;
+using SFA.DAS.Apim.Shared.AppStart;
 
 namespace SFA.DAS.Aodp.Api.AppStart
 {

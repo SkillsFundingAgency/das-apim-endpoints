@@ -6,8 +6,8 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Applications;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.Notifications.Messages.Commands;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication;
 

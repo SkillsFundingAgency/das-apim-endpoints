@@ -1,6 +1,4 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
-using SFA.DAS.FindApprenticeshipJobs.Domain.Extensions;
+﻿using SFA.DAS.FindApprenticeshipJobs.Domain.Extensions;
 
 namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.Extensions
 {

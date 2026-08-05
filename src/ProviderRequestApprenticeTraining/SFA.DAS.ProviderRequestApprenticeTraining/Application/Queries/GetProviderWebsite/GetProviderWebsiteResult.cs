@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderWebsite
+﻿namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderWebsite
 {
     public class GetProviderWebsiteResult
     {

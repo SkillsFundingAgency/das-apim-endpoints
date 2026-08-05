@@ -1,9 +1,6 @@
 ﻿using SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Models
 {

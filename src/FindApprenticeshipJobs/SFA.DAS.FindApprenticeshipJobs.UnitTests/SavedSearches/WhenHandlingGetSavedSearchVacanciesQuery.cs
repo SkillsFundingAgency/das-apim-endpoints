@@ -3,10 +3,13 @@ using SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSea
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Domain;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Domain;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.SavedSearches;
@@ -14,7 +17,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.SavedSearches;
 public class WhenHandlingGetSavedSearchVacanciesQuery
 {
     [Test, MoqAutoData]
-    public async Task When_Saved_Search_Results_Returns_Null_Then_Gets_Saved_Searches_Returns_Null(
+    public async Task When_Saved_Search_Results_Returns_Null_Then_GetSavedSearches_Returns_No_Vacancies(
         Guid candidateId,
         double longitude,
         double latitude,
@@ -28,8 +31,12 @@ public class WhenHandlingGetSavedSearchVacanciesQuery
         GetSavedSearchVacanciesQueryHandler sut)
     {
         mockGetSavedSearchesApiResponse.SavedSearches = [];
-        mockQuery = mockQuery with { Latitude = latitude.ToString(CultureInfo.InvariantCulture) };
-        mockQuery = mockQuery with { Longitude = longitude.ToString(CultureInfo.InvariantCulture) };
+        mockQuery = mockQuery with
+        {
+            UserId = candidateId,
+            Latitude = latitude.ToString(CultureInfo.InvariantCulture),
+            Longitude = longitude.ToString(CultureInfo.InvariantCulture)
+        };
 
         mockFindApprenticeshipApiClient
             .Setup(x => x.Get<GetVacanciesResponse>(It.IsAny<IGetApiRequest>()))
@@ -144,21 +151,28 @@ public class WhenHandlingGetSavedSearchVacanciesQuery
         GetSavedSearchVacanciesQueryHandler sut)
     {
         // arrange
-        query = query with { Latitude = latitude.ToString(CultureInfo.InvariantCulture) };
-        query = query with { Longitude = longitude.ToString(CultureInfo.InvariantCulture) };
+        query = query with
+        {
+            Latitude = latitude.ToString(CultureInfo.InvariantCulture),
+            Longitude = longitude.ToString(CultureInfo.InvariantCulture)
+        };
         courseService.Setup(x => x.GetRoutes()).ReturnsAsync(getRoutesListResponse);
         courseService.Setup(x => x.GetLevels()).ReturnsAsync(getCourseLevelsListResponse);
         candidateApiClient.Setup(client => client.Get<GetCandidateApiResponse>(It.IsAny<GetCandidateApiRequest>( ))).ReturnsAsync(getCandidateApiResponse);
 
         getCandidateApiResponse.Status = UserStatus.Completed;
-        query = query with { SelectedRouteIds = [getRoutesListResponse.Routes.First().Id] };
-        query = query with { Latitude = null };
-        query = query with { Longitude = null };
+        query = query with
+        {
+            SelectedRouteIds = [getRoutesListResponse.Routes.First().Id],
+            Latitude = null,
+            Longitude = null
+        };
         
         GetVacanciesRequest? request = null;
         findApprenticeshipApiClient
             .Setup(x => x.Get<GetVacanciesResponse>(It.IsAny<IGetApiRequest>()))
-            .Callback<IGetApiRequest>(x => request = x as GetVacanciesRequest);
+            .Callback<IGetApiRequest>(x => request = x as GetVacanciesRequest)
+            .ReturnsAsync(() => new GetVacanciesResponse());
             
         // act
         await sut.Handle(query, It.IsAny<CancellationToken>());

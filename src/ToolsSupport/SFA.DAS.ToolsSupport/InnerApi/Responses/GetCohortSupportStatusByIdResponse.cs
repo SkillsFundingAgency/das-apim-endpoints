@@ -1,5 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Interfaces;
-
+﻿
 namespace SFA.DAS.ToolsSupport.InnerApi.Responses;
 
 public class GetCohortSupportStatusByIdResponse

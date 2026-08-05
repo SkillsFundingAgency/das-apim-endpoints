@@ -7,8 +7,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.ApplicationsWithAutomaticApproval
 {

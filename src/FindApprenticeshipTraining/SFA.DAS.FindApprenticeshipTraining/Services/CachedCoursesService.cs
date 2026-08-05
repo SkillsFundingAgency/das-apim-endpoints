@@ -1,8 +1,11 @@
 ﻿using System.Threading.Tasks;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Services
 {
@@ -29,7 +32,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Services
             if (courses != null)
                 return courses;
 
-            courses = await _coursesApiClient.Get<GetStandardsListResponse>(new GetActiveStandardsListRequest());
+            courses = await _coursesApiClient.Get<GetStandardsListResponse>(new GetActiveStandardsSearchRequest());
             await _cacheStorageService.SaveToCache(nameof(GetStandardsListResponse), courses, DeliveryAreaCacheDurationInHours);
 
             return courses;

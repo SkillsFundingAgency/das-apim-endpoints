@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using MediatR;
 using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetRevisionById;
 using SFA.DAS.ApprenticeApp.InnerApi.Cmad.Requests;
 using SFA.DAS.ApprenticeApp.Models;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers

@@ -1,7 +1,8 @@
 ﻿using SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.ApprenticeCommitments.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System.Net;
 using System.Threading.Tasks;
 

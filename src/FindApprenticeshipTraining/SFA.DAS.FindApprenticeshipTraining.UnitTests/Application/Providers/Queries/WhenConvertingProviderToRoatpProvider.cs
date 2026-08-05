@@ -1,7 +1,7 @@
 ﻿using AutoFixture.NUnit3;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Providers.GetRoatpProviders;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Providers.Queries;
 public class WhenConvertingProviderToRoatpProvider

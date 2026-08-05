@@ -15,24 +15,15 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class LocationsController : ControllerBase
+    public class LocationsController(ILogger<LocationsController> logger, IMediator mediator) : ControllerBase
     {
-        private readonly ILogger<LocationsController> _logger;
-        private readonly IMediator _mediator;
-
-        public LocationsController(ILogger<LocationsController> logger, IMediator mediator)
-        {
-            _logger = logger;
-            _mediator = mediator;
-        }
-
         [HttpGet]
         [Route("")]
         public async Task<IActionResult> Index([FromQuery] string query)
         {
             try
             {
-                var queryResponse = await _mediator.Send(new GetAddressesQuery(query));
+                var queryResponse = await mediator.Send(new GetAddressesQuery(query));
 
                 if (queryResponse.AddressesResponse == null || !queryResponse.AddressesResponse.Addresses.Any())
                     return NotFound();
@@ -41,7 +32,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error attempting to get list of addresses");
+                logger.LogError(e, "Error attempting to get list of addresses");
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -52,7 +43,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             try
             {
-                var queryResponse = await _mediator.Send(new GetGeoPointQuery(postcode));
+                var queryResponse = await mediator.Send(new GetGeoPointQuery(postcode));
 
                 if (queryResponse.GetPointResponse == null)
                     return NotFound();
@@ -61,7 +52,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error attempting to get geopoint of postcode");
+                logger.LogError(e, "Error attempting to get geopoint of postcode");
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -72,7 +63,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetLocationsBySearchQuery { SearchTerm = searchTerm });
+                var queryResult = await mediator.Send(new GetLocationsBySearchQuery { SearchTerm = searchTerm });
 
                 var response = new GetLocationBySearchResponse
                 {
@@ -83,7 +74,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to get list of locations, search term:{searchTerm}");
+                logger.LogError(e, "Error attempting to get list of locations, search term: {SearchTerm}", searchTerm);
                 return BadRequest();
             }
         }

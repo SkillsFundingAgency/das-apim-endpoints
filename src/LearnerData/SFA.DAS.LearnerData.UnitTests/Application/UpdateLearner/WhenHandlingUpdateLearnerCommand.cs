@@ -1,16 +1,14 @@
-﻿using AutoFixture;
+using AutoFixture;
 using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
-using System.Net;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
-using Microsoft.Extensions.Caching.Distributed;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using System.Net;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner;
 
@@ -110,7 +108,7 @@ public class WhenHandlingUpdateLearnerCommand
         updateLearningApiResponse.Changes.Clear();
         updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate); // on-prog change
 
-        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command, updateLearningApiResponse, apiPutRequest))
+        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.LearningKey, command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data))
             .ReturnsAsync(updateOnProgPutRequest);
 
         MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
@@ -172,7 +170,7 @@ public class WhenHandlingUpdateLearnerCommand
 
         var updateLearningApiResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
         updateLearningApiResponse.Changes.Clear();
-        updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish); // E&M change
+        updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMaths); // E&M change
 
         _updateEarningsEnglishAndMathsRequestBuilder.Setup(x => x.Build(command, updateLearningApiResponse, apiPutRequest))
             .Returns(englishAndMathsApiPutRequest);
@@ -205,7 +203,7 @@ public class WhenHandlingUpdateLearnerCommand
     {
         var fixture = new Fixture();
         var apiPutRequest = fixture.Create<UpdateLearningApiPutRequest>();
-        _updateLearningPutRequestBuilder.Setup(x => x.Build(command)).Returns(apiPutRequest);
+        _updateLearningPutRequestBuilder.Setup(x => x.Build(command.Ukprn, command.UpdateLearnerRequest, command.LearningKey)).Returns(apiPutRequest);
         return apiPutRequest;
     }
 

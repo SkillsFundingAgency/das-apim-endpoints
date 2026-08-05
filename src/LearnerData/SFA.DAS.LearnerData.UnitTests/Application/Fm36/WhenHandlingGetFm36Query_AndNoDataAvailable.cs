@@ -1,6 +1,4 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
-using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
+﻿using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36;
 

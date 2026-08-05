@@ -28,9 +28,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
                 .Setup(x => x.Send(It.Is<CreateOrUpdateUserCommand>(c =>
                     c.GovUkIdentifier == request.GovUkIdentifier &&
                     c.EmailAddress == request.EmailAddress &&
-                    c.PhoneNumber == request.PhoneNumber &&
-                    c.Names == request.Names &&
-                    c.DateOfBirth == request.DateOfBirth), CancellationToken.None))
+                    c.PhoneNumber == request.PhoneNumber), CancellationToken.None))
                 .ReturnsAsync(result);
 
             var actual = await controller.CreateOrUpdateUser(request) as ObjectResult;

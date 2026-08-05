@@ -8,8 +8,9 @@ using SFA.DAS.ApimDeveloper.InnerApi.Requests;
 using SFA.DAS.ApimDeveloper.Interfaces;
 using SFA.DAS.ApimDeveloper.Models;
 using SFA.DAS.Notifications.Messages.Commands;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.ApimDeveloper.Application.Users.Commands.CreateUser
 {

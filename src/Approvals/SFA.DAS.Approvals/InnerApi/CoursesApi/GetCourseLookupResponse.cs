@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Models;
+﻿using SFA.DAS.SharedOuterApi.Types.Models;
 using System.Collections.Generic;
 
 namespace SFA.DAS.Approvals.InnerApi.CoursesApi;

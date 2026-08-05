@@ -1,13 +1,12 @@
 ﻿using SFA.DAS.Aodp.Services;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Infrastructure.Authentication;
-using SFA.DAS.SharedOuterApi.Infrastructure.Services;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.Apim.Shared.Interfaces;
+
 using System.Diagnostics.CodeAnalysis;
+using SFA.DAS.Aodp.Configuration;
+using SFA.DAS.Apim.Shared.Services;
 
 namespace SFA.DAS.Aodp.Api.AppStart
 {

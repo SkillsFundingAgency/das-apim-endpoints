@@ -5,9 +5,13 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Domain;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Models;
+
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Domain;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Extensions;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
 
@@ -86,7 +90,7 @@ public class GetClosedVacancyResponse: IVacancy
     public int NumberOfPositions { get; set; }
     public string OutcomeDescription { get; set; }
     public ContactDetail ProviderContact { get; set; }
-    public IEnumerable<Qualification> Qualifications { get; init; } = [];
+    public IEnumerable<Qualification> Qualifications { get; set; } = [];
     public string ShortDescription { get; set; }
     public IEnumerable<string> Skills { get; init; } = [];
     public DateTime StartDate { get; set; }
@@ -108,6 +112,7 @@ public class GetClosedVacancyResponse: IVacancy
         public string Subject { get; set; }
         public string Grade { get; set; }
         public QualificationWeighting? Weighting { get; set; }
+        public string OtherQualificationName { get; set; }
     }
         
     public class ContactDetail

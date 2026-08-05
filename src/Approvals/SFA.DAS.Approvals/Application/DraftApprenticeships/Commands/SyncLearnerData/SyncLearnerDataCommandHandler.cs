@@ -9,12 +9,14 @@ using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Constants;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.SyncLearnerData;
 
-public abstract class SyncLearnerDataCommandHandler(
+public class SyncLearnerDataCommandHandler(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsApiClient,
     IInternalApiClient<LearnerDataInnerApiConfiguration> learnerDataClient,
     ITrainingProgrammeResolutionService trainingProgrammeResolutionService,
@@ -113,7 +115,7 @@ public abstract class SyncLearnerDataCommandHandler(
 
     private async Task<(string CourseCode, string TrainingCourseName, string TrainingCourseVersion, string TrainingCourseOption, string StandardUId)> ResolveCourseFields(GetLearnerForProviderResponse learnerData)
     {
-        var isApprenticeshipUnit = string.Equals(learnerData.LearningType, "ApprenticeshipUnit", StringComparison.OrdinalIgnoreCase);
+        var isApprenticeshipUnit = learnerData.LearningType == LearningType.ApprenticeshipUnit;
         var courseCode = isApprenticeshipUnit ? learnerData.TrainingCode ?? string.Empty : learnerData.StandardCode.ToString();
         var courseName = learnerData.TrainingName ?? string.Empty;
 

@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Models.RequestApprenticeTraining;
+﻿using SFA.DAS.SharedOuterApi.Types.Models.RequestApprenticeTraining;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetClosestRegion
 {

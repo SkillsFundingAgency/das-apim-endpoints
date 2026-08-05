@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.DigitalCertificates.InnerApi.Responses;
 
 namespace SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor
 {
@@ -21,6 +22,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor
         public string PrintRequestedBy { get; set; }
         public DateTime CertificationDate { get; set; }
         public string CertificateReference { get; set; }
+        public List<CertificateLog> CertificateLogs { get; set; }
     }
 
     public class QualificationAndAwardingBody

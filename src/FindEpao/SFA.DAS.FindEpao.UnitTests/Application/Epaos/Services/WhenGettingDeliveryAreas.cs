@@ -7,8 +7,10 @@ using NUnit.Framework;
 using SFA.DAS.FindEpao.Application.Epaos.Services;
 using SFA.DAS.FindEpao.InnerApi.Requests;
 using SFA.DAS.FindEpao.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindEpao.UnitTests.Application.Epaos.Services

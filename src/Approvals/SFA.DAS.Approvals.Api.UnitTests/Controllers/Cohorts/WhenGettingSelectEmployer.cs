@@ -17,7 +17,6 @@ public class WhenGettingSelectEmployer
         string searchTerm,
         string sortField,
         bool reverseSort,
-        bool useLearnerData,
         [Frozen] Mock<ISender> mediator,
         [Greedy] CohortController controller)
     {
@@ -45,7 +44,7 @@ public class WhenGettingSelectEmployer
             .ReturnsAsync(mediatorResult);
 
         // Act
-        var controllerResult = await controller.GetSelectEmployer(providerId, searchTerm, sortField, reverseSort, useLearnerData, pageNumber, pageSize) as ObjectResult;
+        var controllerResult = await controller.GetSelectEmployer(providerId, searchTerm, sortField, reverseSort, pageNumber, pageSize) as ObjectResult;
 
         // Assert
         controllerResult.Should().NotBeNull();
@@ -61,7 +60,6 @@ public class WhenGettingSelectEmployer
         string searchTerm,
         string sortField,
         bool reverseSort,
-        bool useLearnerData,
         [Frozen] Mock<ISender> mediator,
         [Greedy] CohortController controller)
     {
@@ -71,7 +69,7 @@ public class WhenGettingSelectEmployer
             It.IsAny<GetSelectEmployerQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(nullResult);
 
         // Act
-        var controllerResult = await controller.GetSelectEmployer(providerId, searchTerm, sortField, reverseSort, useLearnerData, 1, 50);
+        var controllerResult = await controller.GetSelectEmployer(providerId, searchTerm, sortField, reverseSort, 1, 50);
 
         // Assert
         controllerResult.Should().BeOfType<NotFoundResult>();
@@ -83,11 +81,10 @@ public class WhenGettingSelectEmployer
         string searchTerm,
         string sortField,
         bool reverseSort,
-        bool useLearnerData,
         [Greedy] CohortController controller)
     {
         // Act
-        var controllerResult = await controller.GetSelectEmployer(providerId, searchTerm, sortField, reverseSort, useLearnerData, 1, 101);
+        var controllerResult = await controller.GetSelectEmployer(providerId, searchTerm, sortField, reverseSort, 1, 101);
 
         // Assert
         controllerResult.Should().BeOfType<BadRequestResult>();
@@ -98,12 +95,11 @@ public class WhenGettingSelectEmployer
         int providerId,
         string searchTerm,
         string sortField,
-        bool reverseSort,
-        bool useLearnerData,
+        bool reverseSort,        
         [Greedy] CohortController controller)
     {
         // Act
-        var controllerResult = await controller.GetSelectEmployer(providerId, searchTerm, sortField, reverseSort, useLearnerData, 0, 50);
+        var controllerResult = await controller.GetSelectEmployer(providerId, searchTerm, sortField, reverseSort, 0, 50);
 
         // Assert
         controllerResult.Should().BeOfType<BadRequestResult>();
@@ -114,12 +110,11 @@ public class WhenGettingSelectEmployer
         int providerId,
         string searchTerm,
         string sortField,
-        bool reverseSort,
-        bool useLearnerData,
+        bool reverseSort,        
         [Greedy] CohortController controller)
     {
         // Act
-        var controllerResult = await controller.GetSelectEmployer(providerId, searchTerm, sortField, reverseSort, useLearnerData, 1, 0);
+        var controllerResult = await controller.GetSelectEmployer(providerId, searchTerm, sortField, reverseSort, 1, 0);
 
         // Assert
         controllerResult.Should().BeOfType<BadRequestResult>();
@@ -130,8 +125,7 @@ public class WhenGettingSelectEmployer
         int providerId,
         string searchTerm,
         string sortField,
-        bool reverseSort,
-        bool useLearnerData,
+        bool reverseSort,        
         [Frozen] Mock<ISender> mediator,
         [Frozen] Mock<ILogger<DraftApprenticeshipController>> logger,
         [Greedy] CohortController controller)
@@ -141,7 +135,7 @@ public class WhenGettingSelectEmployer
             It.IsAny<GetSelectEmployerQuery>(), It.IsAny<CancellationToken>())).ThrowsAsync(new Exception("Test exception"));
 
         // Act
-        var controllerResult = await controller.GetSelectEmployer(providerId, searchTerm, sortField, reverseSort, useLearnerData, 1, 50);
+        var controllerResult = await controller.GetSelectEmployer(providerId, searchTerm, sortField, reverseSort, 1, 50);
 
         // Assert
         controllerResult.Should().BeOfType<BadRequestResult>();

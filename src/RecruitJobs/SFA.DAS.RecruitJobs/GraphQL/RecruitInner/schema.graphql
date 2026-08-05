@@ -3,6 +3,7 @@ schema {
 }
 
 type Query {
+  pagedVacancies(skip: Int take: Int where: VacancyEntityFilterInput order: [VacancyEntitySortInput!]): PagedVacanciesCollectionSegment
   vacancies(where: VacancyEntityFilterInput order: [VacancyEntitySortInput!]): [VacancyEntity!]!
 }
 
@@ -28,6 +29,7 @@ input VacancyEntityFilterInput {
   ownerType: NullableOfOwnerTypeOperationFilterInput
   sourceOrigin: NullableOfSourceOriginOperationFilterInput
   sourceType: NullableOfSourceTypeOperationFilterInput
+  archiveType: NullableOfArchiveTypeOperationFilterInput
   sourceVacancyReference: LongOperationFilterInput
   approvedDate: DateTimeOperationFilterInput
   createdDate: DateTimeOperationFilterInput
@@ -39,6 +41,7 @@ input VacancyEntityFilterInput {
   liveDate: DateTimeOperationFilterInput
   startDate: DateTimeOperationFilterInput
   closingDate: DateTimeOperationFilterInput
+  archivedDate: DateTimeOperationFilterInput
   reviewCount: IntOperationFilterInput
   applicationUrl: StringOperationFilterInput
   applicationMethod: NullableOfApplicationMethodOperationFilterInput
@@ -91,6 +94,7 @@ input VacancyEntityFilterInput {
   providerReviewFieldIndicators: StringOperationFilterInput
   submittedByUserId: UuidOperationFilterInput
   reviewRequestedByUserId: UuidOperationFilterInput
+  archivedByUserId: UuidOperationFilterInput
 }
 
 input VacancyEntitySortInput {
@@ -103,6 +107,7 @@ input VacancyEntitySortInput {
   ownerType: SortEnumType
   sourceOrigin: SortEnumType
   sourceType: SortEnumType
+  archiveType: SortEnumType
   sourceVacancyReference: SortEnumType
   approvedDate: SortEnumType
   createdDate: SortEnumType
@@ -114,6 +119,7 @@ input VacancyEntitySortInput {
   liveDate: SortEnumType
   startDate: SortEnumType
   closingDate: SortEnumType
+  archivedDate: SortEnumType
   reviewCount: SortEnumType
   applicationUrl: SortEnumType
   applicationMethod: SortEnumType
@@ -166,6 +172,16 @@ input VacancyEntitySortInput {
   providerReviewFieldIndicators: SortEnumType
   submittedByUserId: SortEnumType
   reviewRequestedByUserId: SortEnumType
+  archivedByUserId: SortEnumType
+}
+
+"A segment of a collection."
+type PagedVacanciesCollectionSegment {
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  "A flattened list of the items."
+  items: [VacancyEntity!]
+  totalCount: Int!
 }
 
 input UuidOperationFilterInput {
@@ -246,6 +262,13 @@ input NullableOfSourceTypeOperationFilterInput {
   neq: SourceType
   in: [SourceType]
   nin: [SourceType]
+}
+
+input NullableOfArchiveTypeOperationFilterInput {
+  eq: ArchiveType
+  neq: ArchiveType
+  in: [ArchiveType]
+  nin: [ArchiveType]
 }
 
 input DateTimeOperationFilterInput {
@@ -352,6 +375,14 @@ enum SortEnumType {
   DESC
 }
 
+"Information about the offset pagination."
+type CollectionSegmentInfo {
+  "Indicates whether more items exist following the set defined by the clients arguments."
+  hasNextPage: Boolean!
+  "Indicates whether more items exist prior the set defined by the clients arguments."
+  hasPreviousPage: Boolean!
+}
+
 scalar UUID
 
 "The `Long` scalar type represents non-fractional signed whole 64-bit numeric values. Long can represent values between -(2^63) and 2^63 - 1."
@@ -363,6 +394,11 @@ scalar DateTime
 "The `Decimal` scalar type represents a decimal floating-point number."
 scalar Decimal
 
+enum ApprenticeshipTypes {
+  STANDARD
+  FOUNDATION
+}
+
 enum VacancyStatus {
   DRAFT
   REVIEW
@@ -372,6 +408,7 @@ enum VacancyStatus {
   LIVE
   CLOSED
   APPROVED
+  ARCHIVED
 }
 
 type VacancyEntity {
@@ -384,6 +421,7 @@ type VacancyEntity {
   ownerType: OwnerType
   sourceOrigin: SourceOrigin
   sourceType: SourceType
+  archiveType: ArchiveType
   sourceVacancyReference: Long
   approvedDate: DateTime
   createdDate: DateTime
@@ -395,6 +433,7 @@ type VacancyEntity {
   liveDate: DateTime
   startDate: DateTime
   closingDate: DateTime
+  archivedDate: DateTime
   reviewCount: Int!
   applicationUrl: String
   applicationMethod: ApplicationMethod
@@ -447,11 +486,7 @@ type VacancyEntity {
   providerReviewFieldIndicators: String
   submittedByUserId: UUID
   reviewRequestedByUserId: UUID
-}
-
-enum ApprenticeshipTypes {
-  STANDARD
-  FOUNDATION
+  archivedByUserId: UUID
 }
 
 enum OwnerType {
@@ -472,6 +507,11 @@ enum SourceType {
   CLONE
   EXTENSION
   NEW
+}
+
+enum ArchiveType {
+  AUTO
+  MANUAL
 }
 
 enum ApplicationMethod {
@@ -528,3 +568,6 @@ enum ClosureReason {
 
 "The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."
 directive @cost("The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc." weight: String!) on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM | INPUT_FIELD_DEFINITION
+
+"The purpose of the `@listSize` directive is to either inform the static analysis about the size of returned lists (if that information is statically available), or to point the analysis to where to find that information."
+directive @listSize("The `assumedSize` argument can be used to statically define the maximum length of a list returned by a field." assumedSize: Int "The `slicingArguments` argument can be used to define which of the field's arguments with numeric type are slicing arguments, so that their value determines the size of the list returned by that field. It may specify a list of multiple slicing arguments." slicingArguments: [String!] "The `slicingArgumentDefaultValue` argument can be used to define a default value for a slicing argument, which is used if the argument is not present in a query." slicingArgumentDefaultValue: Int "The `sizedFields` argument can be used to define that the value of the `assumedSize` argument or of a slicing argument does not affect the size of a list returned by a field itself, but that of a list returned by one of its sub-fields." sizedFields: [String!] "The `requireOneSlicingArgument` argument can be used to inform the static analysis that it should expect that exactly one of the defined slicing arguments is present in a query. If that is not the case (i.e., if none or multiple slicing arguments are present), the static analysis may throw an error." requireOneSlicingArgument: Boolean! = true) on FIELD_DEFINITION

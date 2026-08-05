@@ -7,41 +7,40 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 using SFA.DAS.FindApprenticeshipTraining.Application.Locations.GetLocations;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
+namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
+
+[ApiController]
+[Route("[controller]/")]
+public class LocationsController : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]/")]
-    public class LocationsController : ControllerBase
+    private readonly IMediator _mediator;
+    private readonly ILogger<LocationsController> _logger;
+
+    public LocationsController(IMediator mediator, ILogger<LocationsController> logger)
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger<LocationsController> _logger;
+        _mediator = mediator;
+        _logger = logger;
+    }
 
-        public LocationsController (IMediator mediator, ILogger<LocationsController> logger)
+    [HttpGet]
+    [Route("")]
+    public async Task<IActionResult> GetByQuery([FromQuery] string searchTerm)
+    {
+        try
         {
-            _mediator = mediator;
-            _logger = logger;
+            var queryResult = await _mediator.Send(new GetLocationsQuery { SearchTerm = searchTerm });
+
+            var response = new GetLocationSearchResponse
+            {
+                Locations = queryResult.Locations
+                    .Select(c => (GetLocationSearchResponseItem)c),
+            };
+            return Ok(response);
         }
-
-        [HttpGet]
-        [Route("")]
-        public async Task<IActionResult> GetByQuery([FromQuery]string searchTerm)
+        catch (Exception e)
         {
-            try
-            {
-                var queryResult = await _mediator.Send(new GetLocationsQuery {SearchTerm = searchTerm});
-
-                var response = new GetLocationSearchResponse
-                {
-                    Locations = queryResult.Locations
-                        .Select(c => (GetLocationSearchResponseItem)c),
-                };
-                return Ok(response);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error attempting to get list of locations, search term:{searchTerm}");
-                return BadRequest();
-            }
+            _logger.LogError(e, "Error attempting to get list of locations, search term:{SearchTerm}", searchTerm);
+            return BadRequest();
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace SFA.DAS.ApprenticeApp.Models
+﻿namespace SFA.DAS.ApprenticeApp.Models
 {
     public enum ApprenticeshipType
     {

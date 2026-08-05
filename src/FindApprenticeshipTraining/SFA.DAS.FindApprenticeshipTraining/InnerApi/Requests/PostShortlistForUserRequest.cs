@@ -1,5 +1,5 @@
 ﻿using System;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
 {
@@ -14,7 +14,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
         public Guid UserId { get; set; }
         public int Ukprn { get; set; }
         public string LarsCode { get; set; }
-        public string LocationDescription { get; set; }
+        public string LocationName { get; set; }
         public decimal? Latitude { get; set; }
         public decimal? Longitude { get; set; }
     }

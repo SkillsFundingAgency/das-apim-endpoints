@@ -2,13 +2,14 @@
 using RestEase;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.PayeSchemes;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.PayeSchemes;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Net;
 
 namespace SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationshipByEmail;

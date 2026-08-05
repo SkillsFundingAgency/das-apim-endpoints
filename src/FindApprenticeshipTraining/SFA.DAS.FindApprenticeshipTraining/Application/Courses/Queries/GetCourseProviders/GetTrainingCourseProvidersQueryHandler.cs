@@ -2,14 +2,14 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
-using GetStandardRequest = SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests.GetStandardRequest;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
 
@@ -19,13 +19,13 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
     {
         LocationItem locationItem = null;
 
-        if (!string.IsNullOrWhiteSpace(request.Location))
+        if (!string.IsNullOrWhiteSpace(request.LocationName))
         {
-            locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(request.Location);
+            locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(request.LocationName);
 
             if (locationItem is null)
             {
-                GetStandardsListItem standard = await _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.LarsCode));
+                GetStandardsListItem standard = await _coursesApiClient.Get<GetStandardsListItem>(new GetCourseLookupDetailsByIdRequest(request.LarsCode));
 
                 var standardName = standard != null ? $"{standard.Title} (level {standard.Level})" : string.Empty;
 
@@ -53,7 +53,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
                     Distance = request.Distance,
                     Latitude = locationItem?.Latitude,
                     Longitude = locationItem?.Longitude,
-                    Location = request.Location,
+                    LocationName = request.LocationName,
                     DeliveryModes = request.DeliveryModes,
                     EmployerProviderRatings = request.EmployerProviderRatings,
                     ApprenticeProviderRatings = request.ApprenticeProviderRatings,

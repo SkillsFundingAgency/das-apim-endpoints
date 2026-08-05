@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SFA.DAS.SharedOuterApi.AppStart;
 using System.Diagnostics.CodeAnalysis;
+using SFA.DAS.Apim.Shared.AppStart;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart;
 

@@ -1,5 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.InnerApi;
+﻿using SFA.DAS.SharedOuterApi.Types.Constants;
+using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
@@ -7,7 +7,7 @@ public sealed class ProviderCourseModel
 {
     public string CourseName { get; set; }
     public CourseType CourseType { get; set; }
-    public ApprenticeshipType ApprenticeshipType { get; set; }
+    public LearningType LearningType { get; set; }
     public int Level { get; set; }
     public string LarsCode { get; set; }
     public string IfateReferenceNumber { get; set; }
@@ -18,7 +18,7 @@ public sealed class ProviderCourseModel
         {
             CourseName = source.CourseName,
             CourseType = source.CourseType,
-            ApprenticeshipType = source.ApprenticeshipType,
+            LearningType = source.LearningType,
             Level = source.Level,
             LarsCode = source.LarsCode,
             IfateReferenceNumber = source.IfateReferenceNumber

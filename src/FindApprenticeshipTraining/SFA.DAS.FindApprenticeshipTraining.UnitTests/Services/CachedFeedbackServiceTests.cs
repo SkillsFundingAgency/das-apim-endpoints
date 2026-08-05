@@ -5,21 +5,25 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ApprenticeFeedback;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFeedback;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ApprenticeFeedback;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerFeedback;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Services;
 public class CachedFeedbackServiceTests
 {
     [Test, MoqAutoData]
-    public async Task GetProviderFeedback_NoCache_InvokesEmployerFeedbackApi(
+    public async Task GetProviderFeedback_EmployerFeedbackNotInCache_InvokesEmployerFeedbackApi(
         [Frozen] Mock<IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration>> empFBApiClientMock,
         [Frozen] Mock<ICacheStorageService> cacheStorageServiceMock,
         EmployerFeedbackAnnualDetails expected,
+        ApprenticeFeedbackAnnualDetails cachedApprenticeFeedback,
         CachedFeedbackService sut,
         int ukprn)
     {
@@ -27,6 +31,9 @@ public class CachedFeedbackServiceTests
         cacheStorageServiceMock
             .Setup(x => x.RetrieveFromCache<EmployerFeedbackAnnualDetails>($"{nameof(EmployerFeedbackAnnualDetails)}-{ukprn}"))
             .ReturnsAsync((EmployerFeedbackAnnualDetails)null);
+        cacheStorageServiceMock
+            .Setup(x => x.RetrieveFromCache<ApprenticeFeedbackAnnualDetails>($"{nameof(ApprenticeFeedbackAnnualDetails)}-{ukprn}"))
+            .ReturnsAsync(cachedApprenticeFeedback);
         empFBApiClientMock
             .Setup(e => e.GetWithResponseCode<EmployerFeedbackAnnualDetails>(It.Is<GetEmployerFeedbackSummaryAnnualRequest>(r => r.GetUrl.Contains(ukprn.ToString()))))
             .ReturnsAsync(new ApiResponse<EmployerFeedbackAnnualDetails>(expected, System.Net.HttpStatusCode.OK, null));
@@ -37,14 +44,18 @@ public class CachedFeedbackServiceTests
     }
 
     [Test, MoqAutoData]
-    public async Task GetProviderFeedback_NoCache_InvokesApprenticeFeedbackApi(
+    public async Task GetProviderFeedback_ApprenticeFeedbackNotInCache_InvokesApprenticeFeedbackApi(
         [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> appFBApiClientMock,
         [Frozen] Mock<ICacheStorageService> cacheStorageServiceMock,
         ApprenticeFeedbackAnnualDetails expected,
+        EmployerFeedbackAnnualDetails cachedEmployerFeedback,
         CachedFeedbackService sut,
         int ukprn)
     {
         // Arrange
+        cacheStorageServiceMock
+            .Setup(x => x.RetrieveFromCache<EmployerFeedbackAnnualDetails>($"{nameof(EmployerFeedbackAnnualDetails)}-{ukprn}"))
+            .ReturnsAsync(cachedEmployerFeedback);
         cacheStorageServiceMock
             .Setup(x => x.RetrieveFromCache<ApprenticeFeedbackAnnualDetails>($"{nameof(ApprenticeFeedbackAnnualDetails)}-{ukprn}"))
             .ReturnsAsync((ApprenticeFeedbackAnnualDetails)null);
@@ -58,10 +69,11 @@ public class CachedFeedbackServiceTests
     }
 
     [Test, MoqAutoData]
-    public async Task GetProviderFeedback_CacheHit_ReturnsCachedEmployerFeedback(
+    public async Task GetProviderFeedback_EmployerFeedbackInCache_ReturnsCachedEmployerFeedback(
         [Frozen] Mock<IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration>> empFBApiClientMock,
         [Frozen] Mock<ICacheStorageService> cacheStorageServiceMock,
         EmployerFeedbackAnnualDetails expected,
+        ApprenticeFeedbackAnnualDetails cachedApprenticeFeedback,
         CachedFeedbackService sut,
         int ukprn)
     {
@@ -69,6 +81,9 @@ public class CachedFeedbackServiceTests
         cacheStorageServiceMock
             .Setup(x => x.RetrieveFromCache<EmployerFeedbackAnnualDetails>($"{nameof(EmployerFeedbackAnnualDetails)}-{ukprn}"))
             .ReturnsAsync(expected);
+        cacheStorageServiceMock
+            .Setup(x => x.RetrieveFromCache<ApprenticeFeedbackAnnualDetails>($"{nameof(ApprenticeFeedbackAnnualDetails)}-{ukprn}"))
+            .ReturnsAsync(cachedApprenticeFeedback);
         // Act
         var (actual, _) = await sut.GetProviderFeedback(ukprn);
         // Assert
@@ -77,14 +92,18 @@ public class CachedFeedbackServiceTests
     }
 
     [Test, MoqAutoData]
-    public async Task GetProviderFeedback_CacheHit_ReturnsCachedApprenticeFeedback(
+    public async Task GetProviderFeedback_ApprenticeFeedbackInCache_ReturnsCachedApprenticeFeedback(
         [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> appFBApiClientMock,
         [Frozen] Mock<ICacheStorageService> cacheStorageServiceMock,
         ApprenticeFeedbackAnnualDetails expected,
+        EmployerFeedbackAnnualDetails cachedEmployerFeedback,
         CachedFeedbackService sut,
         int ukprn)
     {
         // Arrange
+        cacheStorageServiceMock
+            .Setup(x => x.RetrieveFromCache<EmployerFeedbackAnnualDetails>($"{nameof(EmployerFeedbackAnnualDetails)}-{ukprn}"))
+            .ReturnsAsync(cachedEmployerFeedback);
         cacheStorageServiceMock
             .Setup(x => x.RetrieveFromCache<ApprenticeFeedbackAnnualDetails>($"{nameof(ApprenticeFeedbackAnnualDetails)}-{ukprn}"))
             .ReturnsAsync(expected);

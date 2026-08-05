@@ -1,5 +1,5 @@
 ﻿using System;
-using static SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments.GetApprenticeshipUpdatesResponse;
+using static SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments.GetApprenticeshipUpdatesResponse;
 
 namespace SFA.DAS.ApprenticeApp.Models
 {

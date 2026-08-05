@@ -11,21 +11,21 @@ public class GetNotificationsLocationsQueryResult
 
     public class Location
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         [JsonPropertyName("coordinates")]
-        public double[] GeoPoint { get; set; }
+        public double[] GeoPoint { get; set; } = [];
     }
 
     public class NotificationEventType
     {
-        public string EventFormat { get; set; }
+        public string EventFormat { get; set; } = string.Empty;
         public bool ReceiveNotifications { get; set; }
     }
 
     public class AddedLocation
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public int Radius { get; set; }
-        public double[] Coordinates { get; set; }
+        public double[] Coordinates { get; set; } = [];
     }
 }

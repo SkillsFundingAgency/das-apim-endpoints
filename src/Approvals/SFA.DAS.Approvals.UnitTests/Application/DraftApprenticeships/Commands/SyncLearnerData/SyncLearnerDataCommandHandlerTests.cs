@@ -10,9 +10,12 @@ using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Constants;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands.SyncLearnerData
 {
@@ -232,7 +235,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands.
             learnerDataResponse.LastName = "Doe";
             learnerDataResponse.TrainingPrice = 1000;
             learnerDataResponse.EpaoPrice = 500;
-            learnerDataResponse.LearningType = "ApprenticeshipUnit";
+            learnerDataResponse.LearningType = LearningType.ApprenticeshipUnit;
             learnerDataResponse.TrainingCode = "550-2-1";
             learnerDataResponse.TrainingName = "Framework Unit Name";
             learnerDataResponse.StandardCode = 0;

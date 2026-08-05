@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using SFA.DAS.VacanciesManage.InnerApi.Responses;
+﻿using SFA.DAS.VacanciesManage.InnerApi.Responses;
+using System.Collections.Generic;
 
-namespace SFA.DAS.VacanciesManage.Application.TrainingCourses.Queries
+namespace SFA.DAS.VacanciesManage.Application.TrainingCourses.Queries;
+
+public class GetTrainingCoursesQueryResult
 {
-    public class GetTrainingCoursesQueryResult
-    {
-        public IEnumerable<GetStandardsListItem> TrainingCourses { get ; set ; }
-    }
+    public IEnumerable<GetStandardsListItem> TrainingCourses { get; set; }
 }

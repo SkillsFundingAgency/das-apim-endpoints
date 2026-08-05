@@ -5,7 +5,7 @@ using SFA.DAS.Approvals.Enums;
 namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses
 {
     public class GetApprenticeshipsResponse
-    {       
+    {
         public class ApprenticeshipDetailsResponse
         {
             public long Id { get; set; }
@@ -48,5 +48,6 @@ namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses
         public int TotalApprenticeshipsWithAlertsFound { get; set; }
         public int TotalApprenticeships { get; set; }
         public int PageNumber { get; set; }
+        public bool HasChangeHistory { get; set; }
     }
 }

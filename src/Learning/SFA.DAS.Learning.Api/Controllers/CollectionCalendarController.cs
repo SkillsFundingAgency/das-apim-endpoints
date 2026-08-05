@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.CollectionCalendar.Contracts.ApiRequests;
+using SFA.DAS.CollectionCalendar.Contracts.ApiResponses;
+using SFA.DAS.CollectionCalendar.Contracts.Client;
 
 namespace SFA.DAS.Learning.Api.Controllers;
 
@@ -10,17 +9,17 @@ namespace SFA.DAS.Learning.Api.Controllers;
 [Route("[controller]")]
 public class CollectionCalendarController : ControllerBase
 {
-    private readonly ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> _collectionCalendarApiClient;
+    private readonly ICollectionCalendarClient<CollectionCalendarConfiguration> _collectionCalendarClient;
 
-    public CollectionCalendarController(ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient)
+    public CollectionCalendarController(ICollectionCalendarClient<CollectionCalendarConfiguration> collectionCalendarClient)
     {
-        _collectionCalendarApiClient = collectionCalendarApiClient;
+        _collectionCalendarClient = collectionCalendarClient;
     }
 
     [HttpGet]
     [Route("academicYear/{searchDate}")]
     public async Task<IActionResult> GetAcademicYear(DateTime searchDate)
     {
-        return Ok(await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearByDateRequest(searchDate)));
+        return Ok(await _collectionCalendarClient.Get<AcademicYearDetails>(new GetAcademicyearsApiRequest(searchDate)));
     }
 }

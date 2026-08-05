@@ -1,8 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.EmployerAan.Application.Settings.Commands;
 using SFA.DAS.EmployerAan.Application.Settings.NotificationsLocations;
-using SFA.DAS.EmployerAan.Models.ApiRequests.Settings;
 
 namespace SFA.DAS.EmployerAan.Api.Controllers
 {

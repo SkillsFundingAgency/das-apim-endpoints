@@ -1,6 +1,3 @@
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
 
 namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates;

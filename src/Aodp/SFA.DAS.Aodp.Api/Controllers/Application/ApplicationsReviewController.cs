@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Aodp.Application.Commands.Application.Application;
 using SFA.DAS.Aodp.Application.Commands.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Application.Application;
 using SFA.DAS.Aodp.Application.Queries.Application.Review;
@@ -144,6 +145,24 @@ public class ApplicationsReviewController : BaseController
     public async Task<IActionResult> GetApplicationFormDetailsByIdAsync(Guid applicationReviewId)
     {
         var query = new GetApplicationFormAnswersByReviewIdQuery(applicationReviewId);
+        return await SendRequestAsync(query);
+    }
+
+    [HttpPut("/api/application-reviews/bulk-action")]
+    [ProducesResponseType(typeof(BulkApplicationActionCommandResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> BulkApplicationAction([FromBody] BulkApplicationActionCommand command)
+    {
+        return await SendRequestAsync(command);
+    }
+
+    [HttpGet("/api/application-reviews/{applicationReviewId}/export-data")]
+    [ProducesResponseType(typeof(GetApplicationExportDataQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetApplicationExportData(Guid applicationReviewId)
+    {
+        var query = new GetApplicationExportDataQuery(applicationReviewId);
         return await SendRequestAsync(query);
     }
 }

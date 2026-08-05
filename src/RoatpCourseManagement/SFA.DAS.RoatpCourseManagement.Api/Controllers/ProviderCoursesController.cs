@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProviderCourses;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAvailableCoursesForProvider;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourse;
-using SFA.DAS.SharedOuterApi.InnerApi;
+using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers;
 
@@ -67,14 +67,6 @@ public class ProviderCoursesController : ControllerBase
         try
         {
             var result = await _mediator.Send(new GetAllProviderCoursesQuery(ukprn, courseType));
-
-            if (result == null)
-            {
-                _logger.LogInformation("Standards data not found for ukprn number {Ukprn}", ukprn);
-                return NotFound();
-            }
-
-            _logger.LogInformation("Standards data found for ukprn number {Ukprn}", ukprn);
             return Ok(result);
 
         }

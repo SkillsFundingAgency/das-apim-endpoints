@@ -10,6 +10,7 @@ public class ApprenticeshipModel
         AdditionalPayments = new List<AdditionalPaymentModel>();
         Instalments = new List<InstalmentModel>();
         LearningDeliveries = new List<LearningDeliveryModel>();
+        EnglishAndMaths = new List<EnglishAndMathsModel>();
         WithdrawnDate = null;
     }
 
@@ -17,6 +18,7 @@ public class ApprenticeshipModel
     public List<AdditionalPaymentModel> AdditionalPayments { get; set; }
     public List<InstalmentModel> Instalments { get; set; }
     public List<LearningDeliveryModel> LearningDeliveries { get; set; }
+    public List<EnglishAndMathsModel> EnglishAndMaths { get; set; }
     public DateTime? WithdrawnDate { get; set; }
 }
 
@@ -63,6 +65,16 @@ public class PeriodisedValuesModel
     public decimal Value { get; set; }
 
 
+}
+
+public class EnglishAndMathsModel
+{
+    public int AimSequenceNumber { get; set; }
+    public string Course { get; set; }
+    public string LearnAimRef { get; set; }
+    public decimal Amount { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
 }
 
 #pragma warning restore CS8618

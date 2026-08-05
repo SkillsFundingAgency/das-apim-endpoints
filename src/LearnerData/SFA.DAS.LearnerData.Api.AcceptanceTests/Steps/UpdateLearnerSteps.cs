@@ -1,14 +1,11 @@
-﻿using AutoFixture;
+using AutoFixture;
 using FluentAssertions;
-using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
-using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.Net;
 using System.Net.Http.Headers;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using TechTalk.SpecFlow;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
@@ -84,7 +81,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     {
         var ukprn = scenarioContext.Get<long>(UkprnKey);
         var sldLearnerData = scenarioContext.Get<UpdateLearnerRequest>(SldLearnerDataKey);
-        var cachedData = await testContext.Cache.GetLearner(ukprn, sldLearnerData.Learner.Uln.ToString(), CancellationToken.None);
+        var cachedData = await testContext.Cache.GetLearner<UpdateLearnerRequest>(ukprn, sldLearnerData.Learner.Uln.ToString(), CancellationToken.None);
 
         cachedData.Should().NotBeNull();
         cachedData.Should().BeEquivalentTo(sldLearnerData);

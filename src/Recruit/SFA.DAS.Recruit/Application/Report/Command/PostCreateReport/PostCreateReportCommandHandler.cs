@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests.Reports;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Apim.Shared.Extensions;
 
 namespace SFA.DAS.Recruit.Application.Report.Command.PostCreateReport;
 public class PostCreateReportCommandHandler(

@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.FindEpao.Api.Models;
 using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao;
 using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos;
 using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseList;
-using SFA.DAS.SharedOuterApi.Exceptions;
 
 namespace SFA.DAS.FindEpao.Api.Controllers
 {

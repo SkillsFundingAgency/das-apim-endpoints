@@ -1,7 +1,9 @@
 ﻿using SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewById;
 using SFA.DAS.Recruit.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System;
 using System.Threading;
 

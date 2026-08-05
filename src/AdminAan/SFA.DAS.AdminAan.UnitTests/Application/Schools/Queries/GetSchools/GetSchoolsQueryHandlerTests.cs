@@ -3,14 +3,15 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using SFA.DAS.AdminAan.Application.Schools.Queries;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EducationalOrganisations;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EducationalOrganisation;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EducationalOrganisations;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EducationalOrganisation;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.AdminAan.UnitTests.Application.Schools.Queries.GetSchools;
+
 public class GetSchoolsQueryHandlerTests
 {
     [Test, MoqAutoData]
@@ -30,7 +31,7 @@ public class GetSchoolsQueryHandlerTests
             new() { Name = "Dee school child centre", URN = "12345" },
             new() { Name = "Deering school", URN = "123458" }
         };
-        
+
         var apiResponseBody = new EducationalOrganisationResponse
         {
             EducationalOrganisations = schools
@@ -42,8 +43,8 @@ public class GetSchoolsQueryHandlerTests
             new() { Name = "Deer school", Urn = "123457" },
             new() { Name = "Deering school", Urn = "123458" }
         });
-        
-        var apiResponse = new ApiResponse<EducationalOrganisationResponse>(apiResponseBody, HttpStatusCode.OK, null);
+
+        var apiResponse = new ApiResponse<EducationalOrganisationResponse>(apiResponseBody, HttpStatusCode.OK, string.Empty);
 
         apiClient
             .Setup(x => x.GetWithResponseCode<EducationalOrganisationResponse>(
@@ -66,7 +67,7 @@ public class GetSchoolsQueryHandlerTests
         GetSchoolsQuery query)
     {
         // Arrange
-        var apiResponse = new ApiResponse<EducationalOrganisationResponse>(null, HttpStatusCode.NotFound, null);
+        var apiResponse = new ApiResponse<EducationalOrganisationResponse>(default!, HttpStatusCode.NotFound, string.Empty);
 
         apiClient
             .Setup(x => x.GetWithResponseCode<EducationalOrganisationResponse>(

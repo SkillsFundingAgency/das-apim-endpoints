@@ -1,8 +1,9 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System;
 using System.Net;
 using System.Threading;

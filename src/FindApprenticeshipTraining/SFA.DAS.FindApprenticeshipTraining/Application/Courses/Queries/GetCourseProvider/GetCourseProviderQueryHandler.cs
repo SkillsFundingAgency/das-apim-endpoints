@@ -4,17 +4,18 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.AccessorService;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.AccessorService;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.AccessorService;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.AccessorService;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProvider;
 
@@ -27,7 +28,7 @@ public sealed class GetCourseProviderQueryHandler(
 {
     public async Task<GetCourseProviderQueryResult> Handle(GetCourseProviderQuery query, CancellationToken cancellationToken)
     {
-        LocationItem locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(query.Location);
+        LocationItem locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(query.LocationName);
 
         List<Task> tasks = new List<Task>();
 
@@ -35,7 +36,7 @@ public sealed class GetCourseProviderQueryHandler(
             new GetCourseProviderDetailsRequest(
                 query.LarsCode,
                 query.Ukprn,
-                query.Location,
+                query.LocationName,
                 locationItem?.Longitude,
                 locationItem?.Latitude,
                 query.ShortlistUserId

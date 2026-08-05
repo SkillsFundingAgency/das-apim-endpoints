@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Approvals.Application.ProviderPermissions.Queries;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderRelationships;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ProviderRelationships;
 
 namespace SFA.DAS.Approvals.Api.Controllers;
 

@@ -3,8 +3,9 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Roatp.CourseManagement.Application.Regions.Queries;
 using SFA.DAS.Roatp.CourseManagement.InnerApi.Models;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Net;

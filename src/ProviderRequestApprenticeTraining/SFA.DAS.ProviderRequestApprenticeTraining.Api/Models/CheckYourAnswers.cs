@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequestsByIds;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Responses;
 using System;
 using System.Collections.Generic;

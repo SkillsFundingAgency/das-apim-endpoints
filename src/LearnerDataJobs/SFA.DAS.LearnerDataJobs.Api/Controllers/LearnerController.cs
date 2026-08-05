@@ -55,7 +55,7 @@ public class LearnersController(IMediator mediator, ILogger<LearnersController> 
         }
     }
 
-    [HttpPatch]
+    [HttpPatch, Consumes("application/json", "application/json-patch+json", "text/json", "application/*+json")]
     [Route("providers/{providerId}/learners/{learnerDataId}/apprenticeshipId")]
     public async Task<IActionResult> PatchLearnerDataApprenticeshipId([FromRoute] long providerId, long learnerDataId, [FromBody] LearnerDataApprenticeshipIdRequest request)
     {

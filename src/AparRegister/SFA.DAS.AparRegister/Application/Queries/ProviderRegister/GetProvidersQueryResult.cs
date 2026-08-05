@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp;
 
 namespace SFA.DAS.AparRegister.Application.Queries.ProviderRegister
 {

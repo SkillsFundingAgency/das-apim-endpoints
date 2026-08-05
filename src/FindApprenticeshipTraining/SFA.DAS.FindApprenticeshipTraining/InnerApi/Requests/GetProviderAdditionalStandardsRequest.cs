@@ -1,5 +1,5 @@
-using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Common;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
 {

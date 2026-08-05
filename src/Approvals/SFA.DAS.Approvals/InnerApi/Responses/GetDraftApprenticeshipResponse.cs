@@ -1,4 +1,7 @@
 ﻿using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.Approvals.InnerApi.Responses
 {
@@ -71,5 +74,8 @@ namespace SFA.DAS.Approvals.InnerApi.Responses
         public long? LearnerDataId { get; set; }
         public bool HasLearnerDataChanges { get; set; }
         public DateTime? LastLearnerDataSync { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public LearningType? LearningType { get; set; }
     }
 }

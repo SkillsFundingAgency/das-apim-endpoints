@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SFA.DAS.EmployerRequestApprenticeTraining.Models
+﻿namespace SFA.DAS.EmployerRequestApprenticeTraining.Models
 {
     public class Standard
     {

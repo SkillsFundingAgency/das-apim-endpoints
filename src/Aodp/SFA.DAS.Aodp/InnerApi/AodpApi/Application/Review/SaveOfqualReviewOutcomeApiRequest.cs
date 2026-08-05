@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 
 public class SaveOfqualReviewOutcomeApiRequest(Guid applicationReviewId) : IPutApiRequest
 {

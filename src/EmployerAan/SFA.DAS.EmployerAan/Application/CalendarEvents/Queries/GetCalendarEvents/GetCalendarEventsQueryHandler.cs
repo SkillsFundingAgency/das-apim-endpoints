@@ -1,9 +1,8 @@
-﻿using Azure.Core;
-using MediatR;
+﻿using MediatR;
 using SFA.DAS.EmployerAan.Application.Services;
 using SFA.DAS.EmployerAan.Infrastructure;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.EmployerAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 public class GetCalendarEventsQueryHandler(IAanHubRestApiClient apiClient, ILocationLookupService locationLookupService, ICacheStorageService cacheService)

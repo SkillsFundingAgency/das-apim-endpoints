@@ -17,9 +17,10 @@ using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.EmployerAccounts.Api.AppStart;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionCurrent;
 using SFA.DAS.EmployerAccounts.Services;
-using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.Apim.Shared.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.EmployerAccounts.Api
 {

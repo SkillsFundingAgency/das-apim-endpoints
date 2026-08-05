@@ -9,9 +9,12 @@ using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.Approvals.Types;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using Party = SFA.DAS.Approvals.Application.Shared.Enums.Party;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
@@ -39,7 +42,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
             apiClient.Setup(x => x.GetWithResponseCode<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
                 .ReturnsAsync(() => new ApiResponse<GetAccountLegalEntityResponse>(accountLegalEntity, HttpStatusCode.OK, string.Empty));
 
-            providerStandardsService.Setup(x => x.GetStandardsData(provider.ProviderId))
+            providerStandardsService.Setup(x => x.GetCoursesData(provider.ProviderId))
                 .ReturnsAsync(providerStandardsData);
 
             var standardsData = providerStandardsData.Standards.Select(x =>
@@ -71,7 +74,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
             apiClient.Setup(x => x.GetWithResponseCode<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
                 .ReturnsAsync(() => new ApiResponse<GetAccountLegalEntityResponse>(accountLegalEntity, HttpStatusCode.OK, string.Empty));
 
-            providerStandardsService.Setup(x => x.GetStandardsData(provider.ProviderId))
+            providerStandardsService.Setup(x => x.GetCoursesData(provider.ProviderId))
                 .ReturnsAsync(providerStandardsData);
 
             var result = await handler.Handle(query, CancellationToken.None);

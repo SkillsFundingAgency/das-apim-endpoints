@@ -1,8 +1,9 @@
 ﻿using MediatR;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.BusinessMetrics;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.BusinessMetrics;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.BusinessMetrics;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.BusinessMetrics;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 

@@ -2,8 +2,9 @@
 using SFA.DAS.ApprenticePortal.InnerApi.ApprenticeAccounts.Requests;
 using SFA.DAS.ApprenticePortal.InnerApi.ApprenticeCommitments.Requests;
 using SFA.DAS.ApprenticePortal.Models;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;

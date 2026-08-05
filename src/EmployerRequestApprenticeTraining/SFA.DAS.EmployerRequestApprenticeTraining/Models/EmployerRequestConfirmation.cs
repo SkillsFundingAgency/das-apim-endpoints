@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Models.RequestApprenticeTraining;
+﻿using SFA.DAS.SharedOuterApi.Types.Models.RequestApprenticeTraining;
 using System;
 using System.Collections.Generic;
 

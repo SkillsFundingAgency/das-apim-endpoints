@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web;
-using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Common;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 
@@ -10,18 +10,18 @@ public sealed class GetCourseProviderDetailsRequest : IGetApiRequest
     public string Version => ApiVersionNumber.Two;
     private string LarsCode { get; }
     private long Ukprn { get; }
-    private string Location { get; }
+    private string LocationName { get; }
     private decimal? Longitude { get; }
     private decimal? Latitude { get; }
     private Guid? ShortlistUserId { get; }
 
     public string GetUrl => BuildUrl();
 
-    public GetCourseProviderDetailsRequest(string larsCode, long ukprn, string location, decimal? longitude, decimal? latitude, Guid? shortlistUserId)
+    public GetCourseProviderDetailsRequest(string larsCode, long ukprn, string locationName, decimal? longitude, decimal? latitude, Guid? shortlistUserId)
     {
         LarsCode = larsCode;
         Ukprn = ukprn;
-        Location = location;
+        LocationName = locationName;
         Longitude = longitude;
         Latitude = latitude;
         ShortlistUserId = shortlistUserId;
@@ -31,9 +31,9 @@ public sealed class GetCourseProviderDetailsRequest : IGetApiRequest
     {
         var query = HttpUtility.ParseQueryString(string.Empty);
 
-        if (!string.IsNullOrWhiteSpace(Location))
+        if (!string.IsNullOrWhiteSpace(LocationName))
         {
-            query["location"] = Location;
+            query["locationName"] = LocationName;
         }
 
         if (Longitude.HasValue)

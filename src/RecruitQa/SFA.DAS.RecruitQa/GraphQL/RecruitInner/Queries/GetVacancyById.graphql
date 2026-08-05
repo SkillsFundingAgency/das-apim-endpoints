@@ -1,0 +1,10 @@
+query GetVacancyById($id: UUID!) {
+    vacancies(
+        where: {
+            id: { eq: $id }
+        }
+    )
+    {
+        ...AllVacancyFields
+    }
+}

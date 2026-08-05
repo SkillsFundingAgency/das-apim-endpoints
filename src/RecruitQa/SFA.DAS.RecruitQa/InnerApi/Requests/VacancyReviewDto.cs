@@ -1,5 +1,6 @@
-using SFA.DAS.SharedOuterApi.Domain;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.RecruitQa.InnerApi.Requests;
 
@@ -18,8 +19,9 @@ public class VacancyReviewDto
     public string? ManualOutcome { get; set; }
     public string? ManualQaComment { get; init; }
     public required List<string> ManualQaFieldIndicators { get; init; }
+    public required List<ManualQaEditFieldIndicator> ManualQaEditFieldIndicators { get; init; }
     public string? AutomatedQaOutcome { get; init; }
-    public string? AutomatedQaOutcomeIndicators { get; init; }
+    public List<RuleOutcome> AutomatedQaOutcomeIndicators { get; init; } = [];
     public required List<string> DismissedAutomatedQaOutcomeIndicators { get; init; }
     public required List<string> UpdatedFieldIdentifiers { get; init; }
     public required string VacancySnapshot { get; init; }

@@ -1,56 +1,70 @@
-﻿using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
-using Milestone = SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.LearnerData.Enums;
+using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Requests.LearningInner;
 
 namespace SFA.DAS.LearnerData.Services.ShortCourses
 {
     public interface ICreateDraftShortCoursePostRequestBuilder
     {
-        CreateDraftShortCourseRequest Build(ShortCourseRequest request, long ukprn);
+        Task<CreateDraftShortCourseRequest> Build(ShortCourseRequest request, long ukprn, int academicYear);
     }
 
-    public class CreateDraftShortCoursePostRequestBuilder : ICreateDraftShortCoursePostRequestBuilder
+    public class CreateDraftShortCoursePostRequestBuilder(
+        ILogger<CreateDraftShortCoursePostRequestBuilder> logger,
+        IShortCourseLookupService shortCourseLookupService) : ICreateDraftShortCoursePostRequestBuilder
     {
-        public CreateDraftShortCourseRequest Build(ShortCourseRequest request, long ukprn)
+        public async Task<CreateDraftShortCourseRequest> Build(ShortCourseRequest request, long ukprn, int academicYear)
         {
+            var onProgrammeItems = new List<OnProgramme>();
+
+            foreach (var onProg in request.Delivery.OnProgramme)
+            {
+                var milestones = onProg.Milestones
+                    .Select(m =>
+                    {
+                        if (Enum.TryParse<Milestone>(m.ToString(), out var milestone)) return milestone;
+                        throw new InvalidOperationException($"Invalid milestone value: {m}");
+                    })
+                    .ToList();
+
+                if (onProg.CompletionDate.HasValue && !onProg.Milestones.Contains(Milestone.LearningComplete))
+                    milestones.Add(Milestone.LearningComplete);
+
+                var courseDetails = await shortCourseLookupService.GetCourseDetails(onProg.CourseCode, onProg.StartDate);
+
+                onProgrammeItems.Add(new OnProgramme
+                {
+                    CourseCode = onProg.CourseCode,
+                    Ukprn = ukprn,
+                    StartDate = onProg.StartDate,
+                    ExpectedEndDate = onProg.ExpectedEndDate,
+                    CompletionDate = onProg.CompletionDate,
+                    WithdrawalDate = onProg.WithdrawalDate,
+                    WithdrawalReasonCode = onProg.WithdrawalReasonCode,
+                    Milestones = milestones,
+                    Price = courseDetails.Price,
+                    LearningType = courseDetails.LearningType
+                });
+            }
+
             var firstOnProg = request.Delivery.OnProgramme.First();
 
             return new CreateDraftShortCourseRequest
             {
+                Ukprn = ukprn,
+                AcademicYear = academicYear,
                 LearnerUpdateDetails = new ShortCourseLearningUpdateDetails
                 {
                     Uln = request.Learner.Uln,
                     FirstName = request.Learner.FirstName,
                     LastName = request.Learner.LastName,
                     DateOfBirth = request.Learner.Dob,
-                    EmailAddress = request.Learner.Email
+                    EmailAddress = request.Learner.Email,
+                    LearnerRef = request.Learner.LearnerRef
                 },
-                LearningSupport = firstOnProg.LearningSupport
-                    .Select(ls => new LearningSupportUpdatedDetails
-                    {
-                        StartDate = ls.StartDate,
-                        EndDate = ls.EndDate
-                    })
-                    .ToList(),
-                OnProgramme = new OnProgramme
-                {
-                    CourseCode = firstOnProg.CourseCode,
-                    EmployerId = 0,
-                    Ukprn = ukprn,
-                    StartDate = firstOnProg.StartDate,
-                    ExpectedEndDate = firstOnProg.ExpectedEndDate,
-                    CompletionDate = firstOnProg.CompletionDate,
-                    WithdrawalDate = firstOnProg.WithdrawalDate,
-                    Milestones = firstOnProg.Milestones
-                        .Select(m =>
-                        {
-                            if (Enum.TryParse<Milestone>(m.ToString(), out var milestone)) return milestone;
-                            throw new InvalidOperationException($"Invalid milestone value: {m}");
-                        })
-                        .ToList(),
-                    Price = 1000
-                }
+                LearningSupport = firstOnProg.LearningSupport,
+                OnProgramme = onProgrammeItems
             };
         }
     }

@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.OpenApi.Models;
-using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.ToolsSupport.Api.AppStart;
 using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccountDetails;
 

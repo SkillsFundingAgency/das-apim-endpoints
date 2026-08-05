@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.RoatpCourseManagement.Application.ProviderCourseForecasts.Commands.UpsertProviderCourseForecasts;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 

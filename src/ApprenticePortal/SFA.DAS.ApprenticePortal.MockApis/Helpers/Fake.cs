@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using SFA.DAS.ApprenticePortal.InnerApi.CommitmentsV2.Responses;
 using SFA.DAS.ApprenticePortal.Models;
 using SFA.DAS.ApprenticePortal.Services;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp;
 
 namespace SFA.DAS.ApprenticePortal.MockApis.Helpers
 {

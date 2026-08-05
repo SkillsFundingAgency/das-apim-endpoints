@@ -1,6 +1,4 @@
 ﻿using SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using System;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Models
 {

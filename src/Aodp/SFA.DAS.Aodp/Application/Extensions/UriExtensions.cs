@@ -30,5 +30,27 @@ namespace SFA.DAS.Aodp.Application.Extensions
 
             return uri + sb.ToString();
         }
+
+        public static string AttachMultiValueParameters(this string uri, NameValueCollection parameters)
+        {
+            var sb = new StringBuilder();
+            var first = true;
+
+            foreach (string key in parameters.AllKeys)
+            {
+                var values = parameters.GetValues(key);
+                if (values == null) continue;
+
+                foreach (var value in values)
+                {
+                    sb.Append(first ? "?" : "&");
+                    first = false;
+
+                    sb.Append($"{Uri.EscapeDataString(key)}={Uri.EscapeDataString(value)}");
+                }
+            }
+
+            return uri + sb.ToString();
+        }
     }
 }

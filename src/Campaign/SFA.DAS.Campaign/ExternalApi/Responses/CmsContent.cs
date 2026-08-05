@@ -203,6 +203,15 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         public PurpleContent TabContent { get; set; }
         [JsonPropertyName("findTraineeship")]
         public bool FindTraineeship { get; set; }
+
+        [JsonPropertyName("cardImage")]
+        public LandingPage CardImage { get; set; }
+
+        [JsonPropertyName("videoName")]
+        public string VideoName { get; set; }
+
+        [JsonPropertyName("text")]
+        public string Text { get; set; }
     }
 
     public class PurpleContent
@@ -318,8 +327,26 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         [JsonPropertyName("headerImage")]
         public HeaderImage HeaderImage { get; set; }
 
+        [JsonPropertyName("articleType")]
+        public string ArticleType { get; set; }
+
         [JsonPropertyName("cards")]
         public List<CardItem> Cards { get; set; }
+
+        [JsonPropertyName("cards2")]
+        public List<CardItem> Cards2 { get; set; }
+
+        [JsonPropertyName("cards3")]
+        public List<CardItem> Cards3 { get; set; }
+
+        [JsonPropertyName("cardsTitle")]
+        public string CardsTitle { get; set; }
+
+        [JsonPropertyName("cardsTitle2")]
+        public string CardsTitle2 { get; set; }
+
+        [JsonPropertyName("cardsTitle3")]
+        public string CardsTitle3 { get; set; }
 
         [JsonPropertyName("menuItems")]
         public List<MenuItem> MenuItems { get; set; }

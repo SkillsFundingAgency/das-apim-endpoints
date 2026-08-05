@@ -14,7 +14,7 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.AparRegister.Api.AppStart;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.Apim.Shared.AppStart;
 
 namespace SFA.DAS.AparRegister.Api;
 

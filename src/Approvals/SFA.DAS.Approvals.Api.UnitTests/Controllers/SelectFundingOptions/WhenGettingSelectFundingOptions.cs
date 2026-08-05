@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Approvals.Application.SelectFunding.Queries;
-using SFA.DAS.Approvals.Application.SelectProvider.Queries;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.SelectFundingOptions;
 

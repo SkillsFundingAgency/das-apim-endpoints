@@ -12,10 +12,13 @@ using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Reservations;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Reservations;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using GetAllStandardsRequest = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses.GetAllStandardsRequest;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Learners.Queries;
@@ -43,7 +46,7 @@ public class WhenGettingLearnersForProvider
         query.CohortId = null;
         GetLearnersForProviderRequest input;
         learnerDataClient.Setup(x =>
-                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
+                x.PostWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<PostGetLearnersForProviderRequest>()))
             .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
 
         commitmentsClient.Setup(x =>
@@ -121,7 +124,7 @@ public class WhenGettingLearnersForProvider
         };
 
         learnerDataClient.Setup(x =>
-                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
+                x.PostWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<PostGetLearnersForProviderRequest>()))
             .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
 
         commitmentsClient.Setup(x =>
@@ -183,7 +186,7 @@ public class WhenGettingLearnersForProvider
         aleResponse.LevyStatus = ApprenticeshipEmployerType.Levy;
 
         learnerDataClient.Setup(x =>
-                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
+                x.PostWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<PostGetLearnersForProviderRequest>()))
             .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
 
         commitmentsClient.Setup(x =>
@@ -250,7 +253,7 @@ public class WhenGettingLearnersForProvider
         query.AccountLegalEntityId = null;
         GetLearnersForProviderRequest input;
         learnerDataClient.Setup(x =>
-                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
+                x.PostWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<PostGetLearnersForProviderRequest>()))
             .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
 
         commitmentsClient.Setup(x =>
@@ -306,7 +309,7 @@ public class WhenGettingLearnersForProvider
         query.CohortId = null;
 
         learnerDataClient.Setup(x =>
-                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
+                x.PostWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<PostGetLearnersForProviderRequest>()))
             .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse,
                 HttpStatusCode.InternalServerError, "Call to learner data failed"));
 
@@ -342,7 +345,7 @@ public class WhenGettingLearnersForProvider
     {
         query.CohortId = null;
         learnerDataClient.Setup(x =>
-                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
+                x.PostWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<PostGetLearnersForProviderRequest>()))
             .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
 
         commitmentsClient.Setup(x =>
@@ -378,7 +381,7 @@ public class WhenGettingLearnersForProvider
     {
         query.AccountLegalEntityId = null;
         learnerDataClient.Setup(x =>
-                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
+                x.PostWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<PostGetLearnersForProviderRequest>()))
             .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
 
         commitmentsClient.Setup(x =>
@@ -415,7 +418,7 @@ public class WhenGettingLearnersForProvider
     {
         query.CohortId = null;
         learnerDataClient.Setup(x =>
-                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
+                x.PostWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<PostGetLearnersForProviderRequest>()))
             .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
 
         commitmentsClient.Setup(x =>
@@ -470,12 +473,19 @@ public class WhenGettingLearnersForProvider
     )
     {
         query.AccountLegalEntityId = null;
-        IGetApiRequest captured = null;
-        var excludeUlns = string.Join(",", draftApprenticeshipsResponse.DraftApprenticeships.ConvertAll(x => x.Uln));
+        IPostApiRequest captured = null;
+        draftApprenticeshipsResponse.DraftApprenticeships[0].Uln = "123";
+        draftApprenticeshipsResponse.DraftApprenticeships[1].Uln = "234";
+        draftApprenticeshipsResponse.DraftApprenticeships[2].Uln = "345";
+
+        var excludeUlns = draftApprenticeshipsResponse.DraftApprenticeships.Select(x => x.Uln)
+            .Where(x => long.TryParse(x, out _))
+            .Select(long.Parse)
+            .ToList();
 
         learnerDataClient.Setup(x =>
-                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
-                .Callback<IGetApiRequest>(r => captured = r)
+                x.PostWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<PostGetLearnersForProviderRequest>(), It.IsAny<bool>()))
+                .Callback<IPostApiRequest,bool>((r,_) => captured = r)
                 .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
 
         commitmentsClient.Setup(x =>
@@ -498,6 +508,7 @@ public class WhenGettingLearnersForProvider
         var result = await handler.Handle(query, CancellationToken.None);
 
         captured.Should().NotBeNull();
-        captured.GetUrl.Should().Contain($"excludeUlns={excludeUlns}");
+        var request = captured.Data as GetLearnersForProviderRequest;
+        request.ExcludeUlns.Should().Contain(excludeUlns);
     }
 }

@@ -5,7 +5,6 @@ using SFA.DAS.AdminAan.Application.Admins.Commands.Create;
 using SFA.DAS.AdminAan.Application.Admins.Queries.GetAdminMember;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Create;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Update;
-using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.AdminAan.Application.Entities;
 using SFA.DAS.AdminAan.Application.Regions.Queries.GetRegions;
 using SFA.DAS.AdminAan.Domain;

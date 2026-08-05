@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.RecruitQa.Domain.Enums;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.RecruitQa.InnerApi.Requests;
 

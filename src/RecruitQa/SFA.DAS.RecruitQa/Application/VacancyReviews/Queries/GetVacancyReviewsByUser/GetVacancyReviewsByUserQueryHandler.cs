@@ -1,9 +1,9 @@
 using System.Net;
-using MediatR;
 using SFA.DAS.RecruitQa.InnerApi.Requests;
 using SFA.DAS.RecruitQa.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByUser;
 
@@ -20,7 +20,7 @@ public class GetVacancyReviewsByUserQueryHandler(IRecruitApiClient<RecruitApiCon
             return new GetVacancyReviewsByUserQueryResult
             {
                 VacancyReviews = new List<GetVacancyReviewResponse>()
-            };
+            }; 
         }
 
         return new GetVacancyReviewsByUserQueryResult

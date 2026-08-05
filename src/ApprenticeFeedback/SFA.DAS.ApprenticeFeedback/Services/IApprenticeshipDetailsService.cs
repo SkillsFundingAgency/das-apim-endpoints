@@ -1,5 +1,4 @@
-﻿using SFA.DAS.ApprenticeFeedback.InnerApi.Requests;
-using SFA.DAS.ApprenticeFeedback.Models;
+﻿using SFA.DAS.ApprenticeFeedback.Models;
 using System;
 using System.Threading.Tasks;
 

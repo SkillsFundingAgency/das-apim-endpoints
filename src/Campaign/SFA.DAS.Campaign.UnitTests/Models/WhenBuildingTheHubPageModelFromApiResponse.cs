@@ -158,5 +158,126 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             actual.MainContent.Cards.TrueForAll(c => c.HubType.Equals(linkedPage.HubType)).Should().BeTrue();
             actual.MainContent.Cards.TrueForAll(c => c.MetaDescription.Equals(linkedPage.MetaDescription)).Should().BeTrue();
         }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_The_Cards2_Are_Built(CmsContent source, EntryFields linkedPage, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            source.Items[0].Fields.Cards2[0].Sys.Id = "2K5MZPYdhDNyPEsDk4EgZh";
+            source.Includes.Entry = new List<Entry>
+            {
+                new Entry
+                {
+                    Sys = new AssetSys
+                    {
+                        Id = "2K5MZPYdhDNyPEsDk4EgZh",
+                        Space = new LandingPage
+                        {
+                            Sys = new LandingPageSys
+                            {
+                                Id = "123abc",
+                                Type = "Link",
+                                LinkType = "Space"
+                            }
+                        },
+                        ContentType = new LandingPage
+                        {
+                            Sys = new LandingPageSys
+                            {
+                                Id = "article",
+                                LinkType = "ContentType",
+                                Type = "Link",
+                            }
+                        }
+                    },
+                    Fields = linkedPage
+                }
+            };
+
+            //Act
+            var actual = new HubPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.Cards2.Count.Should().Be(1);
+            actual.MainContent.Cards2.TrueForAll(c => c.Title.Equals(linkedPage.Title)).Should().BeTrue();
+            actual.MainContent.Cards2.TrueForAll(c => c.Summary.Equals(linkedPage.Summary)).Should().BeTrue();
+            actual.MainContent.Cards2.TrueForAll(c => c.Slug.Equals(linkedPage.Slug)).Should().BeTrue();
+            actual.MainContent.Cards2.TrueForAll(c => c.HubType.Equals(linkedPage.HubType)).Should().BeTrue();
+            actual.MainContent.Cards2.TrueForAll(c => c.MetaDescription.Equals(linkedPage.MetaDescription)).Should().BeTrue();
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_The_Cards3_Are_Built(CmsContent source, EntryFields linkedPage, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            source.Items[0].Fields.Cards3[0].Sys.Id = "2K5MZPYdhDNyPEsDk4EgZh";
+            source.Includes.Entry = new List<Entry>
+            {
+                new Entry
+                {
+                    Sys = new AssetSys
+                    {
+                        Id = "2K5MZPYdhDNyPEsDk4EgZh",
+                        Space = new LandingPage
+                        {
+                            Sys = new LandingPageSys
+                            {
+                                Id = "123abc",
+                                Type = "Link",
+                                LinkType = "Space"
+                            }
+                        },
+                        ContentType = new LandingPage
+                        {
+                            Sys = new LandingPageSys
+                            {
+                                Id = "article",
+                                LinkType = "ContentType",
+                                Type = "Link",
+                            }
+                        }
+                    },
+                    Fields = linkedPage
+                }
+            };
+
+            //Act
+            var actual = new HubPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.Cards3.Count.Should().Be(1);
+            actual.MainContent.Cards3.TrueForAll(c => c.Title.Equals(linkedPage.Title)).Should().BeTrue();
+            actual.MainContent.Cards3.TrueForAll(c => c.Summary.Equals(linkedPage.Summary)).Should().BeTrue();
+            actual.MainContent.Cards3.TrueForAll(c => c.Slug.Equals(linkedPage.Slug)).Should().BeTrue();
+            actual.MainContent.Cards3.TrueForAll(c => c.HubType.Equals(linkedPage.HubType)).Should().BeTrue();
+            actual.MainContent.Cards3.TrueForAll(c => c.MetaDescription.Equals(linkedPage.MetaDescription)).Should().BeTrue();
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_The_Cards_Titles_Are_Set(CmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Act
+            var actual = new HubPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.CardsTitle.Should().Be(source.Items.FirstOrDefault()?.Fields.CardsTitle);
+            actual.MainContent.CardsTitle2.Should().Be(source.Items.FirstOrDefault()?.Fields.CardsTitle2);
+            actual.MainContent.CardsTitle3.Should().Be(source.Items.FirstOrDefault()?.Fields.CardsTitle3);
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_Null_Card_Collections_Return_Empty_Lists(CmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            source.Items[0].Fields.Cards2 = null;
+            source.Items[0].Fields.Cards3 = null;
+
+            //Act
+            var actual = new HubPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.Cards2.Should().BeEmpty();
+            actual.MainContent.Cards3.Should().BeEmpty();
+        }
     }
 }

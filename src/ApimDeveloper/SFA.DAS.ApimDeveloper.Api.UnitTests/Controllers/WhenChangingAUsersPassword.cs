@@ -11,7 +11,7 @@ using NUnit.Framework;
 using SFA.DAS.ApimDeveloper.Api.ApiRequests;
 using SFA.DAS.ApimDeveloper.Api.Controllers;
 using SFA.DAS.ApimDeveloper.Application.Users.Commands.ChangePassword;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers

@@ -2,9 +2,10 @@
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.EmployerAccounts.Application.Queries.GetEmployerAgreementTemplates;
 public class GetEmployerAgreementTemplatesQueryHandler(IAccountsApiClient<AccountsConfiguration> _accountsApiClient, ILogger<GetEmployerAgreementTemplatesQueryHandler> _logger) : IRequestHandler<GetEmployerAgreementTemplatesQuery, GetEmployerAgreementTemplatesResponse>

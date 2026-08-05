@@ -8,8 +8,8 @@ public class GetNotificationsLocationsQueryResult
 
     public class Location
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         [JsonPropertyName("coordinates")]
-        public double[] GeoPoint { get; set; }
+        public double[] GeoPoint { get; set; } = [];
     }
 }

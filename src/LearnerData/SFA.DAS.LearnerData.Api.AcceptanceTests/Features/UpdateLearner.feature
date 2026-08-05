@@ -18,7 +18,7 @@ Scenario: Completed date updated
 
 Scenario: MathsAndEnglish updated
 	Given there is a learner
-	And the MathsAndEnglish passed is different to the value in the learners domain
+	And the EnglishAndMaths passed is different to the value in the learners domain
 	When the learner is updated
 	Then a english-and-maths update request is sent to the earnings domain
 	And sld data is stored to the cache
@@ -67,7 +67,7 @@ Scenario: Update Breaks in Learning
 	
 Scenario: English and Maths Withdrawal
 	Given there is a learner
-	And the MathsAndEnglishWithdrawal passed is different to the value in the learners domain
+	And the EnglishAndMathsWithdrawal passed is different to the value in the learners domain
 	When the learner is updated
 	Then a english-and-maths update request is sent to the earnings domain
 	And sld data is stored to the cache

@@ -1,9 +1,11 @@
-﻿using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Services;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
+using SFA.DAS.LearnerData.Responses.LearningInner;
+using LearningInnerEpisode = SFA.DAS.LearnerData.Responses.LearningInner.Episode;
+using LearningInnerEpisodePrice = SFA.DAS.LearnerData.Responses.LearningInner.EpisodePrice;
 
 namespace SFA.DAS.LearnerData.TestHelpers;
 
@@ -13,7 +15,7 @@ public static class LearnerBuilder
     // we can use this because the data being generated is for fm36 tests only.
     // these concrete class have their own tests to validate their behaviour.
     private static UpdateLearningPutRequestBuilder _updateLearningPutRequestBuilder = 
-        new UpdateLearningPutRequestBuilder(new LearningSupportService(), new BreaksInLearningService(), new CostsService());
+        new UpdateLearningPutRequestBuilder(new UpdateLearningRequestBodyBuilder(new LearningSupportService(), new BreaksInLearningService(), new CostsService()));
 
     internal static Learning BuildLearningInnerApiResponse(TestLearner testLearner)
     {
@@ -23,18 +25,11 @@ public static class LearnerBuilder
         var firstOnProg = sldDelivery.OnProgramme.OrderBy(x => x.StartDate).First();
         var latestOnProg = sldDelivery.OnProgramme.OrderByDescending(x => x.StartDate).First();
 
-        var command = new UpdateLearnerCommand
-        {
-            LearningKey = testLearner.LearningKey,
-            Ukprn = testLearner.Ukprn,
-            UpdateLearnerRequest = testLearner.UpdateLearnerRequest
-        };
-
-        var updateLearningRequest = _updateLearningPutRequestBuilder.Build(command);
+        var updateLearningRequest = _updateLearningPutRequestBuilder.Build(testLearner.Ukprn, testLearner.UpdateLearnerRequest, testLearner.LearningKey);
 
         return new Learning
         {
-            Key = command.LearningKey,
+            Key = testLearner.LearningKey,
             Uln = sldLearner.Uln.ToString(),
             StartDate = sldDelivery.OnProgramme.Min(x => x.StartDate),
             PlannedEndDate = sldDelivery.OnProgramme.Max(x => x.ExpectedEndDate),
@@ -60,9 +55,9 @@ public static class LearnerBuilder
     /// <summary>
     /// Currently only returns one episode as we have no functional code which would create multiple episodes yet.
     /// </summary>
-    private static List<SharedOuterApi.InnerApi.Responses.Learning.Episode> ExtractLearningInnerEpisodes(TestLearner testLearner, UpdateLearningApiPutRequest updateLearningRequest)
+    private static List<LearningInnerEpisode> ExtractLearningInnerEpisodes(TestLearner testLearner, UpdateLearningApiPutRequest updateLearningRequest)
     {
-        var prices = new List<SharedOuterApi.InnerApi.Responses.Learning.EpisodePrice>();
+        var prices = new List<LearningInnerEpisodePrice>();
 
         var lastOnProg = testLearner.UpdateLearnerRequest.Delivery.OnProgramme
             .OrderByDescending(x => x.StartDate)
@@ -75,7 +70,7 @@ public static class LearnerBuilder
         {
             var totalPrice = cost.TrainingPrice + (cost.EpaoPrice ?? 0);
 
-            prices.Add(new SharedOuterApi.InnerApi.Responses.Learning.EpisodePrice
+            prices.Add(new LearningInnerEpisodePrice
             {
                 Key = Guid.NewGuid(),
                 StartDate = cost.FromDate,
@@ -90,7 +85,7 @@ public static class LearnerBuilder
         }
 
 
-        var episode = new SharedOuterApi.InnerApi.Responses.Learning.Episode
+        var episode = new LearningInnerEpisode
         {
             Key = Guid.NewGuid(),
             TrainingCode = testLearner.TrainingCode,
@@ -99,18 +94,18 @@ public static class LearnerBuilder
         };
 
 
-        return new List<SharedOuterApi.InnerApi.Responses.Learning.Episode> { episode };
+        return new List<LearningInnerEpisode> { episode };
     }
 
     /// <summary>
     /// Currently only returns one episode as we have no functional code which would create multiple episodes yet.
     /// </summary>
-    private static List<SharedOuterApi.InnerApi.Responses.Earnings.Episode> ExtractEarningInnnerEpisodes(TestLearner testLearner, Learning learningInnerRecord)
+    private static List<SFA.DAS.LearnerData.Responses.EarningsInner.Episode> ExtractEarningInnnerEpisodes(TestLearner testLearner, Learning learningInnerRecord)
     {
         var learningEpisode = learningInnerRecord.Episodes.First();
         var totalPrice = learningEpisode.Prices.OrderBy(x => x.StartDate).Last().TotalPrice;
 
-        var episode = learningInnerRecord.Episodes.Select(e => new SharedOuterApi.InnerApi.Responses.Earnings.Episode
+        var episode = learningInnerRecord.Episodes.Select(e => new SFA.DAS.LearnerData.Responses.EarningsInner.Episode
         {
             Key = e.Key,
             NumberOfInstalments = 0,
@@ -133,7 +128,27 @@ public static class LearnerBuilder
 
         episode.AdditionalPayments = testLearner.AdditionalPayments ?? new List<AdditionalPayment>();
 
-        return new List<SharedOuterApi.InnerApi.Responses.Earnings.Episode> { episode };
+        if (testLearner.UpdateLearnerRequest.Delivery.EnglishAndMaths.Any())
+        {
+            episode.EnglishAndMaths = testLearner.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x => new EnglishAndMaths
+            {
+                LearnAimRef = x.LearnAimRef,
+                StartDate = x.StartDate,
+                EndDate = x.EndDate,
+                Course = x.Course,
+                Instalments = x.StartDate
+                    .Enumerate(x.EndDate, DateIncrement.Monthly, out int instalmentCount)
+                    .Select(dt => new EnglishAndMathsInstalment
+                    {
+                        AcademicYear = dt.ToAcademicYear(),
+                        DeliveryPeriod = dt.ToDeliveryPeriod(),
+                        Amount = x.Amount/instalmentCount,
+                        InstalmentType = "Regular"
+                    }).ToList()
+            }).ToList();
+        }
+
+        return new List<SFA.DAS.LearnerData.Responses.EarningsInner.Episode> { episode };
     }
 
     /// <summary>
@@ -141,7 +156,7 @@ public static class LearnerBuilder
     /// of the earnings service implementation. Its purpose is for general validation. For more complex test scenarios
     /// expected instalments should be provided in the TestLearner.
     /// </summary>
-    private static List<Instalment> GenerateInstalments(TestLearner testLearner, SharedOuterApi.InnerApi.Responses.Learning.Episode learningEpisode)
+    private static List<Instalment> GenerateInstalments(TestLearner testLearner, LearningInnerEpisode learningEpisode)
     {
         var instalments = new List<Instalment>();
 

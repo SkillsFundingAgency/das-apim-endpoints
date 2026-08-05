@@ -2,5 +2,5 @@
 
 public class GetNotificationsSettingsQueryResult
 {
-    public bool ReceiveNotifications { get; set; }
+    public bool? ReceiveNotifications { get; set; }
 }

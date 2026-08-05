@@ -1,18 +1,20 @@
 ﻿using System;
 using MediatR;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticePortal.InnerApi.ApprenticeAccounts.Requests;
 using SFA.DAS.ApprenticePortal.Models;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure;
 using System.Net;
 using SFA.DAS.ApprenticePortal.InnerApi.CommitmentsV2.Requests;
 using SFA.DAS.ApprenticePortal.InnerApi.CommitmentsV2.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
-using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.TrainingProviderService;
+using SFA.DAS.SharedOuterApi.Types.Services;
 
 namespace SFA.DAS.ApprenticePortal.Application.Commands.ApprenticeAccounts
 {

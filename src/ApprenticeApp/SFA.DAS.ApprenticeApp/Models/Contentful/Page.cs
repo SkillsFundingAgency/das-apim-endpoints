@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Contentful.Core.Models;
 
 namespace SFA.DAS.ApprenticeApp.Models.Contentful
@@ -9,6 +8,7 @@ namespace SFA.DAS.ApprenticeApp.Models.Contentful
         public PageSystemProperties Sys { get; set; }
         public string Slug { get; set; }
         public string Heading { get; set; }
+        public string Description { get; set; }
         public string Content { get; set; }
         public int ArticleOrder { get; set; }
 

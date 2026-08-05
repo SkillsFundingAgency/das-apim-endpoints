@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using RestEase.HttpClientFactory;
@@ -6,7 +7,6 @@ using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.Roatp.Api.HealthCheck;
 using SFA.DAS.Roatp.Infrastructure;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.Roatp.Api.AppStart;
 
@@ -18,6 +18,7 @@ public static class ServiceCollectionExtensions
         services.AddHttpClient();
         services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         AddCharityApiClient(services, configuration);
+        AddRoatpApiClient(services, configuration);
     }
 
     public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
@@ -32,7 +33,14 @@ public static class ServiceCollectionExtensions
     {
         var apiConfig = GetApiConfiguration(configuration, "CharitiesApiConfiguration");
         services.AddRestEaseClient<ICharitiesRestApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(configuration), apiConfig.Identifier));
+    }
+
+    private static void AddRoatpApiClient(IServiceCollection services, IConfiguration configuration)
+    {
+        var apiConfig = GetApiConfiguration(configuration, "RoatpApiConfiguration");
+        services.AddRestEaseClient<IRoatpApiClient>(apiConfig.Url)
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(configuration), apiConfig.Identifier));
     }
 
     public static IServiceCollection AddServiceHealthChecks(this IServiceCollection services)
@@ -40,7 +48,12 @@ public static class ServiceCollectionExtensions
         services.AddHealthChecks()
             .AddCheck<CharitiesApiHealthCheck>(CharitiesApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
-                tags: new[] { "ready" });
+                tags: ["ready"]);
+
+        services.AddHealthChecks()
+            .AddCheck<RoatpApiHealthCheck>(RoatpApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: ["ready"]);
 
         return services;
     }

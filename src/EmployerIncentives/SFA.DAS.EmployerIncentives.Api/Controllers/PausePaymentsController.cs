@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SFA.DAS.EmployerIncentives.Api.Models;
 using SFA.DAS.EmployerIncentives.Application.Commands.PausePayments;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {

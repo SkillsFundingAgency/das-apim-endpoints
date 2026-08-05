@@ -10,7 +10,7 @@ public class GetCourseProvidersQuery : IRequest<GetCourseProvidersResponse>
     public string LarsCode { get; set; }
     public ProviderOrderBy? OrderBy { get; set; }
     public decimal? Distance { get; set; }
-    public string Location { get; set; }
+    public string LocationName { get; set; }
     public List<DeliveryMode?> DeliveryModes { get; set; }
 
     public List<ProviderRating?> EmployerProviderRatings { get; set; }

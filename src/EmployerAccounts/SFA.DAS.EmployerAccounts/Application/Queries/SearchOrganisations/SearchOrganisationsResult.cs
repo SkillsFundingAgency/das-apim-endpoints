@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.EmployerAccounts.Application.Models;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EducationalOrganisation;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EducationalOrganisation;
 
 namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
 {

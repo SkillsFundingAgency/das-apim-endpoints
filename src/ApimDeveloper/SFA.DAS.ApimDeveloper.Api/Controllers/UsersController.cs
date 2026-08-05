@@ -12,7 +12,7 @@ using SFA.DAS.ApimDeveloper.Application.Users.Commands.ChangePassword;
 using SFA.DAS.ApimDeveloper.Application.Users.Commands.CreateUser;
 using SFA.DAS.ApimDeveloper.Application.Users.Commands.SendEmailToChangePassword;
 using SFA.DAS.ApimDeveloper.Application.Users.Queries.GetUser;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure;
 
 namespace SFA.DAS.ApimDeveloper.Api.Controllers
 {

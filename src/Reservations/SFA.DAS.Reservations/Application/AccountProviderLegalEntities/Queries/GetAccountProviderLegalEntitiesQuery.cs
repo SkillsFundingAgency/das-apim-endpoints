@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using MediatR;
-using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
+using SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships;
 
 namespace SFA.DAS.Reservations.Application.AccountProviderLegalEntities.Queries
 {

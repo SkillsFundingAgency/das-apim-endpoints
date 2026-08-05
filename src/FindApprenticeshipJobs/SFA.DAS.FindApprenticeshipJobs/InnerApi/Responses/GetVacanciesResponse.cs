@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
-using SFA.DAS.SharedOuterApi.Domain;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Domain;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using AvailableWhere = SFA.DAS.FindApprenticeshipJobs.Application.Shared.AvailableWhere;
 
 namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses

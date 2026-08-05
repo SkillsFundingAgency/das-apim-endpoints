@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.BusinessMetrics;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.BusinessMetrics;
 
 namespace SFA.DAS.Recruit.Application.Queries.GetVacancyMetrics
 {
