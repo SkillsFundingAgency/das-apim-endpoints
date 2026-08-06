@@ -1,13 +1,8 @@
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
-using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.Extensions;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.LearnerData.Services.ShortCourses;
@@ -19,20 +14,20 @@ public interface IShortCourseLookupService
 
 public class ShortCourseLookupService : IShortCourseLookupService
 {
-    private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
+    private readonly ICourseService _courseService;
     private readonly ILogger<ShortCourseLookupService> _logger;
-    private readonly AsyncRetryPolicy<ApiResponse<CourseLookupDetailResponse>> _retryPolicy;
+    private readonly AsyncRetryPolicy<CourseLookupResult> _retryPolicy;
 
     public ShortCourseLookupService(
-        ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
+        ICourseService courseService,
         ILogger<ShortCourseLookupService> logger)
     {
-        _coursesApiClient = coursesApiClient;
+        _courseService = courseService;
         _logger = logger;
         _retryPolicy = Policy
             .Handle<HttpRequestException>()
             .Or<TaskCanceledException>()
-            .OrResult<ApiResponse<CourseLookupDetailResponse>>(r => (int)r.StatusCode >= 500)
+            .OrResult<CourseLookupResult>(r => r.Status == CourseLookupStatus.Unavailable)
             .WaitAndRetryAsync(3,
                 attempt => TimeSpan.FromSeconds(Math.Pow(2, attempt)),
                 onRetry: (_, delay, attempt, _) =>
@@ -41,26 +36,26 @@ public class ShortCourseLookupService : IShortCourseLookupService
 
     public async Task<ShortCourseLookupResult> GetCourseDetails(string courseCode, DateTime startDate)
     {
-        ApiResponse<CourseLookupDetailResponse> apiResponse;
+        CourseLookupResult lookupResult;
         try
         {
-            apiResponse = await _retryPolicy.ExecuteAsync(
-                () => _coursesApiClient.GetWithResponseCode<CourseLookupDetailResponse>(
-                    new GetCourseLookupDetailsByIdRequest(courseCode)));
+            lookupResult = await _retryPolicy.ExecuteAsync(
+                () => _courseService.GetCourseLookupDetailsById(courseCode));
         }
         catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
         {
             throw new CoursesApiUnavailableException($"Courses API unavailable for course {courseCode} after retries.", ex);
         }
 
-        if (!apiResponse.StatusCode.IsSuccessStatusCode())
+        switch (lookupResult.Status)
         {
-            if ((int)apiResponse.StatusCode >= 500)
-                throw new CoursesApiUnavailableException($"Courses API returned {apiResponse.StatusCode} for course {courseCode} after retries.");
-            throw new InvalidCourseException($"Courses API returned {apiResponse.StatusCode} for course {courseCode}.");
+            case CourseLookupStatus.Unavailable:
+                throw new CoursesApiUnavailableException($"Courses API unavailable for course {courseCode} after retries.");
+            case CourseLookupStatus.NotFound:
+                throw new InvalidCourseException($"Courses API could not find course {courseCode}.");
         }
 
-        var response = apiResponse.Body;
+        var response = lookupResult.Course;
 
         if (response == null)
             throw new InvalidOperationException($"Courses API returned no data for course {courseCode}.");
