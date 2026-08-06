@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.AdminRoatp.Application.Commands.PatchProviderAllowedCourse;
 using SFA.DAS.AdminRoatp.Application.Commands.UpsertProviderAllowedCourse;
 using SFA.DAS.AdminRoatp.InnerApi.Models;
 
@@ -21,6 +22,26 @@ public class ProviderAllowedCoursesController(IMediator _mediator, ILogger<Provi
             LarsCode = larsCode,
             UserId = request.UserId,
             UserDisplayName = request.UserDisplayName,
+            LastDateStarts = request.LastDateStarts
+        };
+
+        await _mediator.Send(command);
+
+        return NoContent();
+    }
+
+    [HttpPatch("{larsCode}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> PatchProviderAllowedCourse([FromRoute] int ukprn, [FromRoute] string larsCode, [FromBody] PatchProviderAllowedCourseRequestModel request)
+    {
+        _logger.LogInformation("Request to patch provider allowed course for UKPRN {Ukprn} and LarsCode {LarsCode}", ukprn, larsCode);
+
+        var command = new PatchProviderAllowedCourseCommand
+        {
+            UserId = request.UserId,
+            UserDisplayName = request.UserDisplayName,
+            Ukprn = ukprn,
+            LarsCode = larsCode,
             LastDateStarts = request.LastDateStarts
         };
 
