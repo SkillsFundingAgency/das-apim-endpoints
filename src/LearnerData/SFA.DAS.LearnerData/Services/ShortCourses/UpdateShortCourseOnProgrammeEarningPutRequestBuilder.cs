@@ -1,21 +1,16 @@
 using SFA.DAS.LearnerData.Enums;
-using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 
 namespace SFA.DAS.LearnerData.Services.ShortCourses;
 
 public interface IUpdateShortCourseOnProgrammeEarningPutRequestBuilder
 {
-    UpdateShortCourseOnProgrammeRequestBody Build(OnProgramme onProgramme, Guid learnerKey, string learnerRef);
-    UpdateShortCourseOnProgrammeRequestBody Build(ShortCourseOnProgramme onProgramme, Guid LearnerKey, string LearnerRef);
+    UpdateShortCourseOnProgrammeRequestBody Build(ResolvedOnProgramme onProgramme, Guid learnerKey, string learnerRef);
 }
 
 public class UpdateShortCourseOnProgrammeEarningPutRequestBuilder : IUpdateShortCourseOnProgrammeEarningPutRequestBuilder
 {
-    public UpdateShortCourseOnProgrammeRequestBody Build(OnProgramme onProgramme, Guid learnerKey, string learnerRef)
-        => BuildBody(onProgramme.WithdrawalDate, onProgramme.CompletionDate, onProgramme.Milestones, onProgramme.StartDate, onProgramme.ExpectedEndDate, learnerKey, learnerRef);
-
-    public UpdateShortCourseOnProgrammeRequestBody Build(ShortCourseOnProgramme onProgramme, Guid learnerKey, string learnerRef)
+    public UpdateShortCourseOnProgrammeRequestBody Build(ResolvedOnProgramme onProgramme, Guid learnerKey, string learnerRef)
         => BuildBody(onProgramme.WithdrawalDate, onProgramme.CompletionDate, onProgramme.Milestones, onProgramme.StartDate, onProgramme.ExpectedEndDate, learnerKey, learnerRef);
 
     private static UpdateShortCourseOnProgrammeRequestBody BuildBody(

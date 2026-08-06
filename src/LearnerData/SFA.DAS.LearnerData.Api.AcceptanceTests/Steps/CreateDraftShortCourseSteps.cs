@@ -229,20 +229,16 @@ public class CreateDraftShortCourseSteps
             var learningResponse = new CreateShortCoursePostResponse
             {
                 LearningKey = Guid.NewGuid(),
-                EpisodeKey = episodeKey,
-                Episodes =
-                [
-                    new LearningInnerShortCourseEpisode
-                    {
-                        EpisodeKey = episodeKey,
-                        Ukprn = _scenarioContext.Get<long>(UkprnKey),
-                        CourseCode = "ZSC00001",
-                        StartDate = _scenarioContext.TryGetValue(PersistedStartDateOverrideKey, out DateTime persistedStartDate)
-                            ? persistedStartDate
-                            : DateTime.UtcNow,
-                        PlannedEndDate = DateTime.UtcNow.AddMonths(6)
-                    }
-                ]
+                Episode = new LearningInnerShortCourseEpisode
+                {
+                    EpisodeKey = episodeKey,
+                    Ukprn = _scenarioContext.Get<long>(UkprnKey),
+                    CourseCode = "ZSC00001",
+                    StartDate = _scenarioContext.TryGetValue(PersistedStartDateOverrideKey, out DateTime persistedStartDate)
+                        ? persistedStartDate
+                        : DateTime.UtcNow,
+                    PlannedEndDate = DateTime.UtcNow.AddMonths(6)
+                }
             };
 
             _testContext.ApprenticeshipsApi.MockServer
