@@ -15,7 +15,7 @@ using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Apim.Shared.Exceptions;
 using GetUserActionByCodeResponse = SFA.DAS.DigitalCertificates.Contracts.ApiResponses.GetUserActionByCodeResponse;
 using GetUserActionsResponse = SFA.DAS.DigitalCertificates.Contracts.ApiResponses.GetUserActionsResponse;
-using GetUserByIdResponse = SFA.DAS.DigitalCertificates.Contracts.ApiResponses.GetUserByIdResponse;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
 
 namespace SFA.DAS.Admin.UnitTests.Application.Queries.GetAllUserActivityByCode
 {
@@ -27,7 +27,7 @@ namespace SFA.DAS.Admin.UnitTests.Application.Queries.GetAllUserActivityByCode
             GetAllUserActivityByCodeQuery query,
             GetUserActionByCodeResponse codeResponseBody,
             GetUserActionsResponse userActionsBody,
-            GetUserByIdResponse userDetailsBody,
+            GetUserMatchesResponse userMatchesBody,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
             GetAllUserActivityByCodeQueryHandler handler)
         {
@@ -36,7 +36,7 @@ namespace SFA.DAS.Admin.UnitTests.Application.Queries.GetAllUserActivityByCode
 
             var codeApiResponse = new ApiResponse<GetUserActionByCodeResponse>(codeResponseBody, HttpStatusCode.OK, string.Empty);
             var actionsApiResponse = new ApiResponse<GetUserActionsResponse>(userActionsBody, HttpStatusCode.OK, string.Empty);
-            var detailsApiResponse = new ApiResponse<GetUserByIdResponse>(userDetailsBody, HttpStatusCode.OK, string.Empty);
+            var matchesApiResponse = new ApiResponse<GetUserMatchesResponse>(userMatchesBody, HttpStatusCode.OK, string.Empty);
 
             mockDigitalCertificatesApiClient
                 .Setup(c => c.GetWithResponseCode<GetUserActionByCodeResponse>(It.Is<GetUserActionsByCodeApiRequest>(r => r.Code == code)))
@@ -47,22 +47,22 @@ namespace SFA.DAS.Admin.UnitTests.Application.Queries.GetAllUserActivityByCode
                 .ReturnsAsync(actionsApiResponse);
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.GetWithResponseCode<GetUserByIdResponse>(It.Is<GetUsersIdByUserIdApiRequest>(r => r.UserId == codeResponseBody.UserId)))
-                .ReturnsAsync(detailsApiResponse);
+                .Setup(c => c.GetWithResponseCode<GetUserMatchesResponse>(It.Is<GetUsersByUserIdMatchesApiRequest>(r => r.UserId == codeResponseBody.UserId)))
+                .ReturnsAsync(matchesApiResponse);
 
             // Act
             var actual = await handler.Handle(query, CancellationToken.None);
 
             // Assert
             actual.Should().NotBeNull();
-            actual.UserId.Should().Be(userDetailsBody.UserId);
-            actual.GovUKIdentifier.Should().Be(userDetailsBody.GovUkIdentifier);
-            actual.EmailAddress.Should().Be(userDetailsBody.EmailAddress);
+            actual.UserId.Should().Be(userMatchesBody.UserId);
+            actual.GovUKIdentifier.Should().Be(userMatchesBody.GovUkIdentifier);
+            actual.EmailAddress.Should().Be(userMatchesBody.EmailAddress);
             actual.UserActions.Should().HaveCount(userActionsBody.UserActions?.Count ?? 0);
 
             mockDigitalCertificatesApiClient.Verify(c => c.GetWithResponseCode<GetUserActionByCodeResponse>(It.Is<GetUserActionsByCodeApiRequest>(r => r.Code == code)), Times.Once);
             mockDigitalCertificatesApiClient.Verify(c => c.GetWithResponseCode<GetUserActionsResponse>(It.Is<GetUsersByUserIdUserActionsApiRequest>(r => r.UserId == codeResponseBody.UserId)), Times.Once);
-            mockDigitalCertificatesApiClient.Verify(c => c.GetWithResponseCode<GetUserByIdResponse>(It.Is<GetUsersIdByUserIdApiRequest>(r => r.UserId == codeResponseBody.UserId)), Times.Once);
+            mockDigitalCertificatesApiClient.Verify(c => c.GetWithResponseCode<GetUserMatchesResponse>(It.Is<GetUsersByUserIdMatchesApiRequest>(r => r.UserId == codeResponseBody.UserId)), Times.Once);
         }
 
         [Test, MoqAutoData]
