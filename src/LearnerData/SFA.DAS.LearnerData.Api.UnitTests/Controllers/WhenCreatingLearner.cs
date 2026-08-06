@@ -22,7 +22,7 @@ public class WhenCreatingLearner
         CreateLearnerRequest request,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen]  Mock<IValidator<CreateLearnerRequest>> mockValidator,
-        [Greedy] LearnersController sut)
+        [Greedy] ApprenticeshipsController sut)
     {
         long ukprn = 12345678;
 
@@ -49,7 +49,7 @@ public class WhenCreatingLearner
         CreateLearnerRequest request,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] Mock<IValidator<CreateLearnerRequest>> mockValidator,
-        [Greedy] LearnersController sut)
+        [Greedy] ApprenticeshipsController sut)
     {
         long ukprn = 12345678;
 

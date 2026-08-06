@@ -20,8 +20,8 @@ public class WhenGettingLearners
         string ukprn,
         List<string> ulns,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ILogger<LearnersController>> mockLogger,
-        [Greedy] LearnersController sut)
+        [Frozen] Mock<ILogger<ApprenticeshipsController>> mockLogger,
+        [Greedy] ApprenticeshipsController sut)
     {
         const int academicYear = 2425;
         // Arrange

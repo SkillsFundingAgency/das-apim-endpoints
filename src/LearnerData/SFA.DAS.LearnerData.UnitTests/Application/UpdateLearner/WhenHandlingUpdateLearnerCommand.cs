@@ -1,6 +1,9 @@
 using AutoFixture;
 using Microsoft.Extensions.Logging;
+using NServiceBus;
+using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
@@ -25,6 +28,8 @@ public class WhenHandlingUpdateLearnerCommand
     private Mock<IUpdateEarningsEnglishAndMathsRequestBuilder> _updateEarningsEnglishAndMathsRequestBuilder;
     private Mock<ILearnerDataCacheService> _distributedCache;
     private Mock<ILogger<UpdateLearnerCommandHandler>> _logger;
+    private Mock<IMessageSession> _messageSession;
+    private FeatureFlags _featureFlags;
     private UpdateLearnerCommandHandler _sut;
 #pragma warning restore CS8618 // Non-nullable field, instantiated in SetUp method
 
@@ -40,15 +45,37 @@ public class WhenHandlingUpdateLearnerCommand
         _updateEarningsLearningSupportRequestBuilder = new Mock<IUpdateEarningsLearningSupportRequestBuilder>();
         _distributedCache = new Mock<ILearnerDataCacheService>();
         _logger = new Mock<ILogger<UpdateLearnerCommandHandler>>();
+        _messageSession = new Mock<IMessageSession>();
+        _featureFlags = new FeatureFlags { ApprenticeshipUpdateLearner = true };
         _sut = new UpdateLearnerCommandHandler(
             _logger.Object,
+            _messageSession.Object,
             _learningApiClient.Object,
             _earningsApiClient.Object,
             _updateLearningPutRequestBuilder.Object,
             _updateEarningsOnProgrammeRequestBuilder.Object,
             _updateEarningsEnglishAndMathsRequestBuilder.Object,
             _updateEarningsLearningSupportRequestBuilder.Object,
-            _distributedCache.Object);
+            _distributedCache.Object,
+            _featureFlags);
+    }
+
+    [Test]
+    public async Task Then_Does_Not_Run_Update_Logic_If_Feature_Flag_Is_Disabled()
+    {
+        // Arrange
+        _featureFlags.ApprenticeshipUpdateLearner = false;
+        var command = _fixture.Create<UpdateLearnerCommand>();
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _distributedCache.Verify(x => x.StoreLearner(It.IsAny<SFA.DAS.LearnerData.Requests.UpdateLearnerRequest>(), It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Never);
+        _updateLearningPutRequestBuilder.Verify(x => x.Build(It.IsAny<long>(), It.IsAny<SFA.DAS.LearnerData.Requests.UpdateLearnerRequest>(), It.IsAny<Guid>()), Times.Never);
+        _learningApiClient.Verify(x => x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()), Times.Never);
+        _earningsApiClient.VerifyNoOtherCalls();
+        _messageSession.Verify(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()), Times.Exactly(command.UpdateLearnerRequest.Delivery.OnProgramme.Count));
     }
 
     [Test]
@@ -56,8 +83,9 @@ public class WhenHandlingUpdateLearnerCommand
     {
         //Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var apiPutRequest = MockLearningPutRequestBuilder(command);
+
         MockLearningApiResponse();
+        var apiPutRequest = MockLearningPutRequestBuilder(command);
 
         //Act
         await _sut.Handle(command, CancellationToken.None);
@@ -65,6 +93,52 @@ public class WhenHandlingUpdateLearnerCommand
         //Assert
         _learningApiClient.Verify(x =>
             x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(apiPutRequest));
+        _messageSession.Verify(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()), Times.Exactly(command.UpdateLearnerRequest.Delivery.OnProgramme.Count));
+    }
+
+    [Test]
+    public async Task Then_LearnerDataEvent_Is_Published_For_Each_OnProgramme_Item()
+    {
+        // Arrange
+        var command = _fixture.Create<UpdateLearnerCommand>();
+        command.CorrelationId = Guid.NewGuid();
+        command.ReceivedOn = DateTime.UtcNow;
+        command.UpdateLearnerRequest.ConsumerReference = "consumer-ref-123";
+        command.UpdateLearnerRequest.Delivery.OnProgramme =
+        [
+            _fixture.Build<SFA.DAS.LearnerData.Requests.OnProgrammeRequestDetails>()
+                .With(x => x.StandardCode, 100)
+                .With(x => x.PercentageOfTrainingLeft, 75)
+                .With(x => x.IsFlexiJob, true)
+                .With(x => x.Costs, [new SFA.DAS.LearnerData.Requests.CostDetails { TrainingPrice = 10000, EpaoPrice = 2000 }])
+                .Create(),
+            _fixture.Build<SFA.DAS.LearnerData.Requests.OnProgrammeRequestDetails>()
+                .With(x => x.StandardCode, 200)
+                .With(x => x.PercentageOfTrainingLeft, 40)
+                .With(x => x.IsFlexiJob, false)
+                .With(x => x.Costs, [new SFA.DAS.LearnerData.Requests.CostDetails { TrainingPrice = 12000, EpaoPrice = 1000 }])
+                .Create()
+        ];
+
+        MockLearningApiResponse();
+        MockLearningPutRequestBuilder(command);
+
+        var publishedEvents = new List<LearnerDataEvent>();
+        _messageSession
+            .Setup(x => x.Publish(It.IsAny<LearnerDataEvent>(), It.IsAny<PublishOptions>()))
+            .Callback((object e, PublishOptions _) => publishedEvents.Add((LearnerDataEvent)e));
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _messageSession.Verify(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()), Times.Exactly(2));
+        publishedEvents.Select(x => x.StandardCode).Should().BeEquivalentTo([100, 200]);
+        publishedEvents.Select(x => x.PercentageLearningToBeDelivered).Should().BeEquivalentTo([75, 40]);
+        publishedEvents.Select(x => x.IsFlexiJob).Should().BeEquivalentTo([true, false]);
+        publishedEvents.Select(x => x.ConsumerReference).Distinct().Should().BeEquivalentTo([command.UpdateLearnerRequest.ConsumerReference]);
+        publishedEvents.Select(x => x.CorrelationId).Distinct().Should().BeEquivalentTo([command.CorrelationId]);
+        publishedEvents.Select(x => x.ReceivedDate).Distinct().Should().BeEquivalentTo([command.ReceivedOn]);
     }
 
     [Test]
@@ -100,7 +174,6 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var apiPutRequest = MockLearningPutRequestBuilder(command);
 
         var updateOnProgPutRequest = _fixture.Create<UpdateOnProgrammeApiPutRequest>();
 
@@ -108,10 +181,11 @@ public class WhenHandlingUpdateLearnerCommand
         updateLearningApiResponse.Changes.Clear();
         updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate); // on-prog change
 
-        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.LearningKey, command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data))
-            .ReturnsAsync(updateOnProgPutRequest);
-
         MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
+        var apiPutRequest = MockLearningPutRequestBuilder(command);
+
+        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data))
+            .ReturnsAsync(updateOnProgPutRequest);
 
         _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
             .Returns(Task.CompletedTask);
@@ -132,7 +206,6 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var apiPutRequest = MockLearningPutRequestBuilder(command);
 
         var updateLearningSupportApiPutRequest = _fixture.Create<UpdateLearningSupportApiPutRequest>();
 
@@ -140,10 +213,11 @@ public class WhenHandlingUpdateLearnerCommand
         updateLearningApiResponse.Changes.Clear();
         updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport); // LSF change
 
-        _updateEarningsLearningSupportRequestBuilder.Setup(x => x.Build(command, updateLearningApiResponse, apiPutRequest))
-            .Returns(updateLearningSupportApiPutRequest);
-
         MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
+        var apiPutRequest = MockLearningPutRequestBuilder(command);
+
+        _updateEarningsLearningSupportRequestBuilder.Setup(x => x.Build(updateLearningApiResponse, apiPutRequest))
+            .Returns(updateLearningSupportApiPutRequest);
 
         _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateLearningSupportApiPutRequest>()))
             .Returns(Task.CompletedTask);
@@ -164,7 +238,6 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var apiPutRequest = MockLearningPutRequestBuilder(command);
 
         var englishAndMathsApiPutRequest = _fixture.Create<UpdateEnglishAndMathsApiPutRequest>();
 
@@ -172,10 +245,11 @@ public class WhenHandlingUpdateLearnerCommand
         updateLearningApiResponse.Changes.Clear();
         updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMaths); // E&M change
 
+        MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
+        var apiPutRequest = MockLearningPutRequestBuilder(command);
+
         _updateEarningsEnglishAndMathsRequestBuilder.Setup(x => x.Build(command, updateLearningApiResponse, apiPutRequest))
             .Returns(englishAndMathsApiPutRequest);
-
-        MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
 
         _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateEnglishAndMathsApiPutRequest>()))
             .Returns(Task.CompletedTask);
@@ -190,24 +264,21 @@ public class WhenHandlingUpdateLearnerCommand
 
         _earningsApiClient.VerifyNoOtherCalls();
     }
-    protected void MockLearningApiResponse()
+
+    /// <returns>LearningKey</returns>
+    protected Guid MockLearningApiResponse()
     {
         var responseBody = new UpdateLearnerApiPutResponse();
         var response = new ApiResponse<UpdateLearnerApiPutResponse>(responseBody, HttpStatusCode.OK, string.Empty);
         _learningApiClient.Setup(x =>
                 x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()))
             .ReturnsAsync(response);
+
+        return responseBody.LearningKey;    
     }
 
-    protected UpdateLearningApiPutRequest MockLearningPutRequestBuilder(UpdateLearnerCommand command)
-    {
-        var fixture = new Fixture();
-        var apiPutRequest = fixture.Create<UpdateLearningApiPutRequest>();
-        _updateLearningPutRequestBuilder.Setup(x => x.Build(command.Ukprn, command.UpdateLearnerRequest, command.LearningKey)).Returns(apiPutRequest);
-        return apiPutRequest;
-    }
-
-    protected static void MockLearningApiResponse(
+    /// <returns>LearningKey</returns>
+    protected Guid MockLearningApiResponse(
         Mock<ILearningApiClient<LearningApiConfiguration>> learningApiClient,
         UpdateLearnerApiPutResponse responseBody,
         HttpStatusCode statusCode,
@@ -221,5 +292,15 @@ public class WhenHandlingUpdateLearnerCommand
         learningApiClient.Setup(x =>
             x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()))
         .ReturnsAsync(response);
+
+        return responseBody.LearningKey;
+    }
+
+    protected UpdateLearningApiPutRequest MockLearningPutRequestBuilder(UpdateLearnerCommand command)
+    {
+        var fixture = new Fixture();
+        var apiPutRequest = fixture.Create<UpdateLearningApiPutRequest>();
+        _updateLearningPutRequestBuilder.Setup(x => x.Build(command.Ukprn, command.UpdateLearnerRequest, command.LearnerKey)).Returns(apiPutRequest);
+        return apiPutRequest;
     }
 }

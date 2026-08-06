@@ -7,8 +7,10 @@ namespace SFA.DAS.LearnerData.Application.UpdateLearner;
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 public class UpdateLearnerCommand : IRequest
 {
-    public Guid LearningKey { get; set; }
+    public Guid LearnerKey { get; set; }
     public long Ukprn { get; set; }
+    public Guid CorrelationId { get; set; }
+    public DateTime ReceivedOn { get; set; }
     public UpdateLearnerRequest UpdateLearnerRequest { get; set; }
 }
 

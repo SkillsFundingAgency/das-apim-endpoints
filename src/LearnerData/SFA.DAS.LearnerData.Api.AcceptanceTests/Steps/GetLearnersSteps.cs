@@ -160,7 +160,7 @@ public class GetLearnersSteps(TestContext testContext, ScenarioContext scenarioC
         .Given(
             Request
             .Create()
-            .WithPath($"/{ukprn}/academicyears/{academicYear}/learnings")
+            .WithPath($"/{ukprn}/academicyears/{academicYear}/learners")
             .WithParam("page", ((int)pageNumber).ToString())
             .WithParam("pageSize", pageSize.ToString())
             .UsingGet())

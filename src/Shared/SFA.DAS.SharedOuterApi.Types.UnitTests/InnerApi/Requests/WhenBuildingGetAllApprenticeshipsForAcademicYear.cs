@@ -9,6 +9,6 @@ public class WhenBuildingGetAllApprenticeshipsForAcademicYear
     {
         var actual = new GetAllLearningsRequest(ukprn, academicYear, page, pageSize);
 
-        actual.GetUrl.Should().Be($"/{ukprn}/academicyears/{academicYear}/learnings?page={page}&pageSize={pageSize}");
+        actual.GetUrl.Should().Be($"/{ukprn}/academicyears/{academicYear}/learners?page={page}&pageSize={pageSize}");
     }
 }

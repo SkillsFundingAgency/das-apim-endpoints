@@ -14,12 +14,12 @@ namespace SFA.DAS.LearnerData.Api.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class LearnersController(
+public class ApprenticeshipsController(
     IMediator mediator, 
-    ILogger<LearnersController> logger) : ControllerBase
+    ILogger<ApprenticeshipsController> logger) : ControllerBase
 {
     [HttpGet]
-    [Route("providers/{ukprn}/academicyears/{academicyear}/learners")]
+    [Route("/Learners/providers/{ukprn}/academicyears/{academicyear}/learners")]
     public async Task<IActionResult> GetLearners_Legacy([FromRoute] string ukprn, [FromRoute] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
     {
         return await GetLearnersInternal(ukprn, academicyear, page, pagesize);
@@ -81,15 +81,18 @@ public class LearnersController(
     }
 
     [HttpPut]
-    [Route("/providers/{ukprn}/learning/{learningKey}")]
-    [Route("/providers/{ukprn}/apprenticeships/{learningKey}")]
-    public async Task<IActionResult> UpdateLearner([FromRoute] long ukprn, [FromRoute] Guid learningKey, [FromBody] UpdateLearnerRequest request, [FromQuery] int academicyear = 2526, [FromQuery] int collectionPeriod = 0)
+    [Route("/providers/{ukprn}/learning/{learnerKey}")]
+    [Route("/providers/{ukprn}/apprenticeships/{learnerKey}")]
+    public async Task<IActionResult> UpdateLearner([FromRoute] long ukprn, [FromRoute] Guid learnerKey, [FromBody] UpdateLearnerRequest request, [FromQuery] int academicyear = 2526, [FromQuery] int collectionPeriod = 0)
     {
         try
         {
+            var correlationId = Guid.NewGuid();
             await mediator.Send(new UpdateLearnerCommand
             {
-                LearningKey = learningKey,
+                CorrelationId = correlationId,
+                ReceivedOn = DateTime.Now,
+                LearnerKey = learnerKey,
                 UpdateLearnerRequest = request,
                 Ukprn = ukprn
             });
@@ -97,26 +100,26 @@ public class LearnersController(
         }
         catch (Exception e)
         {
-            logger.LogError(e, $"Internal error occurred when updating learner {learningKey}");
+            logger.LogError(e, $"Internal error occurred when updating learner {learnerKey}");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
 
     [HttpDelete]
-    [Route("/providers/{ukprn}/learning/{learningKey}")]
-    [Route("/providers/{ukprn}/apprenticeships/{learningKey}")]
-    public async Task<IActionResult> RemoveLearner([FromRoute] long ukprn, [FromRoute] Guid learningKey, [FromQuery] int academicyear = 2526)
+    [Route("/providers/{ukprn}/learning/{learnerKey}")]
+    [Route("/providers/{ukprn}/apprenticeships/{learnerKey}")]
+    public async Task<IActionResult> RemoveLearner([FromRoute] long ukprn, [FromRoute] Guid learnerKey, [FromQuery] int academicyear = 2526)
     {
         logger.LogInformation(
-            "RemoveLearner for provider {ukprn}, apprenticeship {learningKey}",
+            "RemoveLearner for provider {ukprn}, apprenticeship {learnerKey}",
             ukprn,
-            learningKey);
+            learnerKey);
 
         try
         {
             var command = new RemoveLearnerCommand
             {
-                LearningKey = learningKey,
+                LearnerKey = learnerKey,
                 Ukprn = ukprn
             };
 
@@ -127,7 +130,7 @@ public class LearnersController(
         }
         catch (Exception e)
         {
-            logger.LogError(e, $"Internal error occurred when removing learner {learningKey}");
+            logger.LogError(e, $"Internal error occurred when removing learner {learnerKey}");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -137,8 +140,8 @@ public class LearnersController(
     /// </summary>
     /// <returns>All earnings data in the format of an FM36Learner array.</returns>
     [HttpGet]
-    [Route("providers/{ukprn}/collectionPeriod/{collectionYear}/{collectionPeriod}/fm36data")]
-    public async Task<IActionResult> GetFm36Learners(long ukprn, int collectionYear, byte collectionPeriod, [FromQuery] int? page, [FromQuery] int? pageSize)
+    [Route("/Learners/providers/{ukprn}/collectionPeriod/{collectionYear}/{collectionPeriod}/fm36data")]
+    public async Task<IActionResult> GetFm36Learners_Legacy(long ukprn, int collectionYear, byte collectionPeriod, [FromQuery] int? page, [FromQuery] int? pageSize)
     {
         return await GetFm36Data_Internal(ukprn, collectionYear, collectionPeriod, page, pageSize);
     }

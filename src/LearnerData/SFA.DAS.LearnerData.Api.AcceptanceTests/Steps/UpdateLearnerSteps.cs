@@ -1,6 +1,7 @@
 using AutoFixture;
 using FluentAssertions;
 using Newtonsoft.Json;
+using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.Net;
@@ -14,6 +15,7 @@ using WireMock.ResponseBuilders;
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps;
 
 [Binding]
+[Scope(Feature = "UpdateLearner")]
 internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scenarioContext)
 {
     private readonly Fixture _fixture = new Fixture();
@@ -22,6 +24,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     private const string UkprnKey = "UkprnKey";
     private const string FundingBandMaximumKey = "FundingBandMaximumKey";
     private const string SldLearnerDataKey = "SldLearnerDataKey";
+    private const string OuterApiResponseKey = "UpdateLearnerOuterApiResponse";
 
     [Given(@"there is a learner")]
     public void GivenThereIsALearner()
@@ -49,6 +52,37 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     public void GivenTheDetailsPassedInAreTheSameAsTheExistingLearnerDetails()
     {
         scenarioContext.Set(new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>(), ChangesKey); // an empty list will be returned to indicate no changes
+    }
+
+    [Given(@"the details passed in include multiple on-programme learnings")]
+    public void GivenTheDetailsPassedInIncludeMultipleOnProgrammeLearnings()
+    {
+        scenarioContext.Set(new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>(), ChangesKey);
+
+        var request = _fixture.Build<UpdateLearnerRequest>()
+            .With(x => x.ConsumerReference, "update-learner-consumer-ref")
+            .With(x => x.Delivery, new UpdateLearnerRequestDeliveryDetails
+            {
+                OnProgramme =
+                [
+                    _fixture.Build<OnProgrammeRequestDetails>()
+                        .With(x => x.StandardCode, 300)
+                        .With(x => x.PercentageOfTrainingLeft, 70)
+                        .With(x => x.IsFlexiJob, true)
+                        .With(x => x.Costs, [new CostDetails { TrainingPrice = 14000, EpaoPrice = 2500 }])
+                        .Create(),
+                    _fixture.Build<OnProgrammeRequestDetails>()
+                        .With(x => x.StandardCode, 400)
+                        .With(x => x.PercentageOfTrainingLeft, 35)
+                        .With(x => x.IsFlexiJob, false)
+                        .With(x => x.Costs, [new CostDetails { TrainingPrice = 8000, EpaoPrice = 2000 }])
+                        .Create()
+                ],
+                EnglishAndMaths = []
+            })
+            .Create();
+
+        scenarioContext.Set(request, SldLearnerDataKey);
     }
 
     [When(@"the learner is updated")]
@@ -85,6 +119,43 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
 
         cachedData.Should().NotBeNull();
         cachedData.Should().BeEquivalentTo(sldLearnerData);
+    }
+
+    [Then(@"approvals is informed of each on-programme learning")]
+    public void ThenApprovalsIsInformedOfEachOnProgrammeLearning()
+    {
+        var response = scenarioContext.Get<HttpResponseMessage>(OuterApiResponseKey);
+        response.StatusCode.Should().Be(HttpStatusCode.Accepted);
+
+        var ukprn = scenarioContext.Get<long>(UkprnKey);
+        var request = scenarioContext.Get<UpdateLearnerRequest>(SldLearnerDataKey);
+        var publishedEvents = StubMessageSession.PublishedMessages.OfType<LearnerDataEvent>().ToList();
+
+        publishedEvents.Count.Should().Be(request.Delivery.OnProgramme.Count);
+
+        foreach (var onProgramme in request.Delivery.OnProgramme)
+        {
+            var evt = publishedEvents.Should().ContainSingle(x => x.StandardCode == onProgramme.StandardCode).Subject;
+            var cost = onProgramme.Costs!.First();
+
+            evt.ULN.Should().Be(request.Learner.Uln);
+            evt.UKPRN.Should().Be(ukprn);
+            evt.FirstName.Should().Be(request.Learner.FirstName);
+            evt.LastName.Should().Be(request.Learner.LastName);
+            evt.Email.Should().Be(request.Learner.Email);
+            evt.DoB.Should().Be(request.Learner.Dob);
+            evt.StartDate.Should().Be(onProgramme.StartDate);
+            evt.PlannedEndDate.Should().Be(onProgramme.ExpectedEndDate);
+            evt.PercentageLearningToBeDelivered.Should().Be(onProgramme.PercentageOfTrainingLeft);
+            evt.EpaoPrice.Should().Be(cost.EpaoPrice ?? 0);
+            evt.TrainingPrice.Should().Be(cost.TrainingPrice ?? 0);
+            evt.AgreementId.Should().Be(onProgramme.AgreementId);
+            evt.IsFlexiJob.Should().Be(onProgramme.IsFlexiJob.GetValueOrDefault());
+            evt.ConsumerReference.Should().Be(request.ConsumerReference);
+            evt.CorrelationId.Should().NotBe(Guid.Empty);
+            evt.ReceivedDate.Should().NotBe(default);
+            evt.LearningType.Should().Be(LearningType.Apprenticeship);
+        }
     }
 
     [Given("the funding band maximum for that learner is set")]
@@ -144,6 +215,8 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
             .WithStatusCode(HttpStatusCode.OK)
             .WithBodyAsJson(response)
         );
+
+        scenarioContext.Set(response);
     }
 
     private void ConfigureEarningsInnerApiToRespondeOkToEverything()
@@ -162,29 +235,36 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
 
     private async Task CallUpdateLearnerEndpoint()
     {
+        StubMessageSession.PublishedMessages.Clear();
+
         var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
         var ukprn = scenarioContext.Get<long>(UkprnKey);
-        var requestBody = _fixture.Create<UpdateLearnerRequest>();
+        if (!scenarioContext.TryGetValue(SldLearnerDataKey, out UpdateLearnerRequest requestBody))
+        {
+            requestBody = _fixture.Create<UpdateLearnerRequest>();
+        }
+
         var httpContent = new StringContent(JsonConvert.SerializeObject(requestBody), new MediaTypeHeaderValue("application/json"));
         var response = await testContext.OuterApiClient.PutAsync($"/providers/{ukprn}/learning/{learnerKey}", httpContent);
         var contentString = await response.Content.ReadAsStringAsync();
         response.IsSuccessStatusCode.Should().BeTrue($"Expected successful response from outer Api call, but got {response.StatusCode}. Content: {contentString}");
 
+        scenarioContext.Set(response, OuterApiResponseKey);
         scenarioContext.Set(requestBody, SldLearnerDataKey);
     }
 
     private string GetEarningsRequestUrl(string updateRequestType)
     {
-        var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
+        var learningKey = scenarioContext.Get<UpdateLearnerApiPutResponse>().LearningKey;
 
         switch (updateRequestType)
         {
             case "on-programme":
-                return $"learning/{learnerKey.ToString()}/on-programme";
+                return $"learning/{learningKey.ToString()}/on-programme";
             case "learning-support":
-                return $"learning/{learnerKey.ToString()}/learning-support";
+                return $"learning/{learningKey.ToString()}/learning-support";
             case "english-and-maths":
-                return $"learning/{learnerKey.ToString()}/english-and-maths";
+                return $"learning/{learningKey.ToString()}/english-and-maths";
             default:
                 throw new ArgumentOutOfRangeException(nameof(updateRequestType), updateRequestType, null);
         }

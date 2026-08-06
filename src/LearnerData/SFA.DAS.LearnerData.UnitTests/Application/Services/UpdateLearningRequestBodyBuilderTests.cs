@@ -166,9 +166,9 @@ public class UpdateLearningRequestBodyBuilderTests
             },
             Delivery = new CreateLearnerRequest.DeliveryDetails
             {
-                OnProgramme = new List<CreateLearnerRequest.OnProgrammeDetails>
+                OnProgramme = new List<OnProgrammeRequestDetails>
                 {
-                    new CreateLearnerRequest.OnProgrammeDetails
+                    new OnProgrammeRequestDetails
                     {
                         StartDate = new DateTime(2023, 9, 1),
                         ExpectedEndDate = new DateTime(2025, 9, 1),
