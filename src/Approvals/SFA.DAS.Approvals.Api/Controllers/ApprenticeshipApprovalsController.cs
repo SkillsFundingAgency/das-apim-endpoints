@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models.Apprentices;
 using SFA.DAS.Approvals.Application.ApprenticeshipApprovals.Commands.ProcessApprenticeshipApproval;
 using SFA.DAS.Approvals.Application.ApprenticeshipApprovals.Query;
+using SFA.DAS.Approvals.Exceptions;
 namespace SFA.DAS.Approvals.Api.Controllers;
 
 [ApiController]
@@ -48,14 +49,20 @@ public class ApprenticeshipApprovalsController(
     {
         try
         {
-            await mediator.Send(new ProcessApprenticeshipApprovalCommand { 
-                ApprovalRequestId = approvalRequestId, 
-                ApprenticeshipId = apprenticeshipId, 
-                ApplyChanges = request.ApplyChanges, 
-                UserInfo = request.UserInfo 
+            await mediator.Send(new ProcessApprenticeshipApprovalCommand
+            {
+                ApprovalRequestId = approvalRequestId,
+                ApprenticeshipId = apprenticeshipId,
+                ApplyChanges = request.ApplyChanges,
+                UserInfo = request.UserInfo
             });
 
             return Ok();
+        }
+        catch (DomainApimException e)
+        {
+            logger.LogError(e, "Domain Exception in PostApprenticeshipApproval {apprenticeshipId}", apprenticeshipId);
+            throw;
         }
         catch (Exception e)
         {
