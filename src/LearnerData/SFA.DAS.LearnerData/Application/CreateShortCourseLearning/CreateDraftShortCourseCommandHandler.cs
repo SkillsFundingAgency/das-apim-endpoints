@@ -121,7 +121,6 @@ public class CreateDraftShortCourseCommandHandler(
         {
             CourseCode = episode.CourseCode,
             Ukprn = episode.Ukprn,
-            EmployerId = requestOnProg.EmployerId,
             StartDate = episode.StartDate,
             ExpectedEndDate = episode.PlannedEndDate,
             CompletionDate = episode.CompletionDate,
