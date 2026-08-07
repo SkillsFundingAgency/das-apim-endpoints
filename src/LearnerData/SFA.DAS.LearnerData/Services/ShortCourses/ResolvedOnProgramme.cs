@@ -11,7 +11,7 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses;
 public class ResolvedOnProgramme
 {
     public string CourseCode { get; set; } = null!;
-    public long EmployerId { get; set; }
+    public long Ukprn { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
     public short? WithdrawalReasonCode { get; set; }

@@ -102,7 +102,6 @@ public class WhenHandlingCreateDraftShortCourseCommand
             StartDate = new DateTime(2025, 8, 1),
             ExpectedEndDate = new DateTime(2026, 7, 31),
             Price = 1500,
-            EmployerId = 123456,
             CourseCode = "91",
             WithdrawalReasonCode = 2
         };
