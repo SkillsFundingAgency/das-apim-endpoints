@@ -333,13 +333,13 @@ public class CreateVacancyWage
     /// Additional information about pay, such as when the apprentice might get a pay rise.
     /// </summary>
     [JsonPropertyName("wageAdditionalInformation")]
-    [MaxLength(250)]
+    [MaxLength(500)]
     public string WageAdditionalInformation { get; set; }
     /// <summary>
     /// Describe benefits the company offers.
     /// </summary>
     [JsonPropertyName("CompanyBenefitsInformation")]
-    [MaxLength(250)]
+    [MaxLength(500)]
     public string CompanyBenefitsInformation { get; set; }
     /// <summary>
     /// The total number of hours per week. This includes both work and training. Needs to be between 16 and 48 hours.
@@ -400,6 +400,12 @@ public class CreateVacancyQualification
     /// </summary>
     [JsonPropertyName("weighting")]
     public QualificationWeighting Weighting { get; set; }
+    
+    /// <summary>
+    /// If the QualificationType is `Other`, you must include this field for the name of the qualification.
+    /// </summary>
+    [JsonPropertyName("otherQualificationName")]
+    public string OtherQualificationName { get; set; }
 }
 
 public class SubmitterContactDetails

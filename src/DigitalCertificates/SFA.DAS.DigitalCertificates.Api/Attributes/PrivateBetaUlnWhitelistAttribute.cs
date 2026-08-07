@@ -68,7 +68,7 @@ namespace SFA.DAS.DigitalCertificates.Api.Attributes
             context.Result = new StatusCodeResult(500);
         }
 
-        private bool IsAllowed(object? result)
+        private bool IsAllowed(object result)
         {
             return result switch
             {

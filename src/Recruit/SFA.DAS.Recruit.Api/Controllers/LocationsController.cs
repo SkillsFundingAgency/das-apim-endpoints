@@ -20,7 +20,10 @@ namespace SFA.DAS.Recruit.Api.Controllers
         {
             try
             {
-                var queryResponse = await mediator.Send(new GetAddressesQuery(query));
+                var queryResponse = await mediator.Send(new GetAddressesQuery
+                {
+                    Query = query
+                });
 
                 if (queryResponse.AddressesResponse == null || !queryResponse.AddressesResponse.Addresses.Any())
                     return NotFound();
@@ -36,11 +39,14 @@ namespace SFA.DAS.Recruit.Api.Controllers
 
         [HttpGet]
         [Route("geopoint")]
-        public async Task<IActionResult> GetGeopoint([FromQuery] string postcode)
+        public async Task<IActionResult> GetGeoPoint([FromQuery] string postcode)
         {
             try
             {
-                var queryResponse = await mediator.Send(new GetGeoPointQuery(postcode));
+                var queryResponse = await mediator.Send(new GetGeoPointQuery
+                {
+                    Postcode = postcode
+                });
 
                 if (queryResponse.GetPointResponse == null)
                     return NotFound();
@@ -49,7 +55,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
             }
             catch (Exception e)
             {
-                logger.LogError(e, "Error attempting to get geopoint of postcode");
+                logger.LogError(e, "Error attempting to get GeoPoint of postcode");
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }

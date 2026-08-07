@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
-using SFA.DAS.Notifications.Messages.Commands;
-using SFA.DAS.RecruitJobs.Api.Controllers;
-using SFA.DAS.RecruitJobs.InnerApi.Responses.DelayedNotifications;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Notifications.Messages.Commands;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
+using SFA.DAS.RecruitJobs.Api.Controllers;
 
 namespace SFA.DAS.RecruitJobs.Api.UnitTests.Controllers.DelayedNotificationControllerTests;
 
@@ -21,7 +21,7 @@ public class WhenSendingOneEmail
         notificationService
             .Setup(x => x.Send(It.IsAny<SendEmailCommand>()))
             .Callback<SendEmailCommand>(x => capturedCommand = x);
-        var expectedCommand = new SendEmailCommand(email.TemplateId.ToString(), email.RecipientAddress, email.Tokens);    
+        var expectedCommand = new SendEmailCommand(email.TemplateId.ToString(), email.RecipientAddress, email.Tokens as IReadOnlyDictionary<string, string>);    
 
         // act
         var result = await sut.SendOne(notificationService.Object, email) as NoContent;

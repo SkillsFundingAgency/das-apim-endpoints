@@ -1,29 +1,27 @@
 using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.RecruitJobs.Domain;
+using SFA.DAS.Recruit.Contracts.ApiRequests;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitJobs.GraphQL;
 using SFA.DAS.RecruitJobs.Handlers;
-using SFA.DAS.RecruitJobs.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using StrawberryShake;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
-using ClosureReason = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.ClosureReason;
-using OwnerType = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.OwnerType;
-using TransferInfo = SFA.DAS.RecruitJobs.Domain.TransferInfo;
-using Vacancy = SFA.DAS.RecruitJobs.Domain.Vacancy;
-using VacancyStatus = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.VacancyStatus;
+using ClosureReason = SFA.DAS.Recruit.Contracts.ApiResponses.ClosureReason;
+using OwnerType = SFA.DAS.Recruit.Contracts.ApiResponses.OwnerType;
+using VacancyStatus = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyStatus;
+using TransferInfo = SFA.DAS.Recruit.Contracts.ApiResponses.TransferInfo;
+using Vacancy = SFA.DAS.Recruit.Contracts.ApiResponses.Vacancy;
+using VacancyReview = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyReview;
 
 namespace SFA.DAS.RecruitJobs.UnitTests.Handlers;
 
 public class WhenHandlingTransferProviderVacancyToLegalEntity
 {
-    public record MockVacancyDetails(
+    public abstract record MockVacancyDetails(
         Guid Id,
         long? VacancyReference,
         string? Title,
@@ -40,7 +38,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
-        var response = new OperationResult<IGetProviderTransferableVacancyDetailsResult>(null, null, null!, errors); 
+        var response = new OperationResult<IGetProviderTransferableVacancyDetailsResult>(null, null, null!, errors);
         recruitGqlClient
             .Setup(x => x.GetProviderTransferableVacancyDetails.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
@@ -51,20 +49,20 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         // assert
         await action.Should().ThrowAsync<GraphQLClientException>();
     }
-    
+
     [Test, MoqAutoData]
     public async Task Then_If_No_Vacancies_Are_Available_To_Be_Transferred_Nothing_Happens(
         Guid vacancyId,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>>  recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
         data
             .Setup(x => x.Vacancies)
             .Returns([]);
-        var response = new OperationResult<IGetProviderTransferableVacancyDetailsResult>(data.Object, null, null!, null); 
+        var response = new OperationResult<IGetProviderTransferableVacancyDetailsResult>(data.Object, null, null!, null);
         recruitGqlClient
             .Setup(x => x.GetProviderTransferableVacancyDetails.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
@@ -75,45 +73,40 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         // assert
         recruitApiClient.VerifyNoOtherCalls();
     }
-    
+
     [Test]
-    [MoqInlineAutoData(VacancyStatus.Draft)]
-    [MoqInlineAutoData(VacancyStatus.Closed)]
-    [MoqInlineAutoData(VacancyStatus.Referred)]
+    [RecursiveMoqInlineAutoData(VacancyStatus.Draft)]
+    [RecursiveMoqInlineAutoData(VacancyStatus.Referred)]
     public async Task Then_The_Vacancy_Is_Transferred(
         GraphQL.VacancyStatus status,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>>  recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
+        vacancyDetails = vacancyDetails with { Status = status };
         var expectedTransferInfo = new TransferInfo
         {
             Ukprn = vacancyDetails.Ukprn!.Value,
-            ProviderName = vacancyDetails.TrainingProvider_Name,
-            LegalEntityName = vacancyDetails.LegalEntityName,
+            ProviderName = vacancyDetails.TrainingProvider_Name!,
+            LegalEntityName = vacancyDetails.LegalEntityName!,
             Reason = TransferReason.EmployerRevokedPermission,
-        };
-        
-        vacancyDetails = vacancyDetails with
-        {
-            Status = status
         };
         data
             .Setup(x => x.Vacancies)
             .Returns([vacancyDetails]);
-        var response = new OperationResult<IGetProviderTransferableVacancyDetailsResult>(data.Object, null, null!, null); 
+        var response = new OperationResult<IGetProviderTransferableVacancyDetailsResult>(data.Object, null, null!, null);
         recruitGqlClient
             .Setup(x => x.GetProviderTransferableVacancyDetails.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
-        PatchVacancyRequest? capturedPatchRequest = null;
+        PatchVacanciesByVacancyIdApiRequest? capturedPatchRequest = null;
         recruitApiClient
-            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacancyRequest>()))
-            .Callback<IPatchApiRequest<JsonPatchDocument<Vacancy>>>(x => capturedPatchRequest = x as PatchVacancyRequest)
-            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null));
+            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacanciesByVacancyIdApiRequest>()))
+            .Callback<IPatchApiRequest<JsonPatchDocument<Vacancy>>>(x => capturedPatchRequest = x as PatchVacanciesByVacancyIdApiRequest)
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
 
         // act
         await sut.HandleAsync(vacancyId, TransferReason.EmployerRevokedPermission, CancellationToken.None);
@@ -121,150 +114,237 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         // assert
         CommonAssertions(capturedPatchRequest, expectedTransferInfo);
     }
-    
+
     [Test]
-    [MoqInlineAutoData(VacancyStatus.Rejected)]
-    [MoqInlineAutoData(VacancyStatus.Review)]
+    [RecursiveMoqInlineAutoData(VacancyStatus.Rejected)]
+    [RecursiveMoqInlineAutoData(VacancyStatus.Review)]
     public async Task Then_The_Vacancy_Is_Transferred_And_Made_Draft_Again(
         GraphQL.VacancyStatus status,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>>  recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
+        vacancyDetails = vacancyDetails with { Status = status };
         var expectedTransferInfo = new TransferInfo
         {
             Ukprn = vacancyDetails.Ukprn!.Value,
-            ProviderName = vacancyDetails.TrainingProvider_Name,
-            LegalEntityName = vacancyDetails.LegalEntityName,
+            ProviderName = vacancyDetails.TrainingProvider_Name!,
+            LegalEntityName = vacancyDetails.LegalEntityName!,
             Reason = TransferReason.EmployerRevokedPermission,
-        };
-        
-        vacancyDetails = vacancyDetails with
-        {
-            Status = status
         };
         data
             .Setup(x => x.Vacancies)
             .Returns([vacancyDetails]);
-        var response = new OperationResult<IGetProviderTransferableVacancyDetailsResult>(data.Object, null, null!, null); 
+        var response = new OperationResult<IGetProviderTransferableVacancyDetailsResult>(data.Object, null, null!, null);
         recruitGqlClient
             .Setup(x => x.GetProviderTransferableVacancyDetails.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
-        PatchVacancyRequest? capturedPatchRequest = null;
+        PatchVacanciesByVacancyIdApiRequest? capturedPatchRequest = null;
         recruitApiClient
-            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacancyRequest>()))
-            .Callback<IPatchApiRequest<JsonPatchDocument<Vacancy>>>(x => capturedPatchRequest = x as PatchVacancyRequest)
-            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null));
+            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacanciesByVacancyIdApiRequest>()))
+            .Callback<IPatchApiRequest<JsonPatchDocument<Vacancy>>>(x => capturedPatchRequest = x as PatchVacanciesByVacancyIdApiRequest)
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
 
         // act
         await sut.HandleAsync(vacancyId, TransferReason.EmployerRevokedPermission, CancellationToken.None);
 
         // assert
         CommonAssertions(capturedPatchRequest, expectedTransferInfo);
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.Operations.Operation<Vacancy>("replace", "/Status", null, VacancyStatus.Draft));
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/status", null, VacancyStatus.Draft));
     }
-    
+
     [Test]
-    [MoqInlineAutoData(VacancyStatus.Live)]
-    public async Task Then_The_Vacancy_Is_Transferred_And_Closed(
+    [RecursiveMoqInlineAutoData(VacancyStatus.Live)]
+    public async Task Then_The_Vacancy_Is_Transferred_And_Closed_And_Applications_Moved_Over(
         GraphQL.VacancyStatus status,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>>  recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
+        vacancyDetails = vacancyDetails with { Status = status };
         var expectedTransferInfo = new TransferInfo
         {
             Ukprn = vacancyDetails.Ukprn!.Value,
-            ProviderName = vacancyDetails.TrainingProvider_Name,
-            LegalEntityName = vacancyDetails.LegalEntityName,
+            ProviderName = vacancyDetails.TrainingProvider_Name!,
+            LegalEntityName = vacancyDetails.LegalEntityName!,
             Reason = TransferReason.EmployerRevokedPermission,
         };
-        
-        vacancyDetails = vacancyDetails with
+        var applicationReviews = new List<GetApplicationReviewResponse>
         {
-            Status = status
+            new() { ApplicationId = Guid.NewGuid(), Status = ApplicationReviewStatus.EmployerInterviewing },
+            new() { ApplicationId = Guid.NewGuid(), Status = ApplicationReviewStatus.Shared },
+            new() { ApplicationId = Guid.NewGuid(), Status = ApplicationReviewStatus.EmployerUnsuccessful },
         };
-        data
-            .Setup(x => x.Vacancies)
-            .Returns([vacancyDetails]);
-        var response = new OperationResult<IGetProviderTransferableVacancyDetailsResult>(data.Object, null, null!, null); 
+        data.Setup(x => x.Vacancies).Returns([vacancyDetails]);
         recruitGqlClient
             .Setup(x => x.GetProviderTransferableVacancyDetails.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(response);
-        PatchVacancyRequest? capturedPatchRequest = null;
+            .ReturnsAsync(new OperationResult<IGetProviderTransferableVacancyDetailsResult>(data.Object, null, null!, null));
         recruitApiClient
-            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacancyRequest>()))
-            .Callback<IPatchApiRequest<JsonPatchDocument<Vacancy>>>(x => capturedPatchRequest = x as PatchVacancyRequest)
-            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null));
+            .Setup(x => x.Get<List<GetApplicationReviewResponse>>(
+                It.Is<GetVacanciesByidByVacancyIdApplicationreviewsApiRequest>(c =>
+                    c.VacancyId == vacancyId
+                    && c.Statuses!.Contains(ApplicationReviewStatus.Shared)
+                    && c.Statuses!.Contains(ApplicationReviewStatus.EmployerInterviewing)
+                    && c.Statuses!.Contains(ApplicationReviewStatus.EmployerUnsuccessful))))
+            .ReturnsAsync(applicationReviews);
+        PatchVacanciesByVacancyIdApiRequest? capturedPatchRequest = null;
+        recruitApiClient
+            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacanciesByVacancyIdApiRequest>()))
+            .Callback<IPatchApiRequest<JsonPatchDocument<Vacancy>>>(x => capturedPatchRequest = x as PatchVacanciesByVacancyIdApiRequest)
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
+        var capturedApplicationReviewPatches = new List<PatchApplicationreviewsByApplicationIdApiRequest?>();
+        recruitApiClient
+            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationreviewsByApplicationIdApiRequest>()))
+            .Callback<IPatchApiRequest<JsonPatchDocument<ApplicationReview>>>(x => capturedApplicationReviewPatches.Add(x as PatchApplicationreviewsByApplicationIdApiRequest))
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
 
         // act
         await sut.HandleAsync(vacancyId, TransferReason.EmployerRevokedPermission, CancellationToken.None);
 
         // assert
         CommonAssertions(capturedPatchRequest, expectedTransferInfo);
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/Status", null, VacancyStatus.Closed));
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/ClosureReason", null, ClosureReason.TransferredByEmployer));
-        var closedDate = capturedPatchRequest.Data.Operations.First(x => x.path == "/ClosedDate").value as DateTime?;
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/status", null, VacancyStatus.Closed));
+        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/closureReason", null, ClosureReason.TransferredByEmployer));
+        var closedDate = capturedPatchRequest.Data.Operations.First(x => x.path == "/closedDate").value as DateTime?;
         closedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
+        capturedApplicationReviewPatches.Should().HaveCount(applicationReviews.Count);
+        foreach (var patch in capturedApplicationReviewPatches)
+        {
+            patch!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<ApplicationReview>("replace", "/dateSharedWithEmployer", null, null));
+            patch.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<ApplicationReview>("replace", "/hasEverBeenEmployerInterviewing", null, false));
+        }
     }
-    
+
     [Test]
-    [MoqInlineAutoData(GraphQL.VacancyStatus.Approved)]
+    [RecursiveMoqInlineAutoData(ApplicationReviewStatus.EmployerInterviewing)]
+    [RecursiveMoqInlineAutoData(ApplicationReviewStatus.Shared)]
+    public async Task Then_EmployerInterviewing_Or_Shared_Application_Reviews_Are_Reset_To_New(
+        ApplicationReviewStatus reviewStatus,
+        Guid vacancyId,
+        MockVacancyDetails vacancyDetails,
+        Mock<IGetProviderTransferableVacancyDetailsResult> data,
+        [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
+        [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
+    {
+        // arrange
+        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Live };
+        var applicationReview = new GetApplicationReviewResponse { ApplicationId = Guid.NewGuid(), Status = reviewStatus };
+        data.Setup(x => x.Vacancies).Returns([vacancyDetails]);
+        recruitGqlClient
+            .Setup(x => x.GetProviderTransferableVacancyDetails.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OperationResult<IGetProviderTransferableVacancyDetailsResult>(data.Object, null, null!, null));
+        recruitApiClient
+            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacanciesByVacancyIdApiRequest>()))
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
+        recruitApiClient
+            .Setup(x => x.Get<List<GetApplicationReviewResponse>>(It.IsAny<GetVacanciesByidByVacancyIdApplicationreviewsApiRequest>()))
+            .ReturnsAsync([applicationReview]);
+        PatchApplicationreviewsByApplicationIdApiRequest? capturedPatch = null;
+        recruitApiClient
+            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationreviewsByApplicationIdApiRequest>()))
+            .Callback<IPatchApiRequest<JsonPatchDocument<ApplicationReview>>>(x => capturedPatch = x as PatchApplicationreviewsByApplicationIdApiRequest)
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
+
+        // act
+        await sut.HandleAsync(vacancyId, TransferReason.EmployerRevokedPermission, CancellationToken.None);
+
+        // assert
+        capturedPatch!.Data.Operations.Should().ContainEquivalentOf(
+            new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<ApplicationReview>("replace", "/status", null, ApplicationReviewStatus.New));
+    }
+
+    [Test]
+    [RecursiveMoqInlineAutoData(ApplicationReviewStatus.EmployerUnsuccessful)]
+    public async Task Then_EmployerUnsuccessful_Application_Reviews_Are_Made_Unsuccessful(
+        ApplicationReviewStatus reviewStatus,
+        Guid vacancyId,
+        MockVacancyDetails vacancyDetails,
+        Mock<IGetProviderTransferableVacancyDetailsResult> data,
+        [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
+        [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
+    {
+        // arrange
+        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Live };
+        var applicationReview = new GetApplicationReviewResponse { ApplicationId = Guid.NewGuid(), Status = reviewStatus };
+        data.Setup(x => x.Vacancies).Returns([vacancyDetails]);
+        recruitGqlClient
+            .Setup(x => x.GetProviderTransferableVacancyDetails.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OperationResult<IGetProviderTransferableVacancyDetailsResult>(data.Object, null, null!, null));
+        recruitApiClient
+            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacanciesByVacancyIdApiRequest>()))
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
+        recruitApiClient
+            .Setup(x => x.Get<List<GetApplicationReviewResponse>>(It.IsAny<GetVacanciesByidByVacancyIdApplicationreviewsApiRequest>()))
+            .ReturnsAsync([applicationReview]);
+        PatchApplicationreviewsByApplicationIdApiRequest? capturedPatch = null;
+        recruitApiClient
+            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationreviewsByApplicationIdApiRequest>()))
+            .Callback<IPatchApiRequest<JsonPatchDocument<ApplicationReview>>>(x => capturedPatch = x as PatchApplicationreviewsByApplicationIdApiRequest)
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
+
+        // act
+        await sut.HandleAsync(vacancyId, TransferReason.EmployerRevokedPermission, CancellationToken.None);
+
+        // assert
+        capturedPatch!.Data.Operations.Should().ContainEquivalentOf(
+            new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<ApplicationReview>("replace", "/status", null, ApplicationReviewStatus.Unsuccessful));
+    }
+
+    [Test]
+    [RecursiveMoqInlineAutoData(GraphQL.VacancyStatus.Approved)]
     public async Task Then_The_Vacancy_Is_Transferred_And_Closed_And_Unapproved(
         GraphQL.VacancyStatus status,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>>  recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
+        vacancyDetails = vacancyDetails with { Status = status };
         var expectedTransferInfo = new TransferInfo
         {
             Ukprn = vacancyDetails.Ukprn!.Value,
-            ProviderName = vacancyDetails.TrainingProvider_Name,
-            LegalEntityName = vacancyDetails.LegalEntityName,
+            ProviderName = vacancyDetails.TrainingProvider_Name!,
+            LegalEntityName = vacancyDetails.LegalEntityName!,
             Reason = TransferReason.EmployerRevokedPermission,
-        };
-        
-        vacancyDetails = vacancyDetails with
-        {
-            Status = status
         };
         data
             .Setup(x => x.Vacancies)
             .Returns([vacancyDetails]);
-        var response = new OperationResult<IGetProviderTransferableVacancyDetailsResult>(data.Object, null, null!, null); 
+        var response = new OperationResult<IGetProviderTransferableVacancyDetailsResult>(data.Object, null, null!, null);
         recruitGqlClient
             .Setup(x => x.GetProviderTransferableVacancyDetails.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
-        PatchVacancyRequest? capturedPatchRequest = null;
+        PatchVacanciesByVacancyIdApiRequest? capturedPatchRequest = null;
         recruitApiClient
-            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacancyRequest>()))
-            .Callback<IPatchApiRequest<JsonPatchDocument<Vacancy>>>(x => capturedPatchRequest = x as PatchVacancyRequest)
-            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null));
+            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacanciesByVacancyIdApiRequest>()))
+            .Callback<IPatchApiRequest<JsonPatchDocument<Vacancy>>>(x => capturedPatchRequest = x as PatchVacanciesByVacancyIdApiRequest)
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
 
         // act
         await sut.HandleAsync(vacancyId, TransferReason.EmployerRevokedPermission, CancellationToken.None);
 
         // assert
         CommonAssertions(capturedPatchRequest, expectedTransferInfo);
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/ApprovedDate", null, null));
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/Status", null, VacancyStatus.Closed));
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/ClosureReason", null, ClosureReason.TransferredByEmployer));
-        var closedDate = capturedPatchRequest.Data.Operations.First(x => x.path == "/ClosedDate").value as DateTime?;
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/approvedDate", null, null));
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/status", null, VacancyStatus.Closed));
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/closureReason", null, ClosureReason.TransferredByEmployer));
+        var closedDate = capturedPatchRequest.Data.Operations.First(x => x.path == "/closedDate").value as DateTime?;
         closedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
     }
-    
+
     [Test]
     [RecursiveMoqInlineAutoData(ReviewStatus.Closed)]
     [RecursiveMoqInlineAutoData(ReviewStatus.New)]
@@ -276,30 +356,30 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         List<VacancyReview> vacancyReviews,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>>  recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
+        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Submitted };
         var expectedTransferInfo = new TransferInfo
         {
             Ukprn = vacancyDetails.Ukprn!.Value,
-            ProviderName = vacancyDetails.TrainingProvider_Name,
-            LegalEntityName = vacancyDetails.LegalEntityName,
+            ProviderName = vacancyDetails.TrainingProvider_Name!,
+            LegalEntityName = vacancyDetails.LegalEntityName!,
             Reason = TransferReason.EmployerRevokedPermission,
         };
-        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Submitted };
         data
             .Setup(x => x.Vacancies)
             .Returns([vacancyDetails]);
-        var response = new OperationResult<IGetProviderTransferableVacancyDetailsResult>(data.Object, null, null!, null); 
+        var response = new OperationResult<IGetProviderTransferableVacancyDetailsResult>(data.Object, null, null!, null);
         recruitGqlClient
             .Setup(x => x.GetProviderTransferableVacancyDetails.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
-        PatchVacancyRequest? capturedPatchRequest = null;
+        PatchVacanciesByVacancyIdApiRequest? capturedPatchRequest = null;
         recruitApiClient
-            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacancyRequest>()))
-            .Callback<IPatchApiRequest<JsonPatchDocument<Vacancy>>>(x => capturedPatchRequest = x as PatchVacancyRequest)
-            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null));
+            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacanciesByVacancyIdApiRequest>()))
+            .Callback<IPatchApiRequest<JsonPatchDocument<Vacancy>>>(x => capturedPatchRequest = x as PatchVacanciesByVacancyIdApiRequest)
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
 
         vacancyReviews.Add(new VacancyReview
         {
@@ -307,21 +387,21 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
             Status = status
         });
         recruitApiClient
-            .Setup(x => x.GetAll<VacancyReview>(It.IsAny<GetVacancyReviewsByVacancyReferenceRequest>()))
+            .Setup(x => x.Get<List<VacancyReview>>(It.IsAny<GetVacanciesByVacancyReferenceReviewsApiRequest>()))
             .ReturnsAsync(vacancyReviews);
 
         recruitApiClient
-            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacancyReviewRequest>()))
-            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null));
-        
+            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacancyreviewsByIdApiRequest>()))
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
+
         // act
         await sut.HandleAsync(vacancyId, TransferReason.EmployerRevokedPermission, CancellationToken.None);
 
         // assert
         CommonAssertions(capturedPatchRequest, expectedTransferInfo);
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/Status", null, VacancyStatus.Draft));
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/status", null, VacancyStatus.Draft));
     }
-    
+
     [Test]
     [RecursiveMoqInlineAutoData(ReviewStatus.New)]
     [RecursiveMoqInlineAutoData(ReviewStatus.PendingReview)]
@@ -332,7 +412,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         List<VacancyReview> vacancyReviews,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>>  recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
@@ -344,8 +424,8 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
             .Setup(x => x.GetProviderTransferableVacancyDetails.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new OperationResult<IGetProviderTransferableVacancyDetailsResult>(data.Object, null, null!, null));
         recruitApiClient
-            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacancyRequest>()))
-            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null));
+            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacanciesByVacancyIdApiRequest>()))
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
 
         vacancyReviews.Add(new VacancyReview
         {
@@ -354,25 +434,25 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
             Status = status
         });
         recruitApiClient
-            .Setup(x => x.GetAll<VacancyReview>(It.IsAny<GetVacancyReviewsByVacancyReferenceRequest>()))
+            .Setup(x => x.Get<List<VacancyReview>>(It.IsAny<GetVacanciesByVacancyReferenceReviewsApiRequest>()))
             .ReturnsAsync(vacancyReviews);
 
-        PatchVacancyReviewRequest? capturedPatchRequest = null;
+        PatchVacancyreviewsByIdApiRequest? capturedPatchRequest = null;
         recruitApiClient
-            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacancyReviewRequest>()))
-            .Callback<IPatchApiRequest<JsonPatchDocument<VacancyReview>>>(x => capturedPatchRequest = x as PatchVacancyReviewRequest)
-            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null));
-        
+            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacancyreviewsByIdApiRequest>()))
+            .Callback<IPatchApiRequest<JsonPatchDocument<VacancyReview>>>(x => capturedPatchRequest = x as PatchVacancyreviewsByIdApiRequest)
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
+
         // act
         await sut.HandleAsync(vacancyId, TransferReason.EmployerRevokedPermission, CancellationToken.None);
 
         // assert
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<VacancyReview>("replace", "/ManualOutcome", null, nameof(ManualQaOutcome.Transferred)));
-        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<VacancyReview>("replace", "/Status", null, ReviewStatus.Closed));
-        var closedDate = capturedPatchRequest.Data.Operations.First(x => x.path == "/ClosedDate").value as DateTime?;
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<VacancyReview>("replace", "/manualOutcome", null, nameof(Domain.ManualQaOutcome.Transferred)));
+        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<VacancyReview>("replace", "/status", null, ReviewStatus.Closed));
+        var closedDate = capturedPatchRequest.Data.Operations.First(x => x.path == "/closedDate").value as DateTime?;
         closedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
     }
-    
+
     [Test]
     [RecursiveMoqInlineAutoData(ReviewStatus.Closed)]
     [RecursiveMoqInlineAutoData(ReviewStatus.UnderReview)]
@@ -383,7 +463,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         List<VacancyReview> vacancyReviews,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>>  recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
@@ -395,8 +475,8 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
             .Setup(x => x.GetProviderTransferableVacancyDetails.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new OperationResult<IGetProviderTransferableVacancyDetailsResult>(data.Object, null, null!, null));
         recruitApiClient
-            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacancyRequest>()))
-            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null));
+            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacanciesByVacancyIdApiRequest>()))
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
 
         vacancyReviews.Add(new VacancyReview
         {
@@ -405,29 +485,87 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
             Status = status
         });
         recruitApiClient
-            .Setup(x => x.GetAll<VacancyReview>(It.IsAny<GetVacancyReviewsByVacancyReferenceRequest>()))
+            .Setup(x => x.Get<List<VacancyReview>>(It.IsAny<GetVacanciesByVacancyReferenceReviewsApiRequest>()))
             .ReturnsAsync(vacancyReviews);
 
         recruitApiClient
-            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacancyReviewRequest>()))
-            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null));
-        
+            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacancyreviewsByIdApiRequest>()))
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
+
         // act
         await sut.HandleAsync(vacancyId, TransferReason.EmployerRevokedPermission, CancellationToken.None);
 
         // assert
-        recruitApiClient.Verify(x => x.PatchWithResponseCode(It.IsAny<PatchVacancyReviewRequest>()), Times.Never);
+        recruitApiClient.Verify(x => x.PatchWithResponseCode(It.IsAny<PatchVacancyreviewsByIdApiRequest>()), Times.Never);
     }
 
-    private static void CommonAssertions(PatchVacancyRequest? capturedPatchRequest, TransferInfo expectedTransferInfo)
+    [Test, RecursiveMoqAutoData]
+    public async Task Then_A_Closed_Vacancy_Is_Transferred_And_Applications_Are_Moved_Over(
+        Guid vacancyId,
+        MockVacancyDetails vacancyDetails,
+        Mock<IGetProviderTransferableVacancyDetailsResult> data,
+        [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
+        [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
+    {
+        // arrange
+        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Closed };
+        var expectedTransferInfo = new TransferInfo
+        {
+            Ukprn = vacancyDetails.Ukprn!.Value,
+            ProviderName = vacancyDetails.TrainingProvider_Name!,
+            LegalEntityName = vacancyDetails.LegalEntityName!,
+            Reason = TransferReason.EmployerRevokedPermission,
+        };
+        var applicationReviews = new List<GetApplicationReviewResponse>
+        {
+            new() { ApplicationId = Guid.NewGuid(), Status = ApplicationReviewStatus.EmployerInterviewing },
+            new() { ApplicationId = Guid.NewGuid(), Status = ApplicationReviewStatus.Shared },
+            new() { ApplicationId = Guid.NewGuid(), Status = ApplicationReviewStatus.EmployerUnsuccessful },
+        };
+        data.Setup(x => x.Vacancies).Returns([vacancyDetails]);
+        recruitGqlClient
+            .Setup(x => x.GetProviderTransferableVacancyDetails.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OperationResult<IGetProviderTransferableVacancyDetailsResult>(data.Object, null, null!, null));
+        recruitApiClient
+            .Setup(x => x.Get<List<GetApplicationReviewResponse>>(It.IsAny<GetVacanciesByidByVacancyIdApplicationreviewsApiRequest>()))
+            .ReturnsAsync(applicationReviews);
+        PatchVacanciesByVacancyIdApiRequest? capturedPatchRequest = null;
+        recruitApiClient
+            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacanciesByVacancyIdApiRequest>()))
+            .Callback<IPatchApiRequest<JsonPatchDocument<Vacancy>>>(x => capturedPatchRequest = x as PatchVacanciesByVacancyIdApiRequest)
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
+        var capturedApplicationReviewPatches = new List<PatchApplicationreviewsByApplicationIdApiRequest?>();
+        recruitApiClient
+            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationreviewsByApplicationIdApiRequest>()))
+            .Callback<IPatchApiRequest<JsonPatchDocument<ApplicationReview>>>(x => capturedApplicationReviewPatches.Add(x as PatchApplicationreviewsByApplicationIdApiRequest))
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
+
+        // act
+        await sut.HandleAsync(vacancyId, TransferReason.EmployerRevokedPermission, CancellationToken.None);
+
+        // assert
+        CommonAssertions(capturedPatchRequest, expectedTransferInfo);
+        capturedPatchRequest!.Data.Operations.Should().NotContain(x => x.path == "/status");
+        capturedPatchRequest.Data.Operations.Should().NotContain(x => x.path == "/closedDate");
+        capturedPatchRequest.Data.Operations.Should().NotContain(x => x.path == "/closureReason");
+        capturedApplicationReviewPatches.Should().HaveCount(applicationReviews.Count);
+        foreach (var patch in capturedApplicationReviewPatches)
+        {
+            patch!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<ApplicationReview>("replace", "/dateSharedWithEmployer", null, null));
+            patch.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<ApplicationReview>("replace", "/hasEverBeenEmployerInterviewing", null, false));
+        }
+    }
+
+    private static void CommonAssertions(PatchVacanciesByVacancyIdApiRequest? capturedPatchRequest, TransferInfo expectedTransferInfo)
     {
         // these are common changes irrespective of the vacancy status
         capturedPatchRequest.Should().NotBeNull();
-        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/OwnerType", null, OwnerType.Employer));
-        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/Contact", null, null));
-        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/SubmittedByUserId", null, null));
-        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/ReviewRequestedByUserId", null, null));
-        var transferInfo = capturedPatchRequest.Data.Operations.First(x => x.path == "/TransferInfo").value as TransferInfo;
+        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/ownerType", null, OwnerType.Employer));
+        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/contact", null, null));
+        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/submittedByUserId", null, null));
+        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/reviewRequestedByUserId", null, null));
+        var transferInfo = capturedPatchRequest.Data.Operations.First(x => x.path == "/transferInfo").value as TransferInfo;
         transferInfo.Should().BeEquivalentTo(expectedTransferInfo, opt => opt.Excluding(x => x.TransferredDate));
         transferInfo.TransferredDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
     }

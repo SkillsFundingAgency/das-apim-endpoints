@@ -23,9 +23,9 @@ public sealed class GetCoursesQueryHandler(
 {
     public async Task<GetCoursesQueryResult> Handle(GetCoursesQuery query, CancellationToken cancellationToken)
     {
-        LocationItem locationItem = await _locationLookupService.GetLocationInformation(query.Location, 0, 0);
+        LocationItem locationItem = await _locationLookupService.GetLocationInformation(query.LocationName, 0, 0);
 
-        if (locationItem is null && !string.IsNullOrWhiteSpace(query.Location))
+        if (locationItem is null && !string.IsNullOrWhiteSpace(query.LocationName))
         {
             return GetEmptyResponse(query.PageSize);
         }

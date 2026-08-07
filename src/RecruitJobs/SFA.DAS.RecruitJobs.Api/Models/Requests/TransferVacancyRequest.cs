@@ -1,4 +1,4 @@
-using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 
 namespace SFA.DAS.RecruitJobs.Api.Models.Requests;
 
