@@ -36,7 +36,6 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
                 onProgrammeItems.Add(new OnProgramme
                 {
                     CourseCode = onProg.CourseCode,
-                    Ukprn = ukprn,
                     StartDate = onProg.StartDate,
                     ExpectedEndDate = onProg.ExpectedEndDate,
                     CompletionDate = onProg.CompletionDate,

@@ -59,11 +59,6 @@ public class OnProgramme
     public string CourseCode { get; set; } = null!;
 
     /// <summary>
-    /// Employer identifier
-    /// </summary>
-    public long EmployerId { get; set; }
-
-    /// <summary>
     /// Provider UKPRN
     /// </summary>
     public long Ukprn { get; set; }
