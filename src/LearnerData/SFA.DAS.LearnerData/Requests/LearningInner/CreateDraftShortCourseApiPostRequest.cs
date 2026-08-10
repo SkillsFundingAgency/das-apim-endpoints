@@ -59,9 +59,9 @@ public class OnProgramme
     public string CourseCode { get; set; } = null!;
 
     /// <summary>
-    /// Employer identifier
+    /// Provider UKPRN
     /// </summary>
-    public long EmployerId { get; set; }
+    public long Ukprn { get; set; }
 
     /// <summary>
     /// Start date of the short course

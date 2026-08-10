@@ -119,7 +119,7 @@ public class CreateDraftShortCourseCommandHandler(
         return new ResolvedOnProgramme
         {
             CourseCode = episode.CourseCode,
-            EmployerId = requestOnProg.EmployerId,
+            Ukprn = episode.Ukprn,
             StartDate = episode.StartDate,
             ExpectedEndDate = episode.PlannedEndDate,
             CompletionDate = episode.CompletionDate,
