@@ -115,16 +115,15 @@ public class SyncLearnerDataCommandHandler(
 
     private async Task<(string CourseCode, string TrainingCourseName, string TrainingCourseVersion, string TrainingCourseOption, string StandardUId)> ResolveCourseFields(GetLearnerForProviderResponse learnerData)
     {
-        var isApprenticeshipUnit = learnerData.LearningType == LearningType.ApprenticeshipUnit;
-        var courseCode = isApprenticeshipUnit ? learnerData.TrainingCode ?? string.Empty : learnerData.StandardCode.ToString();
+        var courseCode = learnerData.TrainingCode ?? string.Empty;
         var courseName = learnerData.TrainingName ?? string.Empty;
+        var isStandard = int.TryParse(courseCode, out var standardId) && standardId > 0;
 
-        if (string.IsNullOrWhiteSpace(courseCode) || (!isApprenticeshipUnit && learnerData.StandardCode <= 0))
+        if (string.IsNullOrWhiteSpace(courseCode) || (int.TryParse(courseCode, out standardId) && standardId <= 0))
         {
             return (courseCode, courseName, string.Empty, string.Empty, string.Empty);
         }
 
-        var isStandard = int.TryParse(courseCode, out var standardId) && standardId > 0;
         var response = await trainingProgrammeResolutionService.GetTrainingProgrammeAsync(courseCode, learnerData.StartDate);
         var programme = response?.TrainingProgramme;
 

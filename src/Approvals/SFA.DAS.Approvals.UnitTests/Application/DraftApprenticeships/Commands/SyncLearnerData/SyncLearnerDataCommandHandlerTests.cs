@@ -95,7 +95,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands.
         }
 
         [Test, MoqAutoData]
-        public async Task Handle_WhenNormalDraft_AndLearnerHasDifferentStandardCode_UpdatesCourseFromLearnerData(
+        public async Task Handle_WhenNormalDraft_AndLearnerHasDifferentTrainingCode_UpdatesCourseFromLearnerData(
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
             [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
             [Frozen] Mock<ITrainingProgrammeResolutionService> trainingProgrammeResolutionService,
@@ -114,7 +114,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands.
             learnerDataResponse.LastName = "Doe";
             learnerDataResponse.TrainingPrice = 1000;
             learnerDataResponse.EpaoPrice = 500;
-            learnerDataResponse.StandardCode = 555;
+            learnerDataResponse.TrainingCode = "555";
             learnerDataResponse.TrainingName = "New Standard Name";
             learnerDataResponse.StartDate = new System.DateTime(2024, 9, 1);
             trainingProgrammeResponse.TrainingProgramme = new TrainingProgramme
@@ -156,7 +156,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands.
             draftApprenticeshipResponse.LearnerDataId = 123;
             draftApprenticeshipResponse.CourseCode = "1";
             draftApprenticeshipResponse.TrainingCourseName = "Original Course";
-            learnerDataResponse.StandardCode = 555;
+            learnerDataResponse.TrainingCode = "555";
             learnerDataResponse.TrainingName = "Learner Course Name";
             learnerDataResponse.FirstName = "John";
             learnerDataResponse.LastName = "Doe";
@@ -180,7 +180,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands.
         }
 
         [Test, MoqAutoData]
-        public async Task Handle_WhenNormalDraft_AndLearnerStandardCodeZero_UpdatesCourseFromLearnerDataOnly(
+        public async Task Handle_WhenNormalDraft_AndLearnerTrainingCodeZero_UpdatesCourseFromLearnerDataOnly(
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
             [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
             [Frozen] Mock<ITrainingProgrammeResolutionService> trainingProgrammeResolutionService,
@@ -193,7 +193,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands.
             draftApprenticeshipResponse.LearnerDataId = 123;
             draftApprenticeshipResponse.CourseCode = "1";
             draftApprenticeshipResponse.TrainingCourseName = "Original Course";
-            learnerDataResponse.StandardCode = 0;
+            learnerDataResponse.TrainingCode = "0";
             learnerDataResponse.TrainingName = "Zero Standard Name";
             learnerDataResponse.FirstName = "John";
             learnerDataResponse.LastName = "Doe";
@@ -238,7 +238,6 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands.
             learnerDataResponse.LearningType = LearningType.ApprenticeshipUnit;
             learnerDataResponse.TrainingCode = "550-2-1";
             learnerDataResponse.TrainingName = "Framework Unit Name";
-            learnerDataResponse.StandardCode = 0;
             trainingProgrammeResponse.TrainingProgramme = new TrainingProgramme
             {
                 CourseCode = "550-2-1",
