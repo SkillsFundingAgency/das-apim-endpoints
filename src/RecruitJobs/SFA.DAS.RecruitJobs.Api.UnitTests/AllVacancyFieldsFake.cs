@@ -1,20 +1,20 @@
 using AutoFixture;
 using System.Text.Json;
 using SFA.DAS.Recruit.Contracts.ApiResponses;
-using SFA.DAS.RecruitJobs.GraphQL;
-using ApplicationMethod = SFA.DAS.RecruitJobs.GraphQL.ApplicationMethod;
-using ApprenticeshipTypes = SFA.DAS.RecruitJobs.GraphQL.ApprenticeshipTypes;
-using ArchiveType = SFA.DAS.RecruitJobs.GraphQL.ArchiveType;
-using AvailableWhere = SFA.DAS.RecruitJobs.GraphQL.AvailableWhere;
-using ClosureReason = SFA.DAS.RecruitJobs.GraphQL.ClosureReason;
-using DurationUnit = SFA.DAS.RecruitJobs.GraphQL.DurationUnit;
-using EmployerNameOption = SFA.DAS.RecruitJobs.GraphQL.EmployerNameOption;
-using GeoCodeMethod = SFA.DAS.RecruitJobs.GraphQL.GeoCodeMethod;
-using OwnerType = SFA.DAS.RecruitJobs.GraphQL.OwnerType;
-using SourceOrigin = SFA.DAS.RecruitJobs.GraphQL.SourceOrigin;
-using SourceType = SFA.DAS.RecruitJobs.GraphQL.SourceType;
-using VacancyStatus = SFA.DAS.RecruitJobs.GraphQL.VacancyStatus;
-using WageType = SFA.DAS.RecruitJobs.GraphQL.WageType;
+using SFA.DAS.SharedOuterApi.Recruit.GraphQL;
+using ApplicationMethod = SFA.DAS.SharedOuterApi.Recruit.GraphQL.ApplicationMethod;
+using ApprenticeshipTypes = SFA.DAS.SharedOuterApi.Recruit.GraphQL.ApprenticeshipTypes;
+using ArchiveType = SFA.DAS.SharedOuterApi.Recruit.GraphQL.ArchiveType;
+using AvailableWhere = SFA.DAS.SharedOuterApi.Recruit.GraphQL.AvailableWhere;
+using ClosureReason = SFA.DAS.SharedOuterApi.Recruit.GraphQL.ClosureReason;
+using DurationUnit = SFA.DAS.SharedOuterApi.Recruit.GraphQL.DurationUnit;
+using EmployerNameOption = SFA.DAS.SharedOuterApi.Recruit.GraphQL.EmployerNameOption;
+using GeoCodeMethod = SFA.DAS.SharedOuterApi.Recruit.GraphQL.GeoCodeMethod;
+using OwnerType = SFA.DAS.SharedOuterApi.Recruit.GraphQL.OwnerType;
+using SourceOrigin = SFA.DAS.SharedOuterApi.Recruit.GraphQL.SourceOrigin;
+using SourceType = SFA.DAS.SharedOuterApi.Recruit.GraphQL.SourceType;
+using VacancyStatus = SFA.DAS.SharedOuterApi.Recruit.GraphQL.VacancyStatus;
+using WageType = SFA.DAS.SharedOuterApi.Recruit.GraphQL.WageType;
 
 
 namespace SFA.DAS.RecruitJobs.Api.UnitTests;

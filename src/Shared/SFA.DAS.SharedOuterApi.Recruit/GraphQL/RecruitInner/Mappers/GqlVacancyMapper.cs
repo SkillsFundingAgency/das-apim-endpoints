@@ -1,5 +1,4 @@
 using System.Text.Json;
-using SFA.DAS.SharedOuterApi.Recruit.GraphQl;
 
 namespace SFA.DAS.SharedOuterApi.Recruit.GraphQL.RecruitInner.Mappers;
 

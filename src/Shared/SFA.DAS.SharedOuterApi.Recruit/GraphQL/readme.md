@@ -2,7 +2,7 @@
 ## Install the tools
 Make sure you have the StrawberryCake graphql tools installed.
 
-You can install it from a command line; navigate to the root of the SFA.DAS.RecruitJobs project and run the following commands:
+You can install it from a command line; navigate to the root of the `SFA.DAS.SharedOuterApi.Recruit` project and run the following commands:
 ```
 dotnet new tool-manifest
 dotnet tool install StrawberryShake.Tools
@@ -12,8 +12,8 @@ dotnet tool install StrawberryShake.Tools
 If you need to regenerate the client from an updated version of the GQL schema then:
 
 * make sure the Recruit Inner API is running on your local machine
-* from a command prompt go into the `SFA.DAS.RecruitJobs/GraphQL/RecruitInner` directory and run the following command:
-  * ```dotnet graphql init https://localhost:7288/graphql/ -n RecruitGqlClient -p .```
+* from a command prompt go into the `SFA.DAS.SharedOuterApi.Recruit/GraphQL/RecruitInner` directory and run the following command:
+  * ```dotnet graphql update```
 * build the project
 
 ## Adding new queries

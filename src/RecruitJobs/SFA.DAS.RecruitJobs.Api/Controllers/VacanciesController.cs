@@ -11,14 +11,15 @@ using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitJobs.Api.Models;
 using SFA.DAS.RecruitJobs.Api.Models.Requests;
 using SFA.DAS.RecruitJobs.Api.Models.Vacancies.Responses;
-using SFA.DAS.RecruitJobs.GraphQL;
-using SFA.DAS.RecruitJobs.GraphQL.RecruitInner.Mappers;
 using StrawberryShake;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
+using SFA.DAS.RecruitJobs.Api.Core;
 using SFA.DAS.RecruitJobs.Api.Models.Mappers;
+using SFA.DAS.SharedOuterApi.Recruit.GraphQL;
+using SFA.DAS.SharedOuterApi.Recruit.GraphQL.RecruitInner.Mappers;
 using VacancyStatus = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyStatus;
 using ValidationProblemDetails = Microsoft.AspNetCore.Mvc.ValidationProblemDetails;
 
@@ -351,7 +352,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         }
 
         var vacancy = response.Data!.Vacancies.FirstOrDefault();
-        if (vacancy is { TransferInfo: not null, Status: not GraphQL.VacancyStatus.Submitted } or { DeletedDate: not null } or { Status: not GraphQL.VacancyStatus.Submitted })
+        if (vacancy is { TransferInfo: not null, Status: not SharedOuterApi.Recruit.GraphQL.VacancyStatus.Submitted } or { DeletedDate: not null } or { Status: not SharedOuterApi.Recruit.GraphQL.VacancyStatus.Submitted })
         {
             // it's been transferred/deleted so ignore
             return TypedResults.NoContent();
@@ -388,7 +389,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         }
 
         var vacancy = response.Data!.Vacancies.FirstOrDefault();
-        if (vacancy is { TransferInfo: not null, Status: not GraphQL.VacancyStatus.Approved } or { DeletedDate: not null } or { Status: not GraphQL.VacancyStatus.Approved })
+        if (vacancy is { TransferInfo: not null, Status: not SharedOuterApi.Recruit.GraphQL.VacancyStatus.Approved } or { DeletedDate: not null } or { Status: not SharedOuterApi.Recruit.GraphQL.VacancyStatus.Approved })
         {
             // it's been transferred/deleted so ignore
             return TypedResults.NoContent();
@@ -480,7 +481,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
             var vacancy = response.Data!.Vacancies.FirstOrDefault();
             if (vacancy is null 
                 || vacancy.VacancyReference != vacancyReference
-                || vacancy.Status != GraphQL.VacancyStatus.Closed)
+                || vacancy.Status != SharedOuterApi.Recruit.GraphQL.VacancyStatus.Closed)
             {
                 logger.LogWarning("Vacancy with id {VacancyId} not found at ArchiveVacancy", request.VacancyId);
                 return TypedResults.NotFound();

@@ -3,13 +3,13 @@ using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.Recruit.Contracts.ApiRequests;
 using SFA.DAS.Recruit.Contracts.ApiResponses;
-using SFA.DAS.RecruitJobs.GraphQL;
 using SFA.DAS.RecruitJobs.Handlers;
 using StrawberryShake;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using SFA.DAS.SharedOuterApi.Recruit.GraphQL;
 using ClosureReason = SFA.DAS.Recruit.Contracts.ApiResponses.ClosureReason;
 using OwnerType = SFA.DAS.Recruit.Contracts.ApiResponses.OwnerType;
 using VacancyStatus = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyStatus;
@@ -25,7 +25,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         Guid Id,
         long? VacancyReference,
         string? Title,
-        GraphQL.VacancyStatus Status,
+        SharedOuterApi.Recruit.GraphQL.VacancyStatus Status,
         string? TrainingProvider_Name,
         string? LegalEntityName,
         int? Ukprn) : IGetProviderTransferableVacancyDetails_Vacancies;
@@ -78,7 +78,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     [RecursiveMoqInlineAutoData(VacancyStatus.Draft)]
     [RecursiveMoqInlineAutoData(VacancyStatus.Referred)]
     public async Task Then_The_Vacancy_Is_Transferred(
-        GraphQL.VacancyStatus status,
+        SharedOuterApi.Recruit.GraphQL.VacancyStatus status,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
@@ -119,7 +119,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     [RecursiveMoqInlineAutoData(VacancyStatus.Rejected)]
     [RecursiveMoqInlineAutoData(VacancyStatus.Review)]
     public async Task Then_The_Vacancy_Is_Transferred_And_Made_Draft_Again(
-        GraphQL.VacancyStatus status,
+        SharedOuterApi.Recruit.GraphQL.VacancyStatus status,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
@@ -160,7 +160,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     [Test]
     [RecursiveMoqInlineAutoData(VacancyStatus.Live)]
     public async Task Then_The_Vacancy_Is_Transferred_And_Closed_And_Applications_Moved_Over(
-        GraphQL.VacancyStatus status,
+        SharedOuterApi.Recruit.GraphQL.VacancyStatus status,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
@@ -236,7 +236,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
-        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Live };
+        vacancyDetails = vacancyDetails with { Status = SharedOuterApi.Recruit.GraphQL.VacancyStatus.Live };
         var applicationReview = new GetApplicationReviewResponse { ApplicationId = Guid.NewGuid(), Status = reviewStatus };
         data.Setup(x => x.Vacancies).Returns([vacancyDetails]);
         recruitGqlClient
@@ -274,7 +274,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
-        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Live };
+        vacancyDetails = vacancyDetails with { Status = SharedOuterApi.Recruit.GraphQL.VacancyStatus.Live };
         var applicationReview = new GetApplicationReviewResponse { ApplicationId = Guid.NewGuid(), Status = reviewStatus };
         data.Setup(x => x.Vacancies).Returns([vacancyDetails]);
         recruitGqlClient
@@ -301,9 +301,9 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     }
 
     [Test]
-    [RecursiveMoqInlineAutoData(GraphQL.VacancyStatus.Approved)]
+    [RecursiveMoqInlineAutoData(SharedOuterApi.Recruit.GraphQL.VacancyStatus.Approved)]
     public async Task Then_The_Vacancy_Is_Transferred_And_Closed_And_Unapproved(
-        GraphQL.VacancyStatus status,
+        SharedOuterApi.Recruit.GraphQL.VacancyStatus status,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
@@ -360,7 +360,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
-        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Submitted };
+        vacancyDetails = vacancyDetails with { Status = SharedOuterApi.Recruit.GraphQL.VacancyStatus.Submitted };
         var expectedTransferInfo = new TransferInfo
         {
             Ukprn = vacancyDetails.Ukprn!.Value,
@@ -416,7 +416,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
-        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Submitted };
+        vacancyDetails = vacancyDetails with { Status = SharedOuterApi.Recruit.GraphQL.VacancyStatus.Submitted };
         data
             .Setup(x => x.Vacancies)
             .Returns([vacancyDetails]);
@@ -467,7 +467,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
-        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Submitted };
+        vacancyDetails = vacancyDetails with { Status = SharedOuterApi.Recruit.GraphQL.VacancyStatus.Submitted };
         data
             .Setup(x => x.Vacancies)
             .Returns([vacancyDetails]);
@@ -509,7 +509,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
-        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Closed };
+        vacancyDetails = vacancyDetails with { Status = SharedOuterApi.Recruit.GraphQL.VacancyStatus.Closed };
         var expectedTransferInfo = new TransferInfo
         {
             Ukprn = vacancyDetails.Ukprn!.Value,
