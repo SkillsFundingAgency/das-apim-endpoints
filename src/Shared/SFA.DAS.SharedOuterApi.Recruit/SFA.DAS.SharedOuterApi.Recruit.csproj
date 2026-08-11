@@ -8,10 +8,39 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.5" />
+      <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.111-prerelease-3" />
+      <PackageReference Include="StrawberryShake.Blazor" Version="16.6.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <GraphQL Update="GraphQL\RecruitInner\schema.extensions.graphql">
+        <Generator>MSBuild:GenerateGraphQLCode</Generator>
+      </GraphQL>
+      <GraphQL Update="GraphQL\RecruitInner\Queries\GetVacancyById.graphql">
+        <Generator>MSBuild:GenerateGraphQLCode</Generator>
+      </GraphQL>
+      <GraphQL Update="GraphQL\RecruitInner\fragments.graphql">
+        <Generator>MSBuild:GenerateGraphQLCode</Generator>
+      </GraphQL>
+      <GraphQL Update="GraphQL\RecruitInner\Queries\Jobs\GetProviderOwnedVacanciesInReview.graphql">
+        <Generator>MSBuild:GenerateGraphQLCode</Generator>
+      </GraphQL>
+      <GraphQL Update="GraphQL\RecruitInner\Queries\Jobs\GetProviderTransferableVacancies.graphql">
+        <Generator>MSBuild:GenerateGraphQLCode</Generator>
+      </GraphQL>
+      <GraphQL Update="GraphQL\RecruitInner\Queries\Jobs\GetProviderTransferableVacancyDetails.graphql">
+        <Generator>MSBuild:GenerateGraphQLCode</Generator>
+      </GraphQL>
+      <GraphQL Update="GraphQL\RecruitInner\Queries\Jobs\GetVacanciesToArchive.graphql">
+        <Generator>MSBuild:GenerateGraphQLCode</Generator>
+      </GraphQL>
+      <GraphQL Update="GraphQL\RecruitInner\Queries\Jobs\GetVacanciesToClose.graphql">
+        <Generator>MSBuild:GenerateGraphQLCode</Generator>
+      </GraphQL>
     </ItemGroup>
 
 </Project>
