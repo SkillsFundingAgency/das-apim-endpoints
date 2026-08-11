@@ -28,6 +28,7 @@ public class WhenCreatingLearners
     private Mock<IEarningsApiClient<EarningsApiConfiguration>> _mockEarningsApiClient;
     private Mock<ICreateDraftLearningApiPostRequestBuilder> _mockCreateDraftLearningApiPostRequestBuilder;
     private Mock<IUpdateEarningsOnProgrammeRequestBuilder> _mockUpdateEarningsOnProgrammeRequestBuilder;
+    private Mock<ICreateUnapprovedApprenticeshipLearningRequestBuilder> _mockCreateUnapprovedApprenticeshipLearningRequestBuilder;
     private CreateLearnerCommandHandler _sut;
 
 
@@ -46,6 +47,7 @@ public class WhenCreatingLearners
         _mockEarningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
         _mockCreateDraftLearningApiPostRequestBuilder = new Mock<ICreateDraftLearningApiPostRequestBuilder>();
         _mockUpdateEarningsOnProgrammeRequestBuilder = new Mock<IUpdateEarningsOnProgrammeRequestBuilder>();
+        _mockCreateUnapprovedApprenticeshipLearningRequestBuilder = new Mock<ICreateUnapprovedApprenticeshipLearningRequestBuilder>();
 
         _sut = new CreateLearnerCommandHandler(
             _mockLogger.Object,
@@ -54,6 +56,7 @@ public class WhenCreatingLearners
             _mockCreateDraftLearningApiPostRequestBuilder.Object,
             _mockEarningsApiClient.Object,
             _mockUpdateEarningsOnProgrammeRequestBuilder.Object,
+            _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
             new FeatureFlags { ApprenticeshipCreateDraftLearner = true });
 
         _mockCreateDraftLearningApiPostRequestBuilder
@@ -68,6 +71,14 @@ public class WhenCreatingLearners
         _mockLearningApiClient
             .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
             .ReturnsAsync(successResponse);
+
+        _mockCreateUnapprovedApprenticeshipLearningRequestBuilder
+            .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<CreateDraftLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()))
+            .ReturnsAsync(new PostCreateUnapprovedApprenticeshipLearningRequest(new CreateUnapprovedApprenticeshipLearningRequest()));
+
+        _mockEarningsApiClient
+            .Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostCreateUnapprovedApprenticeshipLearningRequest>(), true))
+            .ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.OK, string.Empty));
     }
 
 
@@ -205,6 +216,8 @@ public class WhenCreatingLearners
         // Assert
         _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(It.IsAny<Guid>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Never);
         _mockEarningsApiClient.Verify(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Never);
+        _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Verify(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<CreateDraftLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Once);
+        _mockEarningsApiClient.Verify(x => x.PostWithResponseCode<object>(It.IsAny<PostCreateUnapprovedApprenticeshipLearningRequest>(), true), Times.Once);
     }
 
     [Test]
@@ -227,6 +240,8 @@ public class WhenCreatingLearners
         // Assert
         _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(It.IsAny<Guid>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Never);
         _mockEarningsApiClient.Verify(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Never);
+        _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Verify(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<CreateDraftLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Never);
+        _mockEarningsApiClient.Verify(x => x.PostWithResponseCode<object>(It.IsAny<PostCreateUnapprovedApprenticeshipLearningRequest>(), true), Times.Never);
     }
 
     private CreateLearnerCommand GetProcessLearnersCommand(CreateLearnerRequest? createLearnerRequest = null)
