@@ -21,10 +21,10 @@ namespace SFA.DAS.Aodp.Application.Commands.Rollover
 
             try
             {
-                var result = await _apiClient.PostWithResponseCode<ValidateRolloverExtensionCommandResponse>(new ValidateRolloverExtensionApiRequest()
+                var result = await _apiClient.PostWithResponseCodeAsJsonFile<ValidateRolloverExtensionCommandResponse>(new ValidateRolloverExtensionApiRequest()
                 {
                     Data = request
-                });
+                }, cancellationToken);
 
                 response.Value = result.Body;
                 response.Success = true;

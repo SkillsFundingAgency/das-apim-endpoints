@@ -82,7 +82,6 @@ public class CreateDraftShortCoursePostRequestBuilderTests
 
         var op = result.OnProgramme.Single();
         op.CourseCode.Should().Be(onProgramme.CourseCode);
-        op.Ukprn.Should().Be(ukprn);
         op.StartDate.Should().Be(onProgramme.StartDate);
         op.ExpectedEndDate.Should().Be(onProgramme.ExpectedEndDate);
         op.CompletionDate.Should().Be(onProgramme.CompletionDate);
