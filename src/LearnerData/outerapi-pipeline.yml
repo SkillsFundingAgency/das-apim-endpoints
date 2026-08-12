@@ -28,6 +28,7 @@ stages:
         ${{ parameters.AdditionalTestProjectPathToInclude }}
       UnitTestProjects: |
         src/${{ parameters.OuterApiName }}/**/*UnitTests.csproj
+        ${{ parameters.SharedOuterApiTypesTestProjectPathToInclude }}
         ${{ parameters.AdditionalTestProjectPathToInclude }}
       AcceptanceTestProjects: 'src/${{ parameters.OuterApiName }}/**/*AcceptanceTests.csproj'
       PublishProject: 'src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.Api/SFA.DAS.${{ parameters.OuterApiName }}.Api.csproj'
