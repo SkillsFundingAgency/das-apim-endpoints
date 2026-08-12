@@ -53,7 +53,7 @@ public class CreateUnapprovedApprenticeshipLearningRequestBuilder(ICourseService
                 EmployerAccountId = 0,
                 FundingEmployerAccountId = null,
                 LegalEntityName = string.Empty,
-                FundingType = ApprenticeshipFundingType.Levy,
+                EmployerType = ApprenticeshipFundingType.Levy,
                 FundingBandMaximum = fundingBandMaximum
             },
             CompletionDate = requestBody.Learner.CompletionDate,

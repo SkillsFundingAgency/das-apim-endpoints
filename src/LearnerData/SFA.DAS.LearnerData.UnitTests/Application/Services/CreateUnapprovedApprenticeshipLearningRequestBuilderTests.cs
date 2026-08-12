@@ -72,7 +72,7 @@ public class CreateUnapprovedApprenticeshipLearningRequestBuilderTests
         payload.EpisodeKey.Should().Be(learningResponse.LearningEpisodeKey);
         payload.OnProgramme.Ukprn.Should().Be(ukprn);
         payload.OnProgramme.TrainingCode.Should().Be(firstOnProgramme.StandardCode.ToString());
-        payload.OnProgramme.FundingType.Should().Be(SFA.DAS.LearnerData.Requests.EarningsInner.ApprenticeshipFundingType.Levy);
+        payload.OnProgramme.EmployerType.Should().Be(SFA.DAS.LearnerData.Requests.EarningsInner.ApprenticeshipFundingType.Levy);
         payload.OnProgramme.FundingBandMaximum.Should().Be(15000);
         payload.Learner.Uln.Should().Be(requestBody.Learner.Uln.ToString());
         payload.Prices.Should().HaveCount(learningResponse.Prices.Count);

@@ -44,7 +44,7 @@ public class DraftApprenticeshipOnProgrammeRequest
     public long EmployerAccountId { get; set; }
     public long? FundingEmployerAccountId { get; set; }
     public string LegalEntityName { get; set; } = string.Empty;
-    public ApprenticeshipFundingType FundingType { get; set; }
+    public ApprenticeshipFundingType EmployerType { get; set; }
     public int? FundingBandMaximum { get; set; }
 }
 
