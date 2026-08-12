@@ -19,7 +19,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
         [Test, MoqAutoData]
         public async Task Then_The_ActionCode_Is_Returned(
             Guid userId,
-            CreateUserActionCommand command,
+            Models.Users.CreateUserActionRequest request,
             CreateUserActionResult result,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] UsersController controller)
@@ -28,31 +28,32 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
             mediator
                 .Setup(x => x.Send(It.Is<CreateUserActionCommand>(c =>
                     c.UserId == userId &&
-                    c.ActionType == command.ActionType &&
-                    c.FamilyName == command.FamilyName &&
-                    c.GivenNames == command.GivenNames &&
-                    c.CertificateId == command.CertificateId &&
-                    c.CertificateType == command.CertificateType &&
-                    c.CourseName == command.CourseName), CancellationToken.None))
+                    c.ActionType == request.ActionType &&
+                    c.FamilyName == request.FamilyName &&
+                    c.GivenNames == request.GivenNames &&
+                    c.CertificateId == request.CertificateId &&
+                    c.CertificateType == request.CertificateType &&
+                    c.CourseName == request.CourseName), CancellationToken.None))
                 .ReturnsAsync(result);
 
             // Act
-            var actual = await controller.CreateUserAction(userId, command) as ObjectResult;
+            var actual = await controller.CreateUserAction(userId, request) as ObjectResult;
 
             // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().Be(result);
+            var expected = (Models.Users.CreateUserActionResponse)result;
+            actual.Value.Should().BeEquivalentTo(expected);
 
             mediator.Verify(m => m.Send(It.Is<CreateUserActionCommand>(c =>
                 c.UserId == userId &&
-                c.ActionType == command.ActionType), It.IsAny<CancellationToken>()), Times.Once);
+                c.ActionType == request.ActionType), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             Guid userId,
-            CreateUserActionCommand command,
+            Models.Users.CreateUserActionRequest request,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] UsersController controller)
         {
@@ -61,7 +62,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
                 .ThrowsAsync(new Exception());
 
             // Act
-            var actual = await controller.CreateUserAction(userId, command) as StatusCodeResult;
+            var actual = await controller.CreateUserAction(userId, request) as StatusCodeResult;
 
             // Assert
             actual.Should().NotBeNull();

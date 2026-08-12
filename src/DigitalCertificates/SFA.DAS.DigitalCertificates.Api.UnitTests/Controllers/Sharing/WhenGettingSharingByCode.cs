@@ -27,7 +27,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
             queryResult.BothFound = false;
             if (queryResult.Response == null)
             {
-                queryResult.Response = new Models.SharingByCode
+                queryResult.Response = new DigitalCertificates.Models.SharingByCode
                 {
                     CertificateId = Guid.NewGuid(),
                     CertificateType = "Standard",
@@ -46,7 +46,8 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
             // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().Be(queryResult.Response);
+            var expected = (Models.Sharing.GetSharingByCodeResponse)queryResult;
+            actual.Value.Should().BeEquivalentTo(expected.Response);
 
             mediator.Verify(m => m.Send(It.Is<GetSharingByCodeQuery>(q => q.Code == code), It.IsAny<CancellationToken>()), Times.Once);
         }
