@@ -53,7 +53,7 @@ stages:
 - template: outerapi-pipeline.yml
   parameters:
     OuterApiName: LearnerData
-    AzureArtifactsFeed: dct-pkg
+    AzureArtifactsFeed: 'dct-pkg'
     ConfigurationSecrets:
       NServiceBusLicense: $(NServiceBusLicense)
       UserBearerTokenSigningKey: $(UserBearerTokenSigningKey)
