@@ -18,7 +18,9 @@ public class ProviderAllowedCoursesControllerPatchTests
         [Greedy] ProviderAllowedCoursesController sut,
         PatchProviderAllowedCourseRequestModel command,
         int ukprn,
-        string larsCode)
+        string larsCode,
+        string userId,
+        string userDisplayName)
     {
         // Arrange
         mediatorMock
@@ -26,7 +28,7 @@ public class ProviderAllowedCoursesControllerPatchTests
             .Returns(Task.CompletedTask);
 
         // Act
-        var result = await sut.PatchProviderAllowedCourse(ukprn, larsCode, command);
+        var result = await sut.PatchProviderAllowedCourse(ukprn, larsCode, command, userId, userDisplayName);
 
         // Assert
         result.Should().BeOfType<NoContentResult>();
@@ -38,7 +40,9 @@ public class ProviderAllowedCoursesControllerPatchTests
         [Greedy] ProviderAllowedCoursesController sut,
         PatchProviderAllowedCourseRequestModel command,
         int ukprn,
-        string larsCode)
+        string larsCode,
+        string userId,
+        string userDisplayName)
     {
         // Arrange
         mediatorMock
@@ -46,22 +50,22 @@ public class ProviderAllowedCoursesControllerPatchTests
                 It.Is<PatchProviderAllowedCourseCommand>(c =>
                     c.Ukprn == ukprn &&
                     c.LarsCode == larsCode &&
-                    c.UserId == command.UserId &&
-                    c.UserDisplayName == command.UserDisplayName &&
+                    c.UserId == userId &&
+                    c.UserDisplayName == userDisplayName &&
                     c.LastDateStarts == command.LastDateStarts),
                 It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
         // Act
-        await sut.PatchProviderAllowedCourse(ukprn, larsCode, command);
+        await sut.PatchProviderAllowedCourse(ukprn, larsCode, command, userId, userDisplayName);
 
         // Assert
         mediatorMock.Verify(x => x.Send(
             It.Is<PatchProviderAllowedCourseCommand>(c =>
                 c.Ukprn == ukprn &&
                 c.LarsCode == larsCode &&
-                c.UserId == command.UserId &&
-                c.UserDisplayName == command.UserDisplayName &&
+                c.UserId == userId &&
+                c.UserDisplayName == userDisplayName &&
                 c.LastDateStarts == command.LastDateStarts),
             It.IsAny<CancellationToken>()), Times.Once);
     }

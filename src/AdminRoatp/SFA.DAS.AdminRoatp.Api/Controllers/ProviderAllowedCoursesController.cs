@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.AdminRoatp.Application.Commands.PatchProviderAllowedCourse;
 using SFA.DAS.AdminRoatp.Application.Commands.UpsertProviderAllowedCourse;
+using SFA.DAS.AdminRoatp.Infrastructure;
 using SFA.DAS.AdminRoatp.InnerApi.Models;
 
 namespace SFA.DAS.AdminRoatp.Api.Controllers;
@@ -32,14 +33,14 @@ public class ProviderAllowedCoursesController(IMediator _mediator, ILogger<Provi
 
     [HttpPatch("{larsCode}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> PatchProviderAllowedCourse([FromRoute] int ukprn, [FromRoute] string larsCode, [FromBody] PatchProviderAllowedCourseRequestModel request)
+    public async Task<IActionResult> PatchProviderAllowedCourse([FromRoute] int ukprn, [FromRoute] string larsCode, [FromBody] PatchProviderAllowedCourseRequestModel request, [FromHeader(Name = Constants.RequestingUserIdHeader)] string userId, [FromHeader(Name = Constants.RequestingUserNameHeader)] string userName)
     {
         _logger.LogInformation("Request to patch provider allowed course for UKPRN {Ukprn} and LarsCode {LarsCode}", ukprn, larsCode);
 
         var command = new PatchProviderAllowedCourseCommand
         {
-            UserId = request.UserId,
-            UserDisplayName = request.UserDisplayName,
+            UserId = userId,
+            UserDisplayName = userName,
             Ukprn = ukprn,
             LarsCode = larsCode,
             LastDateStarts = request.LastDateStarts
