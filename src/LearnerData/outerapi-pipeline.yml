@@ -27,7 +27,7 @@ stages:
         ${{ parameters.AdditionalTestProjectPathToInclude }}
       AcceptanceTestProjects: 'src/${{ parameters.OuterApiName }}/**/*AcceptanceTests.csproj'
       PublishProject: 'src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.Api/SFA.DAS.${{ parameters.OuterApiName }}.Api.csproj'
-      AzureArtifactsFeed: 'dct-pkg'
+      AzureArtifactsFeed: ${{ parameters.AzureArtifactsFeed }}
 
 - stage: Deploy_AT
   dependsOn: Build
