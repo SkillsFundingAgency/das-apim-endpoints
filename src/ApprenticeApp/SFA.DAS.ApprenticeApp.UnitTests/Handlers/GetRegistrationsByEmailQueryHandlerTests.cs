@@ -39,7 +39,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
 
             // Assert
             result.Should().NotBeNull();
-            result.Registrations.Should().BeSameAs(registrations);
+            result.Registration.Should().BeSameAs(registrations);
 
             clientMock.Verify(c => c.Get<List<Registration>>(
                 It.Is<GetRegistrationsByEmailRequest>(r =>
