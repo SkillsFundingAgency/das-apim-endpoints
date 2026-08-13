@@ -211,5 +211,29 @@ public class UpdateLearningRequestBodyBuilderTests
         actualRequestBody.Learner.Care.HasEHCP.Should().BeTrue();
         actualRequestBody.Learner.Care.IsCareLeaver.Should().BeTrue();
         actualRequestBody.Learner.Care.CareLeaverEmployerConsentGiven.Should().BeTrue();
+        actualRequestBody.Delivery.TrainingCode.Should().Be("123");
+    }
+
+    [Test]
+    public void Build_Sets_TrainingCode_From_FirstOnProgramme_StandardCode()
+    {
+        var fixture = new Fixture();
+
+        // Arrange
+        var command = BreaksInLearningTestHelper.CreateLearnerWithBreaksInLearning(false);
+        var firstOnProgramme = command.UpdateLearnerRequest.Delivery.OnProgramme
+            .OrderBy(x => x.StartDate)
+            .First();
+
+        var sut = new UpdateLearningRequestBodyBuilder(
+            Mock.Of<ILearningSupportService>(),
+            Mock.Of<IBreaksInLearningService>(),
+            Mock.Of<ICostsService>());
+
+        // Act
+        var actualRequestBody = sut.Build(command.Ukprn, command.UpdateLearnerRequest);
+
+        // Assert
+        actualRequestBody.Delivery.TrainingCode.Should().Be(firstOnProgramme.StandardCode.ToString());
     }
 }
