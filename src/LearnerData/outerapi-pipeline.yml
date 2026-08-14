@@ -85,7 +85,6 @@ stages:
   - group: DevTest Management Resources
   - group: TEST DevTest Shared Resources
   - group: TEST das-apim-endpoints
-  - group: TEST das-apim-endpoints-LearnerData
   jobs:
   - template: ../../pipeline-templates/job/deploy.yml
     parameters:
@@ -191,7 +190,6 @@ stages:
   - group: PROD Management Resources
   - group: PROD Shared Resources
   - group: PROD das-apim-endpoints
-  - group: PROD das-apim-endpoints-LearnerData
   jobs:
   - template: ../../pipeline-templates/job/deploy.yml
     parameters:
