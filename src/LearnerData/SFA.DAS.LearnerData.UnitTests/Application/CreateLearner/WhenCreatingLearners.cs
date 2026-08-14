@@ -57,7 +57,7 @@ public class WhenCreatingLearners
             _mockEarningsApiClient.Object,
             _mockUpdateEarningsOnProgrammeRequestBuilder.Object,
             _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
-            new FeatureFlags { ApprenticeshipCreateDraftLearner = true });
+            new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = true });
 
         _mockCreateDraftLearningApiPostRequestBuilder
             .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>()))
@@ -238,6 +238,36 @@ public class WhenCreatingLearners
         await _sut.Handle(command, CancellationToken.None);
 
         // Assert
+        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(It.IsAny<Guid>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Never);
+        _mockEarningsApiClient.Verify(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Never);
+        _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Verify(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<CreateDraftLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Never);
+        _mockEarningsApiClient.Verify(x => x.PostWithResponseCode<object>(It.IsAny<PostCreateUnapprovedApprenticeshipLearningRequest>(), true), Times.Never);
+    }
+
+    [Test]
+    public async Task Then_earnings_are_not_called_when_ApprenticeshipEarningsGeneration_is_false()
+    {
+        // Arrange
+        var sutWithEarningsGenerationDisabled = new CreateLearnerCommandHandler(
+            _mockLogger.Object,
+            _mockMessageSession.Object,
+            _mockLearningApiClient.Object,
+            _mockCreateDraftLearningApiPostRequestBuilder.Object,
+            _mockEarningsApiClient.Object,
+            _mockUpdateEarningsOnProgrammeRequestBuilder.Object,
+            _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
+            new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = false });
+
+        var command = GetProcessLearnersCommand();
+
+        // Act
+        await sutWithEarningsGenerationDisabled.Handle(command, CancellationToken.None);
+
+        // Assert - draft learner creation still happens...
+        _mockLearningApiClient.Verify(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true), Times.Once);
+        _mockMessageSession.Verify(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()), Times.Once());
+
+        // ...but no call to Earnings Inner is made
         _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(It.IsAny<Guid>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Never);
         _mockEarningsApiClient.Verify(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Never);
         _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Verify(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<CreateDraftLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Never);
