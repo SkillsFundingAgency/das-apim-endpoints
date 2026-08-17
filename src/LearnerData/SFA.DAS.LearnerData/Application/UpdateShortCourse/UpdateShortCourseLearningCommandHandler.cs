@@ -12,7 +12,6 @@ using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Services.ShortCourses;
-using LearningInnerOnProgramme = SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using EarningsOnProgramme = SFA.DAS.LearnerData.Requests.EarningsInner.OnProgramme;
@@ -72,10 +71,10 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         {
             if (result.IsIgnored)
             {
-                _logger.LogInformation("Ignoring OnProgramme item for CourseCode {CourseCode}", result.CourseCode);
+                _logger.LogInformation("Ignoring OnProgramme item for CourseCode {CourseCode}", onProg.CourseCode);
                 continue;
             }
-            
+
             if (result.IsNewLearning || result.IsNewEpisode)
             {
                 await HandleNewLearning(command, onProg, result, details);
@@ -83,7 +82,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             else
             {
                 _logger.LogInformation("Short course learner {LearnerKey} / {CourseCode} updated. Changes: {Changes}",
-                    command.LearnerKey, result.CourseCode, string.Join(", ", result.Changes));
+                    command.LearnerKey, onProg.CourseCode, string.Join(", ", result.Changes));
 
                 await HandleExistingLearning(command, onProg, result);
             }
@@ -98,9 +97,9 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
     private async Task HandleRemovedLearning(UpdateShortCourseLearningCommand command, UpdateShortCourseLearningPutResponse removedResult)
     {
         _logger.LogInformation("Removing omitted Learning {LearningKey} / {CourseCode} from Earnings for LearnerKey {LearnerKey}",
-            removedResult.LearningKey, removedResult.CourseCode, command.LearnerKey);
+            removedResult.LearningKey, removedResult.Episode!.CourseCode, command.LearnerKey);
 
-        var earningsRequest = new DeleteShortCourseEarningsRequest(removedResult.LearningKey, removedResult.UpdatedEpisodeKey, command.LearnerKey, command.Request.Learner.LearnerRef);
+        var earningsRequest = new DeleteShortCourseEarningsRequest(removedResult.LearningKey, removedResult.Episode!.EpisodeKey, command.LearnerKey, command.Request.Learner.LearnerRef);
         var earningsResponse = await _earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest, true);
 
         if (!earningsResponse.StatusCode.IsSuccessStatusCode())
@@ -134,7 +133,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         {
             var resolvedOnProg = ResolveOnProgrammeFromLearningResponse(onProg, learningResponse);
             var earningBody = _updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(resolvedOnProg, learningResponse.LearnerKey, command.Request.Learner.LearnerRef);
-            var earningRequest = new UpdateShortCourseOnProgrammeEarningPutRequest(learningResponse.LearningKey, learningResponse.UpdatedEpisodeKey, earningBody);
+            var earningRequest = new UpdateShortCourseOnProgrammeEarningPutRequest(learningResponse.LearningKey, learningResponse.Episode!.EpisodeKey, earningBody);
             await _earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(earningRequest);
         }
         else
@@ -143,18 +142,17 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         }
     }
 
-    private static LearningInnerOnProgramme ResolveOnProgrammeFromLearningResponse(ShortCourseOnProgramme onProg, UpdateShortCourseLearningPutResponse learningResponse)
+    private static ResolvedOnProgramme ResolveOnProgrammeFromLearningResponse(ShortCourseOnProgramme onProg, UpdateShortCourseLearningPutResponse learningResponse)
     {
-        var episode = learningResponse.Episodes.Single(e => e.EpisodeKey == learningResponse.UpdatedEpisodeKey);
+        var episode = learningResponse.Episode!;
 
         var milestones = onProg.Milestones.ToList();
         if (episode.CompletionDate.HasValue && !milestones.Contains(Milestone.LearningComplete))
             milestones.Add(Milestone.LearningComplete);
 
-        return new LearningInnerOnProgramme
+        return new ResolvedOnProgramme
         {
             CourseCode = episode.CourseCode,
-            Ukprn = episode.Ukprn,
             StartDate = episode.StartDate,
             ExpectedEndDate = episode.PlannedEndDate,
             CompletionDate = episode.CompletionDate,
@@ -182,7 +180,6 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
 
                 return new ShortCourseOnProgrammeUpdateDetails
                 {
-                    Ukprn = command.Ukprn,
                     CourseCode = onProg.CourseCode,
                     StartDate = onProg.StartDate,
                     ExpectedEndDate = onProg.ExpectedEndDate,
@@ -202,7 +199,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
     private CreateUnapprovedShortCourseLearningRequest BuildCreateEarningsRequest(
         UpdateShortCourseLearningCommand command,
         ShortCourseOnProgramme onProg,
-        LearningInnerOnProgramme resolvedOnProg,
+        ResolvedOnProgramme resolvedOnProg,
         UpdateShortCourseLearningPutResponse learningResponse,
         decimal price,
         SharedLearningType learningType)
@@ -210,7 +207,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         return new CreateUnapprovedShortCourseLearningRequest
         {
             LearningKey = learningResponse.LearningKey,
-            EpisodeKey = learningResponse.UpdatedEpisodeKey,
+            EpisodeKey = learningResponse.Episode!.EpisodeKey,
             Learner = new Learner
             {
                 DateOfBirth = command.Request.Learner.Dob,
@@ -220,7 +217,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             OnProgramme = new EarningsOnProgramme
             {
                 CourseCode = resolvedOnProg.CourseCode,
-                Ukprn = resolvedOnProg.Ukprn,
+                Ukprn = command.Ukprn,
                 StartDate = resolvedOnProg.StartDate,
                 ExpectedEndDate = resolvedOnProg.ExpectedEndDate,
                 CompletionDate = resolvedOnProg.CompletionDate,
@@ -232,7 +229,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         };
     }
 
-    private static LearnerDataEvent MapToLearnerDataEvent(UpdateShortCourseLearningCommand command, ShortCourseOnProgramme onProg, LearningInnerOnProgramme resolvedOnProg, decimal price, Guid correlationId)
+    private static LearnerDataEvent MapToLearnerDataEvent(UpdateShortCourseLearningCommand command, ShortCourseOnProgramme onProg, ResolvedOnProgramme resolvedOnProg, decimal price, Guid correlationId)
     {
         return new LearnerDataEvent
         {

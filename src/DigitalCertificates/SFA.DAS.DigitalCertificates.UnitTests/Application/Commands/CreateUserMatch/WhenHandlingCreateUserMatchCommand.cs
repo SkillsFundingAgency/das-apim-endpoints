@@ -40,7 +40,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
                         {
                             UserIdentityId = command.UserIdentityId.GetValueOrDefault(),
                             FamilyName = "Smith",
-                            ValidFrom = DateTime.UtcNow
+                            ValidSince = DateTime.UtcNow
                         }
                     }
                 },
@@ -126,13 +126,13 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
                         {
                             UserIdentityId = Guid.NewGuid(),
                             FamilyName = "Wrong surname",
-                            ValidFrom = DateTime.UtcNow.AddDays(-1)
+                            ValidSince = DateTime.UtcNow.AddDays(-1)
                         },
                         new IdentityName
                         {
                             UserIdentityId = userIdentityId,
                             FamilyName = familyName,
-                            ValidFrom = DateTime.UtcNow
+                            ValidSince = DateTime.UtcNow
                         }
                     }
                 },
@@ -184,7 +184,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
                 UserIdentityId = Guid.NewGuid(),
                 FamilyName = "Old",
                 GivenNames = "Old Name",
-                ValidFrom = new DateTime(2020, 1, 1)
+                ValidSince = new DateTime(2020, 1, 1)
             };
 
             var latestIdentity = new IdentityName
@@ -192,7 +192,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
                 UserIdentityId = Guid.NewGuid(),
                 FamilyName = "Current",
                 GivenNames = "Current Name",
-                ValidFrom = new DateTime(2024, 1, 1)
+                ValidSince = new DateTime(2024, 1, 1)
             };
 
             var identityResponse = new ApiResponse<GetUserIdentityResponse>(
@@ -275,7 +275,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
                         {
                             UserIdentityId = command.UserIdentityId ?? Guid.NewGuid(),
                             FamilyName = "Smith",
-                            ValidFrom = DateTime.UtcNow
+                            ValidSince = DateTime.UtcNow
                         }
                     }
                 },

@@ -57,7 +57,7 @@ public class GetTasksQueryHandler(
             ApplicationStatusFilter = ApplicationStatus.Accepted
         });
         
-        var apprenticeChangesTask = commitmentsV2ApiClient.Get<GetApprenticeshipUpdatesResponse>(new GetPendingApprenticeChangesRequest(request.AccountId));
+        var apprenticeChangesTask = commitmentsV2ApiClient.Get<GetLearnerPendingChangeCountsForEmployerResponse>(new GetPendingLearnerChangeCountsForEmployerRequest(request.AccountId));
 
         var transferRequestsTask = commitmentsV2ApiClient.Get<GetTransferRequestSummaryResponse>(new GetTransferRequestsRequest(request.AccountId, TransferType.AsSender));
 
@@ -84,7 +84,7 @@ public class GetTasksQueryHandler(
         var cohortsForThisAccount = cohortsForThisAccountResponse.Cohorts?.ToList();
         var cohortsToReview = cohortsForThisAccountResponse.Cohorts?.Where(x => !x.IsDraft && x.WithParty == Party.Employer).ToList();
         var apprenticeChanges = await apprenticeChangesTask;
-        var apprenticeChangesCount = apprenticeChanges?.ApprenticeshipUpdates?.Count ?? 0;
+        var apprenticeChangesCount = apprenticeChanges == null ? 0 : apprenticeChanges.ManualPendingChangeCount + apprenticeChanges.IlrPendingChangeCount;
         var pendingTransferConnections = await pendingTransferConnectionsTask;
         var pledgeApplicationsAcceptedResponse = await acceptedPledgeApplicationsTask;
         var pledgeApplicationsToReviewResponse = await pledgeApplicationsToReviewTask;
