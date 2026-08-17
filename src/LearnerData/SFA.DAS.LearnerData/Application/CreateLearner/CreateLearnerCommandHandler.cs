@@ -3,12 +3,14 @@ using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Configuration;
 
@@ -55,6 +57,18 @@ public class CreateLearnerCommandHandler(
                     {
                         logger.LogError("Failed to create unapproved apprenticeship learning in earnings. Status code: {StatusCode}", earningsResponse.StatusCode);
                         throw new InvalidOperationException($"Failed to create unapproved apprenticeship learning in earnings. Status code: {earningsResponse.StatusCode}.");
+                    }
+                }
+
+                if (learningResponse.Body?.RemovedLearningKey is { } removedLearningKey)
+                {
+                    logger.LogInformation("Deleting omitted course's draft earnings with learning key {RemovedLearningKey}", removedLearningKey);
+                    var deleteLearningRequest = new DeleteLearningRequest(removedLearningKey);
+                    var deleteResponse = await earningsApiClient.DeleteWithResponseCode<NullResponse>(deleteLearningRequest);
+                    if (!deleteResponse.StatusCode.IsSuccessStatusCode())
+                    {
+                        logger.LogError("Failed to delete omitted course's draft earnings. Status code: {StatusCode}", deleteResponse.StatusCode);
+                        throw new InvalidOperationException($"Failed to delete omitted course's draft earnings. Status code: {deleteResponse.StatusCode}.");
                     }
                 }
             }
