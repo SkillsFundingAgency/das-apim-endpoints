@@ -53,7 +53,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         }
 
         [HttpPatch]
-        [Route("/apprentices/{id}/MyApprenticeship")]
+        [Route("/apprentice/{id}/MyApprenticeship")]
         [Consumes("application/json-patch+json")]
         public async Task<IActionResult> UpdateMyApprenticeship(Guid id, [FromBody] object data)
         {
