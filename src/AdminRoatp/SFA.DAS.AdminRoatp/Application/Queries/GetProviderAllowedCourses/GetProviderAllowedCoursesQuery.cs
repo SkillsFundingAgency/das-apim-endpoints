@@ -4,4 +4,4 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
 namespace SFA.DAS.AdminRoatp.Application.Queries.GetProviderAllowedCourses;
 
-public record GetProviderAllowedCoursesQuery(int Ukprn, CourseType CourseType) : IRequest<GetProviderAllowedCoursesResponse>;
+public record GetProviderAllowedCoursesQuery(int Ukprn, CourseType? CourseType) : IRequest<GetProviderAllowedCoursesResponse>;

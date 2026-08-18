@@ -7,10 +7,13 @@ namespace SFA.DAS.AdminRoatp.UnitTests.InnerApi.Requests;
 
 public class GetProviderAllowedCoursesRequestTests
 {
-    [Test, MoqAutoData]
+    [Test]
+    [MoqInlineAutoData(CourseType.Apprenticeship)]
+    [MoqInlineAutoData(CourseType.ShortCourse)]
+    [MoqInlineAutoData(null)]
     public void WhenRequestIsCreated_ThenGetUrlIsCorrect(
         int ukprn,
-        CourseType courseType)
+        CourseType? courseType)
     {
         // Arrange
         var sut = new GetProviderAllowedCoursesRequest(ukprn, courseType);

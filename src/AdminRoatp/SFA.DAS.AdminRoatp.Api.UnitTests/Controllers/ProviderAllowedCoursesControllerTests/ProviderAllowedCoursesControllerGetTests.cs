@@ -37,7 +37,7 @@ public class ProviderAllowedCoursesControllerGetTests
     }
 
     [Test, MoqAutoData]
-    public async Task WhenGetProviderAllowedCoursesIsInvoked_ThenVerifyMediatorIsCalled(
+    public async Task WhenGetProviderAllowedCoursesIsInvoked_ThenMediatorIsCalled(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ProviderAllowedCoursesController sut,
         GetProviderAllowedCoursesResponse response,

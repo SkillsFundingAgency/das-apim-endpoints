@@ -12,7 +12,7 @@ public class GetProviderAllowedCoursesQueryHandler(IRoatpCourseManagementApiClie
 {
     public async Task<GetProviderAllowedCoursesResponse> Handle(GetProviderAllowedCoursesQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Handle get provider allowed courses request for Ukprn {Ukprn} and Course Type {CourseType}", request.Ukprn, request.CourseType);
+        _logger.LogInformation("Handle GetProviderAllowedCoursesRequest for Ukprn {Ukprn} and Course Type {CourseType}", request.Ukprn, request.CourseType);
 
         var response = await _courseManagementApiClient.GetWithResponseCode<GetProviderAllowedCoursesResponse>(new GetProviderAllowedCoursesRequest(request.Ukprn, request.CourseType));
 

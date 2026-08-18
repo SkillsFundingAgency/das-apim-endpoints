@@ -57,7 +57,7 @@ public class ProviderAllowedCoursesController(IMediator _mediator, ILogger<Provi
 
     [HttpGet]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(GetProviderAllowedCoursesResponse))]
-    public async Task<IActionResult> GetProviderAllowedCourses([FromRoute] int ukprn, [FromQuery] CourseType courseType = CourseType.ShortCourse, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetProviderAllowedCourses([FromRoute] int ukprn, [FromQuery] CourseType? courseType = null, CancellationToken cancellationToken = default)
     {
         GetProviderAllowedCoursesQuery query = new(ukprn, courseType);
         GetProviderAllowedCoursesResponse result = await _mediator.Send(query, cancellationToken);
