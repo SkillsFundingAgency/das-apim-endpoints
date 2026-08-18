@@ -84,7 +84,8 @@ public class UpdateLearningRequestBodyBuilder(
         {
             Delivery = new Delivery
             {
-                WithdrawalDate = latestOnProgramme.WithdrawalDate
+                WithdrawalDate = latestOnProgramme.WithdrawalDate,
+                TrainingCode = firstOnProgramme.StandardCode.ToString()
             },
             Learner = new LearningUpdateDetails
             {

@@ -10,6 +10,7 @@ using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.LearnerData.Configuration;
 
 namespace SFA.DAS.LearnerData.Application.CreateLearner;
 
@@ -19,26 +20,45 @@ public class CreateLearnerCommandHandler(
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
     ICreateDraftLearningApiPostRequestBuilder createDraftLearningApiPostRequestBuilder,
     IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
-    IUpdateEarningsOnProgrammeRequestBuilder updateEarningsOnProgrammeRequestBuilder) : IRequestHandler<CreateLearnerCommand>
+    IUpdateEarningsOnProgrammeRequestBuilder updateEarningsOnProgrammeRequestBuilder,
+    ICreateUnapprovedApprenticeshipLearningRequestBuilder createUnapprovedApprenticeshipLearningRequestBuilder,
+    FeatureFlags featureFlags) : IRequestHandler<CreateLearnerCommand>
 {
     public async Task Handle(CreateLearnerCommand command, CancellationToken cancellationToken)
     {
-        //var postRequest = createDraftLearningApiPostRequestBuilder.Build(command.Ukprn, command.Request);
+        if (featureFlags.ApprenticeshipCreateDraftLearner)
+        {
+            var postRequest = createDraftLearningApiPostRequestBuilder.Build(command.Ukprn, command.Request);
 
-        //var learningResponse = await learningApiClient.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(postRequest);
+            var learningResponse = await learningApiClient.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(postRequest);
 
-        //if (!learningResponse.StatusCode.IsSuccessStatusCode())
-        //{
-        //    logger.LogError("Failed to create draft learner. Status code: {StatusCode}", learningResponse.StatusCode);
-        //    throw new InvalidOperationException($"Failed to create draft learner. Status code: {learningResponse.StatusCode}.");
-        //}
+            if (!learningResponse.StatusCode.IsSuccessStatusCode())
+            {
+                logger.LogError("Failed to create draft learner. Status code: {StatusCode}", learningResponse.StatusCode);
+                throw new InvalidOperationException($"Failed to create draft learner. Status code: {learningResponse.StatusCode}.");
+            }
 
-        //if (learningResponse.Body?.Changes != null && learningResponse.Body.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.Reinstated))
-        //{
-        //    logger.LogInformation("Reinstating learner with key {LearningKey}", learningResponse.Body.LearningKey);
-        //    var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(learningResponse.Body.LearningKey, command.Request, learningResponse.Body, (UpdateLearningRequestBody)postRequest.Data);
-        //    await earningsApiClient.Put(earningsOnProgrammeApiRequest);
-        //}
+            if (featureFlags.ApprenticeshipEarningsGeneration)
+            {
+                if (learningResponse.Body?.Changes != null && learningResponse.Body.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.Reinstated))
+                {
+                    logger.LogInformation("Reinstating learner with learning key {LearningKey}", learningResponse.Body.LearningKey);
+                    var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(learningResponse.Body.LearningKey, command.Request, learningResponse.Body, (UpdateLearningRequestBody)postRequest.Data);
+                    await earningsApiClient.Put(earningsOnProgrammeApiRequest);
+                }
+                else if (learningResponse.Body != null)
+                {
+                    logger.LogInformation("Creating draft learner with learning key {LearningKey}", learningResponse.Body.LearningKey);
+                    var createUnapprovedApprenticeshipLearningRequest = await createUnapprovedApprenticeshipLearningRequestBuilder.Build(command.Ukprn, command.Request, learningResponse.Body, (UpdateLearningRequestBody)postRequest.Data);
+                    var earningsResponse = await earningsApiClient.PostWithResponseCode<object>(createUnapprovedApprenticeshipLearningRequest);
+                    if (!earningsResponse.StatusCode.IsSuccessStatusCode())
+                    {
+                        logger.LogError("Failed to create unapproved apprenticeship learning in earnings. Status code: {StatusCode}", earningsResponse.StatusCode);
+                        throw new InvalidOperationException($"Failed to create unapproved apprenticeship learning in earnings. Status code: {earningsResponse.StatusCode}.");
+                    }
+                }
+            }
+        }
 
         logger.LogTrace("Publishing LearnerDataEvent");
         var evt = MapToEvent(command);

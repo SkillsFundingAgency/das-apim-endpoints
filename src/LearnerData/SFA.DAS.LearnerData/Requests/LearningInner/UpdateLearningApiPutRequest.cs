@@ -69,6 +69,7 @@ namespace SFA.DAS.LearnerData.Requests.LearningInner
     public class Delivery
     {
         public DateTime? WithdrawalDate { get; set; }
+        public string TrainingCode { get; set; }
     }
 
     public class BreakInLearning
