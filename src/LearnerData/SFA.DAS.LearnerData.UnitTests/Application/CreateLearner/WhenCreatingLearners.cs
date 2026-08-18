@@ -13,6 +13,7 @@ using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using System.Net;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.CreateLearner;
@@ -29,6 +30,7 @@ public class WhenCreatingLearners
     private Mock<ICreateDraftLearningApiPostRequestBuilder> _mockCreateDraftLearningApiPostRequestBuilder;
     private Mock<IUpdateEarningsOnProgrammeRequestBuilder> _mockUpdateEarningsOnProgrammeRequestBuilder;
     private Mock<ICreateUnapprovedApprenticeshipLearningRequestBuilder> _mockCreateUnapprovedApprenticeshipLearningRequestBuilder;
+    private Mock<ICourseService> _mockCourseService;
     private CreateLearnerCommandHandler _sut;
 
 
@@ -48,6 +50,7 @@ public class WhenCreatingLearners
         _mockCreateDraftLearningApiPostRequestBuilder = new Mock<ICreateDraftLearningApiPostRequestBuilder>();
         _mockUpdateEarningsOnProgrammeRequestBuilder = new Mock<IUpdateEarningsOnProgrammeRequestBuilder>();
         _mockCreateUnapprovedApprenticeshipLearningRequestBuilder = new Mock<ICreateUnapprovedApprenticeshipLearningRequestBuilder>();
+        _mockCourseService = new Mock<ICourseService>();
 
         _sut = new CreateLearnerCommandHandler(
             _mockLogger.Object,
@@ -57,7 +60,12 @@ public class WhenCreatingLearners
             _mockEarningsApiClient.Object,
             _mockUpdateEarningsOnProgrammeRequestBuilder.Object,
             _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
+            _mockCourseService.Object,
             new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = true });
+
+        _mockCourseService
+            .Setup(x => x.GetStandardDetailsById(It.IsAny<string>()))
+            .ReturnsAsync(new StandardDetailResponse { ApprenticeshipType = "Apprenticeship" });
 
         _mockCreateDraftLearningApiPostRequestBuilder
             .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>()))
@@ -132,8 +140,62 @@ public class WhenCreatingLearners
             StandardCode = request.Delivery.OnProgramme.First().StandardCode,
             CorrelationId = command.CorrelationId,
             ReceivedDate = command.ReceivedOn,
-            ConsumerReference = request.ConsumerReference
+            ConsumerReference = request.ConsumerReference,
+            LearningType = LearningType.Apprenticeship
         });
+    }
+
+    [Test]
+    public async Task Then_learning_type_is_resolved_from_the_courses_api()
+    {
+        // Arrange
+        var command = GetProcessLearnersCommand();
+        var standardCode = command.Request.Delivery.OnProgramme.First().StandardCode;
+
+        _mockCourseService
+            .Setup(x => x.GetStandardDetailsById(standardCode.ToString()))
+            .ReturnsAsync(new StandardDetailResponse { ApprenticeshipType = "FoundationApprenticeship" });
+
+        var @event = new LearnerDataEvent();
+        _mockMessageSession.Setup(x => x.Publish(It.IsAny<LearnerDataEvent>(), It.IsAny<PublishOptions>()))
+            .Callback((object p, PublishOptions o) =>
+            {
+                @event = (LearnerDataEvent)p;
+            });
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        @event.LearningType.Should().Be(LearningType.FoundationApprenticeship);
+    }
+
+    [Test]
+    public void Then_throws_if_courses_api_returns_an_unrecognised_apprenticeship_type()
+    {
+        // Arrange
+        var command = GetProcessLearnersCommand();
+
+        _mockCourseService
+            .Setup(x => x.GetStandardDetailsById(It.IsAny<string>()))
+            .ReturnsAsync(new StandardDetailResponse { ApprenticeshipType = "SomethingUnexpected" });
+
+        // Act & Assert
+        Assert.ThrowsAsync<InvalidOperationException>(async () => await _sut.Handle(command, CancellationToken.None));
+    }
+
+    [Test]
+    public void Then_throws_if_courses_api_returns_no_standard()
+    {
+        // Arrange
+        var command = GetProcessLearnersCommand();
+
+        _mockCourseService
+            .Setup(x => x.GetStandardDetailsById(It.IsAny<string>()))
+            .ReturnsAsync((StandardDetailResponse)null!);
+
+        // Act & Assert
+        Assert.ThrowsAsync<InvalidOperationException>(async () => await _sut.Handle(command, CancellationToken.None));
     }
 
     //[Test]
@@ -256,6 +318,7 @@ public class WhenCreatingLearners
             _mockEarningsApiClient.Object,
             _mockUpdateEarningsOnProgrammeRequestBuilder.Object,
             _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
+            _mockCourseService.Object,
             new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = false });
 
         var command = GetProcessLearnersCommand();

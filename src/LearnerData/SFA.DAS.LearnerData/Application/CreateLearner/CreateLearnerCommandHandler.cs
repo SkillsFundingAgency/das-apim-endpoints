@@ -9,7 +9,6 @@ using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Configuration;
 
 namespace SFA.DAS.LearnerData.Application.CreateLearner;
@@ -22,6 +21,7 @@ public class CreateLearnerCommandHandler(
     IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
     IUpdateEarningsOnProgrammeRequestBuilder updateEarningsOnProgrammeRequestBuilder,
     ICreateUnapprovedApprenticeshipLearningRequestBuilder createUnapprovedApprenticeshipLearningRequestBuilder,
+    ICourseService courseService,
     FeatureFlags featureFlags) : IRequestHandler<CreateLearnerCommand>
 {
     public async Task Handle(CreateLearnerCommand command, CancellationToken cancellationToken)
@@ -60,12 +60,31 @@ public class CreateLearnerCommandHandler(
             }
         }
 
+        var learningType = await GetLearningType(command.Request.Delivery.OnProgramme.First().StandardCode);
+
         logger.LogTrace("Publishing LearnerDataEvent");
-        var evt = MapToEvent(command);
+        var evt = MapToEvent(command, learningType);
         await messageSession.Publish(evt);
     }
 
-    private LearnerDataEvent MapToEvent(CreateLearnerCommand command)
+    private async Task<LearningType> GetLearningType(int standardCode)
+    {
+        var standard = await courseService.GetStandardDetailsById(standardCode.ToString());
+
+        if (standard == null)
+        {
+            throw new InvalidOperationException($"Courses API returned no data for standard {standardCode}.");
+        }
+
+        if (!Enum.TryParse<LearningType>(standard.ApprenticeshipType, out var learningType))
+        {
+            throw new InvalidOperationException($"Unrecognised apprenticeship type '{standard.ApprenticeshipType}' for standard {standardCode}.");
+        }
+
+        return learningType;
+    }
+
+    private static LearnerDataEvent MapToEvent(CreateLearnerCommand command, LearningType learningType)
     {
         var onProgramme = command.Request.Delivery.OnProgramme.First();
         var cost = onProgramme.Costs.GetCostsOrDefault(onProgramme.StartDate).First();
@@ -89,7 +108,7 @@ public class CreateLearnerCommandHandler(
             CorrelationId = command.CorrelationId,
             ReceivedDate = command.ReceivedOn,
             ConsumerReference = command.Request.ConsumerReference,
-            LearningType = LearningType.Apprenticeship
+            LearningType = learningType
         };
     }
 }
