@@ -11,6 +11,7 @@ using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
@@ -335,6 +336,138 @@ public class WhenCreatingLearners
         _mockEarningsApiClient.Verify(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Never);
         _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Verify(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<CreateDraftLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Never);
         _mockEarningsApiClient.Verify(x => x.PostWithResponseCode<object>(It.IsAny<PostCreateUnapprovedApprenticeshipLearningRequest>(), true), Times.Never);
+    }
+
+    [Test]
+    public async Task Then_deletes_omitted_course_from_earnings_when_RemovedLearningKey_present_and_generation_enabled()
+    {
+        // Arrange
+        var removedLearningKey = Guid.NewGuid();
+        var responseBody = new CreateDraftLearnerApiPutResponse
+        {
+            LearningKey = Guid.NewGuid(),
+            RemovedLearningKey = removedLearningKey,
+            Changes = new List<BaseLearnerApiPutResponse.LearningUpdateChanges>()
+        };
+        var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(
+            responseBody,
+            HttpStatusCode.OK,
+            string.Empty);
+
+        _mockLearningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
+            .ReturnsAsync(successResponse);
+
+        _mockEarningsApiClient
+            .Setup(x => x.DeleteWithResponseCode<NullResponse>(
+                It.Is<DeleteLearningRequest>(r => r.LearningKey == removedLearningKey), false))
+            .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, string.Empty));
+
+        var command = GetProcessLearnersCommand();
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _mockEarningsApiClient.Verify(x => x.DeleteWithResponseCode<NullResponse>(
+            It.Is<DeleteLearningRequest>(r => r.LearningKey == removedLearningKey), false), Times.Once);
+    }
+
+    [Test]
+    public async Task Then_does_not_call_earnings_delete_when_RemovedLearningKey_is_null()
+    {
+        // Arrange
+        var responseBody = new CreateDraftLearnerApiPutResponse
+        {
+            LearningKey = Guid.NewGuid(),
+            RemovedLearningKey = null,
+            Changes = new List<BaseLearnerApiPutResponse.LearningUpdateChanges>()
+        };
+        var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(
+            responseBody,
+            HttpStatusCode.OK,
+            string.Empty);
+
+        _mockLearningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
+            .ReturnsAsync(successResponse);
+
+        var command = GetProcessLearnersCommand();
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _mockEarningsApiClient.Verify(x => x.DeleteWithResponseCode<NullResponse>(It.IsAny<DeleteLearningRequest>(), false), Times.Never);
+    }
+
+    [Test]
+    public async Task Then_does_not_call_earnings_delete_when_ApprenticeshipEarningsGeneration_is_false_even_if_RemovedLearningKey_present()
+    {
+        // Arrange
+        var sutWithEarningsGenerationDisabled = new CreateLearnerCommandHandler(
+            _mockLogger.Object,
+            _mockMessageSession.Object,
+            _mockLearningApiClient.Object,
+            _mockCreateDraftLearningApiPostRequestBuilder.Object,
+            _mockEarningsApiClient.Object,
+            _mockUpdateEarningsOnProgrammeRequestBuilder.Object,
+            _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
+            new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = false });
+
+        var responseBody = new CreateDraftLearnerApiPutResponse
+        {
+            LearningKey = Guid.NewGuid(),
+            RemovedLearningKey = Guid.NewGuid(),
+            Changes = new List<BaseLearnerApiPutResponse.LearningUpdateChanges>()
+        };
+        var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(
+            responseBody,
+            HttpStatusCode.OK,
+            string.Empty);
+
+        _mockLearningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
+            .ReturnsAsync(successResponse);
+
+        var command = GetProcessLearnersCommand();
+
+        // Act
+        await sutWithEarningsGenerationDisabled.Handle(command, CancellationToken.None);
+
+        // Assert
+        _mockEarningsApiClient.Verify(x => x.DeleteWithResponseCode<NullResponse>(It.IsAny<DeleteLearningRequest>(), false), Times.Never);
+    }
+
+    [Test]
+    public void Then_throws_when_earnings_delete_of_omitted_course_fails()
+    {
+        // Arrange
+        var removedLearningKey = Guid.NewGuid();
+        var responseBody = new CreateDraftLearnerApiPutResponse
+        {
+            LearningKey = Guid.NewGuid(),
+            RemovedLearningKey = removedLearningKey,
+            Changes = new List<BaseLearnerApiPutResponse.LearningUpdateChanges>()
+        };
+        var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(
+            responseBody,
+            HttpStatusCode.OK,
+            string.Empty);
+
+        _mockLearningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
+            .ReturnsAsync(successResponse);
+
+        _mockEarningsApiClient
+            .Setup(x => x.DeleteWithResponseCode<NullResponse>(
+                It.Is<DeleteLearningRequest>(r => r.LearningKey == removedLearningKey), false))
+            .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.InternalServerError, string.Empty));
+
+        var command = GetProcessLearnersCommand();
+
+        // Act & Assert
+        Assert.ThrowsAsync<InvalidOperationException>(async () => await _sut.Handle(command, CancellationToken.None));
     }
 
     private CreateLearnerCommand GetProcessLearnersCommand(CreateLearnerRequest? createLearnerRequest = null)
