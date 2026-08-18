@@ -28,6 +28,8 @@ public class CreateLearnerCommandHandler(
 {
     public async Task Handle(CreateLearnerCommand command, CancellationToken cancellationToken)
     {
+        logger.LogInformation("Handling CreateLearnerCommand for Ukprn {Ukprn}", command.Ukprn);
+        logger.LogInformation("Feature toggle ApprenticeshipCreateDraftLearner is {ApprenticeshipCreateDraftLearner}", featureFlags.ApprenticeshipCreateDraftLearner);
         if (featureFlags.ApprenticeshipCreateDraftLearner)
         {
             var postRequest = createDraftLearningApiPostRequestBuilder.Build(command.Ukprn, command.Request);
