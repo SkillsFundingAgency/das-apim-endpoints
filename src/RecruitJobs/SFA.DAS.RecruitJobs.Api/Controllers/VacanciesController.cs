@@ -511,4 +511,47 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
             return TypedResults.Problem(title: ex.Message, detail: ex.Error);
         }
     }
+    
+    [HttpGet, Route("requiring-applications-feedback/{date:datetime}")]
+    [ProducesResponseType(typeof(List<VacancyApplicationsCountRequiringFeedback>), StatusCodes.Status200OK)]
+    public async Task<IResult> GetVacanciesWithApplicationsRequiringFeedbackForDate(
+        [FromRoute] DateTime date,
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        [FromServices] Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
+        CancellationToken cancellationToken)
+    {
+        var startDate = date.Date;
+        var endDate = startDate.AddDays(1);
+        var filter = new VacancyEntityFilterInput
+        {
+            And = [
+                new VacancyEntityFilterInput { ClosedDate = new DateTimeOperationFilterInput { Gte = startDate } },
+                new VacancyEntityFilterInput { ClosedDate = new DateTimeOperationFilterInput { Lt = endDate } },
+            ]
+        };
+        
+        var response = await recruitGqlClient.GetClosedVacanciesBetweenDates.ExecuteAsync(filter, cancellationToken);
+        if (!response.IsSuccessResult())
+        {
+            logger.LogError("Failed to fetch closed vacancies between dates {StartDate} > {EndDate}: {Errors}", startDate, endDate, response.FormatErrors());
+            return TypedResults.Problem(response.ToProblemDetails());
+        }
+        
+        var vacancyReferences = response.Data?.Vacancies.Select(x => x.VacancyReference!.Value).ToList();
+        if (vacancyReferences is not { Count: > 0 })
+        {
+            return TypedResults.Ok(new List<VacancyApplicationsCountRequiringFeedback>());
+        }
+        
+        var apiResponse = await recruitApiClient.GetWithResponseCode<DataResponse<List<VacancyApplicationsCountRequiringFeedback>>>(
+            new GetApplicationreviewsRequiringFeedbackByVacanciesApiRequest(vacancyReferences));
+
+        if (apiResponse.StatusCode.IsSuccessStatusCode())
+        {
+            return TypedResults.Ok(apiResponse.Body.Data);
+        }
+        
+        logger.LogError(ApiResponseException.Create(apiResponse), "Failed to fetch vacancies requiring application feedback");
+        return TypedResults.Problem();
+    }
 }

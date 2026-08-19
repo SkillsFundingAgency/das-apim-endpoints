@@ -8,7 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.5" />
-      <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.111-prerelease-3" />
+      <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.113-prerelease-7" />
       <PackageReference Include="StrawberryShake.Blazor" Version="16.6.0" />
     </ItemGroup>
 
