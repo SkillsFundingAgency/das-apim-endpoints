@@ -32,7 +32,7 @@ public class CreateLearnerCommandHandler(
         logger.LogInformation("Feature toggle ApprenticeshipCreateDraftLearner is {ApprenticeshipCreateDraftLearner}", featureFlags.ApprenticeshipCreateDraftLearner);
         if (featureFlags.ApprenticeshipCreateDraftLearner)
         {
-            var postRequest = createDraftLearningApiPostRequestBuilder.Build(command.Ukprn, command.Request);
+            var postRequest = createDraftLearningApiPostRequestBuilder.Build(command.Ukprn, command.Request, command.AcademicYear);
 
             var learningResponse = await learningApiClient.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(postRequest);
 

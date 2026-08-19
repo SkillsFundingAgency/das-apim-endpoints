@@ -12,7 +12,7 @@ namespace SFA.DAS.LearnerData.Services;
 public interface IUpdateLearningRequestBodyBuilder
 {
     UpdateLearningRequestBody Build(long ukprn, UpdateLearnerRequest updateLearnerRequest);
-    UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest);
+    UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest, int academicYear);
 }
 
 public class UpdateLearningRequestBodyBuilder(
@@ -28,10 +28,11 @@ public class UpdateLearningRequestBodyBuilder(
             updateLearnerRequest.Learner,
             updateLearnerRequest.Delivery.EnglishAndMaths,
             updateLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(),
-            updateLearnerRequest.EnglishAndMathsLearningSupport());
+            updateLearnerRequest.EnglishAndMathsLearningSupport(),
+            academicYear: 0);
     }
 
-    public UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest)
+    public UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest, int academicYear)
     {
         var baseLearner = new LearnerRequestDetails
         {
@@ -48,7 +49,8 @@ public class UpdateLearningRequestBodyBuilder(
             baseLearner,
             createLearnerRequest.Delivery.EnglishAndMaths?.Cast<MathsAndEnglish>().ToList(),
             createLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(),
-            createLearnerRequest.EnglishAndMathsLearningSupport());
+            createLearnerRequest.EnglishAndMathsLearningSupport(),
+            academicYear);
     }
 
     private UpdateLearningRequestBody BuildInternal(
@@ -56,7 +58,8 @@ public class UpdateLearningRequestBodyBuilder(
         LearnerRequestDetails learner,
         List<MathsAndEnglish> englishAndMaths,
         List<OnProgrammeRequestDetails> onProgramme,
-        List<KeyValuePair<string, List<LearningSupport>>> englishAndMathsLearningSupport)
+        List<KeyValuePair<string, List<LearningSupport>>> englishAndMathsLearningSupport,
+        int academicYear)
     {
         var (firstOnProgramme, latestOnProgramme, allMatchingOnProgrammes) = SelectEpisode(onProgramme);
 
@@ -82,6 +85,7 @@ public class UpdateLearningRequestBodyBuilder(
 
         return new UpdateLearningRequestBody
         {
+            AcademicYear = academicYear,
             Delivery = new Delivery
             {
                 WithdrawalDate = latestOnProgramme.WithdrawalDate,

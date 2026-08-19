@@ -200,7 +200,7 @@ public class UpdateLearningRequestBodyBuilderTests
             Mock.Of<ICostsService>());
 
         // Act
-        var actualRequestBody = sut.Build(10005077, createRequest);
+        var actualRequestBody = sut.Build(10005077, createRequest, 2526);
 
         // Assert
         actualRequestBody.Learner.Uln.Should().Be(123456789);
@@ -212,6 +212,7 @@ public class UpdateLearningRequestBodyBuilderTests
         actualRequestBody.Learner.Care.IsCareLeaver.Should().BeTrue();
         actualRequestBody.Learner.Care.CareLeaverEmployerConsentGiven.Should().BeTrue();
         actualRequestBody.Delivery.TrainingCode.Should().Be("123");
+        actualRequestBody.AcademicYear.Should().Be(2526);
     }
 
     [Test]

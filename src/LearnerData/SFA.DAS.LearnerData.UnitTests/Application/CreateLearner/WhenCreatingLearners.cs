@@ -61,7 +61,7 @@ public class WhenCreatingLearners
             new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = true });
 
         _mockCreateDraftLearningApiPostRequestBuilder
-            .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>()))
+            .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<int>()))
             .Returns(new CreateDraftLearningApiPostRequest(new UpdateLearningRequestBody(), 0));
 
         var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(

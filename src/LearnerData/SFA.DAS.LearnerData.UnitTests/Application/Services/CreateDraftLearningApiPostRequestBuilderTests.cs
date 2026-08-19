@@ -17,18 +17,19 @@ public class CreateDraftLearningApiPostRequestBuilderTests
         // Arrange
         var fixture = new Fixture();
         var ukprn = fixture.Create<long>();
+        var academicYear = fixture.Create<int>();
         var createLearnerRequest = fixture.Create<CreateLearnerRequest>();
         var requestBody = fixture.Create<UpdateLearningRequestBody>();
 
         var mockBodyBuilder = new Mock<IUpdateLearningRequestBodyBuilder>();
         mockBodyBuilder
-            .Setup(x => x.Build(ukprn, createLearnerRequest))
+            .Setup(x => x.Build(ukprn, createLearnerRequest, academicYear))
             .Returns(requestBody);
 
         var sut = new CreateDraftLearningApiPostRequestBuilder(mockBodyBuilder.Object);
 
         // Act
-        var result = sut.Build(ukprn, createLearnerRequest);
+        var result = sut.Build(ukprn, createLearnerRequest, academicYear);
 
         // Assert
         result.Should().NotBeNull();
