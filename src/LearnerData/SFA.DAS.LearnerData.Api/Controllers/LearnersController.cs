@@ -7,6 +7,7 @@ using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses;
+using SFA.DAS.LearnerData.Services.ShortCourses;
 using System.Net;
 using MediatR;
 
@@ -72,6 +73,11 @@ public class LearnersController(
                 Ukprn = ukprn
             });
             return Accepted(new CorrelationResponse {CorrelationId = correlationId});
+        }
+        catch (InvalidCourseException e)
+        {
+            logger.LogError(e, "Invalid course code when creating learner");
+            return new StatusCodeResult((int)HttpStatusCode.UnprocessableEntity);
         }
         catch (Exception e)
         {
