@@ -1,7 +1,9 @@
 parameters:
   OuterApiName:
   ServiceConnection:
-  
+  HttpFile: 'CreateCandidateAndSubmitApplication.http'
+  SubscriptionKeyMappings: []
+
 jobs:
 - job: tests
   displayName: Integration Tests
@@ -12,26 +14,26 @@ jobs:
   steps:
     - task: DownloadPipelineArtifact@2
     - checkout: self
+    ${{ each mapping in parameters.SubscriptionKeyMappings }}:
     - task: AzurePowerShell@5
-      displayName: Find APIM Subscription ID
+      displayName: Find APIM Subscription ID for ${{ mapping.productName }}
       inputs:
         azurePowerShellVersion: LatestVersion
         azureSubscription: ${{ parameters.ServiceConnection }}
         scriptType: InlineScript
         inline: |
-          $Product = ("${{ parameters.OuterApiName }}" + "OuterApi")
+          $Product = "${{ mapping.productName }}"
           $Context = New-AzApiManagementContext -ResourceGroupName das-at-apim-rg -ServiceName das-at-shared-apim
           $Subscriptions = Get-AzApiManagementSubscription -Context $Context -Scope /products/$Product | Where-Object { $_.UserId -eq 1 }
-          $ApimSubscriptionId = $Subscriptions.SubscriptionId
-          Write-Output "Setting value of Subscription ID to pipeline variable ApimSubscriptionId"
-          Write-Output "##vso[task.setvariable variable=ApimSubscriptionId;]$ApimSubscriptionId"
+          $SubscriptionId = $Subscriptions.SubscriptionId
+          Write-Output "##vso[task.setvariable variable=${{ mapping.productName }}Id;]$SubscriptionId"
     - template: azure-pipelines-templates/deploy/step/get-apim-subscription-key.yml@das-platform-building-blocks
       parameters:
         ServiceConnection: ${{ parameters.ServiceConnection }}
         ApimResourceGroup: $(SharedApimResourceGroup)
         ApimName: $(SharedApimName)
-        SubscriptionId: $(ApimSubscriptionId)
-        PipelineVariableName: ApimSubscriptionKey
+        SubscriptionId: $(${{ mapping.productName }}Id)
+        PipelineVariableName: ${{ mapping.productName }}
         IsMultiRepoCheckout: true
     - task: PowerShell@2
       displayName: Run Tests
@@ -39,8 +41,13 @@ jobs:
       inputs:
         targetType: inline
         script: |
-          (Get-Content ./HttpScripts/http-client.env.json) -replace '<subscriptionKey>', $env:ApimSubscriptionKey | Set-Content ./HttpScripts/http-client.env.json
-          node ./HttpScripts/http-to-curl.js ./HttpScripts/CreateCandidateAndSubmitApplication.http --env=AT --out ./HttpScripts/generated.sh --exec
+          $content = Get-Content ./HttpScripts/http-client.env.json
+          ${{ each mapping in parameters.SubscriptionKeyMappings }}
+          $content = $content -replace '<${{ mapping.productName }}>', $env:${{ mapping.productName }}
+          ${{ end }}
+          $content | Set-Content ./HttpScripts/http-client.env.json
+          node ./HttpScripts/http-to-curl.js ./HttpScripts/${{ parameters.HttpFile }} --env=AT --out ./HttpScripts/generated.sh --exec
         workingDirectory: $(Pipeline.Workspace)/ApimEndpointsArtifacts/src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.UnitTests/
-      env: 
-        ApimSubscriptionKey: $(ApimSubscriptionKey)
+      env:
+        ${{ each mapping in parameters.SubscriptionKeyMappings }}:
+          ${{ mapping.productName }}: $(${{ mapping.productName }})

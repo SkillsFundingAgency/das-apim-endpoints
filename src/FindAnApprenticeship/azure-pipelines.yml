@@ -59,3 +59,4 @@ stages:
     useProductAppInsights: 'True'
     CheckClientCert: $True
     RunTests: 'True'
+    HttpFile: 'CreateCandidateAndSubmitApplication.http'
