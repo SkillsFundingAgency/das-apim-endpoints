@@ -1,4 +1,15 @@
 ###
+< {%
+    client.global.set("vacancyReferenceDiscriminationId", crypto.randomUUID());
+    client.global.set("employerName", "BOARD & COMPASS LIMITED LIABILITY PARTNERSHIP");
+    client.global.set("hashedAccountId", "4R8PPR");
+    client.global.set("employerLocations", [{
+        "addressLine1": "Stonehenge",
+        "addressLine2": "Amesbury",
+        "addressLine3": "Wiltshire",
+        "postcode": "SP4 7DE"
+    }]);
+%}
 GET {{baseUrlApimDeveloper}}/subscriptions/{{hashedAccountId}}/products/VacanciesManageOuterApi?accountType=Employers
 Content-Type: application/json
 X-Version: 1
@@ -14,17 +25,6 @@ Ocp-Apim-Subscription-Key: {{subscriptionKeyApimDeveloper}}
 %}
 
 ###
-< {%
-    client.global.set("vacancyReferenceDiscriminationId", crypto.randomUUID());
-    client.global.set("employerName", "BOARD & COMPASS LIMITED LIABILITY PARTNERSHIP");
-    client.global.set("hashedAccountId", "4R8PPR");
-    client.global.set("employerLocations", [{
-        "addressLine1": "Stonehenge",
-        "addressLine2": "Amesbury",
-        "addressLine3": "Wiltshire",
-        "postcode": "SP4 7DE"
-    }]);
-%}
 POST {{baseUrl}}/vacancy/{{vacancyReferenceDiscriminationId}}
 Content-Type: application/json
 X-Version: 1
