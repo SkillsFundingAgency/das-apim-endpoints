@@ -12,6 +12,7 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.LearnerData.Configuration;
+using SFA.DAS.Common.Domain.Types;
 
 namespace SFA.DAS.LearnerData.Application.CreateLearner;
 
@@ -29,10 +30,12 @@ public class CreateLearnerCommandHandler(
     public async Task Handle(CreateLearnerCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Handling CreateLearnerCommand for Ukprn {Ukprn}", command.Ukprn);
+        var learningType = await GetLearningType(command.Request.Delivery.OnProgramme.First().StandardCode);
+
         logger.LogInformation("Feature toggle ApprenticeshipCreateDraftLearner is {ApprenticeshipCreateDraftLearner}", featureFlags.ApprenticeshipCreateDraftLearner);
         if (featureFlags.ApprenticeshipCreateDraftLearner)
         {
-            var postRequest = createDraftLearningApiPostRequestBuilder.Build(command.Ukprn, command.Request);
+            var postRequest = createDraftLearningApiPostRequestBuilder.Build(command.Ukprn, command.Request, learningType);
 
             var learningResponse = await learningApiClient.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(postRequest);
 
@@ -75,8 +78,6 @@ public class CreateLearnerCommandHandler(
                 }
             }
         }
-
-        var learningType = await GetLearningType(command.Request.Delivery.OnProgramme.First().StandardCode);
 
         logger.LogTrace("Publishing LearnerDataEvent");
         var evt = MapToEvent(command, learningType);

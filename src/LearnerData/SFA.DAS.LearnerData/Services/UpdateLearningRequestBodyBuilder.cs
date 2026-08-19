@@ -1,18 +1,16 @@
+using SFA.DAS.Common.Domain.Types;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SFA.DAS.LearnerData.Services;
 
 public interface IUpdateLearningRequestBodyBuilder
 {
     UpdateLearningRequestBody Build(long ukprn, UpdateLearnerRequest updateLearnerRequest);
-    UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest);
+    UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest, LearningType learningType);
 }
 
 public class UpdateLearningRequestBodyBuilder(
@@ -31,7 +29,8 @@ public class UpdateLearningRequestBodyBuilder(
             updateLearnerRequest.EnglishAndMathsLearningSupport());
     }
 
-    public UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest)
+    public UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest,
+        LearningType learningType)
     {
         var baseLearner = new LearnerRequestDetails
         {
@@ -48,15 +47,16 @@ public class UpdateLearningRequestBodyBuilder(
             baseLearner,
             createLearnerRequest.Delivery.EnglishAndMaths?.Cast<MathsAndEnglish>().ToList(),
             createLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(),
-            createLearnerRequest.EnglishAndMathsLearningSupport());
+            createLearnerRequest.EnglishAndMathsLearningSupport(),
+            learningType);
     }
 
-    private UpdateLearningRequestBody BuildInternal(
-        long ukprn,
+    private UpdateLearningRequestBody BuildInternal(long ukprn,
         LearnerRequestDetails learner,
         List<MathsAndEnglish> englishAndMaths,
         List<OnProgrammeRequestDetails> onProgramme,
-        List<KeyValuePair<string, List<LearningSupport>>> englishAndMathsLearningSupport)
+        List<KeyValuePair<string, List<LearningSupport>>> englishAndMathsLearningSupport,
+        LearningType? learningType = null)
     {
         var (firstOnProgramme, latestOnProgramme, allMatchingOnProgrammes) = SelectEpisode(onProgramme);
 
@@ -85,7 +85,8 @@ public class UpdateLearningRequestBodyBuilder(
             Delivery = new Delivery
             {
                 WithdrawalDate = latestOnProgramme.WithdrawalDate,
-                TrainingCode = firstOnProgramme.StandardCode.ToString()
+                TrainingCode = firstOnProgramme.StandardCode.ToString(),
+                LearningType = learningType
             },
             Learner = new LearningUpdateDetails
             {
