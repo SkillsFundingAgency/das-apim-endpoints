@@ -21,11 +21,11 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
         public async Task Handle_Calls_Client_With_Email_And_Returns_Registrations(
            [Frozen] Mock<IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration>> clientMock,
            string email,
-           List<Registration> registrations)
+           Registration registrations)
         {
             // Arrange
             clientMock
-                .Setup(c => c.Get<List<Registration>>(
+                .Setup(c => c.Get<Registration>(
                     It.Is<GetRegistrationsByEmailRequest>(r =>
                         r.GetUrl == $"registrations/email?email={email}")))
                 .ReturnsAsync(registrations);
@@ -41,7 +41,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
             result.Should().NotBeNull();
             result.Registration.Should().BeSameAs(registrations);
 
-            clientMock.Verify(c => c.Get<List<Registration>>(
+            clientMock.Verify(c => c.Get<Registration>(
                 It.Is<GetRegistrationsByEmailRequest>(r =>
                     r.GetUrl == $"registrations/email?email={email}")),
                 Times.Once);
