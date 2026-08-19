@@ -10,6 +10,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Responses
 
     public class UserAction
     {
+        public long? Uln { get; set; }
         public long Id { get; set; }
         public required Guid UserId { get; set; }
         public required string ActionType { get; set; }

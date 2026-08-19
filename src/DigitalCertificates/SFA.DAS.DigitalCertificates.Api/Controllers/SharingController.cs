@@ -13,6 +13,7 @@ using SFA.DAS.DigitalCertificates.Application.Queries.GetSharedStandardCertifica
 using SFA.DAS.DigitalCertificates.Application.Queries.GetSharedFrameworkCertificate;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingAccess;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingEmailAccess;
+using SFA.DAS.DigitalCertificates.Api.Models.Sharing;
 
 namespace SFA.DAS.DigitalCertificates.Api.Controllers
 {
@@ -30,16 +31,18 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateSharing([FromBody] CreateSharingCommand command)
+        public async Task<IActionResult> CreateSharing([FromBody] CreateSharingRequest request)
         {
             try
             {
+                var command = (CreateSharingCommand)request;
                 var result = await _mediator.Send(command);
-                return Ok(result);
+                var response = (CreateSharingResponse)result;
+                return Ok(response);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error attempting to create sharing for user {UserId}, certificate {CertificateId}", command.UserId, command.CertificateId);
+                _logger.LogError(e, "Error attempting to create sharing for user {UserId}, certificate {CertificateId}", request?.UserId, request?.CertificateId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -50,7 +53,8 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             try
             {
                 var result = await _mediator.Send(new GetSharingByIdQuery { SharingId = sharingId, Limit = limit });
-                return Ok(result.Response);
+                var response = (GetSharingByIdResponse)result;
+                return Ok(response.Response);
             }
             catch (Exception e)
             {
@@ -76,7 +80,8 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
                     return BadRequest();
                 }
 
-                return Ok(result.Response);
+                var response = (GetSharingByCodeResponse)result;
+                return Ok(response.Response);
             }
             catch (Exception e)
             {
@@ -86,13 +91,15 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
         }
 
         [HttpPost("{sharingId}/email")]
-        public async Task<IActionResult> CreateSharingEmail([FromRoute] Guid sharingId, [FromBody] CreateSharingEmailCommand command)
+        public async Task<IActionResult> CreateSharingEmail([FromRoute] Guid sharingId, [FromBody] CreateSharingEmailRequest request)
         {
             try
             {
+                var command = (CreateSharingEmailCommand)request;
                 command.SharingId = sharingId;
                 var result = await _mediator.Send(command);
-                return Ok(result);
+                var response = (CreateSharingEmailResponse)result;
+                return Ok(response);
             }
             catch (Exception e)
             {
@@ -117,31 +124,33 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
         }
 
         [HttpPost("sharingaccess")]
-        public async Task<IActionResult> CreateSharingAccess([FromBody] CreateSharingAccessCommand command)
+        public async Task<IActionResult> CreateSharingAccess([FromBody] CreateSharingAccessRequest request)
         {
             try
             {
+                var command = (CreateSharingAccessCommand)request;
                 await _mediator.Send(command);
                 return NoContent();
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error attempting to create sharing access for {SharingId}", command?.SharingId);
+                _logger.LogError(e, "Error attempting to create sharing access for {SharingId}", request?.SharingId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
 
         [HttpPost("sharingemailaccess")]
-        public async Task<IActionResult> CreateSharingEmailAccess([FromBody] CreateSharingEmailAccessCommand command)
+        public async Task<IActionResult> CreateSharingEmailAccess([FromBody] CreateSharingEmailAccessRequest request)
         {
             try
             {
+                var command = (CreateSharingEmailAccessCommand)request;
                 await _mediator.Send(command);
                 return NoContent();
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error attempting to create sharing email access for {SharingEmailId}", command?.SharingEmailId);
+                _logger.LogError(e, "Error attempting to create sharing email access for {SharingEmailId}", request?.SharingEmailId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -153,7 +162,10 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             {
                 var result = await _mediator.Send(new GetSharedStandardCertificateQuery(id));
 
-                return result == null ? NotFound() : Ok(result);
+                if (result == null) return NotFound();
+
+                var response = (GetSharedStandardCertificateResponse)result;
+                return Ok(response);
             }
             catch (Exception e)
             {
@@ -169,7 +181,10 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             {
                 var result = await _mediator.Send(new GetSharedFrameworkCertificateQuery(id));
 
-                return result == null ? NotFound() : Ok(result);
+                if (result == null) return NotFound();
+
+                var response = (GetSharedFrameworkCertificateResponse)result;
+                return Ok(response);
             }
             catch (Exception e)
             {
