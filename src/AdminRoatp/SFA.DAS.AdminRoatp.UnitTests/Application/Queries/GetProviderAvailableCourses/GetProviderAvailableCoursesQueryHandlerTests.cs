@@ -56,12 +56,12 @@ public class GetProviderAvailableCoursesQueryHandlerTests
             });
 
         apiClientMock
-            .Setup(a => a.GetWithResponseCode<GetAllStandardsResponse>(It.Is<GetAllStandardsRequest>(x => x.CourseType == request.CourseType)))
-            .ReturnsAsync(new ApiResponse<GetAllStandardsResponse>(standards, HttpStatusCode.OK, ""));
-
-        apiClientMock
             .Setup(a => a.GetWithResponseCode<GetProviderAllowedCoursesResponse>(It.Is<GetProviderAllowedCoursesRequest>(x => x.Ukprn == request.Ukprn && x.CourseType == request.CourseType)))
             .ReturnsAsync(new ApiResponse<GetProviderAllowedCoursesResponse>(providerAllowedCourses, HttpStatusCode.OK, ""));
+
+        apiClientMock
+            .Setup(a => a.GetWithResponseCode<GetAllStandardsResponse>(It.Is<GetAllStandardsRequest>(x => x.CourseType == request.CourseType)))
+            .ReturnsAsync(new ApiResponse<GetAllStandardsResponse>(standards, HttpStatusCode.OK, ""));
 
         // Act
         var result = sut.Handle(request, CancellationToken.None);
@@ -100,12 +100,12 @@ public class GetProviderAvailableCoursesQueryHandlerTests
         var providerAllowedCourses = new GetProviderAllowedCoursesResponse(Enumerable.Empty<ProviderAllowedCourseModel>());
 
         apiClientMock
-            .Setup(a => a.GetWithResponseCode<GetAllStandardsResponse>(It.Is<GetAllStandardsRequest>(x => x.CourseType == request.CourseType)))
-            .ReturnsAsync(new ApiResponse<GetAllStandardsResponse>(standards, HttpStatusCode.OK, ""));
-
-        apiClientMock
             .Setup(a => a.GetWithResponseCode<GetProviderAllowedCoursesResponse>(It.Is<GetProviderAllowedCoursesRequest>(x => x.Ukprn == request.Ukprn && x.CourseType == request.CourseType)))
             .ReturnsAsync(new ApiResponse<GetProviderAllowedCoursesResponse>(providerAllowedCourses, HttpStatusCode.OK, ""));
+
+        apiClientMock
+            .Setup(a => a.GetWithResponseCode<GetAllStandardsResponse>(It.Is<GetAllStandardsRequest>(x => x.CourseType == request.CourseType)))
+            .ReturnsAsync(new ApiResponse<GetAllStandardsResponse>(standards, HttpStatusCode.OK, ""));
 
         // Act
         var result = sut.Handle(request, CancellationToken.None);
@@ -125,21 +125,46 @@ public class GetProviderAvailableCoursesQueryHandlerTests
     {
         // Arrange
         apiClientMock
-            .Setup(a => a.GetWithResponseCode<GetAllStandardsResponse>(It.Is<GetAllStandardsRequest>(x => x.CourseType == request.CourseType)))
-            .ReturnsAsync(new ApiResponse<GetAllStandardsResponse>(standards, HttpStatusCode.OK, ""));
-
-        apiClientMock
             .Setup(a => a.GetWithResponseCode<GetProviderAllowedCoursesResponse>(It.Is<GetProviderAllowedCoursesRequest>(x => x.Ukprn == request.Ukprn && x.CourseType == request.CourseType)))
             .ReturnsAsync(new ApiResponse<GetProviderAllowedCoursesResponse>(providerAllowedCourses, HttpStatusCode.OK, ""));
+
+        apiClientMock
+            .Setup(a => a.GetWithResponseCode<GetAllStandardsResponse>(It.Is<GetAllStandardsRequest>(x => x.CourseType == request.CourseType)))
+            .ReturnsAsync(new ApiResponse<GetAllStandardsResponse>(standards, HttpStatusCode.OK, ""));
 
         // Act
         await sut.Handle(request, CancellationToken.None);
 
         // Assert
         apiClientMock
-            .Verify(a => a.GetWithResponseCode<GetAllStandardsResponse>(It.Is<GetAllStandardsRequest>(x => x.CourseType == request.CourseType)), Times.Once());
-        apiClientMock
             .Verify(a => a.GetWithResponseCode<GetProviderAllowedCoursesResponse>(It.Is<GetProviderAllowedCoursesRequest>(x => x.Ukprn == request.Ukprn && x.CourseType == request.CourseType)), Times.Once());
+        apiClientMock
+            .Verify(a => a.GetWithResponseCode<GetAllStandardsResponse>(It.Is<GetAllStandardsRequest>(x => x.CourseType == request.CourseType)), Times.Once());
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenGetProviderAllowedCoursesReturnsUnsuccessfulResponse_ThenThrowsException(
+    [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
+    [Greedy] GetProviderAvailableCoursesQueryHandler sut,
+    GetProviderAvailableCoursesQuery request,
+    GetAllStandardsResponse standards,
+    GetProviderAllowedCoursesResponse providerAllowedCourses)
+    {
+        // Arrange
+
+        apiClientMock
+            .Setup(a => a.GetWithResponseCode<GetProviderAllowedCoursesResponse>(It.Is<GetProviderAllowedCoursesRequest>(x => x.Ukprn == request.Ukprn && x.CourseType == request.CourseType)))
+            .ReturnsAsync(new ApiResponse<GetProviderAllowedCoursesResponse>(providerAllowedCourses, HttpStatusCode.InternalServerError, ""));
+
+        apiClientMock
+            .Setup(a => a.GetWithResponseCode<GetAllStandardsResponse>(It.Is<GetAllStandardsRequest>(x => x.CourseType == request.CourseType)))
+            .ReturnsAsync(new ApiResponse<GetAllStandardsResponse>(standards, HttpStatusCode.OK, ""));
+
+        // Act
+        Func<Task> result = () => sut.Handle(request, CancellationToken.None);
+
+        // Assert
+        await result.Should().ThrowAsync<ApiResponseException>();
     }
 
     [Test, MoqAutoData]
@@ -151,13 +176,14 @@ public class GetProviderAvailableCoursesQueryHandlerTests
         GetProviderAllowedCoursesResponse providerAllowedCourses)
     {
         // Arrange
-        apiClientMock
-            .Setup(a => a.GetWithResponseCode<GetAllStandardsResponse>(It.Is<GetAllStandardsRequest>(x => x.CourseType == request.CourseType)))
-            .ReturnsAsync(new ApiResponse<GetAllStandardsResponse>(standards, HttpStatusCode.InternalServerError, ""));
 
         apiClientMock
             .Setup(a => a.GetWithResponseCode<GetProviderAllowedCoursesResponse>(It.Is<GetProviderAllowedCoursesRequest>(x => x.Ukprn == request.Ukprn && x.CourseType == request.CourseType)))
             .ReturnsAsync(new ApiResponse<GetProviderAllowedCoursesResponse>(providerAllowedCourses, HttpStatusCode.OK, ""));
+
+        apiClientMock
+            .Setup(a => a.GetWithResponseCode<GetAllStandardsResponse>(It.Is<GetAllStandardsRequest>(x => x.CourseType == request.CourseType)))
+            .ReturnsAsync(new ApiResponse<GetAllStandardsResponse>(standards, HttpStatusCode.InternalServerError, ""));
 
         // Act
         Func<Task> result = () => sut.Handle(request, CancellationToken.None);
@@ -167,26 +193,21 @@ public class GetProviderAvailableCoursesQueryHandlerTests
     }
 
     [Test, MoqAutoData]
-    public async Task WhenGetProviderAllowedCoursesReturnsUnsuccessfulResponse_ThenThrowsException(
+    public async Task WhenRequestedCourseTypeIsNull_ThenThrowsException(
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
-        [Greedy] GetProviderAvailableCoursesQueryHandler sut,
-        GetProviderAvailableCoursesQuery request,
-        GetAllStandardsResponse standards,
-        GetProviderAllowedCoursesResponse providerAllowedCourses)
+        [Greedy] GetProviderAvailableCoursesQueryHandler sut)
     {
         // Arrange
-        apiClientMock
-            .Setup(a => a.GetWithResponseCode<GetAllStandardsResponse>(It.Is<GetAllStandardsRequest>(x => x.CourseType == request.CourseType)))
-            .ReturnsAsync(new ApiResponse<GetAllStandardsResponse>(standards, HttpStatusCode.OK, ""));
-
-        apiClientMock
-            .Setup(a => a.GetWithResponseCode<GetProviderAllowedCoursesResponse>(It.Is<GetProviderAllowedCoursesRequest>(x => x.Ukprn == request.Ukprn && x.CourseType == request.CourseType)))
-            .ReturnsAsync(new ApiResponse<GetProviderAllowedCoursesResponse>(providerAllowedCourses, HttpStatusCode.InternalServerError, ""));
+        var request = new GetProviderAvailableCoursesQuery()
+        {
+            Ukprn = 123456,
+            CourseType = null
+        };
 
         // Act
         Func<Task> result = () => sut.Handle(request, CancellationToken.None);
 
         // Assert
-        await result.Should().ThrowAsync<ApiResponseException>();
+        await result.Should().ThrowAsync<ArgumentNullException>();
     }
 }

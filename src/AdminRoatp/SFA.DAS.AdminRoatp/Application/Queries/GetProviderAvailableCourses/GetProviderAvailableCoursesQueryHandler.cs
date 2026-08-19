@@ -14,13 +14,18 @@ public class GetProviderAvailableCoursesQueryHandler(IRoatpCourseManagementApiCl
     {
         _logger.LogInformation("Handle GetProviderAvailableCourses for Ukprn {Ukprn} and Course Type {CourseType}", request.Ukprn, request.CourseType);
 
-        var standards = await _courseManagementApiClient.GetWithResponseCode<GetAllStandardsResponse>(new GetAllStandardsRequest(request.CourseType));
-
-        standards.EnsureSuccessStatusCode();
+        if (request.CourseType == null)
+        {
+            throw new ArgumentNullException(nameof(request), "CourseType cannot be null.");
+        }
 
         var providerAllowedCourses = await _courseManagementApiClient.GetWithResponseCode<GetProviderAllowedCoursesResponse>(new GetProviderAllowedCoursesRequest(request.Ukprn, request.CourseType));
 
         providerAllowedCourses.EnsureSuccessStatusCode();
+
+        var standards = await _courseManagementApiClient.GetWithResponseCode<GetAllStandardsResponse>(new GetAllStandardsRequest(request.CourseType));
+
+        standards.EnsureSuccessStatusCode();
 
         return new GetProviderAvailableCoursesQueryResult()
         {
