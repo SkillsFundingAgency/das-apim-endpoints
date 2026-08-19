@@ -13,6 +13,7 @@ using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Net;
+using SFA.DAS.Common.Domain.Types;
 
 namespace SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
 

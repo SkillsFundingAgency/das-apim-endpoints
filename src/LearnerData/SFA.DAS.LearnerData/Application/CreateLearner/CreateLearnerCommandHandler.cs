@@ -7,6 +7,7 @@ using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
+using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Extensions;
@@ -90,7 +91,7 @@ public class CreateLearnerCommandHandler(
 
         if (standard == null)
         {
-            throw new InvalidOperationException($"Courses API returned no data for standard {standardCode}.");
+            throw new InvalidCourseException($"Courses API could not find standard {standardCode}.");
         }
 
         if (!Enum.TryParse<LearningType>(standard.ApprenticeshipType, out var learningType))

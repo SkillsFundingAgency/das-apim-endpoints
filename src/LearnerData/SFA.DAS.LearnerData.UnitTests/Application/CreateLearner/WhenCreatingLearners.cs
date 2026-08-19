@@ -1,5 +1,6 @@
 using AutoFixture;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Common.Domain.Types;
 using NServiceBus;
 using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Events;
@@ -7,6 +8,7 @@ using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.LearnerData.Services;
+using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
@@ -69,7 +71,7 @@ public class WhenCreatingLearners
             .ReturnsAsync(new StandardDetailResponse { ApprenticeshipType = "Apprenticeship" });
 
         _mockCreateDraftLearningApiPostRequestBuilder
-            .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>()))
+            .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<LearningType>()))
             .Returns(new CreateDraftLearningApiPostRequest(new UpdateLearningRequestBody(), 0));
 
         var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(
@@ -186,7 +188,7 @@ public class WhenCreatingLearners
     }
 
     [Test]
-    public void Then_throws_if_courses_api_returns_no_standard()
+    public void Then_throws_invalid_course_exception_if_courses_api_returns_no_standard()
     {
         // Arrange
         var command = GetProcessLearnersCommand();
@@ -196,7 +198,7 @@ public class WhenCreatingLearners
             .ReturnsAsync((StandardDetailResponse)null!);
 
         // Act & Assert
-        Assert.ThrowsAsync<InvalidOperationException>(async () => await _sut.Handle(command, CancellationToken.None));
+        Assert.ThrowsAsync<InvalidCourseException>(async () => await _sut.Handle(command, CancellationToken.None));
     }
 
     //[Test]
@@ -413,6 +415,7 @@ public class WhenCreatingLearners
             _mockEarningsApiClient.Object,
             _mockUpdateEarningsOnProgrammeRequestBuilder.Object,
             _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
+            _mockCourseService.Object,
             new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = false });
 
         var responseBody = new CreateDraftLearnerApiPutResponse

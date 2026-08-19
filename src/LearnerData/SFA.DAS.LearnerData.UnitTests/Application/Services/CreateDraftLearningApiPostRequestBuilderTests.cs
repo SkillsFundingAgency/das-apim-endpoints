@@ -2,6 +2,7 @@ using AutoFixture;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Common.Domain.Types;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Services;
@@ -19,16 +20,17 @@ public class CreateDraftLearningApiPostRequestBuilderTests
         var ukprn = fixture.Create<long>();
         var createLearnerRequest = fixture.Create<CreateLearnerRequest>();
         var requestBody = fixture.Create<UpdateLearningRequestBody>();
+        var learningType = fixture.Create<LearningType>();
 
         var mockBodyBuilder = new Mock<IUpdateLearningRequestBodyBuilder>();
         mockBodyBuilder
-            .Setup(x => x.Build(ukprn, createLearnerRequest))
+            .Setup(x => x.Build(ukprn, createLearnerRequest, learningType))
             .Returns(requestBody);
 
         var sut = new CreateDraftLearningApiPostRequestBuilder(mockBodyBuilder.Object);
 
         // Act
-        var result = sut.Build(ukprn, createLearnerRequest);
+        var result = sut.Build(ukprn, createLearnerRequest, learningType);
 
         // Assert
         result.Should().NotBeNull();

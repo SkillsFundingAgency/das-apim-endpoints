@@ -1,4 +1,5 @@
 using AutoFixture;
+using SFA.DAS.Common.Domain.Types;
 using SFA.DAS.LearnerData.Services;
 using FluentAssertions;
 using Moq;
@@ -200,7 +201,7 @@ public class UpdateLearningRequestBodyBuilderTests
             Mock.Of<ICostsService>());
 
         // Act
-        var actualRequestBody = sut.Build(10005077, createRequest);
+        var actualRequestBody = sut.Build(10005077, createRequest, LearningType.Apprenticeship);
 
         // Assert
         actualRequestBody.Learner.Uln.Should().Be(123456789);
@@ -212,6 +213,7 @@ public class UpdateLearningRequestBodyBuilderTests
         actualRequestBody.Learner.Care.IsCareLeaver.Should().BeTrue();
         actualRequestBody.Learner.Care.CareLeaverEmployerConsentGiven.Should().BeTrue();
         actualRequestBody.Delivery.TrainingCode.Should().Be("123");
+        actualRequestBody.Delivery.LearningType.Should().Be(LearningType.Apprenticeship);
     }
 
     [Test]
