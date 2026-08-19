@@ -51,12 +51,13 @@ jobs:
         targetType: inline
         script: |
           $content = Get-Content ./HttpScripts/http-client.env.json
-          ${{ each mapping in parameters.SubscriptionKeyMappings }}
-          $content = $content -replace '<${{ mapping.productName }}>', $env:${{ mapping.productName }}
-          ${{ end }}
+          Get-ChildItem env:APIM_KEY_* | ForEach-Object {
+            $productName = $_.Name -replace '^APIM_KEY_', ''
+            $content = $content -replace "<$productName>", $_.Value
+          }
           $content | Set-Content ./HttpScripts/http-client.env.json
           node ./HttpScripts/http-to-curl.js ./HttpScripts/${{ parameters.HttpFile }} --env=AT --out ./HttpScripts/generated.sh --exec
         workingDirectory: $(Pipeline.Workspace)/ApimEndpointsArtifacts/src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.UnitTests/
       env:
         ${{ each mapping in parameters.SubscriptionKeyMappings }}:
-          ${{ mapping.productName }}: $(${{ mapping.productName }})
+          APIM_KEY_${{ mapping.productName }}: $(${{ mapping.productName }})
