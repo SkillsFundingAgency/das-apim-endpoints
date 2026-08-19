@@ -85,10 +85,7 @@ stages:
         OuterApiName: ${{ parameters.OuterApiName }}
         ServiceConnection: SFA-DAS-DevTest-ARM
         HttpFile: ${{ parameters.HttpFile }}
-        SubscriptionKeyMappings:
-          - productName: ${{ parameters.OuterApiName }}OuterApi
-          ${{ each mapping in parameters.SubscriptionKeyMappings }}:
-          - productName: ${{ mapping.productName }}
+        SubscriptionKeyMappings: ${{ parameters.SubscriptionKeyMappings }}
 
 - stage: Deploy_TEST
   dependsOn: Build

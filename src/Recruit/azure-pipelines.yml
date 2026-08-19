@@ -56,5 +56,6 @@ stages:
     RunTests: 'True'
     HttpFile: 'CreateVacancy.http'
     SubscriptionKeyMappings:
+      - productName: RecruitOuterApi
       - productName: RecruitQaOuterApi
       - productName: ApimDeveloperOuterApi

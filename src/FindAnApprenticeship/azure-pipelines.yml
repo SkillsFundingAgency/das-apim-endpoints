@@ -60,3 +60,5 @@ stages:
     CheckClientCert: $True
     RunTests: 'True'
     HttpFile: 'CreateCandidateAndSubmitApplication.http'
+    SubscriptionKeyMappings:
+      - productName: FindAnApprenticeshipOuterApi
