@@ -111,10 +111,6 @@
                 "description": "Deploys alerting on app insights response times"
             }
         },
-        "productShortName": {
-            "type": "string",
-            "defaultValue": ""
-        },
         "deployPrivateLinkedScopedResource": {
             "type": "bool"
         },
