@@ -1,8 +1,16 @@
 parameters:
-  OuterApiName:
-  ServiceConnection:
-  HttpFile: 'CreateCandidateAndSubmitApplication.http'
-  SubscriptionKeyMappings: []
+- name: OuterApiName
+  type: string
+  default: ''
+- name: ServiceConnection
+  type: string
+  default: ''
+- name: HttpFile
+  type: string
+  default: 'CreateCandidateAndSubmitApplication.http'
+- name: SubscriptionKeyMappings
+  type: object
+  default: []
 
 jobs:
 - job: tests
@@ -27,6 +35,7 @@ jobs:
           $Subscriptions = Get-AzApiManagementSubscription -Context $Context -Scope /products/$Product | Where-Object { $_.UserId -eq 1 }
           $SubscriptionId = $Subscriptions.SubscriptionId
           Write-Output "##vso[task.setvariable variable=${{ mapping.productName }}Id;]$SubscriptionId"
+    ${{ each mapping in parameters.SubscriptionKeyMappings }}:
     - template: azure-pipelines-templates/deploy/step/get-apim-subscription-key.yml@das-platform-building-blocks
       parameters:
         ServiceConnection: ${{ parameters.ServiceConnection }}
