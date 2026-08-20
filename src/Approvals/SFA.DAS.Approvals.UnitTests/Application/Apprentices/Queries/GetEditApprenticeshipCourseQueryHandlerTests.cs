@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetEditApprenticeshipCourse;
 using SFA.DAS.Approvals.Services;
@@ -25,7 +26,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             GetApprenticeshipResponse apprenticeship,
             ProviderStandardsData providerStandardsData,
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
-            [Frozen] Mock<IProviderCoursesOrStandardsService> providerStandardsService)
+            [Frozen] Mock<IProviderStandardsService> providerStandardsService)
         {
             var serviceParameters = new ServiceParameters(Party.Provider, apprenticeship.ProviderId);
 
@@ -45,6 +46,32 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.Standards.ToList().Should().BeEquivalentTo(standardsData);
+            providerStandardsService.Verify(x => x.GetCoursesData(apprenticeship.ProviderId), Times.Once);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Uses_ProviderStandardsService_Declared_Courses_Not_Timeline(
+            GetEditApprenticeshipCourseQuery query,
+            GetApprenticeshipResponse apprenticeship,
+            ProviderStandardsData providerStandardsData,
+            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
+            [Frozen] Mock<IProviderStandardsService> providerStandardsService)
+        {
+            var serviceParameters = new ServiceParameters(Party.Provider, apprenticeship.ProviderId);
+
+            var handler = new GetEditApprenticeshipCourseQueryHandler(apiClient.Object,
+                providerStandardsService.Object, serviceParameters);
+
+            apiClient.Setup(x => x.GetWithResponseCode<GetApprenticeshipResponse>(It.Is<GetApprenticeshipRequest>(r => r.ApprenticeshipId == query.ApprenticeshipId)))
+                .ReturnsAsync(new ApiResponse<GetApprenticeshipResponse>(apprenticeship, HttpStatusCode.OK, string.Empty));
+
+            providerStandardsService.Setup(x => x.GetCoursesData(apprenticeship.ProviderId))
+                .ReturnsAsync(providerStandardsData);
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            providerStandardsService.Verify(x => x.GetCoursesData(apprenticeship.ProviderId), Times.Once);
+            result.Standards.Select(x => x.Name).Should().BeEquivalentTo(providerStandardsData.Standards.Select(x => x.Name));
         }
 
         [Test, MoqAutoData]
@@ -53,7 +80,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             GetApprenticeshipResponse apprenticeship,
             ProviderStandardsData providerStandardsData,
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
-            [Frozen] Mock<IProviderCoursesOrStandardsService> providerStandardsService)
+            [Frozen] Mock<IProviderStandardsService> providerStandardsService)
         {
             var serviceParameters = new ServiceParameters(Party.Provider, apprenticeship.ProviderId);
 
@@ -77,7 +104,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             GetApprenticeshipResponse apprenticeship,
             ProviderStandardsData providerStandardsData,
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
-            [Frozen] Mock<IProviderCoursesOrStandardsService> providerStandardsService)
+            [Frozen] Mock<IProviderStandardsService> providerStandardsService)
         {
             var serviceParameters = new ServiceParameters(Party.Provider, apprenticeship.ProviderId + 1);
 
@@ -92,7 +119,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.That(result, Is.Null);
+            result.Should().BeNull();
         }
 
         [Test, MoqAutoData]
@@ -101,7 +128,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             ProviderStandardsData providerStandardsData,
             long providerId,
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
-            [Frozen] Mock<IProviderCoursesOrStandardsService> providerStandardsService)
+            [Frozen] Mock<IProviderStandardsService> providerStandardsService)
         {
             var serviceParameters = new ServiceParameters(Party.Provider, providerId);
 
@@ -116,7 +143,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.That(result, Is.Null);
+            result.Should().BeNull();
         }
     }
 }
