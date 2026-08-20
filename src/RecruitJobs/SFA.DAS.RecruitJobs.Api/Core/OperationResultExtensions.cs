@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using StrawberryShake;
 
-namespace SFA.DAS.RecruitJobs.GraphQL.RecruitInner.Mappers;
+namespace SFA.DAS.RecruitJobs.Api.Core;
 
 public static class OperationResultExtensions
 {

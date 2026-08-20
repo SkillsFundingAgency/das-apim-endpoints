@@ -1,0 +1,8 @@
+query GetClosedVacanciesBetweenDates($filterCriteria: VacancyEntityFilterInput) {
+    vacancies (
+        where: $filterCriteria
+    ) {
+        id
+        vacancyReference
+    }
+}

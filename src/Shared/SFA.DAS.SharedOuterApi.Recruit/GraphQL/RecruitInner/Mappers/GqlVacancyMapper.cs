@@ -1,15 +1,18 @@
-using System.Collections.Generic;
 using System.Text.Json;
 
-namespace SFA.DAS.RecruitJobs.GraphQL.RecruitInner.Mappers;
+namespace SFA.DAS.SharedOuterApi.Recruit.GraphQL.RecruitInner.Mappers;
 
-// Note this class cannot be moved to the Shared assemblies as it
-// relies upon the dynamically generated interface IAllVacancyFields. 
 public static class GqlVacancyMapper
 {
-    private static T DeserializeOrNull<T>(string value) where T : class
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new()
     {
-        return string.IsNullOrWhiteSpace(value) ? null : JsonSerializer.Deserialize<T>(value, Global.JsonSerializerOptions);
+        PropertyNameCaseInsensitive = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+    
+    private static T? DeserializeOrNull<T>(string value) where T : class
+    {
+        return string.IsNullOrWhiteSpace(value) ? null : JsonSerializer.Deserialize<T>(value, JsonSerializerOptions);
     }
     
     private static T? NullOrEnum<T>(string value) where T: struct
@@ -24,11 +27,11 @@ public static class GqlVacancyMapper
             : throw new InvalidOperationException($"Could not convert {value} to type {typeof(T)}");
     }
 
-    public static Recruit.Contracts.ApiResponses.Vacancy From(IAllVacancyFields source)
+    public static DAS.Recruit.Contracts.ApiResponses.Vacancy From(IAllVacancyFields source)
     {
-        var employerLocations = DeserializeOrNull<List<Recruit.Contracts.ApiResponses.Address>>(source.EmployerLocations) ?? [];
+        var employerLocations = DeserializeOrNull<List<DAS.Recruit.Contracts.ApiResponses.Address>>(source.EmployerLocations) ?? [];
 
-        return new Recruit.Contracts.ApiResponses.Vacancy
+        return new DAS.Recruit.Contracts.ApiResponses.Vacancy
         {
             AccountId = source.AccountId,
             AccountLegalEntityId = source.AccountLegalEntityId,
@@ -37,20 +40,20 @@ public static class GqlVacancyMapper
             AdditionalTrainingDescription = source.AdditionalTrainingDescription,
             AnonymousReason = source.AnonymousReason,
             ApplicationInstructions = source.ApplicationInstructions,
-            ApplicationMethod = NullOrEnum<Recruit.Contracts.ApiResponses.ApplicationMethod>(source.ApplicationMethod?.ToString()),
+            ApplicationMethod = NullOrEnum<DAS.Recruit.Contracts.ApiResponses.ApplicationMethod>(source.ApplicationMethod?.ToString()),
             ApplicationUrl = source.ApplicationUrl,
-            ApprenticeshipType = NullOrEnum<Recruit.Contracts.ApiResponses.ApprenticeshipTypes>(source.ApprenticeshipType?.ToString()),
+            ApprenticeshipType = NullOrEnum<DAS.Recruit.Contracts.ApiResponses.ApprenticeshipTypes>(source.ApprenticeshipType?.ToString()),
             ApprovedDate = source.ApprovedDate?.UtcDateTime,
-            ArchiveType = NullOrEnum<Recruit.Contracts.ApiResponses.ArchiveType>(source.ArchiveType?.ToString()),
+            ArchiveType = NullOrEnum<DAS.Recruit.Contracts.ApiResponses.ArchiveType>(source.ArchiveType?.ToString()),
             ArchivedDate = source.ArchivedDate?.UtcDateTime,
             ArchivedByUserId = source.ArchivedByUserId,
             CreatedDate = source.CreatedDate?.UtcDateTime,
             ClosedDate = source.ClosedDate?.UtcDateTime,
             ClosingDate = source.ClosingDate?.UtcDateTime,
-            ClosureReason = NullOrEnum<Recruit.Contracts.ApiResponses.ClosureReason>(source.ClosureReason?.ToString()),
+            ClosureReason = NullOrEnum<DAS.Recruit.Contracts.ApiResponses.ClosureReason>(source.ClosureReason?.ToString()),
             Contact = source is { ContactName: null, ContactEmail: null, ContactPhone: null }
                 ? null
-                : new Recruit.Contracts.ApiResponses.ContactDetail
+                : new DAS.Recruit.Contracts.ApiResponses.ContactDetail
                 {
                     Email = source.ContactEmail,
                     Name = source.ContactName!,
@@ -64,11 +67,11 @@ public static class GqlVacancyMapper
             EmployerLocationOption = MapEmployerLocationOption(source, employerLocations),
             EmployerLocations = employerLocations,
             EmployerName = source.EmployerName,
-            EmployerNameOption = NullOrEnum<Recruit.Contracts.ApiResponses.EmployerNameOption>(source.EmployerNameOption?.ToString()),
+            EmployerNameOption = NullOrEnum<DAS.Recruit.Contracts.ApiResponses.EmployerNameOption>(source.EmployerNameOption?.ToString()),
             EmployerRejectedReason = source.EmployerRejectedReason,
-            EmployerReviewFieldIndicators = DeserializeOrNull<List<Recruit.Contracts.ApiResponses.ReviewFieldIndicator>>(source.EmployerReviewFieldIndicators),
+            EmployerReviewFieldIndicators = DeserializeOrNull<List<DAS.Recruit.Contracts.ApiResponses.ReviewFieldIndicator>>(source.EmployerReviewFieldIndicators),
             EmployerWebsiteUrl = source.EmployerWebsiteUrl,
-            GeoCodeMethod = NullOrEnum<Recruit.Contracts.ApiResponses.GeoCodeMethod>(source.GeoCodeMethod?.ToString()),
+            GeoCodeMethod = NullOrEnum<DAS.Recruit.Contracts.ApiResponses.GeoCodeMethod>(source.GeoCodeMethod?.ToString()),
             HasChosenProviderContactDetails = source.HasChosenProviderContactDetails,
             HasOptedToAddQualifications = source.HasOptedToAddQualifications,
             HasSubmittedAdditionalQuestions = source.HasSubmittedAdditionalQuestions,
@@ -78,20 +81,20 @@ public static class GqlVacancyMapper
             LiveDate = source.LiveDate?.UtcDateTime,
             NumberOfPositions = source.NumberOfPositions,
             OutcomeDescription = source.OutcomeDescription,
-            OwnerType = Enum.Parse<Recruit.Contracts.ApiResponses.OwnerType>(source.OwnerType?.ToString()),
+            OwnerType = Enum.Parse<DAS.Recruit.Contracts.ApiResponses.OwnerType>(source.OwnerType?.ToString()),
             ProgrammeId = source.ProgrammeId,
-            ProviderReviewFieldIndicators = DeserializeOrNull<List<Recruit.Contracts.ApiResponses.ReviewFieldIndicator>>(source.ProviderReviewFieldIndicators),
-            Qualifications = DeserializeOrNull<List<Recruit.Contracts.ApiResponses.Qualification>>(source.Qualifications) ?? [],
+            ProviderReviewFieldIndicators = DeserializeOrNull<List<DAS.Recruit.Contracts.ApiResponses.ReviewFieldIndicator>>(source.ProviderReviewFieldIndicators),
+            Qualifications = DeserializeOrNull<List<DAS.Recruit.Contracts.ApiResponses.Qualification>>(source.Qualifications) ?? [],
             ReviewCount = source.ReviewCount,
             ReviewRequestedByUserId = source.ReviewRequestedByUserId,
             ReviewRequestedDate = source.ReviewRequestedDate?.UtcDateTime,
             ShortDescription = source.ShortDescription,
             Skills = DeserializeOrNull<List<string>>(source.Skills) ?? [],
-            SourceOrigin = NullOrEnum<Recruit.Contracts.ApiResponses.SourceOrigin>(source.SourceOrigin?.ToString()),
-            SourceType = NullOrEnum<Recruit.Contracts.ApiResponses.SourceType>(source.SourceType?.ToString()),
+            SourceOrigin = NullOrEnum<DAS.Recruit.Contracts.ApiResponses.SourceOrigin>(source.SourceOrigin?.ToString()),
+            SourceType = NullOrEnum<DAS.Recruit.Contracts.ApiResponses.SourceType>(source.SourceType?.ToString()),
             SourceVacancyReference = source.SourceVacancyReference,
             StartDate = source.StartDate?.UtcDateTime,
-            Status = Enum.Parse<Recruit.Contracts.ApiResponses.VacancyStatus>(source.Status.ToString()),
+            Status = Enum.Parse<DAS.Recruit.Contracts.ApiResponses.VacancyStatus>(source.Status.ToString()),
             SubmittedByUserId = source.SubmittedByUserId,
             SubmittedDate = source.SubmittedDate?.UtcDateTime,
             ThingsToConsider = source.ThingsToConsider,
@@ -99,17 +102,17 @@ public static class GqlVacancyMapper
             TrainingDescription = source.TrainingDescription,
             TrainingProvider = source.Ukprn is null
                 ? null
-                : new Recruit.Contracts.ApiResponses.TrainingProvider
+                : new DAS.Recruit.Contracts.ApiResponses.TrainingProvider
                 {
                     Ukprn = source.Ukprn,
                     Name = source.TrainingProvider_Name!,
-                    Address = DeserializeOrNull<Recruit.Contracts.ApiResponses.TrainingProviderAddress>(source.TrainingProvider_Address)!,
+                    Address = DeserializeOrNull<DAS.Recruit.Contracts.ApiResponses.TrainingProviderAddress>(source.TrainingProvider_Address)!,
                 },
-            TransferInfo = DeserializeOrNull<Recruit.Contracts.ApiResponses.TransferInfo>(source.TransferInfo),
+            TransferInfo = DeserializeOrNull<DAS.Recruit.Contracts.ApiResponses.TransferInfo>(source.TransferInfo),
             VacancyReference = source.VacancyReference,
             Wage = source.Wage_WageType is null && source.Wage_DurationUnit is null
                 ? null
-                : new Recruit.Contracts.ApiResponses.Wage
+                : new DAS.Recruit.Contracts.ApiResponses.Wage
                 {
                     CompanyBenefitsInformation = source.Wage_CompanyBenefitsInformation,
                     Duration = source.Wage_Duration,
@@ -123,31 +126,31 @@ public static class GqlVacancyMapper
         };
     }
 
-    private static Recruit.Contracts.ApiResponses.WageType? GetWageType(IAllVacancyFields source)
+    private static DAS.Recruit.Contracts.ApiResponses.WageType? GetWageType(IAllVacancyFields source)
     {
         if (source.Wage_WageType == null)
         {
             return null;
         }
 
-        return Enum.Parse<Recruit.Contracts.ApiResponses.WageType>(source.Wage_WageType.ToString()!);
+        return Enum.Parse<DAS.Recruit.Contracts.ApiResponses.WageType>(source.Wage_WageType.ToString()!);
     }
 
-    private static Recruit.Contracts.ApiResponses.DurationUnit? GetDurationUnit(IAllVacancyFields source)
+    private static DAS.Recruit.Contracts.ApiResponses.DurationUnit? GetDurationUnit(IAllVacancyFields source)
     {
         if (source.Wage_DurationUnit == null)
         {
             return null;
         }
 
-        return Enum.Parse<Recruit.Contracts.ApiResponses.DurationUnit>(source.Wage_DurationUnit.ToString()!);
+        return Enum.Parse<DAS.Recruit.Contracts.ApiResponses.DurationUnit>(source.Wage_DurationUnit.ToString()!);
     }
 
-    private static Recruit.Contracts.ApiResponses.AvailableWhere? MapEmployerLocationOption(IAllVacancyFields source, List<Recruit.Contracts.ApiResponses.Address> employerLocations)
+    private static DAS.Recruit.Contracts.ApiResponses.AvailableWhere? MapEmployerLocationOption(IAllVacancyFields source, List<DAS.Recruit.Contracts.ApiResponses.Address> employerLocations)
     {
         if (source is { EmployerLocationOption: not null })
         {
-            return NullOrEnum<Recruit.Contracts.ApiResponses.AvailableWhere>(source.EmployerLocationOption.ToString());
+            return NullOrEnum<DAS.Recruit.Contracts.ApiResponses.AvailableWhere>(source.EmployerLocationOption.ToString());
         }
 
         return source.Status switch
@@ -158,9 +161,9 @@ public static class GqlVacancyMapper
             // field should be set by now, so guesstimate it based on the locations
             _ => employerLocations switch
             {
-                { Count: 1 } => Recruit.Contracts.ApiResponses.AvailableWhere.OneLocation,
-                { Count: > 1 } => Recruit.Contracts.ApiResponses.AvailableWhere.MultipleLocations,
-                _ => Recruit.Contracts.ApiResponses.AvailableWhere.AcrossEngland
+                { Count: 1 } => DAS.Recruit.Contracts.ApiResponses.AvailableWhere.OneLocation,
+                { Count: > 1 } => DAS.Recruit.Contracts.ApiResponses.AvailableWhere.MultipleLocations,
+                _ => DAS.Recruit.Contracts.ApiResponses.AvailableWhere.AcrossEngland
             }
         };
     }

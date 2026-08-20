@@ -33,33 +33,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="10.0.9" />
-    <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.111-prerelease-3" />
-    <PackageReference Include="StrawberryShake.Blazor" Version="16.3.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <GraphQL Update="GraphQL\RecruitInner\Queries\GetVacancyByReference.graphql">
-      <Generator>MSBuild:GenerateGraphQLCode</Generator>
-    </GraphQL>
-    <GraphQL Update="GraphQL\Inner\Recruit\schema.graphql">
-      <Generator>MSBuild:GenerateGraphQLCode</Generator>
-    </GraphQL>
-    <GraphQL Update="GraphQL\Inner\Recruit\schema.extensions.graphql">
-      <Generator>MSBuild:GenerateGraphQLCode</Generator>
-    </GraphQL>
-    <GraphQL Update="GraphQL\RecruitInner\Queries\GetProviderTransferableVacancies.graphql">
-      <Generator>MSBuild:GenerateGraphQLCode</Generator>
-    </GraphQL>
-    <GraphQL Update="GraphQL\RecruitInner\Queries\GetProviderTransferableVacancyDetails.graphql">
-      <Generator>MSBuild:GenerateGraphQLCode</Generator>
-    </GraphQL>
-    <GraphQL Update="GraphQL\RecruitInner\schema.extensions.graphql">
-      <Generator>MSBuild:GenerateGraphQLCode</Generator>
-    </GraphQL>
-    <GraphQL Update="GraphQL\RecruitInner\schema.graphql">
-      <Generator>MSBuild:GenerateGraphQLCode</Generator>
-    </GraphQL>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="obj\Debug\net8.0\berry\" />
+    <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.113-prerelease-8" />
   </ItemGroup>
 </Project>
