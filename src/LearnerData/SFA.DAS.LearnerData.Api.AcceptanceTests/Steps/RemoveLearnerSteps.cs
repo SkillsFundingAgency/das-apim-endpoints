@@ -1,6 +1,5 @@
 using FluentAssertions;
 using SFA.DAS.Apim.Shared.Infrastructure;
-using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.Net;
 using TechTalk.SpecFlow;
 using WireMock.RequestBuilders;
@@ -49,8 +48,8 @@ internal class RemoveLearnerSteps(TestContext testContext, ScenarioContext scena
         var learningKey = scenarioContext.Get<Guid>(LearnerKey);
         var ukprn = scenarioContext.Get<long>(UkprnKey);
 
-        var responseBody = new NullResponse();
-        
+        var responseBody = new List<Guid> { learningKey };
+
         testContext.ApprenticeshipsApi.MockServer
             .Given(
                 Request.Create()

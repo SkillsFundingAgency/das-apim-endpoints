@@ -6,7 +6,6 @@ using SFA.DAS.LearnerData.Requests.LearningInner;
 using System.Net;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
@@ -45,11 +44,11 @@ public class WhenHandlingRemoveLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<RemoveLearnerCommand>();
-        var startDate = DateTime.UtcNow;
+        var removedLearningKeys = _fixture.CreateMany<Guid>(2).ToList();
 
-        _learningApiClient.Setup(x => x.DeleteWithResponseCode<NullResponse>(
+        _learningApiClient.Setup(x => x.DeleteWithResponseCode<List<Guid>>(
                 It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearningKey == command.LearningKey), It.IsAny<bool>()))
-            .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
+            .ReturnsAsync(new ApiResponse<List<Guid>>(removedLearningKeys, HttpStatusCode.OK, ""));
 
         _earningsApiClient.Setup(x => x.DeleteWithResponseCode<NullResponse>(
                 It.IsAny<DeleteLearningRequest>(), false))
@@ -59,11 +58,11 @@ public class WhenHandlingRemoveLearnerCommand
         await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        _learningApiClient.Verify(x => x.DeleteWithResponseCode<NullResponse>(
-            It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearningKey == command.LearningKey && r.Ukprn == command.Ukprn), It.IsAny<bool>()), Times.Once);
+        _learningApiClient.Verify(x => x.DeleteWithResponseCode<List<Guid>>(
+            It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearningKey == command.LearningKey && r.Ukprn == command.Ukprn && r.AcademicYear == command.AcademicYear), It.IsAny<bool>()), Times.Once);
 
         _earningsApiClient.Verify(x => x.DeleteWithResponseCode<NullResponse>(
-            It.Is<DeleteLearningRequest>(r => r.LearningKey == command.LearningKey), false), Times.Once());
+            It.Is<DeleteLearningRequest>(r => removedLearningKeys.Contains(r.LearningKey)), false), Times.Exactly(removedLearningKeys.Count));
     }
 
     [Test]
@@ -72,9 +71,9 @@ public class WhenHandlingRemoveLearnerCommand
         // Arrange
         var command = _fixture.Create<RemoveLearnerCommand>();
 
-        _learningApiClient.Setup(x => x.DeleteWithResponseCode<NullResponse>(
+        _learningApiClient.Setup(x => x.DeleteWithResponseCode<List<Guid>>(
                 It.IsAny<RemoveLearnerApiDeleteRequest>(), It.IsAny<bool>()))
-            .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.InternalServerError, ""));
+            .ReturnsAsync(new ApiResponse<List<Guid>>(null, HttpStatusCode.InternalServerError, ""));
 
         // Act & Assert
         Assert.ThrowsAsync<Exception>(async () => await _sut.Handle(command, CancellationToken.None));
@@ -85,15 +84,29 @@ public class WhenHandlingRemoveLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<RemoveLearnerCommand>();
-        var startDate = DateTime.UtcNow;
+        var removedLearningKeys = _fixture.CreateMany<Guid>(2).ToList();
 
-        _learningApiClient.Setup(x => x.DeleteWithResponseCode<NullResponse>(
+        _learningApiClient.Setup(x => x.DeleteWithResponseCode<List<Guid>>(
                 It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearningKey == command.LearningKey), It.IsAny<bool>()))
-            .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
+            .ReturnsAsync(new ApiResponse<List<Guid>>(removedLearningKeys, HttpStatusCode.OK, ""));
 
         _earningsApiClient.Setup(x => x.DeleteWithResponseCode<NullResponse>(
                 It.IsAny<DeleteLearningRequest>(), false))
             .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.InternalServerError, ""));
+
+        // Act & Assert
+        Assert.ThrowsAsync<Exception>(async () => await _sut.Handle(command, CancellationToken.None));
+    }
+
+    [Test]
+    public void Then_Throws_If_Learning_Response_Body_Is_Null()
+    {
+        // Arrange
+        var command = _fixture.Create<RemoveLearnerCommand>();
+
+        _learningApiClient.Setup(x => x.DeleteWithResponseCode<List<Guid>>(
+                It.IsAny<RemoveLearnerApiDeleteRequest>(), It.IsAny<bool>()))
+            .ReturnsAsync(new ApiResponse<List<Guid>>(null, HttpStatusCode.OK, ""));
 
         // Act & Assert
         Assert.ThrowsAsync<Exception>(async () => await _sut.Handle(command, CancellationToken.None));

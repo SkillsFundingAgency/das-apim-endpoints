@@ -118,7 +118,8 @@ public class LearnersController(
             var command = new RemoveLearnerCommand
             {
                 LearningKey = learningKey,
-                Ukprn = ukprn
+                Ukprn = ukprn,
+                AcademicYear = academicyear
             };
 
             await mediator.Send(command);

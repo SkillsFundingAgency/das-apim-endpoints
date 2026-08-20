@@ -4,7 +4,6 @@ using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.LearnerData.Requests.LearningInner;
-using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
@@ -14,6 +13,7 @@ public class RemoveLearnerCommand : IRequest
 {
     public Guid LearningKey { get; set; }
     public long Ukprn { get; set; }
+    public int AcademicYear { get; set; }
 }
 
 public class RemoveLearnerCommandHandler(
@@ -26,23 +26,31 @@ public class RemoveLearnerCommandHandler(
     {
         logger.LogInformation("Removing learner with key {LearningKey}", command.LearningKey);
 
-        var removeRequest = new RemoveLearnerApiDeleteRequest(command.LearningKey, command.Ukprn);
+        var removeRequest = new RemoveLearnerApiDeleteRequest(command.LearningKey, command.Ukprn, command.AcademicYear);
 
-        var response = await learningApiClient.DeleteWithResponseCode<NullResponse>(removeRequest);
+        var response = await learningApiClient.DeleteWithResponseCode<List<Guid>>(removeRequest, true);
 
         if (!response.StatusCode.IsSuccessStatusCode())
         {
             throw new Exception($"Failed to remove learner with key {command.LearningKey}. Status code: {response.StatusCode}.");
         }
 
-        var deleteLearningRequest = new DeleteLearningRequest(command.LearningKey);
-        var earningsResponse = await earningsApiClient.DeleteWithResponseCode<NullResponse>(deleteLearningRequest);
-
-        if (!earningsResponse.StatusCode.IsSuccessStatusCode())
+        if (response.Body == null)
         {
-            throw new Exception($"Failed to withdraw learner from earnings with key {command.LearningKey}. Status code: {earningsResponse.StatusCode}.");
+            throw new Exception($"Failed to remove learner with key {command.LearningKey}. Learning response body was null.");
         }
 
-        logger.LogInformation("Learner with key {LearningKey} removed and withdrawn in earnings successfully", command.LearningKey);
+        foreach (var learningKey in response.Body)
+        {
+            var deleteLearningRequest = new DeleteLearningRequest(learningKey);
+            var earningsResponse = await earningsApiClient.DeleteWithResponseCode<NullResponse>(deleteLearningRequest);
+
+            if (!earningsResponse.StatusCode.IsSuccessStatusCode())
+            {
+                throw new Exception($"Failed to withdraw learning from earnings with key {learningKey}. Status code: {earningsResponse.StatusCode}.");
+            }
+        }
+
+        logger.LogInformation("Learner with key {LearningKey} removed and all learnings withdrawn in earnings successfully", command.LearningKey);
     }
 }

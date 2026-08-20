@@ -18,12 +18,13 @@ public class WhenRemovingALearner
     public async Task And_when_successful_Then_NoContent_returned(
         Guid learningKey,
         long ukprn,
+        int academicyear,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] Mock<ILogger<LearnersController>> mockLogger,
         [Greedy] LearnersController sut)
     {
         // Act
-        var result = await sut.RemoveLearner(ukprn, learningKey) as NoContentResult;
+        var result = await sut.RemoveLearner(ukprn, learningKey, academicyear) as NoContentResult;
 
         // Assert
         result!.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
@@ -31,7 +32,8 @@ public class WhenRemovingALearner
         mockMediator.Verify(x => x.Send(
             It.Is<RemoveLearnerCommand>(c =>
                 c.LearningKey == learningKey &&
-                c.Ukprn == ukprn), It.IsAny<CancellationToken>()), Times.Once);
+                c.Ukprn == ukprn &&
+                c.AcademicYear == academicyear), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test, MoqAutoData]
