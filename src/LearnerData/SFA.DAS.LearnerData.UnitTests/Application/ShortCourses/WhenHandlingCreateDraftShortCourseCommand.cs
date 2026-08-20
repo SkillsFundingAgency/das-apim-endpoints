@@ -81,7 +81,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
         {
             Learner = new ShortCourseLearnerRequestDetails
             {
-                LearnerRef = _learnerRef,
+                LearnerRef = _learnerRef
             },
             Delivery = new ShortCourseDelivery
             {
@@ -530,6 +530,28 @@ public class WhenHandlingCreateDraftShortCourseCommand
                     r.LearningKey == removedLearningKey && r.EpisodeKey == removedEpisodeKey),
                 It.IsAny<bool>()),
             Times.Once);
+    }
+
+    [Test]
+    public async Task Then_When_Learner_Has_Temporary_Uln_Processing_Is_Skipped()
+    {
+        // Arrange
+        _shortCourseRequest.Learner.Uln = 9999999999;
+
+        // Act
+        var result = await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        Assert.That(result, Is.Not.Null);
+        result.CorrelationId.Should().Be(Guid.Empty);
+        _learnerDataCacheService.Verify(x =>
+            x.StoreLearner(It.IsAny<ShortCourseRequest>(), It.IsAny<long>(), It.IsAny<CancellationToken>()),
+            Times.Never);
+        _learningApiClient.Verify(x =>
+            x.PostWithResponseCode<CreateDraftShortCoursePostResponse>(It.IsAny<CreateDraftShortCourseApiPostRequest>()),
+            Times.Never);
+        _earningsApiClient.Verify(x => x.Post(It.IsAny<PostCreateUnapprovedShortCourseLearningRequest>()), Times.Never);
+        _messageSession.Verify(x => x.Publish(It.IsAny<LearnerDataEvent>(), It.IsAny<PublishOptions>()), Times.Never);
     }
 
     private void SetupReinstatedLearningResponse()
