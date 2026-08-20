@@ -82,15 +82,15 @@ public class LearnersController(
     }
 
     [HttpPut]
-    [Route("/providers/{ukprn}/learning/{learningKey}")]
-    [Route("/providers/{ukprn}/apprenticeships/{learningKey}")]
-    public async Task<IActionResult> UpdateLearner([FromRoute] long ukprn, [FromRoute] Guid learningKey, [FromBody] UpdateLearnerRequest request, [FromQuery] int academicyear = 2526, [FromQuery] int collectionPeriod = 0)
+    [Route("/providers/{ukprn}/learning/{learnerKey}")]
+    [Route("/providers/{ukprn}/apprenticeships/{learnerKey}")]
+    public async Task<IActionResult> UpdateLearner([FromRoute] long ukprn, [FromRoute] Guid learnerKey, [FromBody] UpdateLearnerRequest request, [FromQuery] int academicyear = 2526, [FromQuery] int collectionPeriod = 0)
     {
         try
         {
             await mediator.Send(new UpdateLearnerCommand
             {
-                LearningKey = learningKey,
+                LearnerKey = learnerKey,
                 UpdateLearnerRequest = request,
                 Ukprn = ukprn
             });
@@ -98,7 +98,7 @@ public class LearnersController(
         }
         catch (Exception e)
         {
-            logger.LogError(e, $"Internal error occurred when updating learner {learningKey}");
+            logger.LogError(e, $"Internal error occurred when updating learner {learnerKey}");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }

@@ -9,9 +9,9 @@ namespace SFA.DAS.LearnerData.Requests.LearningInner
 
         public UpdateLearningRequestBody Data { get; set; }
 
-        public UpdateLearningApiPutRequest(Guid learningKey, UpdateLearningRequestBody data)
+        public UpdateLearningApiPutRequest(long ukprn, Guid learnerKey, UpdateLearningRequestBody data)
         {
-            PutUrl = learningKey.ToString();
+            PutUrl = $"{ukprn}/{learnerKey}";
             Data = data;
         }
     }
