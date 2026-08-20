@@ -48,6 +48,7 @@ public class TransferProviderVacancyToLegalEntityHandler(
             case GraphQL.VacancyStatus.Draft:
             case GraphQL.VacancyStatus.Referred:
             case GraphQL.VacancyStatus.Closed:
+            case GraphQL.VacancyStatus.Archived:
                 break;
             case GraphQL.VacancyStatus.Submitted:
                 var vacancyReviews = await recruitApiClient.Get<List<VacancyReview>>(
