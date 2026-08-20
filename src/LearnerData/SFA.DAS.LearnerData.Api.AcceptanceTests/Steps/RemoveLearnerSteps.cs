@@ -45,15 +45,15 @@ internal class RemoveLearnerSteps(TestContext testContext, ScenarioContext scena
 
     private void ConfigureRemoveLearningApi()
     {
-        var learningKey = scenarioContext.Get<Guid>(LearnerKey);
+        var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
         var ukprn = scenarioContext.Get<long>(UkprnKey);
 
-        var responseBody = new List<Guid> { learningKey };
+        var responseBody = new List<Guid> { learnerKey };
 
         testContext.ApprenticeshipsApi.MockServer
             .Given(
                 Request.Create()
-                    .WithPath($"/{ukprn}/{learningKey}")
+                    .WithPath($"/{ukprn}/{learnerKey}")
                     .UsingDelete()
             )
             .RespondWith(

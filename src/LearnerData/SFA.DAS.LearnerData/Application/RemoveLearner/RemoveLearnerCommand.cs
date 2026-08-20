@@ -11,7 +11,7 @@ namespace SFA.DAS.LearnerData.Application.RemoveLearner;
 
 public class RemoveLearnerCommand : IRequest
 {
-    public Guid LearningKey { get; set; }
+    public Guid LearnerKey { get; set; }
     public long Ukprn { get; set; }
     public int AcademicYear { get; set; }
 }
@@ -24,20 +24,20 @@ public class RemoveLearnerCommandHandler(
 {
     public async Task Handle(RemoveLearnerCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Removing learner with key {LearningKey}", command.LearningKey);
+        logger.LogInformation("Removing learner with key {LearnerKey}", command.LearnerKey);
 
-        var removeRequest = new RemoveLearnerApiDeleteRequest(command.LearningKey, command.Ukprn, command.AcademicYear);
+        var removeRequest = new RemoveLearnerApiDeleteRequest(command.LearnerKey, command.Ukprn, command.AcademicYear);
 
         var response = await learningApiClient.DeleteWithResponseCode<List<Guid>>(removeRequest, true);
 
         if (!response.StatusCode.IsSuccessStatusCode())
         {
-            throw new Exception($"Failed to remove learner with key {command.LearningKey}. Status code: {response.StatusCode}.");
+            throw new Exception($"Failed to remove learner with key {command.LearnerKey}. Status code: {response.StatusCode}.");
         }
 
         if (response.Body == null)
         {
-            throw new Exception($"Failed to remove learner with key {command.LearningKey}. Learning response body was null.");
+            throw new Exception($"Failed to remove learner with key {command.LearnerKey}. Learning response body was null.");
         }
 
         foreach (var learningKey in response.Body)
@@ -51,6 +51,6 @@ public class RemoveLearnerCommandHandler(
             }
         }
 
-        logger.LogInformation("Learner with key {LearningKey} removed and all learnings withdrawn in earnings successfully", command.LearningKey);
+        logger.LogInformation("Learner with key {LearnerKey} removed and all learnings withdrawn in earnings successfully", command.LearnerKey);
     }
 }

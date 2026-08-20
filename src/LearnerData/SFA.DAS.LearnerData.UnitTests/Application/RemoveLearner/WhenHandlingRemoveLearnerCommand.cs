@@ -47,7 +47,7 @@ public class WhenHandlingRemoveLearnerCommand
         var removedLearningKeys = _fixture.CreateMany<Guid>(2).ToList();
 
         _learningApiClient.Setup(x => x.DeleteWithResponseCode<List<Guid>>(
-                It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearningKey == command.LearningKey), It.IsAny<bool>()))
+                It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearnerKey == command.LearnerKey), It.IsAny<bool>()))
             .ReturnsAsync(new ApiResponse<List<Guid>>(removedLearningKeys, HttpStatusCode.OK, ""));
 
         _earningsApiClient.Setup(x => x.DeleteWithResponseCode<NullResponse>(
@@ -59,7 +59,7 @@ public class WhenHandlingRemoveLearnerCommand
 
         // Assert
         _learningApiClient.Verify(x => x.DeleteWithResponseCode<List<Guid>>(
-            It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearningKey == command.LearningKey && r.Ukprn == command.Ukprn && r.AcademicYear == command.AcademicYear), It.IsAny<bool>()), Times.Once);
+            It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearnerKey == command.LearnerKey && r.Ukprn == command.Ukprn && r.AcademicYear == command.AcademicYear), It.IsAny<bool>()), Times.Once);
 
         _earningsApiClient.Verify(x => x.DeleteWithResponseCode<NullResponse>(
             It.Is<DeleteLearningRequest>(r => removedLearningKeys.Contains(r.LearningKey)), false), Times.Exactly(removedLearningKeys.Count));
@@ -87,7 +87,7 @@ public class WhenHandlingRemoveLearnerCommand
         var removedLearningKeys = _fixture.CreateMany<Guid>(2).ToList();
 
         _learningApiClient.Setup(x => x.DeleteWithResponseCode<List<Guid>>(
-                It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearningKey == command.LearningKey), It.IsAny<bool>()))
+                It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearnerKey == command.LearnerKey), It.IsAny<bool>()))
             .ReturnsAsync(new ApiResponse<List<Guid>>(removedLearningKeys, HttpStatusCode.OK, ""));
 
         _earningsApiClient.Setup(x => x.DeleteWithResponseCode<NullResponse>(
