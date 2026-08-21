@@ -125,7 +125,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     {
         var changes = scenarioContext.Get<List<UpdateLearnerApiPutResponse.LearningUpdateChanges>>(ChangesKey);
         var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
-
+        var ukprn = scenarioContext.Get<long>(UkprnKey);
 
         var response = new UpdateLearnerApiPutResponse();
         if (changes.Any())
@@ -137,13 +137,15 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         .Given(
             Request
             .Create()
-            .WithPath($"/{learnerKey}")
+            .WithPath($"/{ukprn}/{learnerKey}")
             .UsingPut())
         .RespondWith(
             Response.Create()
             .WithStatusCode(HttpStatusCode.OK)
             .WithBodyAsJson(response)
         );
+
+        scenarioContext.Set(response);
     }
 
     private void ConfigureEarningsInnerApiToRespondeOkToEverything()
@@ -175,16 +177,16 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
 
     private string GetEarningsRequestUrl(string updateRequestType)
     {
-        var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
+        var learningKey = scenarioContext.Get<UpdateLearnerApiPutResponse>().LearningKey;
 
         switch (updateRequestType)
         {
             case "on-programme":
-                return $"learning/{learnerKey.ToString()}/on-programme";
+                return $"learning/{learningKey.ToString()}/on-programme";
             case "learning-support":
-                return $"learning/{learnerKey.ToString()}/learning-support";
+                return $"learning/{learningKey.ToString()}/learning-support";
             case "english-and-maths":
-                return $"learning/{learnerKey.ToString()}/english-and-maths";
+                return $"learning/{learningKey.ToString()}/english-and-maths";
             default:
                 throw new ArgumentOutOfRangeException(nameof(updateRequestType), updateRequestType, null);
         }
