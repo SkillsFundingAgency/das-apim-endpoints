@@ -135,7 +135,6 @@ public class UpdateShortCourseSteps
             [
                 new UpdateShortCourseLearningPutResponse
                 {
-                    UpdatedEpisodeKey = updatedEpisodeKey,
                     LearningKey = learningKey,
                     LearnerKey = learningKey,
                     Changes = changes.Select(x => x.ToString()).ToArray(),
@@ -146,7 +145,7 @@ public class UpdateShortCourseSteps
                         LastName = shortCourseRequest.Learner.LastName,
                         DateOfBirth = shortCourseRequest.Learner.Dob,
                     },
-                    Episodes = [new LearningInnerShortCourseEpisode
+                    Episode = new LearningInnerShortCourseEpisode
                     {
                         EpisodeKey = updatedEpisodeKey,
                         Ukprn = ukprn,
@@ -165,7 +164,7 @@ public class UpdateShortCourseSteps
                         Price = 1000m,
                         LearnerRef = "LearnerRef",
                         EmployerType = EmployerType.Levy.ToString()
-                    }]
+                    }
                 }
             ]
         };
