@@ -34,7 +34,7 @@ public class GetApprenticeshipsQueryHandler(
 
         var apprenticeShips = mapper.Map<GetApprenticeshipsQueryResult>(apprenticeshipResponse.Body);
         apprenticeShips.ApprenticeshipFiltersValue = filtersResponse.StatusCode == HttpStatusCode.NotFound ? new GetApprenticeshipsFilterValuesQueryResult() :
-            mapper.Map<GetApprenticeshipsFilterValuesQueryResult>(filtersResponse.Body);
+          mapper.Map<GetApprenticeshipsFilterValuesQueryResult>(filtersResponse.Body);
         return apprenticeShips;
     }
 }
