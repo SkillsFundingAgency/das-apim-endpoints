@@ -39,6 +39,11 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies.SaveVacanc
 
             response.EnsureSuccessStatusCode();
 
+            if ((int)response.StatusCode > 300)
+            {
+                throw new InvalidOperationException();
+            }
+
             metrics.IncreaseVacancySaved(vacancyReference);
 
             return response.Body;
