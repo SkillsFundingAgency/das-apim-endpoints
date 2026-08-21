@@ -115,8 +115,8 @@ public class GetProviderRelationshipServiceTests
                          CourseType = "Apprenticeship",
                          Courses =
                          [
-                              new() {  EffectiveFrom = new DateTime(2026, 1, 1) , EffectiveTo = null, LarsCode = "805"   },
-                              new() {  EffectiveFrom = new DateTime(2026, 1, 1) , EffectiveTo = null, LarsCode = "806"   }
+                              new() {  EffectiveFrom = new DateTime(2026, 1, 1) , EffectiveTo = null, LarsCode = "805", LastDateStarts = new DateTime(2026, 4, 1)   },
+                              new() {  EffectiveFrom = new DateTime(2026, 1, 1) , EffectiveTo = null, LarsCode = "806", LastDateStarts = new DateTime(2026, 4, 1)   }
                          ]
                     },
                      new()
@@ -141,7 +141,7 @@ public class GetProviderRelationshipServiceTests
         details.Should().NotBeNull();
         details.CourseTypes.Should().NotBeNull();
         details.CourseTypes.Should().BeEquivalentTo(CoursesForProvider.CourseTypes);
-        details.CourseTypes.Should().ContainSingle(t => t.CourseType == "Apprenticeship" && t.Courses.Any(k => k.EffectiveTo == null && k.LarsCode == "806" && k.EffectiveFrom == new DateTime(2026, 1, 1)));
+        details.CourseTypes.Should().ContainSingle(t => t.CourseType == "Apprenticeship" && t.Courses.Any(k => k.EffectiveTo == null && k.LarsCode == "806" && k.EffectiveFrom == new DateTime(2026, 1, 1) && k.LastDateStarts == new DateTime(2026, 4, 1)));
         details.CourseTypes.Should().ContainSingle(t => t.CourseType == "ShortCourse" && t.Courses.Any(k => k.EffectiveTo == null && k.LarsCode == "ZSC00001" && k.EffectiveFrom == new DateTime(2026, 4, 1)));
 
         roatpClient.Verify(client => client.Get<GetCourseLevelsListResponse>(It.IsAny<GetCoursesForProviderRequest>()), Times.Never);
