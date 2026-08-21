@@ -25,6 +25,8 @@ using SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprenticeships;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprenticeshipsCSV;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprenticeshipUpdates;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetSelectNewEmployer;
+using SFA.DAS.Approvals.Application.InvalidIlrChanges.Commands;
+using SFA.DAS.Approvals.Application.InvalidIlrChanges.Queries;
 using SFA.DAS.Approvals.Exceptions;
 
 namespace SFA.DAS.Approvals.Api.Controllers;
@@ -718,6 +720,59 @@ public class ApprenticesController(
         catch (Exception e)
         {
             logger.LogError(e, $"Error in GetApprenticeship {apprenticeshipId}");
+            return BadRequest();
+        }
+    }
+
+    [HttpGet]
+    [Route("/{providerId:long}/apprentices/{apprenticeshipId:long}/invalid-ilr-changes")]
+    public async Task<IActionResult> GetInvalidIlrChanges(long providerId, long apprenticeshipId)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetInvalidIlrChangesQuery(providerId, apprenticeshipId));
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+        catch (ResourceNotFoundException exception)
+        {
+            logger.LogError(exception, "Invalid ILR changes not found for apprenticeship {ApprenticeshipId}", apprenticeshipId);
+            return NotFound();
+        }
+        catch (UnauthorizedAccessException exception)
+        {
+            logger.LogError(exception, "Permission denied when accessing invalid ILR changes for apprenticeship {ApprenticeshipId}", apprenticeshipId);
+            return Unauthorized();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Error getting invalid ILR changes for apprenticeship {ApprenticeshipId}", apprenticeshipId);
+            return BadRequest();
+        }
+    }
+
+    [HttpPost]
+    [Route("/{providerId:long}/apprentices/{apprenticeshipId:long}/invalid-ilr-changes")]
+    public async Task<IActionResult> AcknowledgeInvalidIlrChanges(long providerId, long apprenticeshipId, [FromBody] AcknowledgeInvalidIlrChangesApiRequest request)
+    {
+        try
+        {
+            await mediator.Send(new AcknowledgeInvalidIlrChangesCommand
+            {
+                ProviderId = providerId,
+                ApprenticeshipId = apprenticeshipId,
+                UserInfo = request.UserInfo,
+                Acknowledgements = request.Acknowledgements
+            });
+            return Ok();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Error acknowledging invalid ILR changes for apprenticeship {ApprenticeshipId}", apprenticeshipId);
             return BadRequest();
         }
     }
