@@ -201,6 +201,7 @@ public class UpdateLearningRequestBodyBuilderTests
             Mock.Of<ICostsService>());
 
         // Act
+        var actualRequestBody = sut.Build(10005077, createRequest, 2526);
         var actualRequestBody = sut.Build(10005077, createRequest, LearningType.Apprenticeship);
 
         // Assert
@@ -213,6 +214,7 @@ public class UpdateLearningRequestBodyBuilderTests
         actualRequestBody.Learner.Care.IsCareLeaver.Should().BeTrue();
         actualRequestBody.Learner.Care.CareLeaverEmployerConsentGiven.Should().BeTrue();
         actualRequestBody.Delivery.TrainingCode.Should().Be("123");
+        actualRequestBody.AcademicYear.Should().Be(2526);
         actualRequestBody.Delivery.LearningType.Should().Be(LearningType.Apprenticeship);
     }
 

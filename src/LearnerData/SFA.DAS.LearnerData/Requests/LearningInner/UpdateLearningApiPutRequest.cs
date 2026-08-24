@@ -19,6 +19,7 @@ namespace SFA.DAS.LearnerData.Requests.LearningInner
 
     public class UpdateLearningRequestBody
     {
+        public int AcademicYear { get; set; }
         public Delivery Delivery { get; set; }
         public LearningUpdateDetails Learner { get; set; }
         public List<MathsAndEnglishDetails> EnglishAndMathsCourses { get; set; }

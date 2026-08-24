@@ -67,10 +67,11 @@ public class LearnersController(
             var correlationId = Guid.NewGuid();
             await mediator.Send(new CreateLearnerCommand
             {
-                CorrelationId = correlationId, 
-                ReceivedOn = DateTime.Now, 
+                CorrelationId = correlationId,
+                ReceivedOn = DateTime.Now,
                 Request = dataRequest,
-                Ukprn = ukprn
+                Ukprn = ukprn,
+                AcademicYear = academicYear
             });
             return Accepted(new CorrelationResponse {CorrelationId = correlationId});
         }
