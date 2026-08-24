@@ -56,8 +56,9 @@ public class WhenHandlingUpdateLearnerCommand
     {
         //Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var apiPutRequest = MockLearningPutRequestBuilder(command);
+
         MockLearningApiResponse();
+        var apiPutRequest = MockLearningPutRequestBuilder(command);
 
         //Act
         await _sut.Handle(command, CancellationToken.None);
@@ -100,7 +101,6 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var apiPutRequest = MockLearningPutRequestBuilder(command);
 
         var updateOnProgPutRequest = _fixture.Create<UpdateOnProgrammeApiPutRequest>();
 
@@ -108,10 +108,11 @@ public class WhenHandlingUpdateLearnerCommand
         updateLearningApiResponse.Changes.Clear();
         updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate); // on-prog change
 
-        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.LearningKey, command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data))
-            .ReturnsAsync(updateOnProgPutRequest);
-
         MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
+        var apiPutRequest = MockLearningPutRequestBuilder(command);
+
+        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data))
+            .ReturnsAsync(updateOnProgPutRequest);
 
         _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
             .Returns(Task.CompletedTask);
@@ -132,7 +133,6 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var apiPutRequest = MockLearningPutRequestBuilder(command);
 
         var updateLearningSupportApiPutRequest = _fixture.Create<UpdateLearningSupportApiPutRequest>();
 
@@ -140,10 +140,11 @@ public class WhenHandlingUpdateLearnerCommand
         updateLearningApiResponse.Changes.Clear();
         updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport); // LSF change
 
-        _updateEarningsLearningSupportRequestBuilder.Setup(x => x.Build(command, updateLearningApiResponse, apiPutRequest))
-            .Returns(updateLearningSupportApiPutRequest);
-
         MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
+        var apiPutRequest = MockLearningPutRequestBuilder(command);
+
+        _updateEarningsLearningSupportRequestBuilder.Setup(x => x.Build(updateLearningApiResponse, apiPutRequest))
+            .Returns(updateLearningSupportApiPutRequest);
 
         _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateLearningSupportApiPutRequest>()))
             .Returns(Task.CompletedTask);
@@ -164,7 +165,6 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var apiPutRequest = MockLearningPutRequestBuilder(command);
 
         var englishAndMathsApiPutRequest = _fixture.Create<UpdateEnglishAndMathsApiPutRequest>();
 
@@ -172,10 +172,11 @@ public class WhenHandlingUpdateLearnerCommand
         updateLearningApiResponse.Changes.Clear();
         updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMaths); // E&M change
 
+        MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
+        var apiPutRequest = MockLearningPutRequestBuilder(command);
+
         _updateEarningsEnglishAndMathsRequestBuilder.Setup(x => x.Build(command, updateLearningApiResponse, apiPutRequest))
             .Returns(englishAndMathsApiPutRequest);
-
-        MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
 
         _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateEnglishAndMathsApiPutRequest>()))
             .Returns(Task.CompletedTask);
@@ -190,24 +191,20 @@ public class WhenHandlingUpdateLearnerCommand
 
         _earningsApiClient.VerifyNoOtherCalls();
     }
-    protected void MockLearningApiResponse()
+    /// <returns>LearningKey</returns>
+    protected Guid MockLearningApiResponse()
     {
         var responseBody = new UpdateLearnerApiPutResponse();
         var response = new ApiResponse<UpdateLearnerApiPutResponse>(responseBody, HttpStatusCode.OK, string.Empty);
         _learningApiClient.Setup(x =>
                 x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()))
             .ReturnsAsync(response);
+
+        return responseBody.LearningKey;
     }
 
-    protected UpdateLearningApiPutRequest MockLearningPutRequestBuilder(UpdateLearnerCommand command)
-    {
-        var fixture = new Fixture();
-        var apiPutRequest = fixture.Create<UpdateLearningApiPutRequest>();
-        _updateLearningPutRequestBuilder.Setup(x => x.Build(command.Ukprn, command.UpdateLearnerRequest, command.LearningKey)).Returns(apiPutRequest);
-        return apiPutRequest;
-    }
-
-    protected static void MockLearningApiResponse(
+    /// <returns>LearningKey</returns>
+    protected Guid MockLearningApiResponse(
         Mock<ILearningApiClient<LearningApiConfiguration>> learningApiClient,
         UpdateLearnerApiPutResponse responseBody,
         HttpStatusCode statusCode,
@@ -221,5 +218,15 @@ public class WhenHandlingUpdateLearnerCommand
         learningApiClient.Setup(x =>
             x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()))
         .ReturnsAsync(response);
+
+        return responseBody.LearningKey;
+    }
+
+    protected UpdateLearningApiPutRequest MockLearningPutRequestBuilder(UpdateLearnerCommand command)
+    {
+        var fixture = new Fixture();
+        var apiPutRequest = fixture.Create<UpdateLearningApiPutRequest>();
+        _updateLearningPutRequestBuilder.Setup(x => x.Build(command.Ukprn, command.UpdateLearnerRequest, command.LearnerKey)).Returns(apiPutRequest);
+        return apiPutRequest;
     }
 }

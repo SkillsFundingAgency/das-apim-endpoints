@@ -17,7 +17,7 @@ public class WhenUpdatingALearner
 {
     [Test, MoqAutoData]
     public async Task And_when_successful_Then_Accepted_returned(
-        Guid learningKey,
+        Guid learnerKey,
         long ukprn,
         UpdateLearnerRequest request,
         [Frozen] Mock<IMediator> mockMediator,
@@ -25,20 +25,20 @@ public class WhenUpdatingALearner
         [Greedy] LearnersController sut)
     {
         // Act
-        var result = await sut.UpdateLearner(ukprn, learningKey, request) as AcceptedResult;
+        var result = await sut.UpdateLearner(ukprn, learnerKey, request) as AcceptedResult;
 
         // Assert
         result!.StatusCode.Should().Be((int)HttpStatusCode.Accepted);
 
         mockMediator.Verify(x => x.Send(
             It.Is<UpdateLearnerCommand>(c =>
-                c.LearningKey == learningKey &&
+                c.LearnerKey == learnerKey &&
                 c.UpdateLearnerRequest == request), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test, MoqAutoData]
     public async Task And_when_exception_thrown_Then_InternalServerError_returned(
-        Guid learningKey,
+        Guid learnerKey,
         long ukprn,
         UpdateLearnerRequest request,
         [Frozen] Mock<IMediator> mockMediator,
@@ -50,7 +50,7 @@ public class WhenUpdatingALearner
             .ThrowsAsync(new Exception("Something went wrong"));
 
         // Act
-        var result = await sut.UpdateLearner(ukprn, learningKey, request) as StatusCodeResult;
+        var result = await sut.UpdateLearner(ukprn, learnerKey, request) as StatusCodeResult;
 
         // Assert
         result!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
@@ -58,7 +58,7 @@ public class WhenUpdatingALearner
         mockLogger.Verify(l => l.Log(
             LogLevel.Error,
             It.IsAny<EventId>(),
-            It.Is<It.IsAnyType>((v, _) => v.ToString()!.Contains($"Internal error occurred when updating learner {learningKey}")),
+            It.Is<It.IsAnyType>((v, _) => v.ToString()!.Contains($"Internal error occurred when updating learner {learnerKey}")),
             It.IsAny<Exception>(),
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
     }
