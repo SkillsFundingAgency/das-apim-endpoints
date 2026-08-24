@@ -16,11 +16,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
         {
             // Arrange
             var ukprn = _fixture.Create<long>();
-            var uln = _fixture.Create<long>();
-            var firstName = _fixture.Create<string>();
-            var lastName = _fixture.Create<string>();
-            var email = _fixture.Create<string>();
-            var dob = _fixture.Create<DateTime>();
+            var learner = _fixture.Create<LearnerRequestDetails>();
             var onProgramme = _fixture.Create<OnProgrammeRequestDetails>();
             var learningType = LearningType.Apprenticeship;
             var correlationId = _fixture.Create<Guid>();
@@ -28,17 +24,17 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
             var consumerReference = _fixture.Create<string>();
 
             // Act
-            var result = _sut.Build(ukprn, uln, firstName, lastName, email, dob, onProgramme, learningType, correlationId, receivedDate, consumerReference);
+            var result = _sut.Build(ukprn, learner, onProgramme, learningType, correlationId, receivedDate, consumerReference);
 
             // Assert
             result.Should().BeEquivalentTo(new
             {
-                ULN = uln,
+                ULN = learner.Uln,
                 UKPRN = ukprn,
-                FirstName = firstName,
-                LastName = lastName,
-                Email = email,
-                DoB = dob,
+                FirstName = learner.FirstName,
+                LastName = learner.LastName,
+                Email = learner.Email,
+                DoB = learner.Dob,
                 StartDate = onProgramme.StartDate,
                 PlannedEndDate = onProgramme.ExpectedEndDate,
                 PercentageLearningToBeDelivered = onProgramme.PercentageOfTrainingLeft,
@@ -61,9 +57,10 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
             var onProgramme = _fixture.Build<OnProgrammeRequestDetails>()
                 .With(x => x.Costs, (List<CostDetails>?)null)
                 .Create();
+            var learner = _fixture.Create<LearnerRequestDetails>();
 
             // Act
-            var result = _sut.Build(1, 1, "First", "Last", null, DateTime.Today, onProgramme, LearningType.Apprenticeship, Guid.NewGuid(), DateTime.Today, null);
+            var result = _sut.Build(1, learner, onProgramme, LearningType.Apprenticeship, Guid.NewGuid(), DateTime.Today, null);
 
             // Assert
             result.TrainingPrice.Should().Be(0);

@@ -83,11 +83,7 @@ public class CreateLearnerCommandHandler(
         var onProgramme = command.Request.Delivery.OnProgramme.First();
         var evt = learnerDataEventMapper.Build(
             command.Ukprn,
-            command.Request.Learner.Uln,
-            command.Request.Learner.FirstName,
-            command.Request.Learner.LastName,
-            command.Request.Learner.Email,
-            command.Request.Learner.Dob,
+            command.Request.Learner,
             onProgramme,
             learningType,
             command.CorrelationId,

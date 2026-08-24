@@ -9,11 +9,7 @@ public interface ILearnerDataEventMapper
 {
     LearnerDataEvent Build(
         long ukprn,
-        long uln,
-        string firstName,
-        string lastName,
-        string? email,
-        DateTime dob,
+        LearnerRequestDetails learner,
         OnProgrammeRequestDetails onProgramme,
         LearningType learningType,
         Guid correlationId,
@@ -25,11 +21,7 @@ public class LearnerDataEventMapper : ILearnerDataEventMapper
 {
     public LearnerDataEvent Build(
         long ukprn,
-        long uln,
-        string firstName,
-        string lastName,
-        string? email,
-        DateTime dob,
+        LearnerRequestDetails learner,
         OnProgrammeRequestDetails onProgramme,
         LearningType learningType,
         Guid correlationId,
@@ -40,12 +32,12 @@ public class LearnerDataEventMapper : ILearnerDataEventMapper
 
         return new LearnerDataEvent
         {
-            ULN = uln,
+            ULN = learner.Uln,
             UKPRN = ukprn,
-            FirstName = firstName,
-            LastName = lastName,
-            Email = email,
-            DoB = dob,
+            FirstName = learner.FirstName,
+            LastName = learner.LastName,
+            Email = learner.Email,
+            DoB = learner.Dob,
             StartDate = onProgramme.StartDate,
             PlannedEndDate = onProgramme.ExpectedEndDate,
             PercentageLearningToBeDelivered = onProgramme.PercentageOfTrainingLeft,
