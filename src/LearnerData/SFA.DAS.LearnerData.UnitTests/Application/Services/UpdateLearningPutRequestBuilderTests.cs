@@ -18,7 +18,7 @@ public class UpdateLearningPutRequestBuilderTests
         // Arrange
         var fixture = new Fixture();
         var ukprn = fixture.Create<long>();
-        var learningKey = fixture.Create<Guid>();
+        var learnerKey = fixture.Create<Guid>();
         var updateLearnerRequest = fixture.Create<UpdateLearnerRequest>();
         var requestBody = fixture.Create<UpdateLearningRequestBody>();
 
@@ -30,11 +30,11 @@ public class UpdateLearningPutRequestBuilderTests
         var sut = new UpdateLearningPutRequestBuilder(mockBodyBuilder.Object);
 
         // Act
-        var result = sut.Build(ukprn, updateLearnerRequest, learningKey);
+        var result = sut.Build(ukprn, updateLearnerRequest, learnerKey);
 
         // Assert
         result.Should().NotBeNull();
         result.Data.Should().BeSameAs(requestBody);
-        result.PutUrl.Should().Be(learningKey.ToString());
+        result.PutUrl.Should().Be($"{ukprn}/{learnerKey}");
     }
 }
