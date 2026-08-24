@@ -64,6 +64,7 @@ public class WhenCreatingLearners
             _mockUpdateEarningsOnProgrammeRequestBuilder.Object,
             _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
             _mockCourseService.Object,
+            new LearnerDataEventMapper(),
             new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = true });
 
         _mockCourseService
@@ -132,7 +133,7 @@ public class WhenCreatingLearners
             FirstName = request.Learner.FirstName,
             LastName = request.Learner.LastName,
             Email = request.Learner.Email,
-            DoB = request.Learner.Dob!.Value,
+            DoB = request.Learner.Dob,
             StartDate = request.Delivery.OnProgramme.First().StartDate,
             PlannedEndDate = request.Delivery.OnProgramme.First().ExpectedEndDate,
             PercentageLearningToBeDelivered = request.Delivery.OnProgramme.First().PercentageOfTrainingLeft,
@@ -322,6 +323,7 @@ public class WhenCreatingLearners
             _mockUpdateEarningsOnProgrammeRequestBuilder.Object,
             _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
             _mockCourseService.Object,
+            new LearnerDataEventMapper(),
             new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = false });
 
         var command = GetProcessLearnersCommand();
@@ -416,6 +418,7 @@ public class WhenCreatingLearners
             _mockUpdateEarningsOnProgrammeRequestBuilder.Object,
             _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
             _mockCourseService.Object,
+            new LearnerDataEventMapper(),
             new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = false });
 
         var responseBody = new CreateDraftLearnerApiPutResponse
