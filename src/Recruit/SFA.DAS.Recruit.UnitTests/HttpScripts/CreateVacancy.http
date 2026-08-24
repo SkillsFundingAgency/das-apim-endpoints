@@ -1,0 +1,664 @@
+###
+< {%
+    client.global.set("vacancyReferenceDiscriminationId", crypto.randomUUID());
+    client.global.set("employerName", "BOARD & COMPASS LIMITED LIABILITY PARTNERSHIP");
+    client.global.set("hashedAccountId", "4R8PPR");
+    client.global.set("employerLocations", [{
+        "addressLine1": "Stonehenge",
+        "addressLine2": "Amesbury",
+        "addressLine3": "Wiltshire",
+        "postcode": "SP4 7DE"
+    }]);
+%}
+GET {{baseUrlApimDeveloper}}/subscriptions/{{hashedAccountId}}/products/VacanciesManageOuterApi?accountType=Employers
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKeyApimDeveloper}}
+
+
+> {%
+    
+    client.global.set("subscriptionKeyVacanciesManage", response.body.key);
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+POST {{baseUrl}}/vacancy/{{vacancyReferenceDiscriminationId}}
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKeyVacanciesManage}}
+
+{
+  "submitterContactDetails": {
+    "name": "Test Tester",
+    "email": "test.tester@education.gov.uk",
+    "phone": "01234 444555"
+  },
+  "contractingParties": {
+    "ukprn": "10000528",
+    "accountLegalEntityPublicHashedId": "5G6Y3E"
+  },
+  "title": "Sales Executive Apprenticeship",
+  "description": "As a Sales Executive Apprentice at Board & Compass, you will work alongside our experienced commercial team to develop your sales skills in a fast-paced professional environment. Day-to-day you will be managing and developing client relationships, identifying new business opportunities, preparing proposals and presentations, tracking your sales pipeline, and working to achieve monthly targets. You will be given real responsibility from day one and supported to grow into a confident, commercially aware professional.",
+  "standardLarsCode": "274",
+  "alternativeEmployerName": "BOARD & COMPASS LIMITED LIABILITY PARTNERSHIP",
+  "shortDescription": "Join Board & Compass as a Sales Executive Apprentice and kickstart your commercial career. You will work with an experienced sales team to manage client accounts, generate new business leads, and develop the skills to succeed in a competitive sales environment.",
+  "numberOfPositions": 1,
+  "outcomeDescription": "On completion of this 18-month apprenticeship you will achieve a Level 4 Sales Executive qualification, recognised by the Chartered Institute of Marketing. You will have developed a thorough understanding of the full sales cycle, from prospecting and lead generation through to closing and account management. You will be able to plan and deliver sales activity, manage a pipeline of opportunities, negotiate effectively with clients, and present confidently to stakeholders at all levels. Successful apprentices will be well placed to progress into a sales executive or account manager role within our business, with clear pathways to senior commercial positions as your career develops.",
+  "closingDate": "2027-04-28",
+  "startDate": "2027-05-10",
+  "employerDescription": "Board & Compass is a professional services firm based in Wiltshire, with a growing portfolio of clients across the South West and beyond. We have a passionate, driven team committed to delivering excellent outcomes for our clients and to investing in the development of our people. We believe in promoting from within and have a strong track record of developing apprentices into senior members of our commercial team.",
+  "trainingDescription": "Your training will be delivered by a specialist apprenticeship provider through a blend of on-the-job learning and structured off-the-job study. You will spend one day per week at college working towards your Level 4 Sales Executive qualification, with the remaining four days gaining valuable experience within our sales team. You will be assigned a dedicated workplace mentor who will guide your day-to-day development, and a skills coach from your training provider will conduct regular reviews to track your progress and ensure you are on course to achieve your qualification.",
+  "address": {
+    "addressLine1": "Stonehenge",
+    "addressLine2": "Amesbury",
+    "addressLine3": "Wiltshire",
+    "postcode": "SP4 7DE"
+  },
+  "wage": {
+    "wageAdditionalInformation": "<ul><li>25 days holiday plus bank holidays.</li><li>Health Cash Plan.</li><li>Cycle to Work scheme.</li><li>Critical Illness Cover.</li><li>+ Many More.</li></ul>",
+    "weeklyHours": 30,
+    "duration": 18,
+    "workingWeekDescription": "9am - 5pm Monday to Thursday, Friday will be spent in college.",
+    "wageType": "FixedWage",
+    "fixedWageYearlyAmount": 21425,
+    "durationUnit": "Month",
+    "CompanyBenefitsInformation": "<ul><li>25 days holiday plus bank holidays.</li><li>Pension scheme.</li><li>Cycle to Work scheme.</li><li>Employee Assistance Programme.</li><li>+ Many More.</li></ul>"
+  },
+  "skills": [
+    "Communication skills",
+    "Customer service skills",
+    "IT skills",
+    "Team working",
+    "Initiative",
+    "Presentation skills"
+  ],
+  "employerNameOption": "RegisteredName",
+  "qualifications": [
+    {
+      "qualificationType": "GCSE",
+      "subject": "English",
+      "grade": "4",
+      "weighting": "Essential"
+    },
+    {
+      "qualificationType": "GCSE",
+      "subject": "Maths",
+      "grade": "4",
+      "weighting": "Essential"
+    },
+    {
+      "qualificationType": "Other",
+      "subject": "IT",
+      "grade": "Pass",
+      "level": null,
+      "weighting": "Desired",
+      "otherQualificationName": "Microsoft Office Specialist (Word or Excel)"
+    }
+  ],
+  "applicationInstructions": "",
+  "applicationUrl": "",
+  "applicationMethod": "ThroughFindAnApprenticeship",
+  "disabilityConfident": "Yes",
+  "thingsToConsider": "You need to make sure that you don't wear or require glasses - if you do then you won't be able to work here.",
+  "employerWebsiteUrl": "https://www.gov.uk/apply-apprenticeship",
+  "additionalQuestion1": "How will you travel to work?",
+  "additionalQuestion2": "Do you have any previous sales or customer service experience?"
+}
+
+> {%
+    client.global.set("vacancyReferenceDiscrimination", response.body.vacancyReference);
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+    const until = Date.now() + 20000;
+    while (Date.now() < until) {}
+%}
+
+###
+< {%
+    client.global.set("vacancyReferenceSpellingId", crypto.randomUUID());
+%}
+POST {{baseUrl}}/vacancy/{{vacancyReferenceSpellingId}}
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKeyVacanciesManage}}
+
+{
+  "submitterContactDetails": {
+    "name": "Test Tester",
+    "email": "test.tester@education.gov.uk",
+    "phone": "01234 444555"
+  },
+  "contractingParties": {
+    "ukprn": "10000528",
+    "accountLegalEntityPublicHashedId": "5G6Y3E"
+  },
+  "title": "Sales Executive Apprenticeship",
+  "description": "As a Sales Executive Apprentice at Board & Compass, you'll work alongside are experienced commercial team to develop your sales skills in a fastpaced professional enviroment. Day-to-day you will be managing and developing client relationships, identifying new business opportunities, preparing proposals and presentations, tracking your sales pipeline, and working to achieve monthly targets. You will be given real responsibility from day one and supported to grow into a confident, commercially aware professional.",
+  "standardLarsCode": "274",
+  "alternativeEmployerName": "BOARD & COMPASS LIMITED LIABILITY PARTNERSHIP",
+  "shortDescription": "Join Board & Compass as a Sales Executive Apprentice and kickstart your commercial career. You will work with an experienced sales team to manage client accounts, generate new business leads, and develop the skills to succeed in a competitive sales environment.",
+  "numberOfPositions": 1,
+  "outcomeDescription": "On completion of this 18-month apprenticeship you will achieve a Level 4 Sales Executive qualification, recognised by the Chartered Institute of Marketing. You will have developed a thorough understanding of the full sales cycle, from prospecting and lead generation through to closing and account management. You will be able to plan and deliver sales activity, manage a pipeline of opportunities, negotiate effectively with clients, and present confidently to stakeholders at all levels. Successful apprentices will be well placed to progress into a sales executive or account manager role within our business, with clear pathways to senior commercial positions as your career develops.",
+  "closingDate": "2027-04-28",
+  "startDate": "2027-05-10",
+  "employerDescription": "Board & Compass is a proffesional services firm based in Wiltshire, with a growing portfolio of clients across the South West and beyond. We have a passionate, driven team committed to delivering excellent outcomes for our clients and to investing in the development of our people. We believe in promoting from within and have a strong track record of developing apprentices into senior members of our commercial team.",
+  "trainingDescription": "Your training will be delivered by a specialist aprenticeship provider through a blend of on-the-job learning and structured off-the-job study. You will spend one day per week at college working towards your Level 4 Sales Executive qualification, with the remaining four days gaining valuable experience within our sales team. You will be assigned a dedicated workplace mentor who will guide your day-to-day development, and a skills coach from your training provider will conduct regular reviews to track your progress and ensure you are on course to achieve your qualification.",
+  "address": {
+    "addressLine1": "Stonehenge",
+    "addressLine2": "Amesbury",
+    "addressLine3": "Wiltshire",
+    "postcode": "SP4 7DE"
+  },
+  "wage": {
+    "wageAdditionalInformation": "<ul><li>25 days holiday plus bank holidays.</li><li>Health Cash Plan.</li><li>Cycle to Work scheme.</li><li>Critical Illness Cover.</li><li>+ Many More.</li></ul>",
+    "weeklyHours": 30,
+    "duration": 18,
+    "workingWeekDescription": "9am - 5pm Monday to Thursday, Friday will be spent in college.",
+    "wageType": "FixedWage",
+    "fixedWageYearlyAmount": 21425,
+    "durationUnit": "Month",
+    "CompanyBenefitsInformation": "<ul><li>25 days holiday plus bank holidays.</li><li>Pension scheme.</li><li>Cycle to Work scheme.</li><li>Employee Assistance Programme.</li><li>+ Many More.</li></ul>"
+  },
+  "skills": [
+    "Communication skills",
+    "Customer service skills",
+    "IT skills",
+    "Team working",
+    "Initiative",
+    "Presentation skills"
+  ],
+  "employerNameOption": "RegisteredName",
+  "qualifications": [
+    {
+      "qualificationType": "GCSE",
+      "subject": "English",
+      "grade": "4",
+      "weighting": "Essential"
+    },
+    {
+      "qualificationType": "GCSE",
+      "subject": "Maths",
+      "grade": "4",
+      "weighting": "Essential"
+    },
+    {
+      "qualificationType": "Other",
+      "subject": "IT",
+      "grade": "Pass",
+      "level": null,
+      "weighting": "Desired",
+      "otherQualificationName": "Microsoft Office Specialist (Word or Excel)"
+    }
+  ],
+  "applicationInstructions": "",
+  "applicationUrl": "",
+  "applicationMethod": "ThroughFindAnApprenticeship",
+  "disabilityConfident": "Yes",
+  "thingsToConsider": "Please note that this role involves regular client-facing activity, so a professional manner is important. You should be comfortable working in an ofice enviroment and be willing to travel to client meetings on occasion.",
+  "employerWebsiteUrl": "https://www.gov.uk/apply-apprenticeship",
+  "additionalQuestion1": "How will you travel to work?",
+  "additionalQuestion2": "Do you have any previous sales or customer service experience?"
+}
+
+> {%
+    client.global.set("vacancyReferenceSpelling", response.body.vacancyReference);
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+    const until = Date.now() + 20000;
+    while (Date.now() < until) {}
+%}
+
+###
+< {%
+    client.global.set("vacancyReferenceContentEvaluationId", crypto.randomUUID());
+%}
+POST {{baseUrl}}/vacancy/{{vacancyReferenceContentEvaluationId}}
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKeyVacanciesManage}}
+
+{
+  "submitterContactDetails": {
+    "name": "Test Tester",
+    "email": "test.tester@education.gov.uk",
+    "phone": "01234 444555"
+  },
+  "contractingParties": {
+    "ukprn": "10000528",
+    "accountLegalEntityPublicHashedId": "5G6Y3E"
+  },
+  "title": "Sales Executive Apprenticeship",
+  "description": "As a Sales Executive Apprentice at Board & Compass, you will work alongside our experienced commercial team to develop your sales skills in a fast-paced professional environment. Day-to-day you will be managing and developing client relationships, identifying new business opportunities, preparing proposals and presentations, tracking your sales pipeline, and working to achieve monthly targets. You will be given real responsibility from day one and supported to grow into a confident, commercially aware professional.",
+  "standardLarsCode": "274",
+  "alternativeEmployerName": "BOARD & COMPASS LIMITED LIABILITY PARTNERSHIP",
+  "shortDescription": "Join Board & Compass as a Sales Executive Apprentice and kickstart your commercial career. You will work with an experienced sales team to manage client accounts, generate new business leads, and develop the skills to succeed in a competitive sales environment.",
+  "numberOfPositions": 1,
+  "outcomeDescription": "On completion of this 18-month apprenticeship you will achieve a Level 4 Sales Executive qualification, recognised by the Chartered Institute of Marketing. You will have developed a thorough understanding of the full sales cycle, from prospecting and lead generation through to closing and account management. You will be able to plan and deliver sales activity, manage a pipeline of opportunities, negotiate effectively with clients, and present confidently to stakeholders at all levels. Successful apprentices will be well placed to progress into a sales executive or account manager role within our business, with clear pathways to senior commercial positions as your career develops.",
+  "closingDate": "2027-04-28",
+  "startDate": "2027-05-10",
+  "employerDescription": "Board & Compass is a professional services firm based in Wiltshire, with a growing portfolio of clients across the South West and beyond. We have a passionate, driven team committed to delivering excellent outcomes for our clients and to investing in the development of our people. We believe in promoting from within and have a strong track record of developing apprentices into senior members of our commercial team.",
+  "trainingDescription": "Your training will be delivered by a specialist apprenticeship provider through a blend of on-the-job learning and structured off-the-job study. You will spend one day per week at college working towards your Level 4 Sales Executive qualification, with the remaining four days gaining valuable experience within our sales team. You will be assigned a dedicated workplace mentor who will guide your day-to-day development, and a skills coach from your training provider will conduct regular reviews to track your progress and ensure you are on course to achieve your qualification.",
+  "address": {
+    "addressLine1": "Stonehenge",
+    "addressLine2": "Amesbury",
+    "addressLine3": "Wiltshire",
+    "postcode": "SP4 7DE"
+  },
+  "wage": {
+    "wageAdditionalInformation": "<ul><li>25 days holiday plus bank holidays.</li><li>Health Cash Plan.</li><li>Cycle to Work scheme.</li><li>Critical Illness Cover.</li><li>+ Many More.</li></ul>",
+    "weeklyHours": 30,
+    "duration": 18,
+    "workingWeekDescription": "9am - 5pm Monday to Thursday, Friday will be spent in college.",
+    "wageType": "FixedWage",
+    "fixedWageYearlyAmount": 21425,
+    "durationUnit": "Month",
+    "CompanyBenefitsInformation": "<ul><li>25 days holiday plus bank holidays.</li><li>Pension scheme.</li><li>Cycle to Work scheme.</li><li>Employee Assistance Programme.</li><li>+ Many More.</li></ul>"
+  },
+  "skills": [
+    "Communication skills",
+    "Customer service skills",
+    "IT skills",
+    "Team working",
+    "Initiative",
+    "Presentation skills"
+  ],
+  "employerNameOption": "RegisteredName",
+  "qualifications": [
+    {
+      "qualificationType": "GCSE",
+      "subject": "English",
+      "grade": "4",
+      "weighting": "Essential"
+    },
+    {
+      "qualificationType": "GCSE",
+      "subject": "Maths",
+      "grade": "4",
+      "weighting": "Essential"
+    },
+    {
+      "qualificationType": "Other",
+      "subject": "IT",
+      "grade": "Pass",
+      "level": null,
+      "weighting": "Desired",
+      "otherQualificationName": "Microsoft Office Specialist (Word or Excel)"
+    }
+  ],
+  "applicationInstructions": "",
+  "applicationUrl": "",
+  "applicationMethod": "ThroughFindAnApprenticeship",
+  "disabilityConfident": "Yes",
+  "thingsToConsider": "Please note that this role involves regular client-facing activity, so a professional manner is important. You should be comfortable working in an office environment and be willing to travel to client meetings on occasion.",
+  "employerWebsiteUrl": "https://www.gov.uk/apply-apprenticeship",
+  "additionalQuestion1": "How will you travel to work?",
+  "additionalQuestion2": "Do you have any previous sales or customer service experience?"
+}
+
+> {%
+    client.global.set("vacancyReferenceContentEvaluation", response.body.vacancyReference);
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+    const until = Date.now() + 20000;
+    while (Date.now() < until) {}
+%}
+
+
+###
+< {%
+    client.global.set("vacancyReferenceApprovedId", crypto.randomUUID());
+%}
+POST {{baseUrl}}/vacancy/{{vacancyReferenceApprovedId}}
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKeyVacanciesManage}}
+
+{
+  "submitterContactDetails": {
+    "name": "Test Tester",
+    "email": "test.tester@education.gov.uk",
+    "phone": "01234 444555"
+  },
+  "contractingParties": {
+    "ukprn": "10000528",
+    "accountLegalEntityPublicHashedId": "5G6Y3E"
+  },
+  "title": "Sales Executive Apprenticeship",
+  "description": "As a Sales Executive Apprentice at Board & Compass, you will work alongside our experienced commercial team to develop your sales skills in a fast-paced professional environment. Day-to-day you will be managing and developing client relationships, identifying new business opportunities, preparing proposals and presentations, tracking your sales pipeline, and working to achieve monthly targets. You will be given real responsibility from day one and supported to grow into a confident, commercially aware professional.",
+  "standardLarsCode": "369",
+  "alternativeEmployerName": "BOARD & COMPASS LIMITED LIABILITY PARTNERSHIP",
+  "shortDescription": "Join Board & Compass as a Sales Executive Apprentice and kickstart your commercial career. You will work with an experienced sales team to manage client accounts, generate new business leads, and develop the skills to succeed in a competitive sales environment.",
+  "numberOfPositions": 1,
+  "outcomeDescription": "On completion of this 18-month apprenticeship you will achieve a Level 4 Sales Executive qualification, recognised by the Chartered Institute of Marketing. You will have developed a thorough understanding of the full sales cycle, from prospecting and lead generation through to closing and account management. You will be able to plan and deliver sales activity, manage a pipeline of opportunities, negotiate effectively with clients, and present confidently to stakeholders at all levels. Successful apprentices will be well placed to progress into a sales executive or account manager role within our business, with clear pathways to senior commercial positions as your career develops.",
+  "closingDate": "2027-04-28",
+  "startDate": "2027-05-10",
+  "employerDescription": "Board & Compass is a professional services firm based in Wiltshire, with a growing portfolio of clients across the South West and beyond. We have a passionate, driven team committed to delivering excellent outcomes for our clients and to investing in the development of our people. We believe in promoting from within and have a strong track record of developing apprentices into senior members of our commercial team.",
+  "trainingDescription": "Your training will be delivered by a specialist apprenticeship provider through a blend of on-the-job learning and structured off-the-job study. You will spend one day per week at college working towards your Level 4 Sales Executive qualification, with the remaining four days gaining valuable experience within our sales team. You will be assigned a dedicated workplace mentor who will guide your day-to-day development, and a skills coach from your training provider will conduct regular reviews to track your progress and ensure you are on course to achieve your qualification.",
+  "address": {
+    "addressLine1": "Stonehenge",
+    "addressLine2": "Amesbury",
+    "addressLine3": "Wiltshire",
+    "postcode": "SP4 7DE"
+  },
+  "wage": {
+    "wageAdditionalInformation": "<ul><li>25 days holiday plus bank holidays.</li><li>Health Cash Plan.</li><li>Cycle to Work scheme.</li><li>Critical Illness Cover.</li><li>+ Many More</li></ul>",
+    "weeklyHours": 30,
+    "duration": 18,
+    "workingWeekDescription": "9am - 5pm Monday to Thursday, Friday will be spent in college.",
+    "wageType": "FixedWage",
+    "fixedWageYearlyAmount": 21425,
+    "durationUnit": "Month",
+    "CompanyBenefitsInformation": "<ul><li>25 days holiday plus bank holidays.</li><li>Pension scheme.</li><li>Cycle to Work scheme.</li><li>Employee Assistance Programme.</li><li>+ Many More</li></ul>"
+  },
+  "skills": [
+    "Communication skills",
+    "Customer service skills",
+    "IT skills",
+    "Team working",
+    "Initiative",
+    "Presentation skills"
+  ],
+  "employerNameOption": "RegisteredName",
+  "qualifications": [
+    {
+      "qualificationType": "GCSE",
+      "subject": "English",
+      "grade": "4",
+      "weighting": "Essential"
+    },
+    {
+      "qualificationType": "GCSE",
+      "subject": "Maths",
+      "grade": "4",
+      "weighting": "Essential"
+    },
+    {
+      "qualificationType": "Other",
+      "subject": "IT",
+      "grade": "Pass",
+      "level": null,
+      "weighting": "Desired",
+      "otherQualificationName": "Microsoft Office Specialist (Word or Excel)"
+    }
+  ],
+  "applicationInstructions": "",
+  "applicationUrl": "",
+  "applicationMethod": "ThroughFindAnApprenticeship",
+  "disabilityConfident": "Yes",
+  "thingsToConsider": "Please note that this role involves regular client-facing activity, so a professional manner is important. You should be comfortable working in an office environment and be willing to travel to client meetings on occasion.",
+  "employerWebsiteUrl": "https://www.gov.uk/apply-apprenticeship",
+  "additionalQuestion1": "How will you travel to work?",
+  "additionalQuestion2": "Do you have any previous sales or customer service experience?"
+}
+
+> {%
+    client.global.set("vacancyReferenceApproved", response.body.vacancyReference);
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+    const until = Date.now() + 20000;
+    while (Date.now() < until) {}
+%}
+
+### WAIT 20000
+
+###
+GET {{baseUrlRecruit}}/vacancies/{{vacancyReferenceDiscrimination}}/vacancyreviews
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKeyRecruit}}
+
+> {%
+    const discriminationReview = response.body.vacancyReviews[0];
+    client.global.set("vacancyReviewIdDiscrimination", discriminationReview.id);
+    client.global.set("vacancyReviewDiscrimination", discriminationReview);
+    const approvedDiscriminationReview = Object.assign({}, discriminationReview, {
+        manualOutcome: "Approved",
+        status: "Closed",
+        closedDate: new Date().toISOString(),
+        manualQaEditFieldIndicators: [],
+        employerName: client.global.get("employerName"),
+        hashedAccountId: client.global.get("hashedAccountId"),
+        employerLocations: client.global.get("employerLocations"),
+        accountId: discriminationReview.accountId,
+        accountLegalEntityId: discriminationReview.accountLegalEntityId,
+        ukprn: discriminationReview.ukprn
+    });
+    client.global.set("vacancyReviewDiscriminationApproved", JSON.stringify(approvedDiscriminationReview));
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(discriminationReview.status === "PendingReview", "Vacancy review status is not PendingReview - Status was " + discriminationReview.status);
+    });
+%}
+
+###
+GET {{baseUrlRecruit}}/vacancies/{{vacancyReferenceSpelling}}/vacancyreviews
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKeyRecruit}}
+
+> {%
+    const spellingReview = response.body.vacancyReviews[0];
+    client.global.set("vacancyReviewIdSpelling", spellingReview.id);
+    client.global.set("vacancyReviewSpelling", spellingReview);
+    const approvedSpellingReview = Object.assign({}, spellingReview, {
+        manualOutcome: "Approved",
+        status: "Closed",
+        closedDate: new Date().toISOString(),
+        manualQaEditFieldIndicators: [],
+        employerName: client.global.get("employerName"),
+        hashedAccountId: client.global.get("hashedAccountId"),
+        employerLocations: client.global.get("employerLocations"),
+        accountId: spellingReview.accountId,
+        accountLegalEntityId: spellingReview.accountLegalEntityId,
+        ukprn: spellingReview.ukprn
+    });
+    client.global.set("vacancyReviewSpellingApproved", JSON.stringify(approvedSpellingReview));
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(spellingReview.status === "PendingReview", "Vacancy review status is not PendingReview - Status was " + spellingReview.status);
+    });
+%}
+
+
+###
+GET {{baseUrlRecruit}}/vacancies/{{vacancyReferenceContentEvaluation}}/vacancyreviews
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKeyRecruit}}
+
+> {%
+    const contentEvaluationReview = response.body.vacancyReviews[0];
+    client.global.set("vacancyReviewIdContentEvaluation", contentEvaluationReview.id);
+    client.global.set("vacancyReviewContentEvaluation", contentEvaluationReview);
+    const approvedContentEvaluationReview = Object.assign({}, contentEvaluationReview, {
+        manualOutcome: "Approved",
+        status: "Closed",
+        closedDate: new Date().toISOString(),
+        manualQaEditFieldIndicators: [],
+        employerName: client.global.get("employerName"),
+        hashedAccountId: client.global.get("hashedAccountId"),
+        employerLocations: client.global.get("employerLocations"),
+        accountId: contentEvaluationReview.accountId,
+        accountLegalEntityId: contentEvaluationReview.accountLegalEntityId,
+        ukprn: contentEvaluationReview.ukprn
+    });
+    client.global.set("vacancyReviewContentApproved", JSON.stringify(approvedContentEvaluationReview));
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body.vacancyReviews[0].status === "PendingReview", "Vacancy review status is not PendingReview - Status was " + response.body.vacancyReviews[0].status);
+    });
+%}
+
+###
+GET {{baseUrlRecruit}}/vacancies/{{vacancyReferenceApproved}}/vacancyreviews
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKeyRecruit}}
+
+> {%
+    const contentEvaluationReview = response.body.vacancyReviews[0];
+    client.global.set("vacancyReviewIdApproved", contentEvaluationReview.id);
+    
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body.vacancyReviews[0].status === "Closed", "Vacancy review status is not Closed - Status was " + response.body.vacancyReviews[0].status);
+        client.assert(response.body.vacancyReviews[0].manualOutcome === "Bypassed", "Vacancy review status is not Bypassed - Status was " + response.body.vacancyReviews[0].manualOutcome);
+    });
+%}
+
+###
+POST {{baseUrlRecruitQa}}/vacancyreviews/{{vacancyReviewIdContentEvaluation}}
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKeyRecruitQa}}
+
+{{vacancyReviewContentApproved}}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+%}
+
+###
+POST {{baseUrlRecruitQa}}/vacancyreviews/{{vacancyReviewIdDiscrimination}}
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKeyRecruitQa}}
+
+{{vacancyReviewDiscriminationApproved}}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+%}
+
+###
+POST {{baseUrlRecruitQa}}/vacancyreviews/{{vacancyReviewIdSpelling}}
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKeyRecruitQa}}
+
+{{vacancyReviewSpellingApproved}}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+%}
+
+###
+POST {{baseUrlRecruitQa}}/vacancies/publish/{{vacancyReferenceSpellingId}}
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKeyRecruitQa}}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+POST {{baseUrlRecruitQa}}/vacancies/publish/{{vacancyReferenceContentEvaluationId}}
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKeyRecruitQa}}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+POST {{baseUrlRecruitQa}}/vacancies/publish/{{vacancyReferenceDiscriminationId}}
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKeyRecruitQa}}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+
+    const until = Date.now() + 20000;
+    while (Date.now() < until) {}
+%}
+
+### WAIT 20000
+
+###
+POST {{baseUrlRecruitQa}}/vacancies/close/{{vacancyReferenceContentEvaluationId}}
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKeyRecruitQa}}
+
+{
+  "closureReason": "WithdrawnByQa"
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+
+###
+POST {{baseUrlRecruitQa}}/vacancies/close/{{vacancyReferenceDiscriminationId}}
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKeyRecruitQa}}
+
+{
+  "closureReason": "WithdrawnByQa"
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+
+###
+POST {{baseUrlRecruitQa}}/vacancies/close/{{vacancyReferenceSpellingId}}
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKeyRecruitQa}}
+
+{
+  "closureReason": "WithdrawnByQa"
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+
+###
+POST {{baseUrlRecruitQa}}/vacancies/close/{{vacancyReferenceApprovedId}}
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKeyRecruitQa}}
+
+{
+  "closureReason": "WithdrawnByQa"
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
