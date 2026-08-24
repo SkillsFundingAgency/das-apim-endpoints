@@ -25,15 +25,13 @@ public class CreateDraftLearningApiPostRequestBuilderTests
 
         var mockBodyBuilder = new Mock<IUpdateLearningRequestBodyBuilder>();
         mockBodyBuilder
-            .Setup(x => x.Build(ukprn, createLearnerRequest, academicYear))
-            .Setup(x => x.Build(ukprn, createLearnerRequest, learningType))
+            .Setup(x => x.Build(ukprn, createLearnerRequest, academicYear, learningType))
             .Returns(requestBody);
 
         var sut = new CreateDraftLearningApiPostRequestBuilder(mockBodyBuilder.Object);
 
         // Act
-        var result = sut.Build(ukprn, createLearnerRequest, academicYear);
-        var result = sut.Build(ukprn, createLearnerRequest, learningType);
+        var result = sut.Build(ukprn, createLearnerRequest, academicYear, learningType);
 
         // Assert
         result.Should().NotBeNull();

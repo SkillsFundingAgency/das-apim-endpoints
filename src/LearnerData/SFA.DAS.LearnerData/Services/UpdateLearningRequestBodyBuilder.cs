@@ -10,8 +10,7 @@ namespace SFA.DAS.LearnerData.Services;
 public interface IUpdateLearningRequestBodyBuilder
 {
     UpdateLearningRequestBody Build(long ukprn, UpdateLearnerRequest updateLearnerRequest);
-    UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest, int academicYear);
-    UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest, LearningType learningType);
+    UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest, int academicYear, LearningType learningType);
 }
 
 public class UpdateLearningRequestBodyBuilder(
@@ -31,9 +30,7 @@ public class UpdateLearningRequestBodyBuilder(
             academicYear: 0);
     }
 
-    public UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest, int academicYear)
-    public UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest,
-        LearningType learningType)
+    public UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest, int academicYear, LearningType learningType)
     {
         var baseLearner = new LearnerRequestDetails
         {
@@ -51,7 +48,7 @@ public class UpdateLearningRequestBodyBuilder(
             createLearnerRequest.Delivery.EnglishAndMaths?.Cast<MathsAndEnglish>().ToList(),
             createLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(),
             createLearnerRequest.EnglishAndMathsLearningSupport(),
-            academicYear);
+            academicYear,
             learningType);
     }
 
@@ -60,7 +57,7 @@ public class UpdateLearningRequestBodyBuilder(
         List<MathsAndEnglish> englishAndMaths,
         List<OnProgrammeRequestDetails> onProgramme,
         List<KeyValuePair<string, List<LearningSupport>>> englishAndMathsLearningSupport,
-        int academicYear)
+        int academicYear,
         LearningType? learningType = null)
     {
         var (firstOnProgramme, latestOnProgramme, allMatchingOnProgrammes) = SelectEpisode(onProgramme);

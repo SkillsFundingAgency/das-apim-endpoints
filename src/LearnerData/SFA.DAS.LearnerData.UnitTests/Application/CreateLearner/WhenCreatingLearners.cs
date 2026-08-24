@@ -71,7 +71,7 @@ public class WhenCreatingLearners
             .ReturnsAsync(new StandardDetailResponse { ApprenticeshipType = "Apprenticeship" });
 
         _mockCreateDraftLearningApiPostRequestBuilder
-            .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<LearningType>()))
+            .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<int>(), It.IsAny<LearningType>()))
             .Returns(new CreateDraftLearningApiPostRequest(new UpdateLearningRequestBody(), 0));
 
         var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(

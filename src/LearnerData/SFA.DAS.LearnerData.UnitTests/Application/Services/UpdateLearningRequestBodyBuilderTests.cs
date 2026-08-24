@@ -201,8 +201,7 @@ public class UpdateLearningRequestBodyBuilderTests
             Mock.Of<ICostsService>());
 
         // Act
-        var actualRequestBody = sut.Build(10005077, createRequest, 2526);
-        var actualRequestBody = sut.Build(10005077, createRequest, LearningType.Apprenticeship);
+        var actualRequestBody = sut.Build(10005077, createRequest, 2526, LearningType.Apprenticeship);
 
         // Assert
         actualRequestBody.Learner.Uln.Should().Be(123456789);
