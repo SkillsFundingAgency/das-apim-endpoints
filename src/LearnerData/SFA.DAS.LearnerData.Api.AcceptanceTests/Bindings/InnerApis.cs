@@ -1,4 +1,5 @@
-﻿using TechTalk.SpecFlow;
+﻿using SFA.DAS.LearnerData.Api.AcceptanceTests;
+using TechTalk.SpecFlow;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Bindings;
 
@@ -13,6 +14,9 @@ public class InnerApis(TestContext context)
     public void Initialise()
     {
         NUnit.Framework.TestContext.WriteLine("Initialising inner apis...");
+
+        StubMessageSession.SentMessages.Clear();
+        StubMessageSession.PublishedMessages.Clear();
 
         if (context.EarningsApi == null)
         {

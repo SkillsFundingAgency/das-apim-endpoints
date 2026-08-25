@@ -1,6 +1,7 @@
 using AutoFixture;
 using FluentAssertions;
 using Newtonsoft.Json;
+using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.Net;
@@ -22,6 +23,8 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     private const string UkprnKey = "UkprnKey";
     private const string FundingBandMaximumKey = "FundingBandMaximumKey";
     private const string SldLearnerDataKey = "SldLearnerDataKey";
+    private const string SubsequentOnProgrammeKey = "SubsequentOnProgrammeKey";
+    private const string ApprovalCheckStatusCodeKey = "ApprovalCheckStatusCodeKey";
 
     [Given(@"there is a learner")]
     public void GivenThereIsALearner()
@@ -49,6 +52,47 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     public void GivenTheDetailsPassedInAreTheSameAsTheExistingLearnerDetails()
     {
         scenarioContext.Set(new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>(), ChangesKey); // an empty list will be returned to indicate no changes
+    }
+
+    [Given(@"the learner submits an OnProgramme item for a subsequent apprenticeship")]
+    public void GivenTheLearnerSubmitsAnOnProgrammeItemForASubsequentApprenticeship()
+    {
+        var onProgramme = _fixture.Create<OnProgrammeRequestDetails>();
+        scenarioContext.Set(onProgramme, SubsequentOnProgrammeKey);
+        scenarioContext.Set(new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>(), ChangesKey); // not exercising earnings changes in these scenarios
+    }
+
+    [Given(@"that apprenticeship is already approved")]
+    public void GivenThatApprenticeshipIsAlreadyApproved()
+    {
+        scenarioContext.Set(HttpStatusCode.OK, ApprovalCheckStatusCodeKey);
+    }
+
+    [Given(@"that apprenticeship is not yet approved")]
+    public void GivenThatApprenticeshipIsNotYetApproved()
+    {
+        scenarioContext.Set(HttpStatusCode.NotFound, ApprovalCheckStatusCodeKey);
+
+        testContext.CoursesApi.MockServer
+            .Given(
+                Request
+                .Create()
+                .WithPath($"/api/courses/standards/*"))
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithBodyAsJson(new StandardDetailResponse { ApprenticeshipType = "Apprenticeship" }));
+    }
+
+    [Then(@"a LearnerDataEvent is published")]
+    public void ThenALearnerDataEventIsPublished()
+    {
+        StubMessageSession.PublishedMessages.Should().ContainSingle(m => m is LearnerDataEvent);
+    }
+
+    [Then(@"no LearnerDataEvent is published")]
+    public void ThenNoLearnerDataEventIsPublished()
+    {
+        StubMessageSession.PublishedMessages.Should().NotContain(m => m is LearnerDataEvent);
     }
 
     [When(@"the learner is updated")]
@@ -145,6 +189,10 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
             .WithBodyAsJson(response)
         );
 
+        var approvalCheckStatusCode = scenarioContext.TryGetValue(ApprovalCheckStatusCodeKey, out HttpStatusCode explicitStatusCode)
+            ? explicitStatusCode
+            : HttpStatusCode.OK;
+
         testContext.ApprenticeshipsApi.MockServer
         .Given(
             Request
@@ -153,7 +201,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
             .UsingHead())
         .RespondWith(
             Response.Create()
-            .WithStatusCode(HttpStatusCode.OK)
+            .WithStatusCode(approvalCheckStatusCode)
         );
 
         scenarioContext.Set(response);
@@ -178,6 +226,12 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
         var ukprn = scenarioContext.Get<long>(UkprnKey);
         var requestBody = _fixture.Create<UpdateLearnerRequest>();
+
+        if (scenarioContext.TryGetValue(SubsequentOnProgrammeKey, out OnProgrammeRequestDetails onProgramme))
+        {
+            requestBody.Delivery.OnProgramme = [onProgramme];
+        }
+
         var httpContent = new StringContent(JsonConvert.SerializeObject(requestBody), new MediaTypeHeaderValue("application/json"));
         var response = await testContext.OuterApiClient.PutAsync($"/providers/{ukprn}/learning/{learnerKey}", httpContent);
         var contentString = await response.Content.ReadAsStringAsync();
