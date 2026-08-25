@@ -55,7 +55,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     public async Task WhenTheLearnerIsUpdated()
     {
         ConfigureLearnerInnerApi();
-        ConfigureEarningsInnerApiToRespondeOkToEverything();
+        ConfigureEarningsInnerApiToRespondOkToEverything();
         await CallUpdateLearnerEndpoint();
     }
 
@@ -145,10 +145,21 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
             .WithBodyAsJson(response)
         );
 
+        testContext.ApprenticeshipsApi.MockServer
+        .Given(
+            Request
+            .Create()
+            .WithPath($"/{ukprn}/apprenticeships")
+            .UsingHead())
+        .RespondWith(
+            Response.Create()
+            .WithStatusCode(HttpStatusCode.OK)
+        );
+
         scenarioContext.Set(response);
     }
 
-    private void ConfigureEarningsInnerApiToRespondeOkToEverything()
+    private void ConfigureEarningsInnerApiToRespondOkToEverything()
     {
         testContext.EarningsApi.MockServer
             .Given(

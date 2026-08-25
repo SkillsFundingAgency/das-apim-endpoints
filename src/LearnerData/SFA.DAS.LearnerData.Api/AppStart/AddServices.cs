@@ -49,5 +49,6 @@ public static class AddApiServicesExtension
         services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
         services.AddTransient<IGetProviderRelationshipService, GetProviderRelationshipService>();
         services.AddTransient<ILearnerDataEventMapper, LearnerDataEventMapper>();
+        services.AddTransient<IApprovedApprenticeshipExistsChecker, ApprovedApprenticeshipExistsChecker>();
     }
 }
