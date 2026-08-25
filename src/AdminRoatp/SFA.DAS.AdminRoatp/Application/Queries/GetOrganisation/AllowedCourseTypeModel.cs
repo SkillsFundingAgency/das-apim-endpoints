@@ -7,7 +7,7 @@ public class AllowedCourseTypeModel
 {
     public int CourseTypeId { get; set; }
     public CourseType CourseTypeName { get; set; }
-    public bool IsRestricted { get; set; }
+    public bool? IsRestricted { get; set; }
     public int? RestrictedCount { get; set; }
     public int? AllowedCount { get; set; }
 

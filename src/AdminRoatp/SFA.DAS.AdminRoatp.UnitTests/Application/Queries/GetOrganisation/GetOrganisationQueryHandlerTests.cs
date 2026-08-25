@@ -81,6 +81,22 @@ public class GetOrganisationQueryHandlerTests
     }
 
     [Test, MoqAutoData]
+    public async Task Handle_NotMainProvider_IsRestrictedShouldBeNull(
+        [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> apiClient,
+        GetOrganisationQueryHandler sut,
+        GetOrganisationQuery request,
+        OrganisationResponse apiResponse)
+    {
+        apiResponse.ProviderType = ProviderType.Employer;
+        apiResponse.Status = OrganisationStatus.Active;
+        apiClient.Setup(a => a.GetWithResponseCode<OrganisationResponse>(It.Is<GetOrganisationRequest>(r => r.GetUrl.Equals(new GetOrganisationRequest(request.ukprn).GetUrl)))).ReturnsAsync(new ApiResponse<OrganisationResponse>(apiResponse, HttpStatusCode.OK, ""));
+
+        GetOrganisationQueryResult? result = await sut.Handle(request, CancellationToken.None);
+
+        result!.AllowedCourseTypes.First().IsRestricted.Should().BeNull();
+    }
+
+    [Test, MoqAutoData]
     public async Task Handle_MainProvider_ReturnsCourseTypesFromCourseManagement(
         [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> apiClientMock,
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiClient,
@@ -101,8 +117,7 @@ public class GetOrganisationQueryHandlerTests
 
         result.Should().NotBeNull();
 
-        result!.AllowedCourseTypes.Should().BeEquivalentTo(
-            providerCourseTypes.Select(x => (AllowedCourseTypeModel)x));
+        result!.AllowedCourseTypes.Should().BeEquivalentTo(providerCourseTypes.Select(x => (AllowedCourseTypeModel)x));
     }
 
     [Test, MoqAutoData]
@@ -120,8 +135,7 @@ public class GetOrganisationQueryHandlerTests
 
         courseManagementApiClient.Setup(a => a.GetWithResponseCode<List<ProviderCourseTypeModel>>(It.Is<GetProviderCourseTypesRequest>(r => r.Ukprn == request.ukprn))).ReturnsAsync(new ApiResponse<List<ProviderCourseTypeModel>>(new List<ProviderCourseTypeModel>(), HttpStatusCode.InternalServerError, ""));
 
-        Func<Task> result = () =>
-            sut.Handle(request, CancellationToken.None);
+        Func<Task> result = () => sut.Handle(request, CancellationToken.None);
 
         await result.Should().ThrowAsync<ApiResponseException>();
     }
