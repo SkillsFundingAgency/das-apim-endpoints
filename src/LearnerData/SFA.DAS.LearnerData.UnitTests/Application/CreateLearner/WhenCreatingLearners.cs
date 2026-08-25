@@ -58,7 +58,7 @@ public class WhenCreatingLearners
             _mockEarningsApiClient.Object,
             _mockUpdateEarningsOnProgrammeRequestBuilder.Object,
             _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
-            new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = true });
+            new FeatureFlags { ApprenticeshipEarningsGeneration = true });
 
         _mockCreateDraftLearningApiPostRequestBuilder
             .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<int>()))
@@ -257,7 +257,7 @@ public class WhenCreatingLearners
             _mockEarningsApiClient.Object,
             _mockUpdateEarningsOnProgrammeRequestBuilder.Object,
             _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
-            new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = false });
+            new FeatureFlags { ApprenticeshipEarningsGeneration = false });
 
         var command = GetProcessLearnersCommand();
 
@@ -350,7 +350,7 @@ public class WhenCreatingLearners
             _mockEarningsApiClient.Object,
             _mockUpdateEarningsOnProgrammeRequestBuilder.Object,
             _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
-            new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = false });
+            new FeatureFlags { ApprenticeshipEarningsGeneration = false });
 
         var responseBody = new CreateDraftLearnerApiPutResponse
         {

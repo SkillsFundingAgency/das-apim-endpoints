@@ -29,49 +29,46 @@ public class CreateLearnerCommandHandler(
     public async Task Handle(CreateLearnerCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Handling CreateLearnerCommand for Ukprn {Ukprn}", command.Ukprn);
-        logger.LogInformation("Feature toggle ApprenticeshipCreateDraftLearner is {ApprenticeshipCreateDraftLearner}", featureFlags.ApprenticeshipCreateDraftLearner);
-        if (featureFlags.ApprenticeshipCreateDraftLearner)
+
+        var postRequest = createDraftLearningApiPostRequestBuilder.Build(command.Ukprn, command.Request, command.AcademicYear);
+
+        var learningResponse = await learningApiClient.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(postRequest);
+
+        if (!learningResponse.StatusCode.IsSuccessStatusCode())
         {
-            var postRequest = createDraftLearningApiPostRequestBuilder.Build(command.Ukprn, command.Request, command.AcademicYear);
+            logger.LogError("Failed to create draft learner. Status code: {StatusCode}", learningResponse.StatusCode);
+            throw new InvalidOperationException($"Failed to create draft learner. Status code: {learningResponse.StatusCode}.");
+        }
 
-            var learningResponse = await learningApiClient.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(postRequest);
-
-            if (!learningResponse.StatusCode.IsSuccessStatusCode())
+        if (featureFlags.ApprenticeshipEarningsGeneration)
+        {
+            if (learningResponse.Body?.Changes != null && learningResponse.Body.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.Reinstated))
             {
-                logger.LogError("Failed to create draft learner. Status code: {StatusCode}", learningResponse.StatusCode);
-                throw new InvalidOperationException($"Failed to create draft learner. Status code: {learningResponse.StatusCode}.");
+                logger.LogInformation("Reinstating learner with learning key {LearningKey}", learningResponse.Body.LearningKey);
+                var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(learningResponse.Body.LearningKey, command.Request, learningResponse.Body, (UpdateLearningRequestBody)postRequest.Data);
+                await earningsApiClient.Put(earningsOnProgrammeApiRequest);
+            }
+            else if (learningResponse.Body != null)
+            {
+                logger.LogInformation("Creating draft learner with learning key {LearningKey}", learningResponse.Body.LearningKey);
+                var createUnapprovedApprenticeshipLearningRequest = await createUnapprovedApprenticeshipLearningRequestBuilder.Build(command.Ukprn, command.Request, learningResponse.Body, (UpdateLearningRequestBody)postRequest.Data);
+                var earningsResponse = await earningsApiClient.PostWithResponseCode<object>(createUnapprovedApprenticeshipLearningRequest);
+                if (!earningsResponse.StatusCode.IsSuccessStatusCode())
+                {
+                    logger.LogError("Failed to create unapproved apprenticeship learning in earnings. Status code: {StatusCode}", earningsResponse.StatusCode);
+                    throw new InvalidOperationException($"Failed to create unapproved apprenticeship learning in earnings. Status code: {earningsResponse.StatusCode}.");
+                }
             }
 
-            if (featureFlags.ApprenticeshipEarningsGeneration)
+            if (learningResponse.Body?.RemovedLearningKey is { } removedLearningKey)
             {
-                if (learningResponse.Body?.Changes != null && learningResponse.Body.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.Reinstated))
+                logger.LogInformation("Deleting omitted course's draft earnings with learning key {RemovedLearningKey}", removedLearningKey);
+                var deleteLearningRequest = new DeleteLearningRequest(removedLearningKey);
+                var deleteResponse = await earningsApiClient.DeleteWithResponseCode<NullResponse>(deleteLearningRequest);
+                if (!deleteResponse.StatusCode.IsSuccessStatusCode())
                 {
-                    logger.LogInformation("Reinstating learner with learning key {LearningKey}", learningResponse.Body.LearningKey);
-                    var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(learningResponse.Body.LearningKey, command.Request, learningResponse.Body, (UpdateLearningRequestBody)postRequest.Data);
-                    await earningsApiClient.Put(earningsOnProgrammeApiRequest);
-                }
-                else if (learningResponse.Body != null)
-                {
-                    logger.LogInformation("Creating draft learner with learning key {LearningKey}", learningResponse.Body.LearningKey);
-                    var createUnapprovedApprenticeshipLearningRequest = await createUnapprovedApprenticeshipLearningRequestBuilder.Build(command.Ukprn, command.Request, learningResponse.Body, (UpdateLearningRequestBody)postRequest.Data);
-                    var earningsResponse = await earningsApiClient.PostWithResponseCode<object>(createUnapprovedApprenticeshipLearningRequest);
-                    if (!earningsResponse.StatusCode.IsSuccessStatusCode())
-                    {
-                        logger.LogError("Failed to create unapproved apprenticeship learning in earnings. Status code: {StatusCode}", earningsResponse.StatusCode);
-                        throw new InvalidOperationException($"Failed to create unapproved apprenticeship learning in earnings. Status code: {earningsResponse.StatusCode}.");
-                    }
-                }
-
-                if (learningResponse.Body?.RemovedLearningKey is { } removedLearningKey)
-                {
-                    logger.LogInformation("Deleting omitted course's draft earnings with learning key {RemovedLearningKey}", removedLearningKey);
-                    var deleteLearningRequest = new DeleteLearningRequest(removedLearningKey);
-                    var deleteResponse = await earningsApiClient.DeleteWithResponseCode<NullResponse>(deleteLearningRequest);
-                    if (!deleteResponse.StatusCode.IsSuccessStatusCode())
-                    {
-                        logger.LogError("Failed to delete omitted course's draft earnings. Status code: {StatusCode}", deleteResponse.StatusCode);
-                        throw new InvalidOperationException($"Failed to delete omitted course's draft earnings. Status code: {deleteResponse.StatusCode}.");
-                    }
+                    logger.LogError("Failed to delete omitted course's draft earnings. Status code: {StatusCode}", deleteResponse.StatusCode);
+                    throw new InvalidOperationException($"Failed to delete omitted course's draft earnings. Status code: {deleteResponse.StatusCode}.");
                 }
             }
         }
