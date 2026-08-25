@@ -11,8 +11,6 @@ using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Infrastructure;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.LearnerData.Configuration;
 
 namespace SFA.DAS.LearnerData.Application.CreateLearner;
 
@@ -23,8 +21,7 @@ public class CreateLearnerCommandHandler(
     ICreateDraftLearningApiPostRequestBuilder createDraftLearningApiPostRequestBuilder,
     IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
     IUpdateEarningsOnProgrammeRequestBuilder updateEarningsOnProgrammeRequestBuilder,
-    ICreateUnapprovedApprenticeshipLearningRequestBuilder createUnapprovedApprenticeshipLearningRequestBuilder,
-    FeatureFlags featureFlags) : IRequestHandler<CreateLearnerCommand>
+    ICreateUnapprovedApprenticeshipLearningRequestBuilder createUnapprovedApprenticeshipLearningRequestBuilder) : IRequestHandler<CreateLearnerCommand>
 {
     public async Task Handle(CreateLearnerCommand command, CancellationToken cancellationToken)
     {

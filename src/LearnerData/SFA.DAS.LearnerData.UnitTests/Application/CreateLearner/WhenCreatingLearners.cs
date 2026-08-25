@@ -13,7 +13,6 @@ using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.LearnerData.Configuration;
 using System.Net;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.CreateLearner;
@@ -57,8 +56,7 @@ public class WhenCreatingLearners
             _mockCreateDraftLearningApiPostRequestBuilder.Object,
             _mockEarningsApiClient.Object,
             _mockUpdateEarningsOnProgrammeRequestBuilder.Object,
-            _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
-            new FeatureFlags());
+            _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object);
 
         _mockCreateDraftLearningApiPostRequestBuilder
             .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<int>()))
