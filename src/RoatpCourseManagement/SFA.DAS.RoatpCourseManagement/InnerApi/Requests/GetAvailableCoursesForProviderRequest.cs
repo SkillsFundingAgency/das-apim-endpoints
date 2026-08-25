@@ -5,8 +5,8 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 
 public class GetAvailableCoursesForProviderRequest : IGetApiRequest
 {
-    private int _ukprn;
-    private CourseType _courseType;
+    private readonly int _ukprn;
+    private readonly CourseType _courseType;
     public GetAvailableCoursesForProviderRequest(int ukprn, CourseType courseType)
     {
         _ukprn = ukprn;
