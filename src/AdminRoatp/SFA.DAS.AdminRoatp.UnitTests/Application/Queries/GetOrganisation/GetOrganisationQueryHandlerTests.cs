@@ -3,19 +3,19 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisation;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
+using SFA.DAS.AdminRoatp.InnerApi.Models;
+using SFA.DAS.AdminRoatp.InnerApi.Requests;
 using SFA.DAS.Apim.Shared.Exceptions;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Roatp;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.AdminRoatp.UnitTests.Application.Queries.GetOrganisation;
+
 public class GetOrganisationQueryHandlerTests
 {
     [Test, MoqAutoData]
@@ -25,6 +25,7 @@ public class GetOrganisationQueryHandlerTests
         GetOrganisationQuery request,
         OrganisationResponse apiResponse)
     {
+        apiResponse.ProviderType = ProviderType.Employer;
         apiResponse.Status = OrganisationStatus.Active;
         apiClient.Setup(a => a.GetWithResponseCode<OrganisationResponse>(It.Is<GetOrganisationRequest>(r => r.GetUrl.Equals(new GetOrganisationRequest(request.ukprn).GetUrl)))).ReturnsAsync(new ApiResponse<OrganisationResponse>(apiResponse, HttpStatusCode.OK, ""));
 
@@ -69,6 +70,7 @@ public class GetOrganisationQueryHandlerTests
         GetOrganisationQuery request,
         OrganisationResponse apiResponse)
     {
+        apiResponse.ProviderType = ProviderType.Employer;
         apiResponse.Status = OrganisationStatus.Removed;
         apiClientMock.Setup(a => a.GetWithResponseCode<OrganisationResponse>(It.Is<GetOrganisationRequest>(r => r.GetUrl.Equals(new GetOrganisationRequest(request.ukprn).GetUrl)))).ReturnsAsync(new ApiResponse<OrganisationResponse>(apiResponse, HttpStatusCode.OK, ""));
 
@@ -76,6 +78,70 @@ public class GetOrganisationQueryHandlerTests
 
         result.Should().BeEquivalentTo(apiResponse, options => options.ExcludingMissingMembers());
         result!.RemovedDate.Should().Be(apiResponse.StatusDate);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_MainProvider_ReturnsCourseTypesFromCourseManagement(
+        [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> apiClientMock,
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiClient,
+        GetOrganisationQueryHandler sut,
+        GetOrganisationQuery request,
+        OrganisationResponse apiResponse,
+        List<ProviderCourseTypeModel> providerCourseTypes)
+    {
+        apiResponse.Status = OrganisationStatus.Active;
+        apiResponse.ProviderType = ProviderType.Main;
+
+        apiClientMock.Setup(a => a.GetWithResponseCode<OrganisationResponse>(It.Is<GetOrganisationRequest>(r => r.GetUrl.Equals(new GetOrganisationRequest(request.ukprn).GetUrl)))).ReturnsAsync(new ApiResponse<OrganisationResponse>(apiResponse, HttpStatusCode.OK, ""));
+
+        courseManagementApiClient.Setup(a => a.GetWithResponseCode<List<ProviderCourseTypeModel>>(It.Is<GetProviderCourseTypesRequest>(r => r.Ukprn == request.ukprn))).ReturnsAsync(new ApiResponse<List<ProviderCourseTypeModel>>(providerCourseTypes, HttpStatusCode.OK, ""));
+
+        GetOrganisationQueryResult? result =
+            await sut.Handle(request, CancellationToken.None);
+
+        result.Should().NotBeNull();
+
+        result!.AllowedCourseTypes.Should().BeEquivalentTo(
+            providerCourseTypes.Select(x => (AllowedCourseTypeModel)x));
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_MainProvider_CourseManagementApiUnsuccessfulResponse_ThrowsException(
+        [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> apiClientMock,
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiClient,
+        GetOrganisationQueryHandler sut,
+        GetOrganisationQuery request,
+        OrganisationResponse apiResponse)
+    {
+        apiResponse.Status = OrganisationStatus.Active;
+        apiResponse.ProviderType = ProviderType.Main;
+
+        apiClientMock.Setup(a => a.GetWithResponseCode<OrganisationResponse>(It.Is<GetOrganisationRequest>(r => r.GetUrl.Equals(new GetOrganisationRequest(request.ukprn).GetUrl)))).ReturnsAsync(new ApiResponse<OrganisationResponse>(apiResponse, HttpStatusCode.OK, ""));
+
+        courseManagementApiClient.Setup(a => a.GetWithResponseCode<List<ProviderCourseTypeModel>>(It.Is<GetProviderCourseTypesRequest>(r => r.Ukprn == request.ukprn))).ReturnsAsync(new ApiResponse<List<ProviderCourseTypeModel>>(new List<ProviderCourseTypeModel>(), HttpStatusCode.InternalServerError, ""));
+
+        Func<Task> result = () =>
+            sut.Handle(request, CancellationToken.None);
+
+        await result.Should().ThrowAsync<ApiResponseException>();
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_ProviderIsNotMain_CourseManagementApiIsNotInvoked(
+        [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> apiClientMock,
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiClient,
+        GetOrganisationQueryHandler sut,
+        GetOrganisationQuery request,
+        OrganisationResponse apiResponse)
+    {
+        apiResponse.Status = OrganisationStatus.Active;
+        apiResponse.ProviderType = ProviderType.Supporting;
+
+        apiClientMock.Setup(a => a.GetWithResponseCode<OrganisationResponse>(It.Is<GetOrganisationRequest>(r => r.GetUrl.Equals(new GetOrganisationRequest(request.ukprn).GetUrl)))).ReturnsAsync(new ApiResponse<OrganisationResponse>(apiResponse, HttpStatusCode.OK, ""));
+
+        await sut.Handle(request, CancellationToken.None);
+
+        courseManagementApiClient.Verify(a => a.GetWithResponseCode<List<ProviderCourseTypeModel>>(It.IsAny<GetProviderCourseTypesRequest>()), Times.Never);
     }
 }
 
