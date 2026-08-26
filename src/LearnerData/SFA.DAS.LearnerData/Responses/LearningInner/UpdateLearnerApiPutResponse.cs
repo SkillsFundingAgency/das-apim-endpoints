@@ -4,13 +4,13 @@ public class UpdateLearnerApiPutResponse : BaseLearnerApiPutResponse;
 
 public class CreateDraftLearnerApiPutResponse : BaseLearnerApiPutResponse
 {
-    public Guid LearningKey { get; set; }
     public Guid? RemovedLearningKey { get; set; }
 }
 
 public abstract class BaseLearnerApiPutResponse
 {
     public List<LearningUpdateChanges> Changes { get; set; } = [];
+    public Guid LearningKey { get; set; }
     public Guid LearningEpisodeKey { get; set; }
     public List<EpisodePrice> Prices { get; set; } = [];
 
