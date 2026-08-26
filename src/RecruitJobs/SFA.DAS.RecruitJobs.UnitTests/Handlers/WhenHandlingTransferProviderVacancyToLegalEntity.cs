@@ -1,15 +1,18 @@
-using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
-using SFA.DAS.Apim.Shared.Interfaces;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.Recruit.Contracts.ApiRequests;
-using SFA.DAS.Recruit.Contracts.ApiResponses;
-using SFA.DAS.RecruitJobs.GraphQL;
-using SFA.DAS.RecruitJobs.Handlers;
-using StrawberryShake;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
+using Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.Recruit.Contracts.ApiRequests;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
+using SFA.DAS.Recruit.Contracts.Client;
+using SFA.DAS.RecruitJobs.Domain;
+using SFA.DAS.RecruitJobs.GraphQL;
+using SFA.DAS.RecruitJobs.Handlers;
+using StrawberryShake;
 using ClosureReason = SFA.DAS.Recruit.Contracts.ApiResponses.ClosureReason;
 using OwnerType = SFA.DAS.Recruit.Contracts.ApiResponses.OwnerType;
 using VacancyStatus = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyStatus;
@@ -55,7 +58,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         Guid vacancyId,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
@@ -84,7 +87,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
@@ -125,7 +128,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
@@ -155,7 +158,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
 
         // assert
         CommonAssertions(capturedPatchRequest, expectedTransferInfo);
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/status", null, VacancyStatus.Draft));
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/status", null, VacancyStatus.Draft));
     }
 
     [Test]
@@ -166,7 +169,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
@@ -183,6 +186,9 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
             new() { ApplicationId = Guid.NewGuid(), Status = ApplicationReviewStatus.EmployerInterviewing },
             new() { ApplicationId = Guid.NewGuid(), Status = ApplicationReviewStatus.Shared },
             new() { ApplicationId = Guid.NewGuid(), Status = ApplicationReviewStatus.EmployerUnsuccessful },
+            new() { ApplicationId = Guid.NewGuid(), Status = ApplicationReviewStatus.InReview },
+            new() { ApplicationId = Guid.NewGuid(), Status = ApplicationReviewStatus.PendingShared },
+            new() { ApplicationId = Guid.NewGuid(), Status = ApplicationReviewStatus.PendingToMakeUnsuccessful },
         };
         data.Setup(x => x.Vacancies).Returns([vacancyDetails]);
         recruitGqlClient
@@ -212,15 +218,15 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
 
         // assert
         CommonAssertions(capturedPatchRequest, expectedTransferInfo);
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/status", null, VacancyStatus.Closed));
-        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/closureReason", null, ClosureReason.TransferredByEmployer));
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/status", null, VacancyStatus.Closed));
+        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/closureReason", null, ClosureReason.TransferredByEmployer));
         var closedDate = capturedPatchRequest.Data.Operations.First(x => x.path == "/closedDate").value as DateTime?;
         closedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
         capturedApplicationReviewPatches.Should().HaveCount(applicationReviews.Count);
         foreach (var patch in capturedApplicationReviewPatches)
         {
-            patch!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<ApplicationReview>("replace", "/dateSharedWithEmployer", null, null));
-            patch.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<ApplicationReview>("replace", "/hasEverBeenEmployerInterviewing", null, false));
+            patch!.Data.Operations.Should().ContainEquivalentOf(new Operation<ApplicationReview>("replace", "/dateSharedWithEmployer", null, null));
+            patch.Data.Operations.Should().ContainEquivalentOf(new Operation<ApplicationReview>("replace", "/hasEverBeenEmployerInterviewing", null, false));
         }
     }
 
@@ -233,7 +239,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
@@ -260,7 +266,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
 
         // assert
         capturedPatch!.Data.Operations.Should().ContainEquivalentOf(
-            new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<ApplicationReview>("replace", "/status", null, ApplicationReviewStatus.New));
+            new Operation<ApplicationReview>("replace", "/status", null, ApplicationReviewStatus.New));
     }
 
     [Test]
@@ -271,7 +277,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
@@ -298,7 +304,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
 
         // assert
         capturedPatch!.Data.Operations.Should().ContainEquivalentOf(
-            new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<ApplicationReview>("replace", "/status", null, ApplicationReviewStatus.Unsuccessful));
+            new Operation<ApplicationReview>("replace", "/status", null, ApplicationReviewStatus.Unsuccessful));
     }
 
     [Test]
@@ -309,7 +315,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
@@ -339,9 +345,9 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
 
         // assert
         CommonAssertions(capturedPatchRequest, expectedTransferInfo);
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/approvedDate", null, null));
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/status", null, VacancyStatus.Closed));
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/closureReason", null, ClosureReason.TransferredByEmployer));
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/approvedDate", null, null));
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/status", null, VacancyStatus.Closed));
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/closureReason", null, ClosureReason.TransferredByEmployer));
         var closedDate = capturedPatchRequest.Data.Operations.First(x => x.path == "/closedDate").value as DateTime?;
         closedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
     }
@@ -357,7 +363,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         List<VacancyReview> vacancyReviews,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
@@ -400,7 +406,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
 
         // assert
         CommonAssertions(capturedPatchRequest, expectedTransferInfo);
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/status", null, VacancyStatus.Draft));
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/status", null, VacancyStatus.Draft));
     }
 
     [Test]
@@ -413,7 +419,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         List<VacancyReview> vacancyReviews,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
@@ -448,8 +454,8 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         await sut.HandleAsync(vacancyId, TransferReason.EmployerRevokedPermission, CancellationToken.None);
 
         // assert
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<VacancyReview>("replace", "/manualOutcome", null, nameof(Domain.ManualQaOutcome.Transferred)));
-        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<VacancyReview>("replace", "/status", null, ReviewStatus.Closed));
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Operation<VacancyReview>("replace", "/manualOutcome", null, nameof(ManualQaOutcome.Transferred)));
+        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<VacancyReview>("replace", "/status", null, ReviewStatus.Closed));
         var closedDate = capturedPatchRequest.Data.Operations.First(x => x.path == "/closedDate").value as DateTime?;
         closedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
     }
@@ -464,7 +470,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         List<VacancyReview> vacancyReviews,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
@@ -506,7 +512,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
@@ -553,8 +559,8 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         capturedApplicationReviewPatches.Should().HaveCount(applicationReviews.Count);
         foreach (var patch in capturedApplicationReviewPatches)
         {
-            patch!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<ApplicationReview>("replace", "/dateSharedWithEmployer", null, null));
-            patch.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<ApplicationReview>("replace", "/hasEverBeenEmployerInterviewing", null, false));
+            patch!.Data.Operations.Should().ContainEquivalentOf(new Operation<ApplicationReview>("replace", "/dateSharedWithEmployer", null, null));
+            patch.Data.Operations.Should().ContainEquivalentOf(new Operation<ApplicationReview>("replace", "/hasEverBeenEmployerInterviewing", null, false));
         }
     }
 
@@ -562,10 +568,10 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     {
         // these are common changes irrespective of the vacancy status
         capturedPatchRequest.Should().NotBeNull();
-        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/ownerType", null, OwnerType.Employer));
-        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/contact", null, null));
-        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/submittedByUserId", null, null));
-        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/reviewRequestedByUserId", null, null));
+        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/ownerType", null, OwnerType.Employer));
+        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/contact", null, null));
+        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/submittedByUserId", null, null));
+        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/reviewRequestedByUserId", null, null));
         var transferInfo = capturedPatchRequest.Data.Operations.First(x => x.path == "/transferInfo").value as TransferInfo;
         transferInfo.Should().BeEquivalentTo(expectedTransferInfo, opt => opt.Excluding(x => x.TransferredDate));
         transferInfo.TransferredDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
