@@ -4,16 +4,20 @@ using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Approvals.InnerApi.Requests;
 
-public class GetInvalidIlrChangesRequest(long apprenticeshipId, long providerId) : IGetApiRequest
+public class GetInvalidIlrChangesRequest(long apprenticeshipId, long providerId, string path = "invalid-ilr-changes") : IGetApiRequest
 {
+    public const string InvalidIlrChangesPath = "invalid-ilr-changes";
+    public const string DeclinedChangesPath = "declined-changes";
+
     public long ApprenticeshipId { get; } = apprenticeshipId;
     public long ProviderId { get; } = providerId;
-    public string GetUrl => $"api/apprenticeships/{ApprenticeshipId}/invalid-ilr-changes?providerId={ProviderId}";
+    public string Path { get; } = path;
+    public string GetUrl => $"api/apprenticeships/{ApprenticeshipId}/{Path}?providerId={ProviderId}";
 }
 
-public class PostInvalidIlrChangesRequest(long apprenticeshipId, PostInvalidIlrChangesRequestData data) : IPostApiRequest
+public class PostInvalidIlrChangesRequest(long apprenticeshipId, PostInvalidIlrChangesRequestData data, string path = GetInvalidIlrChangesRequest.InvalidIlrChangesPath) : IPostApiRequest
 {
-    public string PostUrl => $"api/apprenticeships/{apprenticeshipId}/invalid-ilr-changes";
+    public string PostUrl => $"api/apprenticeships/{apprenticeshipId}/{path}";
     public object Data { get; set; } = data;
 }
 
