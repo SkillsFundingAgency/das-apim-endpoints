@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Approvals.Api.Models.Apprentices;
 using SFA.DAS.Approvals.Application.InvalidIlrChanges.Commands;
 using SFA.DAS.Approvals.Application.InvalidIlrChanges.Queries;
+using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices;
@@ -67,6 +68,51 @@ public class WhenGettingAndPostingInvalidIlrChanges
                 command.ProviderId == providerId &&
                 command.ApprenticeshipId == apprenticeshipId &&
                 command.UserInfo == request.UserInfo &&
+                command.Acknowledgements == request.Acknowledgements),
+            It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task GetDeclinedChanges_ThenSendsQueryWithDeclinedPath(
+        long providerId,
+        long apprenticeshipId,
+        GetInvalidIlrChangesResponse mediatorResult,
+        [Frozen] Mock<IMediator> mediator,
+        [Greedy] ApprenticesController controller)
+    {
+        mediator.Setup(m => m.Send(
+                It.Is<GetInvalidIlrChangesQuery>(query =>
+                    query.ProviderId == providerId &&
+                    query.ApprenticeshipId == apprenticeshipId &&
+                    query.InnerPath == GetInvalidIlrChangesRequest.DeclinedChangesPath),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatorResult);
+
+        var result = await controller.GetDeclinedChanges(providerId, apprenticeshipId) as OkObjectResult;
+
+        result.Should().NotBeNull();
+        result!.Value.Should().BeEquivalentTo(mediatorResult);
+    }
+
+    [Test, MoqAutoData]
+    public async Task PostDeclinedChanges_ThenSendsTheAcknowledgeCommandWithDeclinedPath(
+        long providerId,
+        long apprenticeshipId,
+        AcknowledgeInvalidIlrChangesApiRequest request,
+        [Frozen] Mock<IMediator> mediator,
+        [Greedy] ApprenticesController controller)
+    {
+        mediator.Setup(m => m.Send(It.IsAny<AcknowledgeInvalidIlrChangesCommand>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var result = await controller.AcknowledgeDeclinedChanges(providerId, apprenticeshipId, request);
+
+        result.Should().BeOfType<OkResult>();
+        mediator.Verify(m => m.Send(
+            It.Is<AcknowledgeInvalidIlrChangesCommand>(command =>
+                command.ProviderId == providerId &&
+                command.ApprenticeshipId == apprenticeshipId &&
+                command.InnerPath == GetInvalidIlrChangesRequest.DeclinedChangesPath &&
                 command.Acknowledgements == request.Acknowledgements),
             It.IsAny<CancellationToken>()), Times.Once);
     }
