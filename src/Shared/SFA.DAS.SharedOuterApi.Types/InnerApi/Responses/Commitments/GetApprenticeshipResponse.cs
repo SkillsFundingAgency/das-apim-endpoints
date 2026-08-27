@@ -66,4 +66,5 @@ public class GetApprenticeshipResponse : IPartyResource
     public int? EmployerVerificationStatus { get; set; }
     public string EmployerVerificationNotes { get; set; }
     public bool HasChangeHistory { get; set; }
+    public bool HasAutoApprovedRequests { get; set; }
 }
