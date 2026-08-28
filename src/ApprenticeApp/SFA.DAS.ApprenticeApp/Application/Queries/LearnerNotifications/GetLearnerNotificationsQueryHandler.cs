@@ -27,7 +27,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.LearnerNotifications
 
             return new GetLearnerNotificationsQueryResult
             {
-                Notifications = result.Notifications
+                 Notifications = result?.Notifications
             };
         }
     }
