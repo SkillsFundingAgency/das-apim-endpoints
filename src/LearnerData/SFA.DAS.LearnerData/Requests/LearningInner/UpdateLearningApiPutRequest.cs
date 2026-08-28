@@ -1,4 +1,5 @@
 using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Common.Domain.Types;
 using SFA.DAS.LearnerData.Shared;
 
 namespace SFA.DAS.LearnerData.Requests.LearningInner
@@ -71,6 +72,7 @@ namespace SFA.DAS.LearnerData.Requests.LearningInner
     {
         public DateTime? WithdrawalDate { get; set; }
         public string TrainingCode { get; set; }
+        public LearningType? LearningType { get; set; } //todo for now this is nullable because we are not sending it/using it on the PUT, but it will be needed when we implement that
     }
 
     public class BreakInLearning

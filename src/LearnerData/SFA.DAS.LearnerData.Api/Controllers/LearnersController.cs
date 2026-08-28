@@ -7,6 +7,7 @@ using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses;
+using SFA.DAS.LearnerData.Services.ShortCourses;
 using System.Net;
 using MediatR;
 
@@ -67,12 +68,17 @@ public class LearnersController(
             await mediator.Send(new CreateLearnerCommand
             {
                 CorrelationId = correlationId,
-                ReceivedOn = DateTime.Now,
+                ReceivedOn = DateTime.UtcNow,
                 Request = dataRequest,
                 Ukprn = ukprn,
                 AcademicYear = academicYear
             });
             return Accepted(new CorrelationResponse {CorrelationId = correlationId});
+        }
+        catch (InvalidCourseException e)
+        {
+            logger.LogError(e, "Invalid course code when creating learner");
+            return new StatusCodeResult((int)HttpStatusCode.UnprocessableEntity);
         }
         catch (Exception e)
         {
@@ -92,7 +98,9 @@ public class LearnersController(
             {
                 LearnerKey = learnerKey,
                 UpdateLearnerRequest = request,
-                Ukprn = ukprn
+                Ukprn = ukprn,
+                CorrelationId = Guid.NewGuid(),
+                ReceivedOn = DateTime.UtcNow
             });
             return Accepted();
         }

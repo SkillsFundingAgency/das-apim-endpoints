@@ -1,14 +1,20 @@
 using AutoFixture;
 using Microsoft.Extensions.Logging;
+using NServiceBus;
+using SFA.DAS.Common.Domain.Types;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.LearnerData.Events;
+using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using SFA.DAS.Apim.Shared.Models;
 using System.Net;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.LearnerData.Configuration;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner;
 
@@ -25,6 +31,11 @@ public class WhenHandlingUpdateLearnerCommand
     private Mock<IUpdateEarningsEnglishAndMathsRequestBuilder> _updateEarningsEnglishAndMathsRequestBuilder;
     private Mock<ILearnerDataCacheService> _distributedCache;
     private Mock<ILogger<UpdateLearnerCommandHandler>> _logger;
+    private Mock<IMessageSession> _messageSession;
+    private Mock<IApprovedApprenticeshipExistsChecker> _approvedApprenticeshipExistsChecker;
+    private Mock<ICourseService> _courseService;
+    private Mock<ILearnerDataEventMapper> _learnerDataEventMapper;
+    private FeatureFlags _featureFlags;
     private UpdateLearnerCommandHandler _sut;
 #pragma warning restore CS8618 // Non-nullable field, instantiated in SetUp method
 
@@ -40,6 +51,11 @@ public class WhenHandlingUpdateLearnerCommand
         _updateEarningsLearningSupportRequestBuilder = new Mock<IUpdateEarningsLearningSupportRequestBuilder>();
         _distributedCache = new Mock<ILearnerDataCacheService>();
         _logger = new Mock<ILogger<UpdateLearnerCommandHandler>>();
+        _messageSession = new Mock<IMessageSession>();
+        _approvedApprenticeshipExistsChecker = new Mock<IApprovedApprenticeshipExistsChecker>();
+        _courseService = new Mock<ICourseService>();
+        _learnerDataEventMapper = new Mock<ILearnerDataEventMapper>();
+        _featureFlags = new FeatureFlags { ApprenticeshipUpdateLearner = true };
         _sut = new UpdateLearnerCommandHandler(
             _logger.Object,
             _learningApiClient.Object,
@@ -48,7 +64,16 @@ public class WhenHandlingUpdateLearnerCommand
             _updateEarningsOnProgrammeRequestBuilder.Object,
             _updateEarningsEnglishAndMathsRequestBuilder.Object,
             _updateEarningsLearningSupportRequestBuilder.Object,
-            _distributedCache.Object);
+            _distributedCache.Object,
+            _messageSession.Object,
+            _approvedApprenticeshipExistsChecker.Object,
+            _courseService.Object,
+            _learnerDataEventMapper.Object,
+            _featureFlags);
+
+        _approvedApprenticeshipExistsChecker
+            .Setup(x => x.Exists(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<DateTime>()))
+            .ReturnsAsync(true);
     }
 
     [Test]
@@ -66,6 +91,50 @@ public class WhenHandlingUpdateLearnerCommand
         //Assert
         _learningApiClient.Verify(x =>
             x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(apiPutRequest));
+    }
+
+    [Test]
+    public async Task Then_Learning_Is_Not_Called_When_FeatureToggle_Is_Off()
+    {
+        // Arrange
+        _featureFlags.ApprenticeshipUpdateLearner = false;
+        var command = _fixture.Create<UpdateLearnerCommand>();
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _learningApiClient.VerifyNoOtherCalls();
+        _earningsApiClient.VerifyNoOtherCalls();
+        _distributedCache.Verify(x => x.StoreLearner(command.UpdateLearnerRequest, command.Ukprn, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Test]
+    public async Task Then_LearnerDataEvent_Is_Still_Published_When_FeatureToggle_Is_Off()
+    {
+        // Arrange
+        _featureFlags.ApprenticeshipUpdateLearner = false;
+        var onProgramme = BuildOnProgramme(standardCode: 1, agreementId: "A1", startDate: new DateTime(2025, 9, 1));
+        var command = BuildCommand(onProgramme);
+
+        _approvedApprenticeshipExistsChecker
+            .Setup(x => x.Exists(command.Ukprn, command.UpdateLearnerRequest.Learner.Uln.ToString(), 1, new DateTime(2025, 9, 1)))
+            .ReturnsAsync(false);
+
+        _courseService.Setup(x => x.GetStandardDetailsById("1"))
+            .ReturnsAsync(new StandardDetailResponse { ApprenticeshipType = "Apprenticeship" });
+
+        var evt = _fixture.Create<LearnerDataEvent>();
+        _learnerDataEventMapper
+            .Setup(x => x.Build(command.Ukprn, command.UpdateLearnerRequest.Learner, onProgramme, LearningType.Apprenticeship, command.CorrelationId, command.ReceivedOn, command.UpdateLearnerRequest.ConsumerReference))
+            .Returns(evt);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _messageSession.Verify(x => x.Publish(evt, It.IsAny<PublishOptions>()), Times.Once);
+        _learningApiClient.VerifyNoOtherCalls();
     }
 
     [Test]
@@ -191,6 +260,167 @@ public class WhenHandlingUpdateLearnerCommand
 
         _earningsApiClient.VerifyNoOtherCalls();
     }
+
+    [Test]
+    public async Task Then_Publishes_A_LearnerDataEvent_When_No_Approved_Apprenticeship_Exists()
+    {
+        // Arrange
+        var onProgramme = BuildOnProgramme(standardCode: 1, agreementId: "A1", startDate: new DateTime(2025, 9, 1));
+        var command = BuildCommand(onProgramme);
+        MockLearningApiResponse();
+        MockLearningPutRequestBuilder(command);
+
+        _approvedApprenticeshipExistsChecker
+            .Setup(x => x.Exists(command.Ukprn, command.UpdateLearnerRequest.Learner.Uln.ToString(), 1, new DateTime(2025, 9, 1)))
+            .ReturnsAsync(false);
+
+        _courseService.Setup(x => x.GetStandardDetailsById("1"))
+            .ReturnsAsync(new StandardDetailResponse { ApprenticeshipType = "Apprenticeship" });
+
+        var evt = _fixture.Create<LearnerDataEvent>();
+        _learnerDataEventMapper
+            .Setup(x => x.Build(command.Ukprn, command.UpdateLearnerRequest.Learner, onProgramme, LearningType.Apprenticeship, command.CorrelationId, command.ReceivedOn, command.UpdateLearnerRequest.ConsumerReference))
+            .Returns(evt);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _messageSession.Verify(x => x.Publish(evt, It.IsAny<PublishOptions>()), Times.Once);
+    }
+
+    [Test]
+    public async Task Then_Does_Not_Publish_A_LearnerDataEvent_When_An_Approved_Apprenticeship_Already_Exists()
+    {
+        // Arrange
+        var onProgramme = BuildOnProgramme(standardCode: 1, agreementId: "A1", startDate: new DateTime(2025, 9, 1));
+        var command = BuildCommand(onProgramme);
+        MockLearningApiResponse();
+        MockLearningPutRequestBuilder(command);
+
+        _approvedApprenticeshipExistsChecker
+            .Setup(x => x.Exists(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<DateTime>()))
+            .ReturnsAsync(true);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _messageSession.VerifyNoOtherCalls();
+        _courseService.VerifyNoOtherCalls();
+    }
+
+    [Test]
+    public async Task Then_Returns_From_BreakInLearning_Do_Not_Result_In_An_Extra_LearnerDataEvent()
+    {
+        // Arrange - two OnProgs with the same StandardCode and AgreementId - Apprenticeship plus BiL return
+        var earlierOnProgramme = BuildOnProgramme(standardCode: 1, agreementId: "A1", startDate: new DateTime(2025, 9, 1));
+        var laterOnProgramme = BuildOnProgramme(standardCode: 1, agreementId: "A1", startDate: new DateTime(2026, 1, 1));
+        var command = BuildCommand(earlierOnProgramme, laterOnProgramme);
+        MockLearningApiResponse();
+        MockLearningPutRequestBuilder(command);
+
+        _approvedApprenticeshipExistsChecker
+            .Setup(x => x.Exists(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<DateTime>()))
+            .ReturnsAsync(false);
+
+        _courseService.Setup(x => x.GetStandardDetailsById("1"))
+            .ReturnsAsync(new StandardDetailResponse { ApprenticeshipType = "Apprenticeship" });
+
+        var evt = _fixture.Create<LearnerDataEvent>();
+        _learnerDataEventMapper
+            .Setup(x => x.Build(command.Ukprn, command.UpdateLearnerRequest.Learner, earlierOnProgramme, LearningType.Apprenticeship, command.CorrelationId, command.ReceivedOn, command.UpdateLearnerRequest.ConsumerReference))
+            .Returns(evt);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert - only one LearnerDataEvent published for the whole group, built from the earliest item (the original apprenticeship)
+        _approvedApprenticeshipExistsChecker.Verify(x =>
+            x.Exists(command.Ukprn, command.UpdateLearnerRequest.Learner.Uln.ToString(), 1, new DateTime(2025, 9, 1)), Times.Once);
+        _approvedApprenticeshipExistsChecker.VerifyNoOtherCalls();
+
+        _messageSession.Verify(x => x.Publish(evt, It.IsAny<PublishOptions>()), Times.Once);
+        _messageSession.Verify(x => x.Publish(It.IsAny<LearnerDataEvent>(), It.IsAny<PublishOptions>()), Times.Once);
+    }
+
+    [Test]
+    public async Task Then_Returns_From_BreakInLearning_Do_Not_Result_In_A_LearnerDataEvent_When_Already_Approved()
+    {
+        // Arrange - two OnProgs with the same StandardCode and AgreementId - Apprenticeship plus BiL return,
+        // where the original apprenticeship is already approved.
+        var earlierOnProgramme = BuildOnProgramme(standardCode: 1, agreementId: "A1", startDate: new DateTime(2025, 9, 1));
+        var laterOnProgramme = BuildOnProgramme(standardCode: 1, agreementId: "A1", startDate: new DateTime(2026, 1, 1));
+        var command = BuildCommand(earlierOnProgramme, laterOnProgramme);
+        MockLearningApiResponse();
+        MockLearningPutRequestBuilder(command);
+
+        _approvedApprenticeshipExistsChecker
+            .Setup(x => x.Exists(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<DateTime>()))
+            .ReturnsAsync(true);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert - neither the original nor the BiL return item results in a LearnerDataEvent
+        _approvedApprenticeshipExistsChecker.Verify(x =>
+            x.Exists(command.Ukprn, command.UpdateLearnerRequest.Learner.Uln.ToString(), 1, new DateTime(2025, 9, 1)), Times.Once);
+        _approvedApprenticeshipExistsChecker.VerifyNoOtherCalls();
+
+        _messageSession.VerifyNoOtherCalls();
+        _courseService.VerifyNoOtherCalls();
+    }
+
+    [Test]
+    public async Task Then_Checks_Approval_Separately_For_Different_Standard_And_Agreement_Combinations()
+    {
+        // Arrange
+        var approvedOnProgramme = BuildOnProgramme(standardCode: 1, agreementId: "A1", startDate: new DateTime(2025, 9, 1));
+        var newOnProgramme = BuildOnProgramme(standardCode: 2, agreementId: "A2", startDate: new DateTime(2026, 1, 1));
+        var command = BuildCommand(approvedOnProgramme, newOnProgramme);
+        MockLearningApiResponse();
+        MockLearningPutRequestBuilder(command);
+
+        _approvedApprenticeshipExistsChecker
+            .Setup(x => x.Exists(command.Ukprn, command.UpdateLearnerRequest.Learner.Uln.ToString(), 1, new DateTime(2025, 9, 1)))
+            .ReturnsAsync(true);
+        _approvedApprenticeshipExistsChecker
+            .Setup(x => x.Exists(command.Ukprn, command.UpdateLearnerRequest.Learner.Uln.ToString(), 2, new DateTime(2026, 1, 1)))
+            .ReturnsAsync(false);
+
+        _courseService.Setup(x => x.GetStandardDetailsById("2"))
+            .ReturnsAsync(new StandardDetailResponse { ApprenticeshipType = "Apprenticeship" });
+
+        var evt = _fixture.Create<LearnerDataEvent>();
+        _learnerDataEventMapper
+            .Setup(x => x.Build(command.Ukprn, command.UpdateLearnerRequest.Learner, newOnProgramme, LearningType.Apprenticeship, command.CorrelationId, command.ReceivedOn, command.UpdateLearnerRequest.ConsumerReference))
+            .Returns(evt);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert - only the genuinely new (StandardCode, AgreementId) combination gets published
+        _messageSession.Verify(x => x.Publish(evt, It.IsAny<PublishOptions>()), Times.Once);
+        _courseService.Verify(x => x.GetStandardDetailsById("1"), Times.Never);
+    }
+
+    private UpdateLearnerCommand BuildCommand(params OnProgrammeRequestDetails[] onProgramme)
+    {
+        var command = _fixture.Create<UpdateLearnerCommand>();
+        command.UpdateLearnerRequest.Delivery.OnProgramme = onProgramme.ToList();
+        return command;
+    }
+
+    private static OnProgrammeRequestDetails BuildOnProgramme(int standardCode, string agreementId, DateTime startDate)
+    {
+        var fixture = new Fixture();
+        var onProgramme = fixture.Create<OnProgrammeRequestDetails>();
+        onProgramme.StandardCode = standardCode;
+        onProgramme.AgreementId = agreementId;
+        onProgramme.StartDate = startDate;
+        return onProgramme;
+    }
+
     /// <returns>LearningKey</returns>
     protected Guid MockLearningApiResponse()
     {
