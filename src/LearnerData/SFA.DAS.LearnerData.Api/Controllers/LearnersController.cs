@@ -68,7 +68,7 @@ public class LearnersController(
             await mediator.Send(new CreateLearnerCommand
             {
                 CorrelationId = correlationId,
-                ReceivedOn = DateTime.Now,
+                ReceivedOn = DateTime.UtcNow,
                 Request = dataRequest,
                 Ukprn = ukprn,
                 AcademicYear = academicYear
@@ -98,7 +98,9 @@ public class LearnersController(
             {
                 LearnerKey = learnerKey,
                 UpdateLearnerRequest = request,
-                Ukprn = ukprn
+                Ukprn = ukprn,
+                CorrelationId = Guid.NewGuid(),
+                ReceivedOn = DateTime.UtcNow
             });
             return Accepted();
         }

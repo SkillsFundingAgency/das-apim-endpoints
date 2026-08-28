@@ -32,19 +32,9 @@ public class UpdateLearningRequestBodyBuilder(
 
     public UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest, int academicYear, LearningType learningType)
     {
-        var baseLearner = new LearnerRequestDetails
-        {
-            FirstName = createLearnerRequest.Learner.FirstName,
-            LastName = createLearnerRequest.Learner.LastName,
-            Email = createLearnerRequest.Learner.Email,
-            Dob = createLearnerRequest.Learner.Dob ?? DateTime.MinValue,
-            HasEhcp = createLearnerRequest.Learner.HasEhcp ?? false,
-            Uln = createLearnerRequest.Learner.Uln
-        };
-
         return BuildInternal(
             ukprn,
-            baseLearner,
+            createLearnerRequest.Learner,
             createLearnerRequest.Delivery.EnglishAndMaths?.Cast<MathsAndEnglish>().ToList(),
             createLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(),
             createLearnerRequest.EnglishAndMathsLearningSupport(),

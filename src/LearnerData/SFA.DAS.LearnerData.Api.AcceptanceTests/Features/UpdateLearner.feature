@@ -85,3 +85,17 @@ Scenario: Care updated
 	When the learner is updated
 	Then a on-programme update request is sent to the earnings domain
 	And sld data is stored to the cache
+
+Scenario: Already-approved subsequent apprenticeship is not resent to Approvals (via LearnerData)
+	Given there is a learner
+	And the learner submits an OnProgramme item for a subsequent apprenticeship
+	And that apprenticeship is already approved
+	When the learner is updated
+	Then no LearnerDataEvent is published
+
+Scenario: New subsequent apprenticeship is sent to Approvals (via LearnerData)
+	Given there is a learner
+	And the learner submits an OnProgramme item for a subsequent apprenticeship
+	And that apprenticeship is not yet approved
+	When the learner is updated
+	Then a LearnerDataEvent is published
