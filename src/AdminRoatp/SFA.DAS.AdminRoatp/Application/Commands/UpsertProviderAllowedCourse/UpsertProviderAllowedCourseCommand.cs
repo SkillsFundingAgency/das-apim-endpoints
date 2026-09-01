@@ -9,4 +9,5 @@ public class UpsertProviderAllowedCourseCommand : IRequest
     public DateTime? LastDateStarts { get; set; }
     public int Ukprn { get; set; }
     public string LarsCode { get; set; } = string.Empty;
+    public bool IsStartRestricted { get; set; }
 }
