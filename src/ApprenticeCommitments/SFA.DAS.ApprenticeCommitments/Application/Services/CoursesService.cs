@@ -32,5 +32,6 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
         public int Level { get; set; }
         public string Option { get; set; }
         public string ApprenticeshipType { get; set; }
+        public string CourseType { get; set; }
     }
 }
