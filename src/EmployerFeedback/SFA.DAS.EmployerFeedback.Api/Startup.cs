@@ -37,6 +37,10 @@ namespace SFA.DAS.EmployerFeedback.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(_env);
+            services.AddHsts(options =>
+            {
+                options.MaxAge = TimeSpan.FromDays(90);
+            });
 
             services.AddConfigurationOptions(_configuration);
 
@@ -51,7 +55,7 @@ namespace SFA.DAS.EmployerFeedback.Api
                 };
 
                 services.AddAuthentication(azureAdConfiguration, policies);
-            }
+            }            
 
             services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAttributesQuery).Assembly));
@@ -145,6 +149,11 @@ namespace SFA.DAS.EmployerFeedback.Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                // HSTS configured to 90 days in ConfigureServices.
+                app.UseHsts();
             }
 
             app.UseAuthentication();
