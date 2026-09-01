@@ -6,7 +6,7 @@ public interface IShortCourseLearningPaymentEventBuildContext
     public Guid LearningKey { get; set; }
     public Guid LearnerKey { get; set; }
     public LearningInnerShortCourseLearner Learner { get; set; }
-    public LearningInnerShortCourseEpisode[] Episodes { get; set; }
+    public LearningInnerShortCourseEpisode? Episode { get; set; }
 }
 
 public class LearningInnerShortCourseLearner
@@ -19,6 +19,7 @@ public class LearningInnerShortCourseLearner
 
 public class LearningInnerShortCourseEpisode
 {
+    public Guid EpisodeKey { get; set; }
     public long Ukprn { get; set; }
     public long EmployerAccountId { get; set; }
     public string EmployerType { get; set; }

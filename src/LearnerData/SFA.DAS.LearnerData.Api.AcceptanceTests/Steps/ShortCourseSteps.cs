@@ -40,6 +40,7 @@ public class ShortCourseSteps
         foreach(var learning in learnings)
         {
             learning.Learner.Uln = _fixture.Create<long>().ToString();
+            learning.Episodes = new List<LearningEpisode> { _fixture.Create<LearningEpisode>() };
         }
         var earnings = _fixture.CreateMany<GetFm99ShortCourseDataResponse>(totalCourses).ToList();
 
@@ -95,6 +96,7 @@ public class ShortCourseSteps
             {
                 new LearningEpisode
                 {
+                    LearningKey = _fixture.Create<Guid>(),
                     CourseCode = _fixture.Create<string>(),
                     IsApproved = expectedLearning.IsApproved,
                     Price = expectedLearning.Price,
@@ -132,7 +134,7 @@ public class ShortCourseSteps
                 Type = expectedEarnings[i].Type2
             });
 
-            testData.ShortCourseEarnings.Add(testData.ShortCourseLearnings.ElementAt(i).LearningKey, response);
+            testData.ShortCourseEarnings.Add(testData.ShortCourseLearnings.ElementAt(i).Episodes.Single().LearningKey, response);
         }
     }
 
@@ -182,11 +184,12 @@ public class ShortCourseSteps
 
         foreach (var learning in slicedLearnings)
         {
-            var earning = testData.ShortCourseEarnings[learning.LearningKey];
+            var learningKey = learning.Episodes.Single().LearningKey;
+            var earning = testData.ShortCourseEarnings[learningKey];
 
             _testContext.EarningsApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"/fm99/{learning.LearningKey}/shortCourses")
+                    Request.Create().WithPath($"/fm99/{learningKey}/shortCourses")
                         .WithParam("ukprn", testData.Ukprn)
                         .UsingGet())
                 .RespondWith(

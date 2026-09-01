@@ -131,5 +131,63 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
                 It.IsAny<CancellationToken>()),
                 Times.Once);
         }
+
+        [Test, MoqAutoData]
+        public async Task Update_MyApprenticeship_Returns_NoContent_Test(
+    [Frozen] Mock<IMediator> mediator,
+    [Greedy] ApprenticeController controller)
+        {
+            var httpContext = new DefaultHttpContext();
+            var apprenticeId = Guid.NewGuid();
+            var patchData = new object();
+
+            mediator
+                .Setup(x => x.Send(
+                    It.Is<PatchMyApprenticeshipCommand>(c =>
+                        c.ApprenticeId == apprenticeId &&
+                        c.PatchData == patchData),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            var result = await controller.UpdateMyApprenticeship(
+                apprenticeId,
+                patchData);
+
+            result.Should().BeOfType<NoContentResult>();
+        }
+
+        [Test, MoqAutoData]
+        public async Task Update_MyApprenticeship_Returns_NotFound_Test(
+            [Frozen] Mock<IMediator> mediator,
+            [Greedy] ApprenticeController controller)
+        {
+            var httpContext = new DefaultHttpContext();
+            var apprenticeId = Guid.NewGuid();
+            var patchData = new object();
+
+            mediator
+                .Setup(x => x.Send(
+                    It.Is<PatchMyApprenticeshipCommand>(c =>
+                        c.ApprenticeId == apprenticeId &&
+                        c.PatchData == patchData),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            var result = await controller.UpdateMyApprenticeship(
+                apprenticeId,
+                patchData);
+
+            result.Should().BeOfType<NotFoundResult>();
+        }
     }
 }

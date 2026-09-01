@@ -7,6 +7,7 @@ using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses;
+using SFA.DAS.LearnerData.Services.ShortCourses;
 using System.Net;
 using MediatR;
 
@@ -30,7 +31,7 @@ public class LearnersController(
     /// The original method can be removed when SLD stop using it.  At which point, the internal method can also be moved directly into this method.
     /// </summary>
     [HttpGet]
-    [Route("providers/{ukprn}/apprenticeships/learners")]
+    [Route("/providers/{ukprn}/apprenticeships/learners")]
     public async Task<IActionResult> GetLearners([FromRoute] string ukprn, [FromQuery] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
     {
         return await GetLearnersInternal(ukprn, academicyear, page, pagesize);
@@ -66,12 +67,18 @@ public class LearnersController(
             var correlationId = Guid.NewGuid();
             await mediator.Send(new CreateLearnerCommand
             {
-                CorrelationId = correlationId, 
-                ReceivedOn = DateTime.Now, 
+                CorrelationId = correlationId,
+                ReceivedOn = DateTime.UtcNow,
                 Request = dataRequest,
-                Ukprn = ukprn
+                Ukprn = ukprn,
+                AcademicYear = academicYear
             });
             return Accepted(new CorrelationResponse {CorrelationId = correlationId});
+        }
+        catch (InvalidCourseException e)
+        {
+            logger.LogError(e, "Invalid course code when creating learner");
+            return new StatusCodeResult((int)HttpStatusCode.UnprocessableEntity);
         }
         catch (Exception e)
         {
@@ -81,43 +88,46 @@ public class LearnersController(
     }
 
     [HttpPut]
-    [Route("/providers/{ukprn}/learning/{learningKey}")]
-    [Route("/providers/{ukprn}/apprenticeships/{learningKey}")]
-    public async Task<IActionResult> UpdateLearner([FromRoute] long ukprn, [FromRoute] Guid learningKey, [FromBody] UpdateLearnerRequest request, [FromQuery] int academicyear = 2526, [FromQuery] int collectionPeriod = 0)
+    [Route("/providers/{ukprn}/learning/{learnerKey}")]
+    [Route("/providers/{ukprn}/apprenticeships/{learnerKey}")]
+    public async Task<IActionResult> UpdateLearner([FromRoute] long ukprn, [FromRoute] Guid learnerKey, [FromBody] UpdateLearnerRequest request, [FromQuery] int academicyear = 2526, [FromQuery] int collectionPeriod = 0)
     {
         try
         {
             await mediator.Send(new UpdateLearnerCommand
             {
-                LearningKey = learningKey,
+                LearnerKey = learnerKey,
                 UpdateLearnerRequest = request,
-                Ukprn = ukprn
+                Ukprn = ukprn,
+                CorrelationId = Guid.NewGuid(),
+                ReceivedOn = DateTime.UtcNow
             });
             return Accepted();
         }
         catch (Exception e)
         {
-            logger.LogError(e, $"Internal error occurred when updating learner {learningKey}");
+            logger.LogError(e, $"Internal error occurred when updating learner {learnerKey}");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
 
     [HttpDelete]
-    [Route("/providers/{ukprn}/learning/{learningKey}")]
-    [Route("/providers/{ukprn}/apprenticeships/{learningKey}")]
-    public async Task<IActionResult> RemoveLearner([FromRoute] long ukprn, [FromRoute] Guid learningKey, [FromQuery] int academicyear = 2526)
+    [Route("/providers/{ukprn}/learning/{learnerKey}")]
+    [Route("/providers/{ukprn}/apprenticeships/{learnerKey}")]
+    public async Task<IActionResult> RemoveLearner([FromRoute] long ukprn, [FromRoute] Guid learnerKey, [FromQuery] int academicyear = 2526)
     {
         logger.LogInformation(
-            "RemoveLearner for provider {ukprn}, apprenticeship {learningKey}",
+            "RemoveLearner for provider {ukprn}, apprenticeship {learnerKey}",
             ukprn,
-            learningKey);
+            learnerKey);
 
         try
         {
             var command = new RemoveLearnerCommand
             {
-                LearningKey = learningKey,
-                Ukprn = ukprn
+                LearnerKey = learnerKey,
+                Ukprn = ukprn,
+                AcademicYear = academicyear
             };
 
             await mediator.Send(command);
@@ -127,7 +137,7 @@ public class LearnersController(
         }
         catch (Exception e)
         {
-            logger.LogError(e, $"Internal error occurred when removing learner {learningKey}");
+            logger.LogError(e, $"Internal error occurred when removing learner {learnerKey}");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -148,7 +158,7 @@ public class LearnersController(
     /// The original method can be removed when SLD stop using it.  At which point, the internal method can also be moved directly into this method.
     /// </summary>
     [HttpGet]
-    [Route("providers/{ukprn}/fm36data")]
+    [Route("/providers/{ukprn}/fm36data")]
     public async Task<IActionResult> GetFm36Data(long ukprn, [FromQuery] int academicYear, [FromQuery] byte collectionPeriod, [FromQuery] int? page, [FromQuery] int? pageSize)
     {
         return await GetFm36Data_Internal(ukprn, academicYear, collectionPeriod, page, pageSize);

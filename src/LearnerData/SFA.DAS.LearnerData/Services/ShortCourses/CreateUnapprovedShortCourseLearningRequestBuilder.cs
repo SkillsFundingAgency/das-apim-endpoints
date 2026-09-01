@@ -1,19 +1,18 @@
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
-using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Shared;
 
 namespace SFA.DAS.LearnerData.Services.ShortCourses;
 
 public interface ICreateUnapprovedShortCourseLearningRequestBuilder
 {
-    CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, ShortCourseOnProgramme onProg, Guid learningKey, Guid episodeKey, long ukprn, SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme resolvedOnProgramme);
+    CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, ShortCourseOnProgramme onProg, Guid learningKey, Guid episodeKey, long ukprn, ResolvedOnProgramme resolvedOnProgramme);
 }
 
 public class CreateUnapprovedShortCourseLearningRequestBuilder : ICreateUnapprovedShortCourseLearningRequestBuilder
 {
-    public CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, ShortCourseOnProgramme onProg, Guid learningKey, Guid episodeKey, long ukprn, SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme resolvedOnProgramme)
+    public CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, ShortCourseOnProgramme onProg, Guid learningKey, Guid episodeKey, long ukprn, ResolvedOnProgramme resolvedOnProgramme)
     {
         var milestones = onProg.Milestones.Select(x =>
             x == Milestone.LearningComplete
@@ -39,15 +38,15 @@ public class CreateUnapprovedShortCourseLearningRequestBuilder : ICreateUnapprov
             }).ToList(),
             OnProgramme = new Requests.EarningsInner.OnProgramme
             {
-                StartDate = onProg.StartDate,
-                CompletionDate = onProg.CompletionDate,
-                CourseCode = onProg.CourseCode,
-                ExpectedEndDate = onProg.ExpectedEndDate,
+                StartDate = resolvedOnProgramme.StartDate,
+                CompletionDate = resolvedOnProgramme.CompletionDate,
+                CourseCode = resolvedOnProgramme.CourseCode,
+                ExpectedEndDate = resolvedOnProgramme.ExpectedEndDate,
                 Milestones = milestones,
                 TotalPrice = resolvedOnProgramme.Price,
                 LearningType = resolvedOnProgramme.LearningType,
                 Ukprn = ukprn,
-                WithdrawalDate = onProg.WithdrawalDate
+                WithdrawalDate = resolvedOnProgramme.WithdrawalDate
             }
         };
     }

@@ -206,6 +206,12 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
 
         [JsonPropertyName("cardImage")]
         public LandingPage CardImage { get; set; }
+
+        [JsonPropertyName("videoName")]
+        public string VideoName { get; set; }
+
+        [JsonPropertyName("text")]
+        public string Text { get; set; }
     }
 
     public class PurpleContent
@@ -365,6 +371,18 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         public ImageContent Image { get; set; }
         [JsonPropertyName("Id")]
         public int Id { get; set; }
+
+        [JsonPropertyName("fromPath")]
+        public string FromPath { get; set; }
+
+        [JsonPropertyName("toPath")]
+        public string ToPath { get; set; }
+
+        [JsonPropertyName("matchType")]
+        public string MatchType { get; set; }
+
+        [JsonPropertyName("permanent")]
+        public bool? Permanent { get; set; }
     }
 
     public class MainContent

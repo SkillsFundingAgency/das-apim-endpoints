@@ -26,9 +26,11 @@ public static class AddApiServicesExtension
         services.AddTransient<ILearningSupportService, LearningSupportService>();
         services.AddTransient<IBreaksInLearningService, BreaksInLearningService>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
+        services.AddTransient<ICourseService, CourseService>();
         services.AddTransient<IUpdateLearningRequestBodyBuilder, UpdateLearningRequestBodyBuilder>();
         services.AddTransient<ICreateDraftLearningApiPostRequestBuilder, CreateDraftLearningApiPostRequestBuilder>();
         services.AddTransient<IUpdateLearningPutRequestBuilder, UpdateLearningPutRequestBuilder>();
+        services.AddTransient<ICreateUnapprovedApprenticeshipLearningRequestBuilder, CreateUnapprovedApprenticeshipLearningRequestBuilder>();
         services.AddTransient<IUpdateEarningsOnProgrammeRequestBuilder, UpdateEarningsOnProgrammeRequestBuilder>();
         services.AddTransient<IUpdateEarningsEnglishAndMathsRequestBuilder, UpdateEarningsEnglishAndMathsRequestBuilder>();
         services.AddTransient<IUpdateEarningsLearningSupportRequestBuilder, UpdateEarningsLearningSupportRequestBuilder>();
@@ -46,5 +48,7 @@ public static class AddApiServicesExtension
         services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
         services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
         services.AddTransient<IGetProviderRelationshipService, GetProviderRelationshipService>();
+        services.AddTransient<ILearnerDataEventMapper, LearnerDataEventMapper>();
+        services.AddTransient<IApprovedApprenticeshipExistsChecker, ApprovedApprenticeshipExistsChecker>();
     }
 }

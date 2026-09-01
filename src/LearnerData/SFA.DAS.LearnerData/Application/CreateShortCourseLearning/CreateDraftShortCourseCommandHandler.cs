@@ -2,7 +2,6 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.LearnerData.Application.CreateShortCourse;
 using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
@@ -14,6 +13,7 @@ using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Net;
+using SFA.DAS.Common.Domain.Types;
 
 namespace SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
 
@@ -29,8 +29,16 @@ public class CreateDraftShortCourseCommandHandler(
     ILearnerDataCacheService learnerDataCacheService
 ) : IRequestHandler<CreateDraftShortCourseCommand, CreateDraftShortCourseResult>
 {
+    private const long TemporaryUln = 9999999999;
+
     public async Task<CreateDraftShortCourseResult> Handle(CreateDraftShortCourseCommand command, CancellationToken cancellationToken)
     {
+        if (command.ShortCourseRequest.Learner.Uln == TemporaryUln)
+        {
+            logger.LogInformation("Ignoring temporary ULN {TemporaryUln} learner detected for provider {Ukprn}", TemporaryUln, command.Ukprn);
+            return new CreateDraftShortCourseResult();
+        }
+
         logger.LogInformation("Creating draft short course for provider {ProviderUkprn}", command.Ukprn);
 
         await learnerDataCacheService.StoreLearner(command.ShortCourseRequest, command.Ukprn, cancellationToken);
@@ -47,7 +55,7 @@ public class CreateDraftShortCourseCommandHandler(
 
         var correlationId = Guid.NewGuid();
 
-        foreach (var (onProg, resolvedOnProg, result) in command.ShortCourseRequest.Delivery.OnProgramme.Zip(requestData.OnProgramme, learningResponse.Body.Results))
+        foreach (var (onProg, requestOnProg, result) in command.ShortCourseRequest.Delivery.OnProgramme.Zip(requestData.OnProgramme, learningResponse.Body.Results))
         {
             if (result.IsIgnored)
             {
@@ -57,11 +65,11 @@ public class CreateDraftShortCourseCommandHandler(
 
             if (result.IsReinstated)
             {
-                await HandleReinstatedLearning(command, resolvedOnProg, result);
+                await HandleReinstatedLearning(command, requestOnProg, result);
                 continue;
             }
 
-            await HandleNewLearning(command, requestData, onProg, resolvedOnProg, result, correlationId);
+            await HandleNewLearning(command, requestData, onProg, requestOnProg, result, correlationId);
         }
 
         foreach (var removedResult in learningResponse.Body.Results.Where(r => r.IsRemoved))
@@ -75,9 +83,9 @@ public class CreateDraftShortCourseCommandHandler(
     private async Task HandleRemovedLearning(CreateShortCoursePostResponse removedResult, string learnerRef)
     {
         logger.LogInformation("Removing omitted Learning {LearningKey} / {CourseCode} from Earnings",
-            removedResult.LearningKey, removedResult.CourseCode);
+            removedResult.LearningKey, removedResult.Episode!.CourseCode);
 
-        var earningsRequest = new DeleteShortCourseEarningsRequest(removedResult.LearningKey, removedResult.EpisodeKey, removedResult.LearnerKey, learnerRef);
+        var earningsRequest = new DeleteShortCourseEarningsRequest(removedResult.LearningKey, removedResult.Episode!.EpisodeKey, removedResult.LearnerKey, learnerRef);
         var earningsResponse = await earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest, true);
 
         if (!earningsResponse.StatusCode.IsSuccessStatusCode())
@@ -90,32 +98,53 @@ public class CreateDraftShortCourseCommandHandler(
         logger.LogInformation("Earnings removed for omitted Learning {LearningKey}", removedResult.LearningKey);
     }
 
-    private async Task HandleReinstatedLearning(CreateDraftShortCourseCommand command, OnProgramme resolvedOnProg, CreateShortCoursePostResponse result)
+    private async Task HandleReinstatedLearning(CreateDraftShortCourseCommand command, OnProgramme requestOnProg, CreateShortCoursePostResponse result)
     {
-        var earningsPutBody = updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(resolvedOnProg, result.LearnerKey, command.ShortCourseRequest.Learner.LearnerRef);
+        var earningsOnProg = ResolveOnProgrammeFromLearningResponse(requestOnProg, result);
+        var earningsPutBody = updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(earningsOnProg, result.LearnerKey, command.ShortCourseRequest.Learner.LearnerRef);
         await earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
-            new UpdateShortCourseOnProgrammeEarningPutRequest(result.LearningKey, result.EpisodeKey, earningsPutBody));
+            new UpdateShortCourseOnProgrammeEarningPutRequest(result.LearningKey, result.Episode!.EpisodeKey, earningsPutBody));
     }
 
     private async Task HandleNewLearning(
         CreateDraftShortCourseCommand command,
         CreateDraftShortCourseRequest requestData,
         ShortCourseOnProgramme onProg,
-        OnProgramme resolvedOnProg,
+        OnProgramme requestOnProg,
         CreateShortCoursePostResponse result,
         Guid correlationId)
     {
-        var earningsRequestData = createUnapprovedShortCourseLearningRequestBuilder.Build(command.ShortCourseRequest, onProg, result.LearningKey, result.EpisodeKey, command.Ukprn, resolvedOnProg);
+        var earningsOnProg = ResolveOnProgrammeFromLearningResponse(requestOnProg, result);
+        var earningsRequestData = createUnapprovedShortCourseLearningRequestBuilder.Build(command.ShortCourseRequest, onProg, result.LearningKey, result.Episode!.EpisodeKey, command.Ukprn, earningsOnProg);
         await earningsApiClient.Post(new SFA.DAS.LearnerData.Requests.EarningsInner.PostCreateUnapprovedShortCourseLearningRequest(earningsRequestData));
 
-        await messageSession.Publish(MapToEvent(command.Ukprn, requestData, onProg, resolvedOnProg, command.ShortCourseRequest.ConsumerReference, correlationId));
+        await messageSession.Publish(MapToEvent(command.Ukprn, requestData, onProg, earningsOnProg, command.ShortCourseRequest.ConsumerReference, correlationId));
+    }
+
+    private static ResolvedOnProgramme ResolveOnProgrammeFromLearningResponse(OnProgramme requestOnProg, CreateShortCoursePostResponse result)
+    {
+        var episode = result.Episode!;
+
+        return new ResolvedOnProgramme
+        {
+            CourseCode = episode.CourseCode,
+            Ukprn = episode.Ukprn,
+            StartDate = episode.StartDate,
+            ExpectedEndDate = episode.PlannedEndDate,
+            CompletionDate = episode.CompletionDate,
+            WithdrawalDate = episode.WithdrawalDate,
+            WithdrawalReasonCode = requestOnProg.WithdrawalReasonCode,
+            Milestones = requestOnProg.Milestones,
+            Price = requestOnProg.Price,
+            LearningType = requestOnProg.LearningType
+        };
     }
 
     private static LearnerDataEvent MapToEvent(
         long ukprn,
         CreateDraftShortCourseRequest request,
         ShortCourseOnProgramme onProg,
-        OnProgramme resolvedOnProg,
+        ResolvedOnProgramme earningsOnProg,
         string consumerReference,
         Guid correlationId)
     {
@@ -127,20 +156,20 @@ public class CreateDraftShortCourseCommandHandler(
             LastName = request.LearnerUpdateDetails.LastName,
             Email = request.LearnerUpdateDetails.EmailAddress,
             DoB = request.LearnerUpdateDetails.DateOfBirth,
-            StartDate = resolvedOnProg.StartDate,
-            PlannedEndDate = resolvedOnProg.ExpectedEndDate,
+            StartDate = earningsOnProg.StartDate,
+            PlannedEndDate = earningsOnProg.ExpectedEndDate,
             PercentageLearningToBeDelivered = 100,
             EpaoPrice = 0,
-            TrainingPrice = (int)resolvedOnProg.Price,
+            TrainingPrice = (int)earningsOnProg.Price,
             IsFlexiJob = false,
             PlannedOTJTrainingHours = 0,
             AgreementId = onProg.AgreementId,
             StandardCode = 0,
             ConsumerReference = consumerReference,
-            LarsCode = resolvedOnProg.CourseCode,
+            LarsCode = earningsOnProg.CourseCode,
             CorrelationId = correlationId,
             ReceivedDate = DateTime.UtcNow,
-            LearningType = (LearningType)resolvedOnProg.LearningType
+            LearningType = (LearningType)earningsOnProg.LearningType
         };
     }
 }
