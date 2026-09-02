@@ -7,5 +7,5 @@ namespace SFA.DAS.Approvals.Application.ApprovalRequest.Commands;
 public class UpdateApprovalRequestAlertAcknowledgeCommand : IRequest
 {
     public long ApprenticeshipId { get; set; }
-    public List<UpdateApprovalRequestAlertAcknowledgeItem> ApprovalRequestAlerts { get; set; } 
+    public List<UpdateApprovalRequestAlertAcknowledgeItem> ApprovalRequestAlerts { get; set; }
 }

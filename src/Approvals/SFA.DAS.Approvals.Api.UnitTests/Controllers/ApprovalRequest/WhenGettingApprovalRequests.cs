@@ -23,10 +23,10 @@ public class WhenGettingApprovalRequests
 
         var controllerResult = await controller.GetApprovalRequest(apprenticeshipId, 1) as ObjectResult;
 
-        Assert.That(controllerResult, Is.Not.Null);
+        controllerResult.Should().NotBeNull();
         controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
         var model = controllerResult.Value as GetApprovalRequestQueryResult;
-        Assert.That(model, Is.Not.Null);
+        model.Should().NotBeNull();
         model.ApprenticeName.Should().Be(mediatorResult.ApprenticeName);
         model.ApprovalRequests.Should().BeEquivalentTo(mediatorResult.ApprovalRequests);
     }

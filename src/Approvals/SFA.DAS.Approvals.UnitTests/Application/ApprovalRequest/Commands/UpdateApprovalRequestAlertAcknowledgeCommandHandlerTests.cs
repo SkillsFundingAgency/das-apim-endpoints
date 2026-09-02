@@ -12,7 +12,6 @@ namespace SFA.DAS.Approvals.UnitTests.Application.ApprovalRequest.Commands;
 
 public class UpdateApprovalRequestAlertAcknowledgeCommandHandlerTests
 {
-    private UpdateApprovalRequestAlertAcknowledgeRequest _request;
     private UpdateApprovalRequestAlertAcknowledgeCommand command;
     private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient;
     private UpdateApprovalRequestAlertAcknowledgeCommandHandler _handler;
@@ -21,7 +20,6 @@ public class UpdateApprovalRequestAlertAcknowledgeCommandHandlerTests
     public void Setup()
     {
         var fixture = new Fixture();
-        _request = fixture.Create<UpdateApprovalRequestAlertAcknowledgeRequest>();
         command = fixture.Create<UpdateApprovalRequestAlertAcknowledgeCommand>();
         apiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
         _handler = new UpdateApprovalRequestAlertAcknowledgeCommandHandler(apiClient.Object);
@@ -35,7 +33,13 @@ public class UpdateApprovalRequestAlertAcknowledgeCommandHandlerTests
             .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.OK, string.Empty));
 
         await _handler.Handle(command, CancellationToken.None);
+
         apiClient.Verify(x => x.PutWithResponseCode<NullResponse>
-        (It.Is<UpdateApprovalRequestAlertAcknowledgeRequest>(t => t.ApprenticeshipId == command.ApprenticeshipId)), Times.Once);
+        (It.Is<UpdateApprovalRequestAlertAcknowledgeRequest>(t => t.ApprenticeshipId == command.ApprenticeshipId
+        && ((Body)t.Data).ApprovalRequestAlerts.Count == command.ApprovalRequestAlerts.Count
+        && ((Body)t.Data).ApprovalRequestAlerts[0].ApprovalRequestId == command.ApprovalRequestAlerts[0].ApprovalRequestId
+        && ((Body)t.Data).ApprovalRequestAlerts[0].EmployerAcknowledgedAt == command.ApprovalRequestAlerts[0].EmployerAcknowledgedAt
+        && ((Body)t.Data).ApprovalRequestAlerts[0].EmployerAcknowledgedBy == command.ApprovalRequestAlerts[0].EmployerAcknowledgedBy
+        )), Times.Once);
     }
 }
