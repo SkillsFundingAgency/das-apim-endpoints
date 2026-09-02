@@ -16,7 +16,8 @@ public class GetLevySummaryByHashedAccountIdQueryHandler(IFinanceApiClient<Finan
         var levySummary = await financeApiClient.Get<GetLevySummaryByHashedAccountIdResponse>(new GetLevySummaryByHashedAccountIdRequest(request.HashedAccountId));
         return new GetLevySummaryByHashedAccountIdQueryResult
         {
-            CurrentLevyFunds = levySummary.CurrentLevyFunds
+            CurrentLevyFunds = levySummary.CurrentLevyFunds,
+            TotalLevyDeclaredLast12Months = levySummary.TotalLevyDeclaredLast12Months
         };
     }
 }
