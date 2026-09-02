@@ -148,7 +148,7 @@ public class UpsertProviderAllowedCourseCommandHandlerTests
         x => x.PutWithResponseCode<NullResponse>(It.Is<UpdateCourseTypesRequest>(r =>
                 r.ukprn == command.Ukprn &&
                 ((UpdateCourseTypesModel)r.Data).UserId == command.UserId &&
-                ((UpdateCourseTypesModel)r.Data).CourseTypeIds.SequenceEqual(new[] { 2 })
+                ((UpdateCourseTypesModel)r.Data).CourseTypeIds.SequenceEqual(new[] { (int)CourseType.ShortCourse })
             )),
         Times.Once);
     }

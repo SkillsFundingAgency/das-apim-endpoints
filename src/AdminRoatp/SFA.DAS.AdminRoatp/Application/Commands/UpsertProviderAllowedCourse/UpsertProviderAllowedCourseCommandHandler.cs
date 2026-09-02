@@ -34,7 +34,7 @@ public class UpsertProviderAllowedCourseCommandHandler(IRoatpCourseManagementApi
 
         if (standard.Body.CourseType == CourseType.ShortCourse)
         {
-            var updateCourseTypes = new UpdateCourseTypesModel([2], command.UserId);
+            var updateCourseTypes = new UpdateCourseTypesModel([(int)CourseType.ShortCourse], command.UserId);
 
             var updateCourseTypesrequest = new UpdateCourseTypesRequest(command.Ukprn, updateCourseTypes);
 
