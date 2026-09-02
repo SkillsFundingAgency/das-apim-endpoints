@@ -124,7 +124,8 @@ namespace SFA.DAS.Campaign.Models
                     Image = ProcessSectionImage(hub, entry),
                     StepperLinks = ProcessSectionLinks(hub, entry.Fields.StepperLinks),
                     StandardLinks = ProcessSectionLinks(hub, entry.Fields.StandardLinks),
-                    CtaPanel = ProcessCtaPanel(hub, entry.Fields.CtaPanel)
+                    CtaPanel = ProcessCtaPanel(hub, entry.Fields.CtaPanel),
+                    StatisticsSections = ProcessStatisticsSections(hub, entry.Fields.StatisticsSections)
                 })
                 .ToList();
         }
@@ -149,6 +150,29 @@ namespace SFA.DAS.Campaign.Models
                     MetaDescription = entry.Fields.MetaDescription,
                     LandingPage = SetLandingPageDetails(hub, entry),
                     CtaPanel = GetPageType(entry) == PageType.CtaPanel ? BuildCtaPanel(entry) : null
+                })
+                .ToList();
+        }
+
+        private static List<StatsSectionModel> ProcessStatisticsSections(HubCmsContent hub, List<HubLink> statisticsSections)
+        {
+            if (statisticsSections == null || hub.Includes?.Entry == null)
+            {
+                return new List<StatsSectionModel>();
+            }
+
+            return statisticsSections
+                .Select(statistic => FindEntry(hub, statistic?.Sys?.Id))
+                .Where(entry => entry != null
+                                && ContentfulConstants.StatsSectionContentTypeId.Equals(entry.Sys.ContentType?.Sys?.Id,
+                                    StringComparison.CurrentCultureIgnoreCase))
+                .Select(entry => new StatsSectionModel
+                {
+                    Text = entry.Fields.Text,
+                    HighlightValue = entry.Fields.HighlightValue,
+                    QuoteName = entry.Fields.QuoteName,
+                    QuoteRole = entry.Fields.QuoteRole,
+                    ReferenceText = entry.Fields.ReferenceText
                 })
                 .ToList();
         }

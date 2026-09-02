@@ -11,5 +11,6 @@ namespace SFA.DAS.Campaign.Models
         public List<HubSectionLinkModel> StepperLinks { get; set; }
         public List<HubSectionLinkModel> StandardLinks { get; set; }
         public CtaPanelModel CtaPanel { get; set; }
+        public List<StatsSectionModel> StatisticsSections { get; set; }
     }
 }

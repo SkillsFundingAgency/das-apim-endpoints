@@ -166,6 +166,24 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         [JsonPropertyName("ctaPanel")]
         public HubLink CtaPanel { get; set; }
 
+        [JsonPropertyName("statisticsSections")]
+        public List<HubLink> StatisticsSections { get; set; }
+
+        [JsonPropertyName("text")]
+        public string Text { get; set; }
+
+        [JsonPropertyName("highlightValue")]
+        public string HighlightValue { get; set; }
+
+        [JsonPropertyName("quoteName")]
+        public string QuoteName { get; set; }
+
+        [JsonPropertyName("quoteRole")]
+        public string QuoteRole { get; set; }
+
+        [JsonPropertyName("referenceText")]
+        public string ReferenceText { get; set; }
+
         [JsonPropertyName("description")]
         public string Description { get; set; }
 
