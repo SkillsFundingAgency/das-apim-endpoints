@@ -29,7 +29,8 @@ namespace SFA.DAS.Campaign.Models
                 ProcessCards(hub, item.Fields.Cards2),
                 ProcessCards(hub, item.Fields.Cards3),
                 ProcessSections(hub, item.Fields.Sections),
-                ProcessHeaderImage(hub, item), menu, banners);
+                ProcessHeaderImage(hub, item),
+                ProcessCarousel(hub, item.Fields.Carousel), menu, banners);
         }
 
         private static readonly PageType[] CardPageTypes = { PageType.Article, PageType.LandingPage };
@@ -217,6 +218,23 @@ namespace SFA.DAS.Campaign.Models
                 : hub.Includes?.Entry?.FirstOrDefault(entry => id.Equals(entry.Sys?.Id));
         }
 
+        private static List<ContentItem> ProcessCarousel(HubCmsContent hub, List<HubLink> carouselItems)
+        {
+            if (carouselItems == null || hub.Includes?.Asset == null)
+            {
+                return new List<ContentItem>();
+            }
+
+            return carouselItems
+                .Where(image => image?.Sys?.Id != null)
+                .Select(image => new ContentItem
+                {
+                    Type = image.Sys.LinkType,
+                    EmbeddedResource = hub.GetEmbeddedResource(image.Sys.Id)
+                })
+                .ToList();
+        }
+
         private static ContentItem ProcessHeaderImage(HubCmsContent hub, HubItem item)
         {
             if (item.Fields.HeaderImage == null)
@@ -231,7 +249,7 @@ namespace SFA.DAS.Campaign.Models
             };
         }
 
-        private static HubPageModel GenerateHubPageModel(HubItem item, PageType pageTypeResult, List<CardPageModel> cards, List<CardPageModel> cards2, List<CardPageModel> cards3, List<HubSectionModel> sections, ContentItem headerImage, MenuPageModel.MenuPageContent menu, BannerPageModel banners)
+        private static HubPageModel GenerateHubPageModel(HubItem item, PageType pageTypeResult, List<CardPageModel> cards, List<CardPageModel> cards2, List<CardPageModel> cards3, List<HubSectionModel> sections, ContentItem headerImage, List<ContentItem> carousel, MenuPageModel.MenuPageContent menu, BannerPageModel banners)
         {
             return new HubPageModel()
             {
@@ -253,7 +271,8 @@ namespace SFA.DAS.Campaign.Models
                     CardsTitle2 = item.Fields.CardsTitle2,
                     CardsTitle3 = item.Fields.CardsTitle3,
                     Sections = sections,
-                    HeaderImage = headerImage
+                    HeaderImage = headerImage,
+                    Carousel = carousel
                 },
                 MenuContent = menu,
                 BannerModels = banners
@@ -270,6 +289,7 @@ namespace SFA.DAS.Campaign.Models
             public string CardsTitle3 { get; set; }
             public List<CardPageModel> Cards3 { get; set; }
             public List<HubSectionModel> Sections { get; set; }
+            public List<ContentItem> Carousel { get; set; }
         }
     }
 }

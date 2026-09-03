@@ -123,6 +123,9 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
 
         [JsonPropertyName("sections")]
         public List<HubLink> Sections { get; set; }
+
+        [JsonPropertyName("carousel")]
+        public List<HubLink> Carousel { get; set; }
     }
 
     public class HubEntryFields

@@ -350,6 +350,86 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
 
         [Test, RecursiveMoqAutoData]
+        public void Then_The_Section_Statistics_Are_Built(HubCmsContent source, HubEntryFields sectionFields, HubEntryFields statsSection, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            sectionFields.StepperLinks = null;
+            sectionFields.StandardLinks = null;
+            sectionFields.CtaPanel = null;
+            sectionFields.StatisticsSections = new List<HubLink>
+            {
+                new HubLink { Sys = new HubLinkSys { Id = "stats-section-id", Type = "Link", LinkType = "Entry" } }
+            };
+            source.Items[0].Fields.Sections = new List<HubLink>
+            {
+                new HubLink { Sys = new HubLinkSys { Id = "section-id", Type = "Link", LinkType = "Entry" } }
+            };
+            source.Includes.Entry = new List<HubEntry>
+            {
+                BuildEntry("section-id", "hubSection", sectionFields),
+                BuildEntry("stats-section-id", "statsSection", statsSection)
+            };
+
+            //Act
+            var actual = new HubPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.Sections[0].StatisticsSections.Count.Should().Be(1);
+            var actualStatistic = actual.MainContent.Sections[0].StatisticsSections[0];
+            actualStatistic.Text.Should().Be(statsSection.Text);
+            actualStatistic.HighlightValue.Should().Be(statsSection.HighlightValue);
+            actualStatistic.QuoteName.Should().Be(statsSection.QuoteName);
+            actualStatistic.QuoteRole.Should().Be(statsSection.QuoteRole);
+            actualStatistic.ReferenceText.Should().Be(statsSection.ReferenceText);
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_Statistics_Linking_To_Other_Content_Types_Are_Ignored(HubCmsContent source, HubEntryFields sectionFields, HubEntryFields linkedPage, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            sectionFields.StatisticsSections = new List<HubLink>
+            {
+                new HubLink { Sys = new HubLinkSys { Id = "stats-section-id", Type = "Link", LinkType = "Entry" } }
+            };
+            source.Items[0].Fields.Sections = new List<HubLink>
+            {
+                new HubLink { Sys = new HubLinkSys { Id = "section-id", Type = "Link", LinkType = "Entry" } }
+            };
+            source.Includes.Entry = new List<HubEntry>
+            {
+                BuildEntry("section-id", "hubSection", sectionFields),
+                BuildEntry("stats-section-id", "article", linkedPage)
+            };
+
+            //Act
+            var actual = new HubPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.Sections[0].StatisticsSections.Should().BeEmpty();
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_A_Null_StatisticsSections_Collection_Returns_An_Empty_List(HubCmsContent source, HubEntryFields sectionFields, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            sectionFields.StatisticsSections = null;
+            source.Items[0].Fields.Sections = new List<HubLink>
+            {
+                new HubLink { Sys = new HubLinkSys { Id = "section-id", Type = "Link", LinkType = "Entry" } }
+            };
+            source.Includes.Entry = new List<HubEntry>
+            {
+                BuildEntry("section-id", "hubSection", sectionFields)
+            };
+
+            //Act
+            var actual = new HubPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.Sections[0].StatisticsSections.Should().BeEmpty();
+        }
+
+        [Test, RecursiveMoqAutoData]
         public void Then_Sections_Linking_To_Other_Content_Types_Are_Ignored(HubCmsContent source, HubEntryFields linkedPage, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
@@ -380,6 +460,73 @@ namespace SFA.DAS.Campaign.UnitTests.Models
 
             //Assert
             actual.MainContent.Sections.Should().BeEmpty();
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_The_Carousel_Images_Are_Built(HubCmsContent source, HubAssetFields firstImage, HubAssetFields secondImage, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            firstImage.File.Url = $"//{firstImage.File.Url}";
+            secondImage.File.Url = $"//{secondImage.File.Url}";
+            source.Items[0].Fields.HeaderImage = null;
+            source.Items[0].Fields.Carousel = new List<HubLink>
+            {
+                new HubLink { Sys = new HubLinkSys { Id = "first-image-id", Type = "Link", LinkType = "Asset" } },
+                new HubLink { Sys = new HubLinkSys { Id = "second-image-id", Type = "Link", LinkType = "Asset" } }
+            };
+            source.Includes.Asset = new List<HubAsset>
+            {
+                new HubAsset { Sys = new HubSys { Id = "first-image-id" }, Fields = firstImage },
+                new HubAsset { Sys = new HubSys { Id = "second-image-id" }, Fields = secondImage }
+            };
+
+            //Act
+            var actual = new HubPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.Carousel.Count.Should().Be(2);
+            actual.MainContent.Carousel[0].Type.Should().Be("Asset");
+            actual.MainContent.Carousel[0].EmbeddedResource.Id.Should().Be("first-image-id");
+            actual.MainContent.Carousel[0].EmbeddedResource.Title.Should().Be(firstImage.Title);
+            actual.MainContent.Carousel[0].EmbeddedResource.Description.Should().Be(firstImage.Description);
+            actual.MainContent.Carousel[0].EmbeddedResource.FileName.Should().Be(firstImage.File.FileName);
+            actual.MainContent.Carousel[0].EmbeddedResource.Url.Should().Be($"https:{firstImage.File.Url}");
+            actual.MainContent.Carousel[0].EmbeddedResource.ContentType.Should().Be(firstImage.File.ContentType);
+            actual.MainContent.Carousel[0].EmbeddedResource.Size.Should().Be(firstImage.File.Details.Size);
+            actual.MainContent.Carousel[1].EmbeddedResource.Id.Should().Be("second-image-id");
+            actual.MainContent.Carousel[1].EmbeddedResource.Url.Should().Be($"https:{secondImage.File.Url}");
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_A_Null_Carousel_Returns_An_Empty_List(HubCmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            source.Items[0].Fields.Carousel = null;
+
+            //Act
+            var actual = new HubPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.Carousel.Should().BeEmpty();
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_Carousel_Images_Not_In_The_Included_Assets_Return_An_Empty_Resource(HubCmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            source.Items[0].Fields.HeaderImage = null;
+            source.Items[0].Fields.Carousel = new List<HubLink>
+            {
+                new HubLink { Sys = new HubLinkSys { Id = "missing-image-id", Type = "Link", LinkType = "Asset" } }
+            };
+            source.Includes.Asset = new List<HubAsset>();
+
+            //Act
+            var actual = new HubPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.Carousel.Count.Should().Be(1);
+            actual.MainContent.Carousel[0].EmbeddedResource.Url.Should().BeNull();
         }
 
         private static HubEntry BuildEntry(string id, string contentTypeId, HubEntryFields fields)
