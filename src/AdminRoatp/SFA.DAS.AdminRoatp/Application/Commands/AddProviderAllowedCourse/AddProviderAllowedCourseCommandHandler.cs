@@ -8,13 +8,13 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Roatp;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
-namespace SFA.DAS.AdminRoatp.Application.Commands.UpsertProviderAllowedCourse;
+namespace SFA.DAS.AdminRoatp.Application.Commands.AddProviderAllowedCourse;
 
-public class UpsertProviderAllowedCourseCommandHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _courseManagementApiClient, IRoatpServiceApiClient<RoatpConfiguration> _roatpServiceApiClient) : IRequestHandler<UpsertProviderAllowedCourseCommand>
+public class AddProviderAllowedCourseCommandHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _courseManagementApiClient, IRoatpServiceApiClient<RoatpConfiguration> _roatpServiceApiClient) : IRequestHandler<AddProviderAllowedCourseCommand>
 {
-    public async Task Handle(UpsertProviderAllowedCourseCommand command, CancellationToken cancellationToken)
+    public async Task Handle(AddProviderAllowedCourseCommand command, CancellationToken cancellationToken)
     {
-        var model = new UpsertProviderAllowedCourseModel()
+        var model = new AddProviderAllowedCourseModel()
         {
             UserId = command.UserId,
             UserDisplayName = command.UserDisplayName,
@@ -22,7 +22,7 @@ public class UpsertProviderAllowedCourseCommandHandler(IRoatpCourseManagementApi
             IsStartRestricted = command.IsStartRestricted,
         };
 
-        var apiRequest = new UpsertProviderAllowedCourseRequest(command.Ukprn, command.LarsCode, model);
+        var apiRequest = new AddProviderAllowedCourseRequest(command.Ukprn, command.LarsCode, model);
 
         var response = await _courseManagementApiClient.PostWithResponseCode<Unit>(apiRequest);
 

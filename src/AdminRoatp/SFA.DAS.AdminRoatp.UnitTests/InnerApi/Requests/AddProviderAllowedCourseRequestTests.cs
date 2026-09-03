@@ -5,16 +5,16 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.AdminRoatp.UnitTests.InnerApi.Requests;
 
-public class UpsertProviderAllowedCourseRequestTests
+public class AddProviderAllowedCourseRequestTests
 {
     [Test, MoqAutoData]
     public void WhenBuildingRequest_ThenPropertiesAreMappedFromCommand(
-        UpsertProviderAllowedCourseModel model,
+        AddProviderAllowedCourseModel model,
         int ukprn,
         string larsCode)
     {
         // Act
-        var request = new UpsertProviderAllowedCourseRequest(ukprn, larsCode, model);
+        var request = new AddProviderAllowedCourseRequest(ukprn, larsCode, model);
 
         // Assert
         request.Ukprn.Should().Be(ukprn);
@@ -24,12 +24,12 @@ public class UpsertProviderAllowedCourseRequestTests
 
     [Test, MoqAutoData]
     public void WhenBuildingRequest_ThenPostUrlIsSetCorrectly(
-        UpsertProviderAllowedCourseModel model,
+        AddProviderAllowedCourseModel model,
         int ukprn,
         string larsCode)
     {
         // Act
-        var request = new UpsertProviderAllowedCourseRequest(ukprn, larsCode, model);
+        var request = new AddProviderAllowedCourseRequest(ukprn, larsCode, model);
 
         // Assert
         request.PostUrl.Should().Be($"providers/{ukprn}/allowed-courses/{larsCode}");
