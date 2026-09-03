@@ -1,12 +1,13 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.AdminRoatp.Application.Commands.UpsertProviderAllowedCourse;
+namespace SFA.DAS.AdminRoatp.Application.Commands.AddProviderAllowedCourse;
 
-public class UpsertProviderAllowedCourseCommand : IRequest
+public class AddProviderAllowedCourseCommand : IRequest
 {
     public string UserId { get; set; } = string.Empty;
     public string UserDisplayName { get; set; } = string.Empty;
     public DateTime? LastDateStarts { get; set; }
     public int Ukprn { get; set; }
     public string LarsCode { get; set; } = string.Empty;
+    public bool IsStartRestricted { get; set; }
 }
