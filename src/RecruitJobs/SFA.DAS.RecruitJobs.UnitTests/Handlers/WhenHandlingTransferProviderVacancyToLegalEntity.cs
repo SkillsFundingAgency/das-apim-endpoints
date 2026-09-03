@@ -77,6 +77,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     [Test]
     [RecursiveMoqInlineAutoData(VacancyStatus.Draft)]
     [RecursiveMoqInlineAutoData(VacancyStatus.Referred)]
+    [RecursiveMoqInlineAutoData(VacancyStatus.Archived)]
     public async Task Then_The_Vacancy_Is_Transferred(
         GraphQL.VacancyStatus status,
         Guid vacancyId,
