@@ -155,15 +155,17 @@ public class TransferProviderVacancyToLegalEntityHandler(
                     applicationReviewPatchDocument.Replace(x => x.HasEverBeenEmployerInterviewing, false);
                     switch (applicationReview.Status)
                     {
-                        case ApplicationReviewStatus.EmployerInterviewing 
-                            or ApplicationReviewStatus.Shared
-                            or ApplicationReviewStatus.InReview
-                            or ApplicationReviewStatus.PendingShared
-                            or ApplicationReviewStatus.PendingToMakeUnsuccessful:
-                            applicationReviewPatchDocument.Replace(x => x.Status, ApplicationReviewStatus.New);
+                        case ApplicationReviewStatus.EmployerInterviewing:
+                            applicationReviewPatchDocument.Replace(x => x.Status, ApplicationReviewStatus.Interviewing);
                             break;
-                        case ApplicationReviewStatus.EmployerUnsuccessful:
-                            applicationReviewPatchDocument.Replace(x => x.Status, ApplicationReviewStatus.Unsuccessful);
+                        case ApplicationReviewStatus.EmployerUnsuccessful
+                            or ApplicationReviewStatus.PendingToMakeUnsuccessful:
+                            applicationReviewPatchDocument.Replace(x => x.Status, ApplicationReviewStatus.InReview);
+                            break;
+                        case ApplicationReviewStatus.Shared
+                            or ApplicationReviewStatus.InReview
+                            or ApplicationReviewStatus.PendingShared:
+                            applicationReviewPatchDocument.Replace(x => x.Status, ApplicationReviewStatus.New);
                             break;
                     }
                     var applicationReviewPatch = new PatchApplicationreviewsByApplicationIdApiRequest

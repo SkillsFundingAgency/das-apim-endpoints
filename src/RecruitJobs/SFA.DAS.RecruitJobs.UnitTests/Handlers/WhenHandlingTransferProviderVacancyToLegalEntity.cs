@@ -231,9 +231,10 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     }
 
     [Test]
-    [RecursiveMoqInlineAutoData(ApplicationReviewStatus.EmployerInterviewing)]
+    [RecursiveMoqInlineAutoData(ApplicationReviewStatus.PendingShared)]
+    [RecursiveMoqInlineAutoData(ApplicationReviewStatus.InReview)]
     [RecursiveMoqInlineAutoData(ApplicationReviewStatus.Shared)]
-    public async Task Then_EmployerInterviewing_Or_Shared_Application_Reviews_Are_Reset_To_New(
+    public async Task Then_Application_Reviews_Are_Reset_To_New(
         ApplicationReviewStatus reviewStatus,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
@@ -268,10 +269,10 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         capturedPatch!.Data.Operations.Should().ContainEquivalentOf(
             new Operation<ApplicationReview>("replace", "/status", null, ApplicationReviewStatus.New));
     }
-
+    
     [Test]
-    [RecursiveMoqInlineAutoData(ApplicationReviewStatus.EmployerUnsuccessful)]
-    public async Task Then_EmployerUnsuccessful_Application_Reviews_Are_Made_Unsuccessful(
+    [RecursiveMoqInlineAutoData(ApplicationReviewStatus.EmployerInterviewing)]
+    public async Task Then_Application_Reviews_Are_Reset_To_Interviewing(
         ApplicationReviewStatus reviewStatus,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
@@ -304,7 +305,46 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
 
         // assert
         capturedPatch!.Data.Operations.Should().ContainEquivalentOf(
-            new Operation<ApplicationReview>("replace", "/status", null, ApplicationReviewStatus.Unsuccessful));
+            new Operation<ApplicationReview>("replace", "/status", null, ApplicationReviewStatus.Interviewing));
+    }
+
+    [Test]
+    [RecursiveMoqInlineAutoData(ApplicationReviewStatus.PendingToMakeUnsuccessful)]
+    [RecursiveMoqInlineAutoData(ApplicationReviewStatus.EmployerUnsuccessful)]
+    public async Task Then_Application_Reviews_Are_Set_To_InReview(
+        ApplicationReviewStatus reviewStatus,
+        Guid vacancyId,
+        MockVacancyDetails vacancyDetails,
+        Mock<IGetProviderTransferableVacancyDetailsResult> data,
+        [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
+    {
+        // arrange
+        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Live };
+        var applicationReview = new GetApplicationReviewResponse { ApplicationId = Guid.NewGuid(), Status = reviewStatus };
+        data.Setup(x => x.Vacancies).Returns([vacancyDetails]);
+        recruitGqlClient
+            .Setup(x => x.GetProviderTransferableVacancyDetails.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OperationResult<IGetProviderTransferableVacancyDetailsResult>(data.Object, null, null!, null));
+        recruitApiClient
+            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacanciesByVacancyIdApiRequest>()))
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
+        recruitApiClient
+            .Setup(x => x.Get<List<GetApplicationReviewResponse>>(It.IsAny<GetVacanciesByidByVacancyIdApplicationreviewsApiRequest>()))
+            .ReturnsAsync([applicationReview]);
+        PatchApplicationreviewsByApplicationIdApiRequest? capturedPatch = null;
+        recruitApiClient
+            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationreviewsByApplicationIdApiRequest>()))
+            .Callback<IPatchApiRequest<JsonPatchDocument<ApplicationReview>>>(x => capturedPatch = x as PatchApplicationreviewsByApplicationIdApiRequest)
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
+
+        // act
+        await sut.HandleAsync(vacancyId, TransferReason.EmployerRevokedPermission, CancellationToken.None);
+
+        // assert
+        capturedPatch!.Data.Operations.Should().ContainEquivalentOf(
+            new Operation<ApplicationReview>("replace", "/status", null, ApplicationReviewStatus.InReview));
     }
 
     [Test]
