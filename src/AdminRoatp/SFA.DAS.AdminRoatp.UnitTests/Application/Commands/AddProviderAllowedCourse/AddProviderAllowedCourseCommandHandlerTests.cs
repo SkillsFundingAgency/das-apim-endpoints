@@ -21,7 +21,7 @@ public class AddProviderAllowedCourseCommandHandlerTests
 {
 
     [Test, MoqAutoData]
-    public async Task WhenHandlingRequest_ThenVerifyUpsertProviderAllowedCoursePostApiIsCalled(
+    public async Task WhenHandlingRequest_ThenVerifyAddProviderAllowedCoursePostApiIsCalled(
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
         [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> roatpServiceApiClientMock,
         [Greedy] AddProviderAllowedCourseCommandHandler sut,
