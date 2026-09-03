@@ -1,8 +1,8 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.AdminRoatp.Application.Commands.UpsertProviderAllowedCourse;
+namespace SFA.DAS.AdminRoatp.Application.Commands.AddProviderAllowedCourse;
 
-public class UpsertProviderAllowedCourseCommand : IRequest
+public class AddProviderAllowedCourseCommand : IRequest
 {
     public string UserId { get; set; } = string.Empty;
     public string UserDisplayName { get; set; } = string.Empty;

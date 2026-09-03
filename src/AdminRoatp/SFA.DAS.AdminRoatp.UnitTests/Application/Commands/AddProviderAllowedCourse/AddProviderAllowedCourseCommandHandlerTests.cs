@@ -3,7 +3,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Moq;
-using SFA.DAS.AdminRoatp.Application.Commands.UpsertProviderAllowedCourse;
+using SFA.DAS.AdminRoatp.Application.Commands.AddProviderAllowedCourse;
 using SFA.DAS.AdminRoatp.InnerApi.Models;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
 using SFA.DAS.Apim.Shared.Exceptions;
@@ -15,22 +15,22 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Roatp;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.AdminRoatp.UnitTests.Application.Commands.UpsertProviderAllowedCourse;
+namespace SFA.DAS.AdminRoatp.UnitTests.Application.Commands.AddProviderAllowedCourse;
 
-public class UpsertProviderAllowedCourseCommandHandlerTests
+public class AddProviderAllowedCourseCommandHandlerTests
 {
 
     [Test, MoqAutoData]
     public async Task WhenHandlingRequest_ThenVerifyUpsertProviderAllowedCoursePostApiIsCalled(
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
         [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> roatpServiceApiClientMock,
-        [Greedy] UpsertProviderAllowedCourseCommandHandler sut,
-        UpsertProviderAllowedCourseCommand command,
+        [Greedy] AddProviderAllowedCourseCommandHandler sut,
+        AddProviderAllowedCourseCommand command,
         StandardModel standard)
     {
         // Arrange
         apiClientMock
-            .Setup(x => x.PostWithResponseCode<Unit>(It.IsAny<UpsertProviderAllowedCourseRequest>()))
+            .Setup(x => x.PostWithResponseCode<Unit>(It.IsAny<AddProviderAllowedCourseRequest>()))
             .ReturnsAsync(new ApiResponse<Unit>(Unit.Value, HttpStatusCode.OK, string.Empty));
 
         apiClientMock
@@ -46,12 +46,12 @@ public class UpsertProviderAllowedCourseCommandHandlerTests
 
         // Assert
         apiClientMock.Verify(x => x.PostWithResponseCode<Unit>(
-            It.Is<UpsertProviderAllowedCourseRequest>(r =>
+            It.Is<AddProviderAllowedCourseRequest>(r =>
                 r.Ukprn == command.Ukprn &&
                 r.LarsCode == command.LarsCode &&
-                ((UpsertProviderAllowedCourseModel)r.Data).UserId == command.UserId &&
-                ((UpsertProviderAllowedCourseModel)r.Data).UserDisplayName == command.UserDisplayName &&
-                ((UpsertProviderAllowedCourseModel)r.Data).LastDateStarts == command.LastDateStarts)),
+                ((AddProviderAllowedCourseModel)r.Data).UserId == command.UserId &&
+                ((AddProviderAllowedCourseModel)r.Data).UserDisplayName == command.UserDisplayName &&
+                ((AddProviderAllowedCourseModel)r.Data).LastDateStarts == command.LastDateStarts)),
             Times.Once);
     }
 
@@ -59,13 +59,13 @@ public class UpsertProviderAllowedCourseCommandHandlerTests
     public async Task WhenHandlingRequest_ThenVerifyGetStadardApiIsCalled(
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
         [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> roatpServiceApiClientMock,
-        [Greedy] UpsertProviderAllowedCourseCommandHandler sut,
-        UpsertProviderAllowedCourseCommand command,
+        [Greedy] AddProviderAllowedCourseCommandHandler sut,
+        AddProviderAllowedCourseCommand command,
         StandardModel standard)
     {
         // Arrange
         apiClientMock
-            .Setup(x => x.PostWithResponseCode<Unit>(It.IsAny<UpsertProviderAllowedCourseRequest>()))
+            .Setup(x => x.PostWithResponseCode<Unit>(It.IsAny<AddProviderAllowedCourseRequest>()))
             .ReturnsAsync(new ApiResponse<Unit>(Unit.Value, HttpStatusCode.OK, string.Empty));
 
         apiClientMock
@@ -86,18 +86,18 @@ public class UpsertProviderAllowedCourseCommandHandlerTests
     }
 
     [Test, MoqAutoData]
-    public async Task WhenHandlingRequest_AndCourseTypeIsApprenticeship_ThenVerifyUpdateCourseTypesApiIsNotCalled(
+    public async Task WhenHandlingRequest_AndCourseTypeIsApprenticeship_ThenNoNeedToSyncCourseTypeInRoatp(
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
         [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> roatpServiceApiClientMock,
-        [Greedy] UpsertProviderAllowedCourseCommandHandler sut,
-        UpsertProviderAllowedCourseCommand command,
+        [Greedy] AddProviderAllowedCourseCommandHandler sut,
+        AddProviderAllowedCourseCommand command,
         StandardModel standard)
     {
         // Arrange
         standard.CourseType = CourseType.Apprenticeship;
 
         apiClientMock
-            .Setup(x => x.PostWithResponseCode<Unit>(It.IsAny<UpsertProviderAllowedCourseRequest>()))
+            .Setup(x => x.PostWithResponseCode<Unit>(It.IsAny<AddProviderAllowedCourseRequest>()))
             .ReturnsAsync(new ApiResponse<Unit>(Unit.Value, HttpStatusCode.OK, string.Empty));
 
         apiClientMock
@@ -118,18 +118,18 @@ public class UpsertProviderAllowedCourseCommandHandlerTests
     }
 
     [Test, MoqAutoData]
-    public async Task WhenHandlingRequest_AndCourseTypeIsShortCourse_ThenVerifyUpdateCourseTypesApiIsCalled(
+    public async Task WhenHandlingRequest_AndCourseTypeIsShortCourse_ThenSyncCourseTypeInRoatp(
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
         [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> roatpServiceApiClientMock,
-        [Greedy] UpsertProviderAllowedCourseCommandHandler sut,
-        UpsertProviderAllowedCourseCommand command,
+        [Greedy] AddProviderAllowedCourseCommandHandler sut,
+        AddProviderAllowedCourseCommand command,
         StandardModel standard)
     {
         // Arrange
         standard.CourseType = CourseType.ShortCourse;
 
         apiClientMock
-            .Setup(x => x.PostWithResponseCode<Unit>(It.IsAny<UpsertProviderAllowedCourseRequest>()))
+            .Setup(x => x.PostWithResponseCode<Unit>(It.IsAny<AddProviderAllowedCourseRequest>()))
             .ReturnsAsync(new ApiResponse<Unit>(Unit.Value, HttpStatusCode.OK, string.Empty));
 
         apiClientMock
@@ -156,12 +156,12 @@ public class UpsertProviderAllowedCourseCommandHandlerTests
     [Test, MoqAutoData]
     public async Task WhenApiErrorIsReturnedFromUpsertProviderAllowedCourse_ThenShouldThrowApiResponseException(
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
-        [Greedy] UpsertProviderAllowedCourseCommandHandler sut,
-        UpsertProviderAllowedCourseCommand command)
+        [Greedy] AddProviderAllowedCourseCommandHandler sut,
+        AddProviderAllowedCourseCommand command)
     {
         // Arrange
         apiClientMock
-            .Setup(x => x.PostWithResponseCode<Unit>(It.IsAny<UpsertProviderAllowedCourseRequest>()))
+            .Setup(x => x.PostWithResponseCode<Unit>(It.IsAny<AddProviderAllowedCourseRequest>()))
             .ReturnsAsync(new ApiResponse<Unit>(Unit.Value, HttpStatusCode.BadRequest, string.Empty));
 
         // Act
@@ -174,12 +174,12 @@ public class UpsertProviderAllowedCourseCommandHandlerTests
     [Test, MoqAutoData]
     public async Task WhenApiErrorIsReturnedFromGetStandard_ThenShouldThrowApiResponseException(
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
-        [Greedy] UpsertProviderAllowedCourseCommandHandler sut,
-        UpsertProviderAllowedCourseCommand command)
+        [Greedy] AddProviderAllowedCourseCommandHandler sut,
+        AddProviderAllowedCourseCommand command)
     {
         // Arrange
         apiClientMock
-            .Setup(x => x.PostWithResponseCode<Unit>(It.IsAny<UpsertProviderAllowedCourseRequest>()))
+            .Setup(x => x.PostWithResponseCode<Unit>(It.IsAny<AddProviderAllowedCourseRequest>()))
             .ReturnsAsync(new ApiResponse<Unit>(Unit.Value, HttpStatusCode.OK, string.Empty));
 
         apiClientMock
@@ -197,15 +197,15 @@ public class UpsertProviderAllowedCourseCommandHandlerTests
     public async Task WhenApiErrorIsReturnedFromUpdateCourseTypes_ThenShouldThrowApiResponseException(
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
         [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> roatpServiceApiClientMock,
-        [Greedy] UpsertProviderAllowedCourseCommandHandler sut,
-        UpsertProviderAllowedCourseCommand command,
+        [Greedy] AddProviderAllowedCourseCommandHandler sut,
+        AddProviderAllowedCourseCommand command,
         StandardModel standard)
     {
         // Arrange
         standard.CourseType = CourseType.ShortCourse;
 
         apiClientMock
-            .Setup(x => x.PostWithResponseCode<Unit>(It.IsAny<UpsertProviderAllowedCourseRequest>()))
+            .Setup(x => x.PostWithResponseCode<Unit>(It.IsAny<AddProviderAllowedCourseRequest>()))
             .ReturnsAsync(new ApiResponse<Unit>(Unit.Value, HttpStatusCode.OK, string.Empty));
 
         apiClientMock
