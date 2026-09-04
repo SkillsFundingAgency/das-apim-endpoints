@@ -17,7 +17,8 @@ public class GetLevySummaryByHashedAccountIdQueryHandler(IFinanceApiClient<Finan
         return new GetLevySummaryByHashedAccountIdQueryResult
         {
             CurrentLevyFunds = levySummary.CurrentLevyFunds,
-            TotalLevyDeclaredLast12Months = levySummary.TotalLevyDeclaredLast12Months
+            TotalLevyDeclaredLast12Months = levySummary.TotalLevyDeclaredLast12Months,
+            TotalLevySpentLast12Months = levySummary.TotalLevySpentLast12Months,
         };
     }
 }

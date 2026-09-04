@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerFinance.Application.Queries.GetLevySummaryByHashedAccountId;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerFinance.Api.Controllers;
@@ -13,7 +14,7 @@ public class FinanceLevyController(IMediator mediator, ILogger<FinanceLevyContro
 {
     [HttpGet]
     [Route("{hashedAccountId}/summary")]
-    public async Task<IActionResult> GetLevySummary(string hashedAccountId)
+    public async Task<IActionResult> GetLevySummary([FromRoute, Required] string hashedAccountId)
     {
         try
         {
