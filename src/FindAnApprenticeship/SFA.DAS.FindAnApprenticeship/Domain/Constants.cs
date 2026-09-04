@@ -8,9 +8,9 @@ namespace SFA.DAS.FindAnApprenticeship.Domain
     {
         public static class SearchApprenticeships
         {
-            public static readonly int DefaultPageNumber = 1;
-            public static readonly int DefaultPageSize = 10;
-            public static readonly VacancySort DefaultSortOrder = VacancySort.DistanceAsc;
+            public const int DefaultPageNumber = 1;
+            public const int DefaultPageSize = 10;
+            public const VacancySort DefaultSortOrder = VacancySort.DistanceAsc;
         }
 
         public static class SectionStatus
@@ -31,6 +31,7 @@ namespace SFA.DAS.FindAnApprenticeship.Domain
             public const string VacancyStartedCounterName = "FindAnApprenticeship.vacancyReference.started";
             public const string VacancySubmittedCounterName = "FindAnApprenticeship.vacancyReference.submitted";
             public const string VacancySearchResultCounterName = "FindAnApprenticeship.vacancyReference.search";
+            public const string VacancySavedCounterName = "FindAnApprenticeship.vacancyReference.saved";
         }
     }
 }
