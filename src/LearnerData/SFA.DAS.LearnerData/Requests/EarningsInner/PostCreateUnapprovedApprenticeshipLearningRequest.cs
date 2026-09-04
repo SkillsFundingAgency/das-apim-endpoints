@@ -28,6 +28,7 @@ public class CreateUnapprovedApprenticeshipLearningRequest
     public List<ApprenticeshipPeriodInLearningItem> PeriodsInLearning { get; set; } = [];
     public List<DraftEnglishAndMathsItem> EnglishAndMaths { get; set; } = [];
     public List<ApprenticeshipLearningSupportItem> LearningSupport { get; set; } = [];
+    public bool IsNewApprenticeshipLearner { get; set; }
 }
 
 public class DraftApprenticeshipLearnerRequest
