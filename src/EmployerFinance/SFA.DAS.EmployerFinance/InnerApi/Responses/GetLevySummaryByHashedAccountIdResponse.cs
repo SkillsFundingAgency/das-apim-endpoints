@@ -1,7 +1,8 @@
 ﻿namespace SFA.DAS.EmployerFinance.InnerApi.Responses;
 
-public record GetLevySummaryByHashedAccountIdResponse
+public sealed record GetLevySummaryByHashedAccountIdResponse
 {
     public decimal CurrentLevyFunds { get; set; }
     public decimal TotalLevyDeclaredLast12Months { get; set; }
+    public decimal TotalLevySpentLast12Months { get; set; }
 }
