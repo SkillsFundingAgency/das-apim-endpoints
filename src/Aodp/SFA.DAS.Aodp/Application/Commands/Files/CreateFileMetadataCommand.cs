@@ -6,6 +6,7 @@ namespace SFA.DAS.Aodp.Application.Commands.Files
     [ExcludeFromCodeCoverage]
     public class CreateFileMetadataCommand : IRequest<BaseMediatrResponse<EmptyResponse>>
     {
+        public Guid? Id { get; init; }
         public FileCategory FileCategory { get; init; }
         public Guid? ApplicationId { get; init; }
         public Guid? MessageId { get; init; }

@@ -11,6 +11,8 @@ namespace SFA.DAS.Aodp.Application.Queries.Files
         DefundingList,
         ApprovedFunding,
         ArchivedFunding,
-        FundingOutput
+        FundingOutput,
+        RolloverCandidateImport,
+        RolloverCandidateSubmitted
     }
 }
