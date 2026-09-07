@@ -28,6 +28,11 @@ public class LearningApiClient(IInternalApiClient<LearningApiConfiguration> apiC
         return await apiClient.GetResponseCode(request);
     }
 
+    public async Task<HttpStatusCode> Head(IHeadApiRequest request)
+    {
+        return await apiClient.Head(request);
+    }
+
     public async Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
     {
         return await apiClient.GetWithResponseCode<TResponse>(request);

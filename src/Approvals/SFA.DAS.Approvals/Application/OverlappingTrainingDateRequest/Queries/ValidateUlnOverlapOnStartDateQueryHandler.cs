@@ -1,13 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Queries
 {
@@ -30,7 +28,8 @@ namespace SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Queries
             return new ValidateUlnOverlapOnStartDateQueryResult
             {
                 HasOverlapWithApprenticeshipId = response.Body.HasOverlapWithApprenticeshipId,
-                HasStartDateOverlap = response.Body.HasStartDateOverlap
+                HasStartDateOverlap = response.Body.HasStartDateOverlap,
+                HasOverlapWithIlrWithdrawnApprenticeship = response.Body.HasOverlapWithIlrWithdrawnApprenticeship
             };
         }
     }
