@@ -24,6 +24,8 @@ using SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprenticeships;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprenticeshipsCSV;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprenticeshipUpdates;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetSelectNewEmployer;
+using SFA.DAS.Approvals.Application.Apprentices.Commands.AcknowledgeApprovalRequestAlerts;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprovalRequests;
 using SFA.DAS.Approvals.Exceptions;
 
 namespace SFA.DAS.Approvals.Api.Controllers;
@@ -693,6 +695,55 @@ public class ApprenticesController(
         catch (Exception e)
         {
             logger.LogError(e, $"Error confirming edit apprenticeship {apprenticeshipId}");
+            return BadRequest();
+        }
+    }
+
+    [HttpGet]
+    [Route("/employer/{accountId:long}/apprenticeships/{apprenticeshipId:long}/approval-requests")]
+    public async Task<IActionResult> GetApprovalRequest(long accountId, long apprenticeshipId, [FromQuery] byte status)
+    {
+        try
+        {
+            var queryResult = await mediator.Send(new GetApprovalRequestQuery
+            {
+                ApprenticeshipId = apprenticeshipId,
+                Status = status,
+                AccountId = accountId,
+            });
+
+            if(queryResult == null) {
+                return NotFound();
+            }
+
+            var model = queryResult;
+            return Ok(model);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error attempting to get approval request for apprenticeshipId: {ApprenticeshipId}", apprenticeshipId);
+            return BadRequest();
+        }
+    }
+
+    [HttpPut]
+    [Route("/employer/{accountId:long}/apprenticeships/{apprenticeshipId:long}/alerts-acknowledged")]
+    public async Task<IActionResult> UpdateApprovalRequestAlertAcknowledge(long accountId,long apprenticeshipId, [FromBody] UpdateApprovalRequestAlertAcknowledgeRequest request)
+    {
+        try
+        {
+            var command = new UpdateApprovalRequestAlertAcknowledgeCommand
+            {
+                ApprenticeshipId = apprenticeshipId,
+                ApprovalRequestAlerts = request.ApprovalRequestAlerts,
+                AccountId = accountId,
+            };
+            await mediator.Send(command);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error attempting to update approval request for apprenticeshipId: {ApprenticeshipId}", apprenticeshipId);
             return BadRequest();
         }
     }

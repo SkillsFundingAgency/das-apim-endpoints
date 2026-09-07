@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.Approvals.Application.ApprovalRequest.Commands;
+using SFA.DAS.Approvals.Application.Apprentices.Commands.AcknowledgeApprovalRequestAlerts;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
@@ -36,10 +36,10 @@ public class UpdateApprovalRequestAlertAcknowledgeCommandHandlerTests
 
         apiClient.Verify(x => x.PutWithResponseCode<NullResponse>
         (It.Is<UpdateApprovalRequestAlertAcknowledgeRequest>(t => t.ApprenticeshipId == command.ApprenticeshipId
+        && ((Body)t.Data).AccountId == command.AccountId
         && ((Body)t.Data).ApprovalRequestAlerts.Count == command.ApprovalRequestAlerts.Count
         && ((Body)t.Data).ApprovalRequestAlerts[0].ApprovalRequestId == command.ApprovalRequestAlerts[0].ApprovalRequestId
-        && ((Body)t.Data).ApprovalRequestAlerts[0].EmployerAcknowledgedAt == command.ApprovalRequestAlerts[0].EmployerAcknowledgedAt
-        && ((Body)t.Data).ApprovalRequestAlerts[0].EmployerAcknowledgedBy == command.ApprovalRequestAlerts[0].EmployerAcknowledgedBy
+        && ((Body)t.Data).ApprovalRequestAlerts[0].UserInfo == command.ApprovalRequestAlerts[0].UserInfo
         )), Times.Once);
     }
 }

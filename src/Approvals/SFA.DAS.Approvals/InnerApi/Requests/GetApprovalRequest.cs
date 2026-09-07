@@ -2,9 +2,10 @@
 
 namespace SFA.DAS.Approvals.InnerApi.Requests;
 
-public class GetApprovalRequest(long apprenticeshipId, byte status) : IGetApiRequest
+public class GetApprovalRequest(long apprenticeshipId, byte status, long accountId) : IGetApiRequest
 {
     public long ApprenticeshipId { get; } = apprenticeshipId;
     public byte Status { get; } = status;
-    public string GetUrl => $"approval-requests/apprenticeships/{ApprenticeshipId}?status={Status}";
+    public long AccountId { get; } = accountId;
+    public string GetUrl => $"api/apprenticeships/{ApprenticeshipId}/approval-requests?status={Status}&accountId={AccountId}";
 }

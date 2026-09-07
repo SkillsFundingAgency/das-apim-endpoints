@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.Approvals.InnerApi.Responses;
 
-namespace SFA.DAS.Approvals.Application.ApprovalRequest.Queries;
+namespace SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprovalRequests;
 
 public class GetApprovalRequestQueryResult
 {
