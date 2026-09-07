@@ -6,10 +6,10 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.InnerApi.Requests;
 internal class WhenBuildingGetLevySummaryByHashedAccountIdRequest
 {
     [Test, MoqAutoData]
-    public void Then_The_Request_Url_Is_Correctly_Formed(string hashedAccountId)
+    public void Then_The_Request_Url_Is_Correctly_Formed(long accountId)
     {
-        var request = new GetLevySummaryByHashedAccountIdRequest(hashedAccountId);
+        var request = new GetLevySummaryByAccountIdRequest(accountId);
 
-        request.GetUrl.Should().Be($"api/accounts/{hashedAccountId}/levy/summary");
+        request.GetUrl.Should().Be($"api/levy-declarations/{accountId}/summary");
     }
 }
