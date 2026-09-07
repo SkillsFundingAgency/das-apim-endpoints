@@ -1,14 +1,16 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Recruit.Contracts.ApiRequests;
 using SFA.DAS.Recruit.Contracts.ApiResponses;
+using SFA.DAS.Recruit.Contracts.Client;
+using SFA.DAS.RecruitJobs.Domain;
 using SFA.DAS.RecruitJobs.GraphQL;
 using StrawberryShake;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using ClosureReason = SFA.DAS.Recruit.Contracts.ApiResponses.ClosureReason;
 using OwnerType = SFA.DAS.Recruit.Contracts.ApiResponses.OwnerType;
 using TransferInfo = SFA.DAS.Recruit.Contracts.ApiResponses.TransferInfo;
@@ -26,7 +28,7 @@ public interface ITransferProviderVacancyToLegalEntityHandler
 public class TransferProviderVacancyToLegalEntityHandler(
     ILogger<TransferProviderVacancyToLegalEntityHandler> logger,
     IRecruitGqlClient recruitGqlClient,
-    Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient) : ITransferProviderVacancyToLegalEntityHandler
+    IRecruitApiClient<RecruitApiConfiguration> recruitApiClient) : ITransferProviderVacancyToLegalEntityHandler
 {
     public async Task HandleAsync(Guid vacancyId, TransferReason transferReason, CancellationToken cancellationToken)
     {
@@ -110,8 +112,8 @@ public class TransferProviderVacancyToLegalEntityHandler(
                         var vacancyReviewPatch = new JsonPatchDocument<VacancyReview>();
                         vacancyReviewPatch.Replace(x => x.ManualOutcome,
                             transferReason == TransferReason.BlockedByQa
-                                ? nameof(Domain.ManualQaOutcome.Blocked)
-                                : nameof(Domain.ManualQaOutcome.Transferred));
+                                ? nameof(ManualQaOutcome.Blocked)
+                                : nameof(ManualQaOutcome.Transferred));
                         vacancyReviewPatch.Replace(x => x.Status, ReviewStatus.Closed);
                         vacancyReviewPatch.Replace(x => x.ClosedDate, now);
                         var vacancyReviewPatchResponse = await recruitApiClient.PatchWithResponseCode(new PatchVacancyreviewsByIdApiRequest
@@ -128,40 +130,54 @@ public class TransferProviderVacancyToLegalEntityHandler(
             }
         }
 
-        if (vacancyDetails.Status is GraphQL.VacancyStatus.Live or GraphQL.VacancyStatus.Closed)
+        if (vacancyDetails.Status is GraphQL.VacancyStatus.Live or GraphQL.VacancyStatus.Closed or GraphQL.VacancyStatus.Archived)
         {
             var request = new GetVacanciesByidByVacancyIdApplicationreviewsApiRequest(
                 vacancyId,
             [
-                ApplicationReviewStatus.EmployerInterviewing, 
+                ApplicationReviewStatus.EmployerInterviewing,
                 ApplicationReviewStatus.EmployerUnsuccessful,
+                ApplicationReviewStatus.InReview,
+                ApplicationReviewStatus.PendingShared,
+                ApplicationReviewStatus.PendingToMakeUnsuccessful,
                 ApplicationReviewStatus.Shared
             ]);
             var applicationReviews = await recruitApiClient.Get<List<GetApplicationReviewResponse>>(request);
             var applicationReviewTaskList = new List<Task>();
-            foreach (var applicationReview in applicationReviews)
+
+            const int batchSize = 10;
+            foreach (var applicationReviewBatch in applicationReviews.Chunk(batchSize))
             {
-                var applicationReviewPatchDocument = new JsonPatchDocument<ApplicationReview>();
-                applicationReviewPatchDocument.Replace(x => x.DateSharedWithEmployer, null);
-                applicationReviewPatchDocument.Replace(x => x.HasEverBeenEmployerInterviewing, false);
-                switch (applicationReview.Status)
+                foreach (var applicationReview in applicationReviewBatch)
                 {
-                    case ApplicationReviewStatus.EmployerInterviewing or ApplicationReviewStatus.Shared:
-                        applicationReviewPatchDocument.Replace(x => x.Status, ApplicationReviewStatus.New);
-                        break;
-                    case ApplicationReviewStatus.EmployerUnsuccessful:
-                        applicationReviewPatchDocument.Replace(x => x.Status, ApplicationReviewStatus.Unsuccessful);
-                        break;
+                    var applicationReviewPatchDocument = new JsonPatchDocument<ApplicationReview>();
+                    applicationReviewPatchDocument.Replace(x => x.DateSharedWithEmployer, null);
+                    applicationReviewPatchDocument.Replace(x => x.HasEverBeenEmployerInterviewing, false);
+                    switch (applicationReview.Status)
+                    {
+                        case ApplicationReviewStatus.EmployerInterviewing:
+                            applicationReviewPatchDocument.Replace(x => x.Status, ApplicationReviewStatus.Interviewing);
+                            break;
+                        case ApplicationReviewStatus.EmployerUnsuccessful
+                            or ApplicationReviewStatus.PendingToMakeUnsuccessful:
+                            applicationReviewPatchDocument.Replace(x => x.Status, ApplicationReviewStatus.InReview);
+                            break;
+                        case ApplicationReviewStatus.Shared
+                            or ApplicationReviewStatus.InReview
+                            or ApplicationReviewStatus.PendingShared:
+                            applicationReviewPatchDocument.Replace(x => x.Status, ApplicationReviewStatus.New);
+                            break;
+                    }
+                    var applicationReviewPatch = new PatchApplicationreviewsByApplicationIdApiRequest
+                    {
+                        ApplicationId = applicationReview.ApplicationId!.Value,
+                        Data = applicationReviewPatchDocument
+                    };
+                    applicationReviewTaskList.Add(recruitApiClient.PatchWithResponseCode(applicationReviewPatch));
                 }
-                var applicationReviewPatch = new PatchApplicationreviewsByApplicationIdApiRequest
-                {
-                    ApplicationId = applicationReview.ApplicationId!.Value,
-                    Data = applicationReviewPatchDocument
-                };
-                applicationReviewTaskList.Add(recruitApiClient.PatchWithResponseCode(applicationReviewPatch));
+
+                await Task.WhenAll(applicationReviewTaskList);    
             }
-            
-            await Task.WhenAll(applicationReviewTaskList);
         }
     }
 }
