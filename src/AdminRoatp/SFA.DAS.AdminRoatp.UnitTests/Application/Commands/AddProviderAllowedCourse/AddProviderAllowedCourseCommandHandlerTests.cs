@@ -147,8 +147,8 @@ public class AddProviderAllowedCourseCommandHandlerTests
         roatpServiceApiClientMock.Verify(
         x => x.PutWithResponseCode<NullResponse>(It.Is<UpdateCourseTypesRequest>(r =>
                 r.ukprn == command.Ukprn &&
-                ((UpdateCourseTypesModel)r.Data).UserId == command.UserId &&
-                ((UpdateCourseTypesModel)r.Data).CourseTypeIds.SequenceEqual(new[] { (int)CourseType.ShortCourse })
+                ((UpdateCourseTypesModel)r.Data).UserId == command.UserDisplayName &&
+                ((UpdateCourseTypesModel)r.Data).CourseTypeIds.SequenceEqual(new[] { (int)CourseType.Apprenticeship, (int)CourseType.ShortCourse })
             )),
         Times.Once);
     }

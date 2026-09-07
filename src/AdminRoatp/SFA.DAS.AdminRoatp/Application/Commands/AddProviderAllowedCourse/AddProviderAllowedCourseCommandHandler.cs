@@ -34,7 +34,7 @@ public class AddProviderAllowedCourseCommandHandler(IRoatpCourseManagementApiCli
 
         if (standard.Body.CourseType == CourseType.ShortCourse)
         {
-            var updateCourseTypes = new UpdateCourseTypesModel([(int)CourseType.ShortCourse], command.UserId);
+            var updateCourseTypes = new UpdateCourseTypesModel([(int)CourseType.Apprenticeship, (int)CourseType.ShortCourse], command.UserDisplayName);
 
             var updateCourseTypesrequest = new UpdateCourseTypesRequest(command.Ukprn, updateCourseTypes);
 
