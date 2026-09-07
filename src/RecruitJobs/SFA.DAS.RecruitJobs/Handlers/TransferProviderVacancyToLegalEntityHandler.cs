@@ -48,6 +48,7 @@ public class TransferProviderVacancyToLegalEntityHandler(
             case SharedOuterApi.Recruit.GraphQL.VacancyStatus.Draft:
             case SharedOuterApi.Recruit.GraphQL.VacancyStatus.Referred:
             case SharedOuterApi.Recruit.GraphQL.VacancyStatus.Closed:
+            case SharedOuterApi.Recruit.GraphQL.VacancyStatus.Archived:
                 break;
             case SharedOuterApi.Recruit.GraphQL.VacancyStatus.Submitted:
                 var vacancyReviews = await recruitApiClient.Get<List<VacancyReview>>(
@@ -127,40 +128,54 @@ public class TransferProviderVacancyToLegalEntityHandler(
             }
         }
 
-        if (vacancyDetails.Status is SharedOuterApi.Recruit.GraphQL.VacancyStatus.Live or SharedOuterApi.Recruit.GraphQL.VacancyStatus.Closed)
+        if (vacancyDetails.Status is SharedOuterApi.Recruit.GraphQL.VacancyStatus.Live or SharedOuterApi.Recruit.GraphQL.VacancyStatus.Closed or SharedOuterApi.Recruit.GraphQL.VacancyStatus.Archived)
         {
             var request = new GetVacanciesByidByVacancyIdApplicationreviewsApiRequest(
                 vacancyId,
             [
-                ApplicationReviewStatus.EmployerInterviewing, 
+                ApplicationReviewStatus.EmployerInterviewing,
                 ApplicationReviewStatus.EmployerUnsuccessful,
+                ApplicationReviewStatus.InReview,
+                ApplicationReviewStatus.PendingShared,
+                ApplicationReviewStatus.PendingToMakeUnsuccessful,
                 ApplicationReviewStatus.Shared
             ]);
             var applicationReviews = await recruitApiClient.Get<List<GetApplicationReviewResponse>>(request);
             var applicationReviewTaskList = new List<Task>();
-            foreach (var applicationReview in applicationReviews)
+
+            const int batchSize = 10;
+            foreach (var applicationReviewBatch in applicationReviews.Chunk(batchSize))
             {
-                var applicationReviewPatchDocument = new JsonPatchDocument<ApplicationReview>();
-                applicationReviewPatchDocument.Replace(x => x.DateSharedWithEmployer, null);
-                applicationReviewPatchDocument.Replace(x => x.HasEverBeenEmployerInterviewing, false);
-                switch (applicationReview.Status)
+                foreach (var applicationReview in applicationReviewBatch)
                 {
-                    case ApplicationReviewStatus.EmployerInterviewing or ApplicationReviewStatus.Shared:
-                        applicationReviewPatchDocument.Replace(x => x.Status, ApplicationReviewStatus.New);
-                        break;
-                    case ApplicationReviewStatus.EmployerUnsuccessful:
-                        applicationReviewPatchDocument.Replace(x => x.Status, ApplicationReviewStatus.Unsuccessful);
-                        break;
+                    var applicationReviewPatchDocument = new JsonPatchDocument<ApplicationReview>();
+                    applicationReviewPatchDocument.Replace(x => x.DateSharedWithEmployer, null);
+                    applicationReviewPatchDocument.Replace(x => x.HasEverBeenEmployerInterviewing, false);
+                    switch (applicationReview.Status)
+                    {
+                        case ApplicationReviewStatus.EmployerInterviewing:
+                            applicationReviewPatchDocument.Replace(x => x.Status, ApplicationReviewStatus.Interviewing);
+                            break;
+                        case ApplicationReviewStatus.EmployerUnsuccessful
+                            or ApplicationReviewStatus.PendingToMakeUnsuccessful:
+                            applicationReviewPatchDocument.Replace(x => x.Status, ApplicationReviewStatus.InReview);
+                            break;
+                        case ApplicationReviewStatus.Shared
+                            or ApplicationReviewStatus.InReview
+                            or ApplicationReviewStatus.PendingShared:
+                            applicationReviewPatchDocument.Replace(x => x.Status, ApplicationReviewStatus.New);
+                            break;
+                    }
+                    var applicationReviewPatch = new PatchApplicationreviewsByApplicationIdApiRequest
+                    {
+                        ApplicationId = applicationReview.ApplicationId!.Value,
+                        Data = applicationReviewPatchDocument
+                    };
+                    applicationReviewTaskList.Add(recruitApiClient.PatchWithResponseCode(applicationReviewPatch));
                 }
-                var applicationReviewPatch = new PatchApplicationreviewsByApplicationIdApiRequest
-                {
-                    ApplicationId = applicationReview.ApplicationId!.Value,
-                    Data = applicationReviewPatchDocument
-                };
-                applicationReviewTaskList.Add(recruitApiClient.PatchWithResponseCode(applicationReviewPatch));
+
+                await Task.WhenAll(applicationReviewTaskList);    
             }
-            
-            await Task.WhenAll(applicationReviewTaskList);
         }
     }
 }

@@ -46,10 +46,10 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
             
 
         // Act
-        var result = await _sut.Build(command.LearningKey, command.UpdateLearnerRequest, response, putRequest.Data);
+        var result = await _sut.Build(command.UpdateLearnerRequest, response, putRequest.Data);
 
         // Assert
-        result.PutUrl.Should().Be($"learning/{command.LearningKey}/on-programme");
+        result.PutUrl.Should().Be($"learning/{response.LearningKey}/on-programme");
         result.Data.CompletionDate.Should().Be(putRequest.Data.Learner.CompletionDate);
         result.Data.WithdrawalDate.Should().Be(putRequest.Data.Delivery.WithdrawalDate);
         result.Data.PauseDate.Should().Be(putRequest.Data.OnProgramme.PauseDate);
@@ -108,7 +108,7 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
                          });
 
         // Act
-        var result = await _sut.Build(command.LearningKey, command.UpdateLearnerRequest, response, putRequest.Data);
+        var result = await _sut.Build(command.UpdateLearnerRequest, response, putRequest.Data);
 
         // Assert
         result.Data.FundingBandMaximum.Should().Be(expectedFundingBand);
@@ -126,10 +126,10 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
                                .Create();
 
         // Act
-        var result = await _sut.Build(command.LearningKey, command.UpdateLearnerRequest, response, putRequest.Data);
+        var result = await _sut.Build(command.UpdateLearnerRequest, response, putRequest.Data);
 
         // Assert
-        result.PutUrl.Should().Be($"learning/{command.LearningKey}/on-programme");
+        result.PutUrl.Should().Be($"learning/{response.LearningKey}/on-programme");
         result.Data.Care.HasEHCP.Should().Be(putRequest.Data.Learner.Care.HasEHCP);
         result.Data.Care.IsCareLeaver.Should().Be(putRequest.Data.Learner.Care.IsCareLeaver);
         result.Data.Care.CareLeaverEmployerConsentGiven.Should().Be(putRequest.Data.Learner.Care.CareLeaverEmployerConsentGiven);
