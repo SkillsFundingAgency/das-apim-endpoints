@@ -94,6 +94,7 @@ public class GetApprenticeshipApprovalQueryHandlerTests
         var result = await _handler.Handle(_query, CancellationToken.None);
 
         result.Should().NotBeNull();
+        result.FundingCap.Should().Be(fundingBandCap);
         result.ExceedsFundingCap.Should().Be(expectedFundingBandExceededStatus);
     }
 
@@ -116,9 +117,9 @@ public class GetApprenticeshipApprovalQueryHandlerTests
         var result = await _handler.Handle(_query, CancellationToken.None);
 
         result.Should().NotBeNull();
+        result.FundingCap.Should().Be(fundingBandCap);
         result.ExceedsFundingCap.Should().Be(expectedFundingBandExceededStatus);
     }
-
 
     [Test]
     public async Task Handle_when_apprenticeshipApproval_is_not_found()
