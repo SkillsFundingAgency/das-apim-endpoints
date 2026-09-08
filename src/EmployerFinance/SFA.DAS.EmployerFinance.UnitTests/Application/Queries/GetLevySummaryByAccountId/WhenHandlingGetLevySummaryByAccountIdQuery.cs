@@ -4,7 +4,7 @@ using SFA.DAS.EmployerFinance.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
-namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetLevySummaryByHashedAccountId;
+namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetLevySummaryByAccountId;
 
 [TestFixture]
 internal class WhenHandlingGetLevySummaryByAccountIdQuery

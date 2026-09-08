@@ -3,7 +3,7 @@
 namespace SFA.DAS.EmployerFinance.UnitTests.Application.InnerApi.Requests;
 
 [TestFixture]
-internal class WhenBuildingGetLevySummaryByHashedAccountIdRequest
+internal class WhenBuildingGetLevySummaryByAccountIdRequest
 {
     [Test, MoqAutoData]
     public void Then_The_Request_Url_Is_Correctly_Formed(long accountId)
