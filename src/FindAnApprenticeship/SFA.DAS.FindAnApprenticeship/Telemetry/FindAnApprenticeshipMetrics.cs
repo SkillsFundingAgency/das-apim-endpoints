@@ -12,6 +12,7 @@ namespace SFA.DAS.FindAnApprenticeship.Telemetry
         private Counter<long> VacancyStartedCounter { get; }
         private Counter<long> VacancySubmittedCounter { get; }
         private Counter<long> VacancySearchResultViewCounter { get; }
+        private Counter<long> VacancySavedCounter { get; }
 
         public FindAnApprenticeshipMetrics(IMeterFactory meterFactory)
         {
@@ -20,6 +21,7 @@ namespace SFA.DAS.FindAnApprenticeship.Telemetry
             VacancyStartedCounter = meter.CreateCounter<long>(Constants.OpenTelemetry.VacancyStartedCounterName, Constants.OpenTelemetry.CounterUnitName, "Instrument to calculate the vacancy application started");
             VacancySubmittedCounter = meter.CreateCounter<long>(Constants.OpenTelemetry.VacancySubmittedCounterName, Constants.OpenTelemetry.CounterUnitName, "Instrument to calculate the vacancy application submitted");
             VacancySearchResultViewCounter = meter.CreateCounter<long>(Constants.OpenTelemetry.VacancySearchResultCounterName, Constants.OpenTelemetry.CounterUnitName, "Instrument to calculate the vacancy appeared in the search results");
+            VacancySavedCounter = meter.CreateCounter<long>(Constants.OpenTelemetry.VacancySavedCounterName, Constants.OpenTelemetry.CounterUnitName, "Instrument to calculate the vacancy saved");
         }
 
         public void IncreaseVacancyViews(string vacancyReference, int viewCount = 1)
@@ -46,6 +48,13 @@ namespace SFA.DAS.FindAnApprenticeship.Telemetry
         public void IncreaseVacancySearchResultViews(string vacancyReference, int viewCount = 1)
         {
             VacancySearchResultViewCounter.Add(viewCount,
+                new KeyValuePair<string, object>("vacancy.reference", vacancyReference.TrimVacancyReference()),
+                new KeyValuePair<string, object>("vacancy.source", Constants.OpenTelemetry.RequestSourceName));
+        }
+
+        public void IncreaseVacancySaved(string vacancyReference, int viewCount = 1)
+        {
+            VacancySavedCounter.Add(viewCount,
                 new KeyValuePair<string, object>("vacancy.reference", vacancyReference.TrimVacancyReference()),
                 new KeyValuePair<string, object>("vacancy.source", Constants.OpenTelemetry.RequestSourceName));
         }
