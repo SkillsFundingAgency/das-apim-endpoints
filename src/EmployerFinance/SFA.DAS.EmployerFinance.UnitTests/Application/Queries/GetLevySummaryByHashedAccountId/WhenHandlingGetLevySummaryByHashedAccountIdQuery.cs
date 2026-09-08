@@ -14,7 +14,7 @@ internal class WhenHandlingGetLevySummaryByHashedAccountIdQuery
         GetLevySummaryByHashedAccountIdQuery query,
         GetLevySummaryByHashedAccountIdResponse apiResponse,
         [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockFinanceApiClient,
-        GetLevySummaryByHashedAccountIdQueryHandler handler)
+        [Greedy] GetLevySummaryByHashedAccountIdQueryHandler handler)
     {
         mockFinanceApiClient
             .Setup(client => client.Get<GetLevySummaryByHashedAccountIdResponse>(
@@ -25,5 +25,6 @@ internal class WhenHandlingGetLevySummaryByHashedAccountIdQuery
 
         result.Should().NotBeNull();
         result.CurrentLevyFunds.Should().Be(apiResponse.CurrentLevyFunds);
+        result.TotalLevyDeclaredLast12Months.Should().Be(apiResponse.TotalLevyDeclaredLast12Months);
     }
 }
