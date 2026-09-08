@@ -27,5 +27,6 @@ internal class WhenHandlingGetLevySummaryByAccountIdQuery
         result.CurrentLevyFunds.Should().Be(apiResponse.CurrentLevyFunds);
         result.TotalLevyDeclaredLast12Months.Should().Be(apiResponse.TotalLevyDeclaredLast12Months);
         result.TotalLevySpentLast12Months.Should().Be(apiResponse.TotalLevySpentLast12Months);
+        result.TotalLevyExpiredLast12Months.Should().Be(apiResponse.TotalLevyExpiredLast12Months);
     }
 }

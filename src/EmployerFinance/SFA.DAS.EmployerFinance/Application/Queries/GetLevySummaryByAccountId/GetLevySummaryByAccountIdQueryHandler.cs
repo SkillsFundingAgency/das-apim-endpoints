@@ -19,6 +19,7 @@ public class GetLevySummaryByAccountIdQueryHandler(IFinanceApiClient<FinanceApiC
             CurrentLevyFunds = levySummary.CurrentLevyFunds,
             TotalLevyDeclaredLast12Months = levySummary.TotalLevyDeclaredLast12Months,
             TotalLevySpentLast12Months = levySummary.TotalLevySpentLast12Months,
+            TotalLevyExpiredLast12Months = levySummary.TotalLevyExpiredLast12Months,
         };
     }
 }
