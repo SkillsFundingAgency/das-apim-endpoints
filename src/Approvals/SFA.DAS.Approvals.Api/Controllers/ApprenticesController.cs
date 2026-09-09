@@ -725,7 +725,7 @@ public class ApprenticesController(
     }
 
     [HttpGet]
-    [Route("/employer/{accountId:long}/apprenticeships/{apprenticeshipId:long}/approval-requests")]
+    [Route("/employer/{accountId:long}/apprentices/{apprenticeshipId:long}/approval-requests")]
     public async Task<IActionResult> GetApprovalRequest(long accountId, long apprenticeshipId, [FromQuery] byte status)
     {
         try
@@ -753,7 +753,7 @@ public class ApprenticesController(
     }
 
     [HttpPut]
-    [Route("/employer/{accountId:long}/apprenticeships/{apprenticeshipId:long}/alerts-acknowledged")]
+    [Route("/employer/{accountId:long}/apprentices/{apprenticeshipId:long}/alerts-acknowledged")]
     public async Task<IActionResult> UpdateApprovalRequestAlertAcknowledge(long accountId, long apprenticeshipId, [FromBody] UpdateApprovalRequestAlertAcknowledgeRequest request)
     {
         try
