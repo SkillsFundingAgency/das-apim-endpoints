@@ -41,6 +41,7 @@ namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses
             public bool? IsOnFlexiPaymentPilot { get; set; }
             public bool? EmployerHasEditedCost { get; set; }
             public string TrainingCourseVersion { get; set; }
+            public Guid? PendingApprovalRequestId { get; set; }
         }
 
         public IEnumerable<ApprenticeshipDetailsResponse> Apprenticeships { get; set; }

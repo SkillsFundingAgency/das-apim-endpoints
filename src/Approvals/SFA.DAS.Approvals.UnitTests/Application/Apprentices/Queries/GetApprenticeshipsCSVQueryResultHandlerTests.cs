@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -18,7 +19,9 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         private GetApprenticeshipsCSVQueryResultHandler _handler;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _apiClient;
 
-        private GetApprenticeshipsResponse _apprenticeships;
+        private GetApprenticeshipsResponse _apprenticeshipsResponse;
+        private GetApprenticeshipsResponse.ApprenticeshipDetailsResponse _apprenticeshipDetailsResponse;
+        private List<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse> _apprenticeships;
         private GetApprenticeshipsCSVQuery _query;
 
         [SetUp]
@@ -26,8 +29,10 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         {
             var fixture = new Fixture();
 
-            _apprenticeships = fixture.Build<GetApprenticeshipsResponse>()
-                .Create();
+            _apprenticeshipDetailsResponse = fixture.Build<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>().Without(x => x.PendingApprovalRequestId).Create();
+            _apprenticeships = new List<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse> { _apprenticeshipDetailsResponse };
+            _apprenticeshipsResponse = fixture.Build<GetApprenticeshipsResponse>()
+                .With(x=>x.Apprenticeships, _apprenticeships).Create();
 
             _query = fixture.Create<GetApprenticeshipsCSVQuery>();
 
@@ -46,7 +51,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
                         && r.ApprenticeConfirmationStatus == _query.ApprenticeConfirmationStatus
                         && r.DeliveryModel == _query.DeliveryModel
                         )))
-                .ReturnsAsync(new ApiResponse<GetApprenticeshipsResponse>(_apprenticeships, HttpStatusCode.OK, string.Empty));
+                .ReturnsAsync(new ApiResponse<GetApprenticeshipsResponse>(_apprenticeshipsResponse, HttpStatusCode.OK, string.Empty));
 
             var mappingConfig = new MapperConfiguration(mc => { mc.AddProfile(new MappingProfile()); });
             var mapper = mappingConfig.CreateMapper();
@@ -60,7 +65,8 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             var result = await _handler.Handle(_query, CancellationToken.None);
 
             result.Should().NotBeNull();
-            result.Should().BeEquivalentTo(_apprenticeships, o => o.Excluding(x => x.HasChangeHistory));
+            result.Should().BeEquivalentTo(_apprenticeshipsResponse, o => o.Excluding(x => x.HasChangeHistory).Excluding(x => x.Apprenticeships));
+            result.Apprenticeships.Should().BeEquivalentTo(_apprenticeships, o => o.Excluding(x => x.PendingApprovalRequestId));
         }
 
         [Test]

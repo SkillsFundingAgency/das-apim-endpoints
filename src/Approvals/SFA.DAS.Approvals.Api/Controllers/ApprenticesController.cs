@@ -638,7 +638,7 @@ public class ApprenticesController(
                 ApprenticeConfirmationStatus = request.ApprenticeConfirmationStatus,
                 DeliveryModel = request.DeliveryModel
             };
-
+       
             var apprenticesData = await mediator.Send(query);
 
             if (apprenticesData == null)
