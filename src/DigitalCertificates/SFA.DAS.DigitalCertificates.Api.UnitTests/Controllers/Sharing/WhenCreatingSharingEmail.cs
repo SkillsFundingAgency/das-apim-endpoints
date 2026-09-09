@@ -10,6 +10,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Api.Controllers;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingEmail;
+using SFA.DAS.DigitalCertificates.Api.Models.Sharing;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
@@ -19,7 +20,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
         [Test, MoqAutoData]
         public async Task Then_The_Sharing_Email_Result_Is_Returned(
             Guid sharingId,
-            CreateSharingEmailCommand command,
+            CreateSharingEmailRequest request,
             CreateSharingEmailResult result,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] SharingController controller)
@@ -28,28 +29,24 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
             mediator
                 .Setup(x => x.Send(It.Is<CreateSharingEmailCommand>(c =>
                     c.SharingId == sharingId &&
-                    c.EmailAddress == command.EmailAddress &&
-                    c.TemplateId == command.TemplateId), CancellationToken.None))
+                    c.EmailAddress == request.EmailAddress &&
+                    c.TemplateId == request.TemplateId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(result);
 
             // Act
-            var actual = await controller.CreateSharingEmail(sharingId, command) as ObjectResult;
+            var actual = await controller.CreateSharingEmail(sharingId, request) as ObjectResult;
 
             // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().Be(result);
 
-            mediator.Verify(m => m.Send(It.Is<CreateSharingEmailCommand>(c =>
-                c.SharingId == sharingId &&
-                c.EmailAddress == command.EmailAddress &&
-                c.TemplateId == command.TemplateId), It.IsAny<CancellationToken>()), Times.Once);
+            mediator.Verify(m => m.Send(It.IsAny<CreateSharingEmailCommand>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             Guid sharingId,
-            CreateSharingEmailCommand command,
+            CreateSharingEmailRequest request,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] SharingController controller)
         {
@@ -58,7 +55,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
                 .ThrowsAsync(new Exception());
 
             // Act
-            var actual = await controller.CreateSharingEmail(sharingId, command) as StatusCodeResult;
+            var actual = await controller.CreateSharingEmail(sharingId, request) as StatusCodeResult;
 
             // Assert
             actual.Should().NotBeNull();

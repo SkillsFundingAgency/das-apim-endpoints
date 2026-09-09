@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.DigitalCertificates.Api.Attributes;
+using SFA.DAS.DigitalCertificates.Api.Models.Users;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAction;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAuthorise;
@@ -15,7 +16,6 @@ using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetSharings;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetUser;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetUserActions;
-using SFA.DAS.DigitalCertificates.Models;
 
 namespace SFA.DAS.DigitalCertificates.Api.Controllers
 {
@@ -38,7 +38,8 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             try
             {
                 var userResult = await _mediator.Send(new GetUserQuery { GovUkIdentifier = govUkIdentifier });
-                return Ok(userResult?.User);
+                var response = (GetUserResponse)userResult?.User;
+                return Ok(response);
             }
             catch (Exception e)
             {
@@ -52,13 +53,7 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
         {
             try
             {
-                var command = new CreateOrUpdateUserCommand
-                {
-                    GovUkIdentifier = request.GovUkIdentifier,
-                    EmailAddress = request.EmailAddress,
-                    PhoneNumber = request.PhoneNumber
-                };
-
+                CreateOrUpdateUserCommand command = request;
                 var result = await _mediator.Send(command);
                 return Ok(result.UserId);
             }
@@ -74,13 +69,8 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
         {
             try
             {
-                var command = new UpdateUserIdentityCommand
-                {
-                    UserId = userId,
-                    Names = request.Names,
-                    DateOfBirth = request.DateOfBirth
-                };
-
+                UpdateUserIdentityCommand command = request;
+                command.UserId = userId;
                 await _mediator.Send(command);
                 return Ok();
             }
@@ -98,7 +88,8 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             try
             {
                 var certificatesResult = await _mediator.Send(new GetCertificatesQuery { UserId = userId });
-                return Ok(certificatesResult ?? new GetCertificatesResult());
+                var response = (GetCertificatesResponse)(certificatesResult ?? new GetCertificatesResult());
+                return Ok(response);
             }
             catch (Exception e)
             {
@@ -113,7 +104,8 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             try
             {
                 var result = await _mediator.Send(new GetSharingsQuery { UserId = userId, CertificateId = certificateId, Limit = limit });
-                return Ok(result.Response);
+                var response = (GetSharingsResponse)result.Response;
+                return Ok(response);
             }
             catch (Exception e)
             {
@@ -135,7 +127,8 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
                     return NoContent();
                 }
 
-                return Ok(result);
+                var response = (GetCertificatesMatchResponse)result;
+                return Ok(response);
             }
             catch (Exception e)
             {
@@ -144,14 +137,16 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             }
         }
 
-        [HttpPost("{userId}/actions")]
-        public async Task<IActionResult> CreateUserAction([FromRoute] Guid userId, [FromBody] CreateUserActionCommand command)
+        [HttpPost("{userId}/user-actions")]
+        public async Task<IActionResult> CreateUserAction([FromRoute] Guid userId, [FromBody] CreateUserActionRequest request)
         {
             try
             {
+                CreateUserActionCommand command = request;
                 command.UserId = userId;
                 var result = await _mediator.Send(command);
-                return Ok(result);
+                var response = (CreateUserActionResponse)result;
+                return Ok(response);
             }
             catch (Exception e)
             {
@@ -160,13 +155,14 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             }
         }
 
-        [HttpGet("{userId}/actions")]
+        [HttpGet("{userId}/user-actions")]
         public async Task<IActionResult> GetUserActions([FromRoute] Guid userId)
         {
             try
             {
                 var result = await _mediator.Send(new GetUserActionsQuery { UserId = userId });
-                return Ok(new { useractions = result.UserActions });
+                var response = (GetUserActionsResponse)result;
+                return Ok(new { useractions = response.UserActions });
             }
             catch (Exception e)
             {
@@ -176,10 +172,11 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
         }
 
         [HttpPost("{userId}/match")]
-        public async Task<IActionResult> CreateUserMatch([FromRoute] Guid userId, [FromBody] CreateUserMatchCommand command)
+        public async Task<IActionResult> CreateUserMatch([FromRoute] Guid userId, [FromBody] CreateUserMatchRequest request)
         {
             try
             {
+                CreateUserMatchCommand command = request;
                 command.UserId = userId;
                 await _mediator.Send(command);
                 return NoContent();
@@ -192,10 +189,11 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
         }
 
         [HttpPost("{userId}/authorise")]
-        public async Task<IActionResult> CreateUserAuthorise([FromRoute] Guid userId, [FromBody] CreateUserAuthoriseCommand command)
+        public async Task<IActionResult> CreateUserAuthorise([FromRoute] Guid userId, [FromBody] CreateUserAuthoriseRequest request)
         {
             try
             {
+                CreateUserAuthoriseCommand command = request;
                 command.UserId = userId;
                 await _mediator.Send(command);
                 return NoContent();

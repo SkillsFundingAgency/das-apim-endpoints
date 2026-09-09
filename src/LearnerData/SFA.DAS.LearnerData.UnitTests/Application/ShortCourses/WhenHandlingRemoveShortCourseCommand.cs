@@ -42,20 +42,20 @@ public class WhenHandlingRemoveShortCourseCommand
     {
         var command = _fixture.Create<RemoveShortCourseCommand>();
         var item1 = _fixture.Build<DeleteShortCourseItemResponse>()
-            .With(x => x.Episodes, [new LearningInnerShortCourseEpisode
+            .With(x => x.Episode, new LearningInnerShortCourseEpisode
             {
                 Ukprn = command.Ukprn,
                 LearnerRef = _learnerRef,
                 StartDate = DateTime.UtcNow.Date
-            }])
+            })
             .Create();
         var item2 = _fixture.Build<DeleteShortCourseItemResponse>()
-            .With(x => x.Episodes, [new LearningInnerShortCourseEpisode
+            .With(x => x.Episode, new LearningInnerShortCourseEpisode
             {
                 Ukprn = command.Ukprn,
                 LearnerRef = _learnerRef,
                 StartDate = DateTime.UtcNow.Date
-            }])
+            })
             .Create();
         var learningResponse = new DeleteShortCourseResponse { Results = [item1, item2] };
 
@@ -92,12 +92,12 @@ public class WhenHandlingRemoveShortCourseCommand
     {
         var command = _fixture.Create<RemoveShortCourseCommand>();
         var item = _fixture.Build<DeleteShortCourseItemResponse>()
-            .With(x => x.Episodes, [new LearningInnerShortCourseEpisode
+            .With(x => x.Episode, new LearningInnerShortCourseEpisode
             {
                 Ukprn = command.Ukprn,
                 LearnerRef = _learnerRef,
                 StartDate = DateTime.UtcNow.Date
-            }])
+            })
             .Create();
         var learningResponse = new DeleteShortCourseResponse { Results = [item] };
 

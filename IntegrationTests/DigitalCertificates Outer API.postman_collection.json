@@ -311,13 +311,13 @@
       "response": []
     },
     {
-      "name": "CreateOrUpdateUser",
+      "name": "UpdateUserIdentity",
       "request": {
         "method": "POST",
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n  \"govUkIdentifier\": \"{{GovUkIdentifier}}\",\r\n  \"emailAddress\": \"digcui.testing+john+saggan@gmail.com\",\r\n  \"phoneNumber\": \"07890123456\",\r\n  \"names\": [\r\n    {\r\n      \"validSince\": null,\r\n      \"validUntil\": null,\r\n      \"familyName\": \"Saggan\",\r\n      \"givenNames\": \"John\"\r\n    }\r\n  ],\r\n  \"dateOfBirth\": \"1938-10-14T00:00:00.000Z\"\r\n}",
+          "raw": "{\r\n  \"names\": [\r\n    {\r\n      \"validSince\": \"2001-09-01T00:00:00.000Z\",\r\n      \"validUntil\": null,\r\n      \"familyName\": \"PreprodLast2\",\r\n      \"givenNames\": \"PreprodFirst2\"\r\n    }\r\n  ],\r\n  \"dateOfBirth\": \"2003-02-02\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -325,7 +325,7 @@
           }
         },
         "url": {
-          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/users/identity",
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/users/{{UserId}}/identity",
           "protocol": "https",
           "host": [
             "{{Environment}}-apim-digc-api",
@@ -336,7 +336,39 @@
           ],
           "path": [
             "users",
+            "{{UserId}}",
             "identity"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CreateOrUpdateUser",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"govUkIdentifier\": \"{{GovUkIdentifier}}\",\r\n  \"emailAddress\": \"preprodfirst2.preprodlast2@test.com\",\r\n  \"phoneNumber\": \"07880000010\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/users",
+          "protocol": "https",
+          "host": [
+            "{{Environment}}-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "users"
           ]
         }
       },
@@ -357,7 +389,7 @@
           }
         },
         "url": {
-          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/users/{{UserId}}/actions",
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/users/{{UserId}}/user-actions",
           "protocol": "https",
           "host": [
             "{{Environment}}-apim-digc-api",
@@ -369,7 +401,7 @@
           "path": [
             "users",
             "{{UserId}}",
-            "actions"
+            "user-actions"
           ]
         }
       },
@@ -415,7 +447,73 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n  \"userId\": \"{{UserId}}\",\r\n  \"uln\": {{Uln}},\r\n  \"familyName\": \"Saggan\",\r\n  \"dateOfBirth\": \"1974-10-14\",\r\n  \"certificateType\": \"Standard\",\r\n  \"courseCode\": \"66\",\r\n  \"courseName\": \"Network engineer\",\r\n  \"courseLevel\": \"4\",\r\n  \"yearAwarded\": 2022,\r\n  \"providerName\": \"SKILLNET LIMITED\",\r\n  \"ukprn\": 1234123412,\r\n  \"isMatched\": false,\r\n  \"isFailed\": false\r\n}",
+          "raw": "{\r\n  \"userId\": \"{{UserId}}\",\r\n  \"uln\": 9990000002,\r\n  \"familyName\": \"PreProdLast2\",\r\n  \"dateOfBirth\": \"2003-02-02\",\r\n  \"certificateType\": \"Standard\",\r\n  \"courseCode\": \"1\",\r\n  \"courseName\": \"Network engineer\",\r\n  \"courseLevel\": \"4\",\r\n  \"yearAwarded\": 2020,\r\n  \"providerName\": \"Ginger Nut Training\",\r\n  \"ukprn\": 90010524,\r\n  \"isMatched\": false,\r\n  \"isFailed\": false\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/users/{{UserId}}/match",
+          "protocol": "https",
+          "host": [
+            "{{Environment}}-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "users",
+            "{{UserId}}",
+            "match"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CreateUserMatch Second Match",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"userId\": \"{{UserId}}\",\r\n  \"uln\": 6240000002,\r\n  \"familyName\": \"PreProdLast2\",\r\n  \"dateOfBirth\": \"2003-02-02\",\r\n  \"certificateType\": \"Standard\",\r\n  \"courseCode\": \"1\",\r\n  \"courseName\": \"Network engineer\",\r\n  \"courseLevel\": \"4\",\r\n  \"yearAwarded\": 2020,\r\n  \"providerName\": \"Ginger Nut Training\",\r\n  \"ukprn\": 90010524,\r\n  \"isMatched\": true,\r\n  \"isFailed\": false\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/users/{{UserId}}/match",
+          "protocol": "https",
+          "host": [
+            "{{Environment}}-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "users",
+            "{{UserId}}",
+            "match"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CreateUserMatch Second Fail",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"userId\": \"{{UserId}}\",\r\n  \"uln\": 9990000002,\r\n  \"familyName\": \"PreProdLast2\",\r\n  \"dateOfBirth\": \"2003-02-02\",\r\n  \"certificateType\": \"Standard\",\r\n  \"courseCode\": \"1\",\r\n  \"courseName\": \"Network engineer\",\r\n  \"courseLevel\": \"4\",\r\n  \"yearAwarded\": 2020,\r\n  \"providerName\": \"Ginger Nut Training\",\r\n  \"ukprn\": 90010524,\r\n  \"isMatched\": false,\r\n  \"isFailed\": false\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -638,7 +736,7 @@
           }
         },
         "url": {
-          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/users/{{UserId}}/actions",
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/users/{{UserId}}/user-actions",
           "protocol": "https",
           "host": [
             "{{Environment}}-apim-digc-api",
@@ -650,7 +748,7 @@
           "path": [
             "users",
             "{{UserId}}",
-            "actions"
+            "user-actions"
           ]
         }
       },
@@ -812,19 +910,19 @@
     },
     {
       "key": "UserId",
-      "value": "4639ACF6-F4BF-4205-6614-08DEAF324F80"
+      "value": "4B7D8D18-1B13-422D-8A6E-72090EF8A7D1"
     },
     {
       "key": "GovUkIdentifier",
-      "value": "urn:fdc:gov.uk:2022:ruFjQz8uSpWAo2U0gxNszmm7zsRogQlvg5umbuWpYHA"
+      "value": "test-govuk-preprodfirst2"
     },
     {
       "key": "StandardCertificateId",
-      "value": "D61A7AD4-261E-436E-8E6D-12A822B0DC38"
+      "value": "A55B28A8-F7D0-449A-A0DA-D2B58A4530B5"
     },
     {
       "key": "FrameworkLearnerId",
-      "value": "9EFF940D-931B-4CA3-ACF0-CC508D3D1218"
+      "value": "4ACD2D8A-B0AB-4C0F-BA93-89DD94327043"
     },
     {
       "key": "SharingId",
@@ -848,7 +946,7 @@
     },
     {
       "key": "Uln",
-      "value": "8756125698"
+      "value": "6230000002"
     }
   ]
 }

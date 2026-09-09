@@ -13,7 +13,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
         public PostCreateUserActionRequest(PostCreateUserActionRequestData data, Guid userId)
         {
             Data = data;
-            PostUrl = $"api/users/{userId}/actions";
+            PostUrl = $"api/users/{userId}/user-actions";
         }
     }
 

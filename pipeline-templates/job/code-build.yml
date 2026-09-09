@@ -18,6 +18,9 @@ jobs:
   workspace:
     clean: all
   steps:
+  - checkout: self
+    fetchDepth: 0
+    
   - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
 
   - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks

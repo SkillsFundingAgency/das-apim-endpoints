@@ -74,24 +74,21 @@ internal class RemoveShortCourseSteps(TestContext testContext, ScenarioContext s
                         LastName = _fixture.Create<string>(),
                         DateOfBirth = _fixture.Create<DateTime>()
                     },
-                    Episodes =
-                    [
-                        new LearningInnerShortCourseEpisode
-                        {
-                            Ukprn = ukprn,
-                            EmployerAccountId = 12,
-                            CourseCode = "ZSC00001",
-                            CourseType = "ShortCourse",
-                            LearningType = "ApprenticeshipUnit",
-                            StartDate = DateTime.UtcNow.AddMonths(-6),
-                            AgeAtStart = 20,
-                            PlannedEndDate = DateTime.UtcNow.AddMonths(6),
-                            IsApproved = true,
-                            Price = 1000m,
-                            LearnerRef = "LearnerRef",
-                            EmployerType = "Levy"
-                        }
-                    ]
+                    Episode = new LearningInnerShortCourseEpisode
+                    {
+                        Ukprn = ukprn,
+                        EmployerAccountId = 12,
+                        CourseCode = "ZSC00001",
+                        CourseType = "ShortCourse",
+                        LearningType = "ApprenticeshipUnit",
+                        StartDate = DateTime.UtcNow.AddMonths(-6),
+                        AgeAtStart = 20,
+                        PlannedEndDate = DateTime.UtcNow.AddMonths(6),
+                        IsApproved = true,
+                        Price = 1000m,
+                        LearnerRef = "LearnerRef",
+                        EmployerType = "Levy"
+                    }
                 }
             ]
         };

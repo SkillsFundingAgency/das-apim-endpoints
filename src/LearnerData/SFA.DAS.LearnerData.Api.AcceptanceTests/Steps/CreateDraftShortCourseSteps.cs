@@ -86,6 +86,12 @@ public class CreateDraftShortCourseSteps
         await CallCreateDraftShortCourseEndpoint();
     }
 
+    [When(@"a draft short course is created for the provider with a temporary uln")]
+    public async Task WhenADraftShortCourseIsCreatedForTheProviderWithATemporaryUln()
+    {
+        await CallCreateDraftShortCourseEndpointWithTemporaryUln();
+    }
+
     [When(@"a draft short course is created for the provider with start date (.*) and learning type (.*)")]
     public async Task WhenADraftShortCourseIsCreatedForTheProviderWithStartDateAndLearningType(DateTime startDate, string learningType)
     {
@@ -229,20 +235,16 @@ public class CreateDraftShortCourseSteps
             var learningResponse = new CreateShortCoursePostResponse
             {
                 LearningKey = Guid.NewGuid(),
-                EpisodeKey = episodeKey,
-                Episodes =
-                [
-                    new LearningInnerShortCourseEpisode
-                    {
-                        EpisodeKey = episodeKey,
-                        Ukprn = _scenarioContext.Get<long>(UkprnKey),
-                        CourseCode = "ZSC00001",
-                        StartDate = _scenarioContext.TryGetValue(PersistedStartDateOverrideKey, out DateTime persistedStartDate)
-                            ? persistedStartDate
-                            : DateTime.UtcNow,
-                        PlannedEndDate = DateTime.UtcNow.AddMonths(6)
-                    }
-                ]
+                Episode = new LearningInnerShortCourseEpisode
+                {
+                    EpisodeKey = episodeKey,
+                    Ukprn = _scenarioContext.Get<long>(UkprnKey),
+                    CourseCode = "ZSC00001",
+                    StartDate = _scenarioContext.TryGetValue(PersistedStartDateOverrideKey, out DateTime persistedStartDate)
+                        ? persistedStartDate
+                        : DateTime.UtcNow,
+                    PlannedEndDate = DateTime.UtcNow.AddMonths(6)
+                }
             };
 
             _testContext.ApprenticeshipsApi.MockServer
@@ -276,6 +278,20 @@ public class CreateDraftShortCourseSteps
     {
         var ukprn = _scenarioContext.Get<long>(UkprnKey);
         var requestBody = _fixture.Create<ShortCourseRequest>();
+        _scenarioContext.Set(requestBody, ShortCourseRequestKey);
+        var httpContent = new StringContent(JsonConvert.SerializeObject(requestBody), new MediaTypeHeaderValue("application/json"));
+        var response = await _testContext.OuterApiClient.PostAsync($"/providers/{ukprn}/shortCourses", httpContent);
+        _scenarioContext.Set(response, OuterApiResponseKey);
+    }
+
+    private async Task CallCreateDraftShortCourseEndpointWithTemporaryUln()
+    {
+        var ukprn = _scenarioContext.Get<long>(UkprnKey);
+        var requestBody = _fixture.Build<ShortCourseRequest>()
+            .With(x => x.Learner, _fixture.Build<ShortCourseLearnerRequestDetails>()
+                .With(x => x.Uln, 9999999999)
+                .Create())
+            .Create();
         _scenarioContext.Set(requestBody, ShortCourseRequestKey);
         var httpContent = new StringContent(JsonConvert.SerializeObject(requestBody), new MediaTypeHeaderValue("application/json"));
         var response = await _testContext.OuterApiClient.PostAsync($"/providers/{ukprn}/shortCourses", httpContent);

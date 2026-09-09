@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
@@ -34,7 +32,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateUserMatch
 
             var userMatchIdentity = command.UserIdentityId != null
                 ? identity.Identity.FirstOrDefault(p => p.UserIdentityId == command.UserIdentityId)
-                : identity.Identity.OrderByDescending(p => p.ValidFrom).FirstOrDefault();
+                : identity.Identity.OrderByDescending(p => p.ValidSince).FirstOrDefault();
 
             if (userMatchIdentity == null || identity.DateOfBirth == null)
             {

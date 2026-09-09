@@ -12,6 +12,7 @@ using SFA.DAS.VacanciesManage.InnerApi.Requests;
 using SFA.DAS.VacanciesManage.InnerApi.Responses;
 using SFA.DAS.VacanciesManage.Services;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Security;
@@ -19,17 +20,19 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.Results;
 using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
-using EmployerNameOption = SFA.DAS.Recruit.Contracts.ApiResponses.EmployerNameOption;
 using HttpRequestContentException = SFA.DAS.Apim.Shared.Infrastructure.HttpRequestContentException;
-using IRecruitApiClient = SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>;
-using Operation = SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships.Operation;
-using OwnerType = SFA.DAS.Recruit.Contracts.ApiResponses.OwnerType;
 using PutVacancyReviewRequest = SFA.DAS.Recruit.Contracts.ApiResponses.PutVacancyReviewRequest;
-using ReviewStatus = SFA.DAS.Recruit.Contracts.ApiResponses.ReviewStatus;
 using TrainingProvider = SFA.DAS.Recruit.Contracts.ApiResponses.TrainingProvider;
 using Vacancy = SFA.DAS.Recruit.Contracts.ApiResponses.Vacancy;
+using IRecruitApiClient = SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>;
 using VacancyStatus = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyStatus;
+using EmployerNameOption = SFA.DAS.Recruit.Contracts.ApiResponses.EmployerNameOption;
+using ReviewStatus = SFA.DAS.Recruit.Contracts.ApiResponses.ReviewStatus;
+using Operation = SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships.Operation;
+using OwnerType = SFA.DAS.Recruit.Contracts.ApiResponses.OwnerType;
 
 namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy;
 
@@ -38,7 +41,8 @@ public class CreateVacancyCommandHandler(
     IAccountLegalEntityPermissionService accountLegalEntityPermissionService,
     ICourseService courseService,
     ISlaService slaService,
-    IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient)
+    IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient,
+    ILocationLookupService locationLookupService)
     : IRequestHandler<CreateVacancyCommand, CreateVacancyCommandResponse>
 {
 
@@ -71,6 +75,9 @@ public class CreateVacancyCommandHandler(
         // apply vacancy status based on employer approval requirement
         ApplyVacancyStatus(vacancy, requiresEmployerApproval, dateTimeNow);
 
+        // apply geo coordinates to employer locations
+        await ApplyGeoCoordinates(vacancy);
+
         vacancy.Id = request.Id;
         var result = await CreateVacancy(vacancy, request.IsSandbox);
         HandleHttpResponseError(result);
@@ -97,8 +104,8 @@ public class CreateVacancyCommandHandler(
         var vacancyUser = new VacancyUser
         {
             UserId = vacancy.SubmittedByUserId.ToString(),
-            Name = vacancy.Contact.Name,
-            Email = vacancy.Contact.Email,
+            Name = vacancy.Contact?.Name,
+            Email = vacancy.Contact?.Email,
         };
         
         var vacancyNode = JsonSerializer.SerializeToNode(vacancy, snapshotOptions)!.AsObject();
@@ -119,12 +126,12 @@ public class CreateVacancyCommandHandler(
                 CreatedDate = createdDate,
                 Status = ReviewStatus.New,
                 VacancySnapshot = vacancyNode.ToJsonString(snapshotOptions),
-                SubmittedByUserEmail = vacancy.Contact.Email,
+                SubmittedByUserEmail = vacancy.Contact?.Email,
                 SubmissionCount = 1,
                 SlaDeadLine = slaDeadline,
                 UpdatedFieldIdentifiers = [],
                 DismissedAutomatedQaOutcomeIndicators = [],
-                Ukprn = vacancy.TrainingProvider.Ukprn!.Value,
+                Ukprn = vacancy.TrainingProvider!.Ukprn!.Value,
                 AccountId = vacancy.AccountId!.Value,
                 AccountLegalEntityId = vacancy.AccountLegalEntityId!.Value,
                 OwnerType = vacancy.OwnerType,
@@ -139,7 +146,7 @@ public class CreateVacancyCommandHandler(
 
     private static void ValidateUkprn(PostVacancyRequest vacancy)
     {
-        if (vacancy.TrainingProvider.Ukprn is null)
+        if (vacancy.TrainingProvider?.Ukprn is null)
         {
             throw new HttpRequestContentException("Training Provider UKPRN not valid", HttpStatusCode.NotFound);
         }
@@ -312,6 +319,33 @@ public class CreateVacancyCommandHandler(
         vacancy.Status = VacancyStatus.Submitted;
         vacancy.SubmittedDate = now;
         vacancy.ArchiveType = null;
+    }
+
+    private async Task ApplyGeoCoordinates(PostVacancyRequest vacancy)
+    {
+        var employerLocations = vacancy.EmployerLocations;
+        if (employerLocations is null || employerLocations.Count == 0)
+        {
+            return;
+        }
+
+        var lookupTasks = employerLocations.Select(async location =>
+        {
+            var postcodeInfo = await locationLookupService.GetPostcodeInfoAsync(location.Postcode);
+
+            location.Latitude = postcodeInfo?.Latitude;
+            location.Longitude = postcodeInfo?.Longitude;
+
+            if (postcodeInfo != null && postcodeInfo.Country != Constants.EnglandCountryCode)
+            {
+                throw new ValidationException("EmployerAddress", new List<ValidationFailure>
+                {
+                    new("Postcode", "Postcode must be in England")
+                });
+            }
+        });
+
+        await Task.WhenAll(lookupTasks);
     }
 
     private async Task<ApiResponse<Vacancy>> CreateVacancy(PostVacancyRequest vacancy, bool isSandbox)

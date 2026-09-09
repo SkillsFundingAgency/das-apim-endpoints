@@ -14,6 +14,7 @@ using SFA.DAS.Approvals.Application.Apprentices.Queries;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.ApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditApprenticeship;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetChangePayments;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetApprenticeship;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetEditApprenticeshipCourse;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.ApprenticeData;
@@ -609,7 +610,7 @@ public class ApprenticesController(
     [HttpGet]
     [Route("/provider/{providerId}/apprentices")]
     [Route("/employer/{accountId}/apprentices")]
-    public async Task<IActionResult> GetApprenticeships(long? providerId, long? accountId , [FromQuery] InnerApi.Requests.GetApprenticeshipsRequest request)
+    public async Task<IActionResult> GetApprenticeships(long? providerId, long? accountId, [FromQuery] InnerApi.Requests.GetApprenticeshipsRequest request)
     {
         try
         {
@@ -640,7 +641,7 @@ public class ApprenticesController(
             if (apprenticesData == null)
             {
                 return NotFound();
-            }    
+            }
 
             return Ok(apprenticesData);
         }
@@ -649,7 +650,7 @@ public class ApprenticesController(
             logger.LogError(ex, "Error in GetApprenticeships for provider Id: {providerId}", providerId);
             return BadRequest();
         }
-    }   
+    }
 
     private async Task<IActionResult> ConfirmEditApprenticeshipInternal(
         long apprenticeshipId,
@@ -693,6 +694,30 @@ public class ApprenticesController(
         catch (Exception e)
         {
             logger.LogError(e, $"Error confirming edit apprenticeship {apprenticeshipId}");
+            return BadRequest();
+        }
+    }
+
+    [HttpGet]
+    [Route("/provider/{providerId}/apprentices/{apprenticeshipId}")]
+    public async Task<IActionResult> GetApprenticeship(long apprenticeshipId)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetApprenticeshipQuery { ApprenticeshipId = apprenticeshipId });
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            var response = mapper.Map<GetApprenticeshipResponse>(result);
+
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, $"Error in GetApprenticeship {apprenticeshipId}");
             return BadRequest();
         }
     }

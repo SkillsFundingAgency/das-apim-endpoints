@@ -157,6 +157,16 @@ public class ShortCoursesController(
                 Request = request
             });
         }
+        catch (InvalidCourseException e)
+        {
+            logger.LogError(e, "Invalid course code when updating short course learning");
+            return new StatusCodeResult((int)HttpStatusCode.UnprocessableEntity);
+        }
+        catch (CoursesApiUnavailableException e)
+        {
+            logger.LogError(e, "Courses API unavailable when updating short course learning");
+            return new StatusCodeResult((int)HttpStatusCode.ServiceUnavailable);
+        }
         catch (Exception e)
         {
             logger.LogError(e, "Internal error occurred when updating short course learning");

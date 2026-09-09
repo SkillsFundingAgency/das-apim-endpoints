@@ -12,23 +12,25 @@ public class CourseController(IMediator _mediator, ILogger<CourseController> _lo
 {
     [HttpGet("{larsCode}/providers/allowed")]
     [ProducesResponseType(typeof(RestrictedCourseDetailsModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAllowedProvidersByCourse([FromRoute] string larsCode)
     {
         _logger.LogInformation("Request received to get allowed providers by course for {LarsCode}", larsCode);
 
         GetProvidersAllowedToDeliverCourseQuery query = new(larsCode);
         RestrictedCourseDetailsModel result = await _mediator.Send(query);
-        return Ok(result);
+        return result == null ? NotFound() : Ok(result);
     }
 
     [HttpGet("{larsCode}/providers/not-allowed")]
     [ProducesResponseType(typeof(RestrictedCourseDetailsModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetProvidersNotAllowedByCourse([FromRoute] string larsCode)
     {
         _logger.LogInformation("Request received to get providers not allowed by course for {LarsCode}", larsCode);
 
         GetProvidersNotAllowedToDeliverCourseQuery query = new(larsCode);
         RestrictedCourseDetailsModel result = await _mediator.Send(query);
-        return Ok(result);
+        return result == null ? NotFound() : Ok(result);
     }
 }

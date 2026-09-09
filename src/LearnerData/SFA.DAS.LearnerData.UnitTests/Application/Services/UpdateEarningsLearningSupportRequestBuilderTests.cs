@@ -24,12 +24,11 @@ public class UpdateEarningsLearningSupportRequestBuilderTests
     public void Build_Should_Map_LearningSupportItems()
     {
         // Arrange
-        var command = _fixture.Create<UpdateLearnerCommand>();
         var putRequest = _fixture.Create<UpdateLearningApiPutRequest>();
         var response = _fixture.Create<UpdateLearnerApiPutResponse>();
 
         // Act
-        var result = _sut.Build(command, response, putRequest);
+        var result = _sut.Build(response, putRequest);
 
         // Assert
         var expected = putRequest.Data.LearningSupport.Select(x => new
@@ -39,7 +38,7 @@ public class UpdateEarningsLearningSupportRequestBuilderTests
                 EndDate = x.EndDate
             }).ToList();
 
-        result.PutUrl.Should().Be($"learning/{command.LearningKey}/learning-support");
+        result.PutUrl.Should().Be($"learning/{response.LearningKey}/learning-support");
         result.Data.LearningSupport.Should().BeEquivalentTo(expected);
     }
 }

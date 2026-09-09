@@ -29,10 +29,12 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<IBankHolidayProvider, BankHolidayProvider>();
         services.AddTransient<ISlaService, SlaService>();
         services.AddTransient<IHtmlValidatorService, HtmlValidatorService>();
+        services.AddTransient<ILocationLookupService, LocationLookupService>();
 
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>, SFA.DAS.Recruit.Contracts.Client.RecruitApiClient>();
 
+        services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
         services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
         services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();

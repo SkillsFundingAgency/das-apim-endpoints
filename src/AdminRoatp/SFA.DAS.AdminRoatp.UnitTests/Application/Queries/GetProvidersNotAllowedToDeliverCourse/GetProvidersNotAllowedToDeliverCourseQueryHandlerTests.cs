@@ -33,6 +33,22 @@ public class GetProvidersNotAllowedToDeliverCourseQueryHandlerTests
     }
 
     [Test, MoqAutoData]
+    public async Task WhenHandlingRequestAndNotFoundIsReturned_ThenReturnsNull(
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
+            GetProvidersNotAllowedToDeliverCourseQuery query,
+            GetProvidersNotAllowedToDeliverCourseQueryHandler sut)
+    {
+        // Arrange
+        apiClientMock.Setup(c => c.GetWithResponseCode<RestrictedCourseDetailsModel>(It.IsAny<GetProvidersNotAllowedRequest>())).ReturnsAsync(new ApiResponse<RestrictedCourseDetailsModel>(new RestrictedCourseDetailsModel(), HttpStatusCode.NotFound, ""));
+
+        // Act
+        var result = await sut.Handle(query, new CancellationToken());
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [Test, MoqAutoData]
     public void WhenHandlingRequestAndApiReturnsInvalidResponseCode_ThenThrowsApiResponseException(
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
         GetProvidersNotAllowedToDeliverCourseQuery query,

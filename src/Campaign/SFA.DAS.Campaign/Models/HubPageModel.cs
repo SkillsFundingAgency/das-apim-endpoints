@@ -31,6 +31,8 @@ namespace SFA.DAS.Campaign.Models
                 ProcessHeaderImage(hub, item), menu, banners);
         }
 
+        private static readonly PageType[] CardPageTypes = { PageType.Article, PageType.LandingPage };
+
         private static List<CardPageModel> ProcessCards(CmsContent hub, List<CardItem> cardItems)
         {
             if (cardItems == null)
@@ -47,7 +49,7 @@ namespace SFA.DAS.Campaign.Models
                                       && c.Sys.ContentType.Sys.LinkType.Equals("ContentType",
                                           StringComparison.CurrentCultureIgnoreCase)
                                       && Enum.TryParse<PageType>(c.Sys.ContentType.Sys.Id, true, out var type) &&
-                                      type == PageType.Article &&
+                                      CardPageTypes.Contains(type) &&
                                       cardItems.FirstOrDefault(o => o.Sys.Id == c.Sys.Id) != null
                     )
                     .Select(entry => new CardPageModel
@@ -58,6 +60,7 @@ namespace SFA.DAS.Campaign.Models
                         Title = entry.Fields.Title,
                         HubType = entry.Fields.HubType,
                         MetaDescription = entry.Fields.MetaDescription,
+                        PageType = GetPageType(entry),
                         LandingPage = SetLandingPageDetails(hub, entry)
                     })
                     .ToList()
@@ -76,10 +79,22 @@ namespace SFA.DAS.Campaign.Models
             return cards;
         }
 
+        private static PageType GetPageType(Entry entry)
+        {
+            Enum.TryParse<PageType>(entry.Sys.ContentType.Sys.Id, true, out var pageType);
+
+            return pageType;
+        }
+
         private static UrlDetails SetLandingPageDetails(CmsContent hub, Entry entry)
         {
-            var parentPage = hub.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(entry.Fields.LandingPage?.Sys.Id));
-            
+            if (entry.Fields.LandingPage?.Sys?.Id == null)
+            {
+                return new UrlDetails();
+            }
+
+            var parentPage = hub.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(entry.Fields.LandingPage.Sys.Id));
+
             return new UrlDetails
             {
                 Hub = parentPage?.Fields.HubType,

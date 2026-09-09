@@ -19,18 +19,18 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
         [Test, MoqAutoData]
         public async Task Then_Returns_NoContent_And_Mediator_Send_Called(
             Guid userId,
-            CreateUserAuthoriseCommand command,
+            Models.Users.CreateUserAuthoriseRequest request,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] UsersController controller)
         {
             // Arrange
             mediator
                 .Setup(x => x.Send(It.Is<CreateUserAuthoriseCommand>(c =>
-                    c.UserId == userId && c.Uln == command.Uln), CancellationToken.None))
+                    c.UserId == userId && c.Uln == request.Uln), CancellationToken.None))
                 .ReturnsAsync(Unit.Value);
 
             // Act
-            var actual = await controller.CreateUserAuthorise(userId, command) as NoContentResult;
+            var actual = await controller.CreateUserAuthorise(userId, request) as NoContentResult;
 
             // Assert
             actual.Should().NotBeNull();
@@ -42,7 +42,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             Guid userId,
-            CreateUserAuthoriseCommand command,
+            Models.Users.CreateUserAuthoriseRequest request,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] UsersController controller)
         {
@@ -51,7 +51,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
                 .ThrowsAsync(new Exception());
 
             // Act
-            var actual = await controller.CreateUserAuthorise(userId, command) as StatusCodeResult;
+            var actual = await controller.CreateUserAuthorise(userId, request) as StatusCodeResult;
 
             // Assert
             actual.Should().NotBeNull();
