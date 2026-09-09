@@ -4,14 +4,14 @@ using FluentAssertions;
 using Moq;
 using SFA.DAS.AdminRoatp.Application.Commands.PostOrganisation;
 using SFA.DAS.AdminRoatp.Infrastructure;
+using SFA.DAS.AdminRoatp.InnerApi.Models;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
+using SFA.DAS.SharedOuterApi.Types.InnerApi;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Roatp;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.InnerApi;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.AdminRoatp.UnitTests.Application.Commands.PostOrganisation;
@@ -162,6 +162,8 @@ public class PostOrganisationCommandHandlerTests
         roatpV2ApiClientMock.Setup(c => c.PostWithResponseCode<int>(It.IsAny<PostProviderRequest>(
         ), true)).ReturnsAsync(apiResponse);
 
+        roatpV2ApiClientMock.Setup(x => x.PostWithResponseCode<int>(It.IsAny<AddCourseTypesRequest>(), true)).ReturnsAsync(apiResponse);
+
         var actualResponse = await sut.Handle(command, cancellationToken);
 
         actualResponse.Should().Be(response.StatusCode);
@@ -183,5 +185,112 @@ public class PostOrganisationCommandHandlerTests
             && c.PostUrl == $"providers?userId={command.RequestingUserId}&userDisplayName={command.RequestingUserDisplayName}"
         ), true), Times.Exactly(callsPostProvidersCount));
 
+    }
+
+    [Test]
+    [RecursiveMoqInlineAutoData(true, true)]
+    [RecursiveMoqInlineAutoData(true, false)]
+    [RecursiveMoqInlineAutoData(false, true)]
+    [RecursiveMoqInlineAutoData(false, false)]
+    public async Task Handle_CallsV2AddCourseTypes_WithExpectedCourseTypes(
+        bool deliversApprenticeships,
+        bool deliversApprenticeshipUnits,
+        [Frozen] Mock<IRoatpServiceRestApiClient> roatpServiceRestApiClientMock,
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpV2ApiClientMock,
+        [Greedy] PostOrganisatonCommandHandler sut,
+        PostOrganisationCommand command,
+        int ukprn,
+        CancellationToken cancellationToken)
+    {
+        command.Ukprn = ukprn;
+        command.ProviderType = ProviderType.Main;
+        command.DeliversApprenticeships = deliversApprenticeships;
+        command.DeliversApprenticeshipUnits = deliversApprenticeshipUnits;
+
+        var courseTypes = new List<int>();
+
+        if (deliversApprenticeships) courseTypes.Add((int)CourseType.Apprenticeship);
+
+        if (deliversApprenticeshipUnits) courseTypes.Add((int)CourseType.ShortCourse);
+
+        var expectedCourseTypeNames = courseTypes.Select(x => ((CourseType)x).ToString()).ToArray();
+
+        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.Created };
+
+        roatpServiceRestApiClientMock
+            .Setup(x => x.PostOrganisation(It.IsAny<PostOrganisationRequest>(), cancellationToken))
+            .ReturnsAsync(response);
+
+        var apiResponse = new ApiResponse<int>(1, HttpStatusCode.Created, string.Empty);
+
+        roatpV2ApiClientMock
+            .Setup(x => x.PostWithResponseCode<int>(It.IsAny<PostProviderRequest>(), true))
+            .ReturnsAsync(apiResponse);
+
+        roatpV2ApiClientMock
+            .Setup(x => x.PostWithResponseCode<int>(It.IsAny<AddCourseTypesRequest>(), true))
+            .ReturnsAsync(apiResponse);
+
+        var actualResponse = await sut.Handle(command, cancellationToken);
+
+        actualResponse.Should().Be(HttpStatusCode.Created);
+
+        roatpV2ApiClientMock.Verify(
+            x => x.PostWithResponseCode<int>(
+                It.Is<AddCourseTypesRequest>(request =>
+                    request.Ukprn == ukprn
+                    && request.PostUrl == $"/providers/{ukprn}/course-types"
+                    && request.Data is AddCourseTypesModel
+                    && ((AddCourseTypesModel)request.Data).UserId == command.RequestingUserId
+                    && ((AddCourseTypesModel)request.Data).UserDisplayName == command.RequestingUserDisplayName
+                    && ((AddCourseTypesModel)request.Data).CourseTypes.SequenceEqual(expectedCourseTypeNames)), true)
+            , Times.Once);
+    }
+
+    [Test]
+    [RecursiveMoqInlineAutoData(ProviderType.Main, 1)]
+    [RecursiveMoqInlineAutoData(ProviderType.Employer, 0)]
+    [RecursiveMoqInlineAutoData(ProviderType.Supporting, 0)]
+    public async Task Handle_CallsV2AddCourseTypes_OnlyForMainProvider(
+        ProviderType providerType,
+        int callsAddCourseTypesCount,
+        [Frozen] Mock<IRoatpServiceRestApiClient> roatpServiceRestApiClientMock,
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpV2ApiClientMock,
+        [Greedy] PostOrganisatonCommandHandler sut,
+        PostOrganisationCommand command,
+        int ukprn,
+        CancellationToken cancellationToken)
+    {
+        command.Ukprn = ukprn;
+        command.ProviderType = providerType;
+        command.DeliversApprenticeships = true;
+        command.DeliversApprenticeshipUnits = true;
+
+        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.Created };
+
+        roatpServiceRestApiClientMock
+            .Setup(x => x.PostOrganisation(It.IsAny<PostOrganisationRequest>(), cancellationToken))
+            .ReturnsAsync(response);
+
+        var apiResponse = new ApiResponse<int>(1, HttpStatusCode.Created, string.Empty);
+
+        roatpV2ApiClientMock
+            .Setup(x => x.PostWithResponseCode<int>(It.IsAny<PostProviderRequest>(), true))
+            .ReturnsAsync(apiResponse);
+
+        roatpV2ApiClientMock
+            .Setup(x => x.PostWithResponseCode<int>(It.IsAny<AddCourseTypesRequest>(), true))
+            .ReturnsAsync(apiResponse);
+
+        var actualResponse = await sut.Handle(command, cancellationToken);
+
+        actualResponse.Should().Be(HttpStatusCode.Created);
+
+        roatpV2ApiClientMock.Verify(
+            x => x.PostWithResponseCode<int>(
+                It.Is<AddCourseTypesRequest>(request =>
+                    request.Ukprn == ukprn
+                    && request.PostUrl == $"/providers/{ukprn}/course-types"), true),
+            Times.Exactly(callsAddCourseTypesCount));
     }
 }
