@@ -99,3 +99,17 @@ Scenario: New subsequent apprenticeship is sent to Approvals (via LearnerData)
 	And that apprenticeship is not yet approved
 	When the learner is updated
 	Then a LearnerDataEvent is published
+
+Scenario: LearnerRef is passed through to the learning domain
+	Given there is a learner
+	And the CompletionDate passed is different to the value in the learners domain
+	And the learner has a LearnerRef of "LR-12345"
+	When the learner is updated
+	Then the LearnerRef sent to the learning domain is "LR-12345"
+
+Scenario: Missing LearnerRef is passed through to the learning domain as empty, not garbage
+	Given there is a learner
+	And the CompletionDate passed is different to the value in the learners domain
+	And the learner has a LearnerRef of ""
+	When the learner is updated
+	Then the LearnerRef sent to the learning domain is ""
