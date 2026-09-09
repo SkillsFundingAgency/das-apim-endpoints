@@ -2,12 +2,13 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.AdminRoatp.Infrastructure;
+using SFA.DAS.AdminRoatp.InnerApi.Models;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Roatp;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
 namespace SFA.DAS.AdminRoatp.Application.Commands.PostOrganisation;
 
@@ -37,6 +38,16 @@ public class PostOrganisatonCommandHandler(IRoatpServiceRestApiClient _roatpServ
         {
             _logger.LogInformation("Creating provider in RoatpV2 for Posted organisation with ukprn {Ukprn}", command.Ukprn);
             tasks.Add(_roatpV2ApiClient.PostWithResponseCode<int>(new PostProviderRequest(command)));
+
+            _logger.LogInformation("Creating course types in RoatpV2 for Posted organisation with ukprn {Ukprn}", command.Ukprn);
+            var courseTypeNames = courseTypes.Select(x => ((CourseType)x).ToString()).ToArray();
+            var addCourseTypesCommand = new AddCourseTypesModel()
+            {
+                CourseTypes = courseTypeNames,
+                UserId = command.RequestingUserId,
+                UserDisplayName = command.RequestingUserDisplayName
+            };
+            tasks.Add(_roatpV2ApiClient.PostWithResponseCode<int>(new AddCourseTypesRequest(command.Ukprn, addCourseTypesCommand)));
         }
 
         await Task.WhenAll(tasks);
