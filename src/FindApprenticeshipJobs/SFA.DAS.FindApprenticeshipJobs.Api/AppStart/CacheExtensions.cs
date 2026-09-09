@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.FindApprenticeshipJobs.Configuration;
-using SFA.DAS.SharedOuterApi.AppStart;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.AppStart
 {

@@ -48,7 +48,14 @@ namespace SFA.DAS.Campaign.Models
                         Title = entry.Fields.Title,
                         HubType = entry.Fields.HubType,
                         MetaDescription = entry.Fields.MetaDescription,
-                        LandingPage = SetLandingPageDetails(hub, entry)
+                        LandingPage = SetLandingPageDetails(hub, entry),
+                        CardImage = entry.Fields.CardImage != null
+                            ? new ContentItem
+                            {
+                                Type = entry.Fields.CardImage.Sys.LinkType,
+                                EmbeddedResource = hub.GetEmbeddedResource(entry.Fields.CardImage.Sys.Id)
+                            }
+                            : null
                     })
                     .ToList()
                 : new List<CardPageModel>();

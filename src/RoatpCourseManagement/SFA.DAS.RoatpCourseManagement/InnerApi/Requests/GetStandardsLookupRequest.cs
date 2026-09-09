@@ -1,9 +1,8 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
+namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
+
+public class GetStandardsLookupRequest : IGetApiRequest
 {
-    public class GetStandardsLookupRequest : IGetApiRequest
-    {
-        public string GetUrl => "api/courses/Standards?Filter=Active";
-    }
+    public string GetUrl => "api/courses/search?filter=Active";
 }

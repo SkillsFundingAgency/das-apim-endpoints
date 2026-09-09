@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerDataJobs.Application.Commands;
 using SFA.DAS.LearnerDataJobs.InnerApi;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.LearnerDataJobs.Application.Handlers;
 public class ApprenticeshipStopCommandHandler(IInternalApiClient<LearnerDataInnerApiConfiguration> client, ILogger<ApprenticeshipStopCommand> logger)

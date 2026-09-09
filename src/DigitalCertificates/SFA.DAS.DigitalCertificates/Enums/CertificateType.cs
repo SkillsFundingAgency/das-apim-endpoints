@@ -1,4 +1,4 @@
-namespace SFA.DAS.DigitalCertificates.Enums
+﻿namespace SFA.DAS.DigitalCertificates.Enums
 {
     public enum CertificateType
     {

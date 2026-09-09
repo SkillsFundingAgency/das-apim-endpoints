@@ -3,8 +3,10 @@ using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.ApimDeveloper.Configuration;
 using SFA.DAS.ApimDeveloper.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.ApimDeveloper.Services
 {

@@ -3,20 +3,21 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Commands.EditApprenticeship;
 
 public class EditApprenticeshipCommandHandler(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient,
+    ITrainingProgrammeResolutionService trainingProgrammeResolutionService,
     ICourseTypeRulesService courseTypeRulesService,
     ServiceParameters serviceParameters)
     : IRequestHandler<EditApprenticeshipCommand, EditApprenticeshipResult>
@@ -38,28 +39,14 @@ public class EditApprenticeshipCommandHandler(
         
         if (triggerCalculate)
         {
-            TrainingProgramme trainingProgramme;
+            var trainingProgrammeResponse = await trainingProgrammeResolutionService.GetTrainingProgrammeAsync(command.CourseCode, command.StartDate);
+            var trainingProgramme = trainingProgrammeResponse?.TrainingProgramme;
 
-            if (int.TryParse(command.CourseCode, out var standardId))
+            if (trainingProgramme != null)
             {
-                var calculatedTrainingProgrammeVersionRequest = new GetCalculatedTrainingProgrammeVersionRequest(
-                    standardId,
-                    command.StartDate.Value);
-                
-                var calculatedTrainingProgrammeVersion = await commitmentsV2ApiClient.Get<GetTrainingProgrammeResponse>(calculatedTrainingProgrammeVersionRequest);
-
-                trainingProgramme = calculatedTrainingProgrammeVersion.TrainingProgramme;
+                versionToValidate = trainingProgramme.Version;
+                hasOptions = trainingProgramme.Options.Any();
             }
-            else
-            {
-                var trainingProgrammeRequest = new GetTrainingProgrammeRequest(command.CourseCode);
-                var trainingProgrammeResponse = await commitmentsV2ApiClient.Get<GetTrainingProgrammeResponse>(trainingProgrammeRequest);
-                
-                trainingProgramme = trainingProgrammeResponse.TrainingProgramme;
-            }
-
-            versionToValidate = trainingProgramme.Version;
-            hasOptions = trainingProgramme.Options.Any();
         }
         
         var courseTypeRules = await courseTypeRulesService.GetCourseTypeRulesAsync(command.CourseCode);

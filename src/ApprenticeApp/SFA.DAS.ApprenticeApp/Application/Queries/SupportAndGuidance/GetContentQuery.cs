@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using System;
 
 namespace SFA.DAS.ApprenticeApp.Application.Queries.Details
 {

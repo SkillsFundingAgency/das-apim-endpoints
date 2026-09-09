@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.AdminAan.Application.Locations.Queries.GetLocationsBySearch
 {

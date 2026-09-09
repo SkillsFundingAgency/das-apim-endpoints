@@ -10,12 +10,10 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Reservations.Api.Controllers;
-using SFA.DAS.Reservations.Api.Models;
 using SFA.DAS.Reservations.Application.AccountProviderLegalEntities.Queries;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
+using SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships;
 using SFA.DAS.Testing.AutoFixture;
-using SFA.DAS.Reservations.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ProviderRelationships;
 
 namespace SFA.DAS.Reservations.Api.UnitTests.Controllers.AccountProviderLegalEntities
 {

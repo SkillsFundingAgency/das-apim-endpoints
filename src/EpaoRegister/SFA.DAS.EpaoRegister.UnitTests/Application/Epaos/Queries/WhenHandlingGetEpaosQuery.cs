@@ -9,8 +9,9 @@ using NUnit.Framework;
 using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaos;
 using SFA.DAS.EpaoRegister.InnerApi.Requests;
 using SFA.DAS.EpaoRegister.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries

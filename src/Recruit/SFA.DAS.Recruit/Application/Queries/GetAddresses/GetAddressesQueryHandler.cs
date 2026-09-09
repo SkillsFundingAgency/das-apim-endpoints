@@ -1,33 +1,35 @@
 ﻿using MediatR;
 using SFA.DAS.Recruit.Configuration;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Recruit.Enums;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
 
 namespace SFA.DAS.Recruit.Application.Queries.GetAddresses
 {
-    public class GetAddressesQueryHandler : IRequestHandler<GetAddressesQuery, GetAddressesQueryResult>
+    public class GetAddressesQueryHandler(
+        ILocationApiClient<LocationApiConfiguration> locationApiClient,
+        RecruitConfiguration config)
+        : IRequestHandler<GetAddressesQuery, GetAddressesQueryResult>
     {
-        private readonly ILocationApiClient<LocationApiConfiguration> _locationApiClient;
-        private readonly RecruitConfiguration _config;
-
-        public GetAddressesQueryHandler(ILocationApiClient<LocationApiConfiguration> locationApiClient, RecruitConfiguration config)
-        {
-            _locationApiClient = locationApiClient;
-            _config = config;
-        }
-
         public async Task<GetAddressesQueryResult> Handle(GetAddressesQuery request, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(request.Query)) throw new ArgumentException($"Query is required", nameof(GetAddressesQuery.Query));
+            ArgumentException.ThrowIfNullOrEmpty(request.Query);
 
-            var addressesResponse = await _locationApiClient.Get<GetAddressesListResponse>(new GetAddressesQueryRequest(request.Query, _config.LocationsApiMinMatch));
+            var addressesResponse = await locationApiClient.Get<GetAddressesListResponse>(
+                new GetAddressesQueryRequest(request.Query, config.LocationsApiMinMatch));
 
-            return new GetAddressesQueryResult(addressesResponse);
+            // Filter addresses to only include those in England
+            var englandAddresses = addressesResponse?.Addresses?
+                .Where(x => string.Equals(x.Country, nameof(Country.England), StringComparison.OrdinalIgnoreCase))
+                .ToList() ?? [];
+
+            return new GetAddressesQueryResult(new GetAddressesListResponse { Addresses = englandAddresses });
         }
     }
 }

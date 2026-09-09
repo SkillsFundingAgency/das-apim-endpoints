@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Primitives;
+using SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
 using SFA.DAS.LearnerData.Responses;
 
 namespace SFA.DAS.LearnerData.Extensions;
@@ -32,6 +33,30 @@ public static class HttpContextExtensions
             var nextLink = QueryHelpers.AddQueryString(baseUrl, "page", nextPage.ToString());
             nextLink = QueryHelpers.AddQueryString(nextLink, "pageSize", response.PageSize.ToString());
 
+            links.Add($"{nextLink};rel=\"next\"");
+        }
+
+        var pageLinks = new KeyValuePair<string, StringValues>("links", string.Join(",", links));
+        httpContext.Response.Headers.Add(pageLinks);
+    }
+
+    public static void SetPageLinksInResponseHeaders(this HttpContext httpContext, PagedQuery request, GetShortCourseEarningsQueryResult response)
+    {
+        var httpRequest = httpContext.Request;
+        var baseUrl = GetBaseUrlFrom(httpRequest);
+        var links = new List<string>();
+
+        if (response.Page > 1)
+        {
+            var prevLink = QueryHelpers.AddQueryString(baseUrl, "page", (response.Page - 1).ToString());
+            prevLink = QueryHelpers.AddQueryString(prevLink, "pageSize", response.PageSize.ToString());
+            links.Add($"{prevLink};rel=\"prev\"");
+        }
+
+        if (request.Offset < response.Total - response.PageSize)
+        {
+            var nextLink = QueryHelpers.AddQueryString(baseUrl, "page", (response.Page + 1).ToString());
+            nextLink = QueryHelpers.AddQueryString(nextLink, "pageSize", response.PageSize.ToString());
             links.Add($"{nextLink};rel=\"next\"");
         }
 

@@ -6,8 +6,9 @@ using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.FindAnApprenticeship.Api.AppStart;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Collections.Generic;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.AppStart

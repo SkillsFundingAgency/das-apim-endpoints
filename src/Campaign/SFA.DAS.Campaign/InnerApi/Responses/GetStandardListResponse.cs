@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using System;

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts;
 
 namespace SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts
 {

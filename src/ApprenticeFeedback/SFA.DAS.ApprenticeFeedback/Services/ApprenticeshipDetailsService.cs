@@ -1,12 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticeFeedback.Exceptions;
 using SFA.DAS.ApprenticeFeedback.Models;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.ApprenticeAccounts;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Assessor;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ApprenticeAccounts;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Assessor;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.ApprenticeAccounts;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Assessor;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ApprenticeAccounts;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Assessor;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System;
 using System.Threading.Tasks;
 

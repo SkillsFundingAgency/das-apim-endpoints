@@ -12,7 +12,6 @@ using SFA.DAS.Reservations.Api.Controllers;
 using SFA.DAS.Reservations.Api.Models;
 using SFA.DAS.Reservations.Application.ProviderAccounts.Queries;
 using SFA.DAS.Testing.AutoFixture;
-using SFA.DAS.Reservations.InnerApi.Responses;
 
 namespace SFA.DAS.Reservations.Api.UnitTests.Controllers
 {

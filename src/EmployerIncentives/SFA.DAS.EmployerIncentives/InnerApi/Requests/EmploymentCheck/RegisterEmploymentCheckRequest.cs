@@ -1,5 +1,5 @@
 ﻿using SFA.DAS.EmployerIncentives.Application.Commands.RegisterEmploymentCheck;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.EmploymentCheck
 {

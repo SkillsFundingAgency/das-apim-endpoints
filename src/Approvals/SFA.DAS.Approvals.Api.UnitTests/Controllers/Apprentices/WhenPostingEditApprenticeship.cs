@@ -1,8 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models.Apprentices;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.EditApprenticeship;
 

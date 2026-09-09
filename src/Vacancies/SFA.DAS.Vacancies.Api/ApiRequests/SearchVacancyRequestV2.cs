@@ -15,5 +15,12 @@ namespace SFA.DAS.Vacancies.Api.ApiRequests
         
         [FromQuery]
         public string EmployerName { get; set; }
+
+        /// <summary>
+        /// If the page size is less than or equal to 100, then with this set to true then
+        /// the full text details will be returned in the response 
+        /// </summary>
+        [FromQuery] 
+        public bool IncludeDetails { get; set; } = false;
     }
 }

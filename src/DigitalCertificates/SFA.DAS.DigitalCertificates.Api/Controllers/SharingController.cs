@@ -1,11 +1,19 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharing;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetSharingById;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingEmail;
+using SFA.DAS.DigitalCertificates.Application.Commands.DeleteSharing;
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.DigitalCertificates.Application.Queries.GetSharingByCode;
+using SFA.DAS.DigitalCertificates.Application.Queries.GetSharedStandardCertificate;
+using SFA.DAS.DigitalCertificates.Application.Queries.GetSharedFrameworkCertificate;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingAccess;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingEmailAccess;
+using SFA.DAS.DigitalCertificates.Api.Models.Sharing;
 
 namespace SFA.DAS.DigitalCertificates.Api.Controllers
 {
@@ -23,16 +31,18 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateSharing([FromBody] CreateSharingCommand command)
+        public async Task<IActionResult> CreateSharing([FromBody] CreateSharingRequest request)
         {
             try
             {
+                var command = (CreateSharingCommand)request;
                 var result = await _mediator.Send(command);
-                return Ok(result);
+                var response = (CreateSharingResponse)result;
+                return Ok(response);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error attempting to create sharing for user {UserId}, certificate {CertificateId}", command.UserId, command.CertificateId);
+                _logger.LogError(e, "Error attempting to create sharing for user {UserId}, certificate {CertificateId}", request?.UserId, request?.CertificateId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -43,11 +53,142 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             try
             {
                 var result = await _mediator.Send(new GetSharingByIdQuery { SharingId = sharingId, Limit = limit });
-                return Ok(result.Response);
+                var response = (GetSharingByIdResponse)result;
+                return Ok(response.Response);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to retrieve sharing {SharingId}", sharingId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("code/{code}")]
+        public async Task<IActionResult> GetSharingByCode([FromRoute] Guid code)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetSharingByCodeQuery { Code = code });
+
+                if (result == null || result.Response == null)
+                {
+                    return Ok();
+                }
+
+                if (result.BothFound)
+                {
+                    return BadRequest();
+                }
+
+                var response = (GetSharingByCodeResponse)result;
+                return Ok(response.Response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to access sharing by code {Code}", code);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("{sharingId}/email")]
+        public async Task<IActionResult> CreateSharingEmail([FromRoute] Guid sharingId, [FromBody] CreateSharingEmailRequest request)
+        {
+            try
+            {
+                var command = (CreateSharingEmailCommand)request;
+                command.SharingId = sharingId;
+                var result = await _mediator.Send(command);
+                var response = (CreateSharingEmailResponse)result;
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to create sharing email for sharing {SharingId}", sharingId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpDelete("{sharingId}")]
+        public async Task<IActionResult> DeleteSharing([FromRoute] Guid sharingId)
+        {
+            try
+            {
+                await _mediator.Send(new DeleteSharingCommand { SharingId = sharingId });
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to delete sharing {SharingId}", sharingId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("sharingaccess")]
+        public async Task<IActionResult> CreateSharingAccess([FromBody] CreateSharingAccessRequest request)
+        {
+            try
+            {
+                var command = (CreateSharingAccessCommand)request;
+                await _mediator.Send(command);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to create sharing access for {SharingId}", request?.SharingId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("sharingemailaccess")]
+        public async Task<IActionResult> CreateSharingEmailAccess([FromBody] CreateSharingEmailAccessRequest request)
+        {
+            try
+            {
+                var command = (CreateSharingEmailAccessCommand)request;
+                await _mediator.Send(command);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to create sharing email access for {SharingEmailId}", request?.SharingEmailId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("certificates/{id}")]
+        public async Task<IActionResult> GetSharedStandardCertificate([FromRoute] Guid id)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetSharedStandardCertificateQuery(id));
+
+                if (result == null) return NotFound();
+
+                var response = (GetSharedStandardCertificateResponse)result;
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to retrieve shared certificate {CertificateId}", id);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("certificates/framework/{id}")]
+        public async Task<IActionResult> GetSharedFrameworkCertificate([FromRoute] Guid id)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetSharedFrameworkCertificateQuery(id));
+
+                if (result == null) return NotFound();
+
+                var response = (GetSharedFrameworkCertificateResponse)result;
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to retrieve shared framework certificate {CertificateId}", id);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

@@ -2,4 +2,7 @@ using MediatR;
 
 namespace SFA.DAS.Recruit.Application.Queries.GetPostcodeData;
 
-public record GetPostcodeDataQuery(string Postcode) : IRequest<GetPostcodeDataResult>;
+public record GetPostcodeDataQuery : IRequest<GetPostcodeDataResult>
+{
+    public required string Postcode { get; init; } = null!;
+}

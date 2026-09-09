@@ -2,19 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Common;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 
 public class GetProvidersByCourseIdRequest : IGetApiRequest
 {
+    public string Version => ApiVersionNumber.Two;
     public required string CourseId { get; init; }
     public ProviderOrderBy? OrderBy { get; set; }
     public decimal? Distance { get; set; }
     public decimal? Latitude { get; set; }
     public decimal? Longitude { get; set; }
 
-    public string Location { get; set; }
+    public string LocationName { get; set; }
     public List<DeliveryMode?> DeliveryModes { get; set; }
     public List<ProviderRating?> EmployerProviderRatings { get; set; }
     public List<ProviderRating?> ApprenticeProviderRatings { get; set; }
@@ -74,9 +77,9 @@ public class GetProvidersByCourseIdRequest : IGetApiRequest
             url += $"&pageSize={PageSize}";
         }
 
-        if (!string.IsNullOrEmpty(Location))
+        if (!string.IsNullOrEmpty(LocationName))
         {
-            url += $"&location={Location}";
+            url += $"&locationName={LocationName}";
         }
 
         if (UserId != null)

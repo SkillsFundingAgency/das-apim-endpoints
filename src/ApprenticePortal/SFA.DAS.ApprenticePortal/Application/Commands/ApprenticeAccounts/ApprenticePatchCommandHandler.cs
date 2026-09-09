@@ -1,8 +1,9 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticePortal.InnerApi.ApprenticeAccounts.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 

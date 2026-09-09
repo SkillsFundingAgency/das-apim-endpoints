@@ -8,10 +8,10 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.EpaoRegister.Api.Controllers;
 using SFA.DAS.EpaoRegister.Api.Models;
 using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpao;
-using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EpaoRegister.Api.UnitTests.Controllers.Epaos

@@ -6,11 +6,14 @@ using SFA.DAS.Campaign.Configuration;
 using SFA.DAS.Campaign.ExternalApi;
 using SFA.DAS.Campaign.InnerApi;
 using SFA.DAS.Campaign.Interfaces;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Infrastructure.Services;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Infrastructure;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Services;
+using SFA.DAS.Apim.Shared.Infrastructure.Services;
 
 namespace SFA.DAS.Campaign.Api.AppStart;
 

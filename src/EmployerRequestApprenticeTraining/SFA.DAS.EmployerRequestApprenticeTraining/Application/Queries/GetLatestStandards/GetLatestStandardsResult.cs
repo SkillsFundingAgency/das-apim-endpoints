@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Standard = SFA.DAS.SharedOuterApi.Models.RequestApprenticeTraining.Standard;
+using Standard = SFA.DAS.SharedOuterApi.Types.Models.RequestApprenticeTraining.Standard;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLatestStandards
 {

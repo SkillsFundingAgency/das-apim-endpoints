@@ -4,6 +4,7 @@ using AutoFixture.Kernel;
 using MediatR;
 using Moq;
 using SFA.DAS.Aodp.Application.Queries.Application.Review;
+using SFA.DAS.AODP.Shared.UnitTests.Helpers;
 
 namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Application.Review
 {
@@ -65,19 +66,6 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Application.Review
 
             // Assert
             Assert.That(result.Success, Is.False);
-        }
-
-        public class DateOnlySpecimenBuilder : ISpecimenBuilder
-        {
-            public object Create(object request, ISpecimenContext context)
-            {
-                if (request is Type type && type == typeof(DateOnly))
-                {
-                    return DateOnly.FromDateTime(DateTime.Now);
-                }
-
-                return new NoSpecimen();
-            }
         }
     }
 }

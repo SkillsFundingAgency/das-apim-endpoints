@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
 using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.Approvals.Api.Models.Cohorts;
 
@@ -127,6 +130,8 @@ public class DraftApprenticeship
     public bool HasLearnerDataChanges { get; set; }
     public DateTime? LastLearnerDataSync { get; set; }
     public long? LearnerDataId { get; set; }
+    [JsonConverter(typeof(StringEnumConverter))]
+    public LearningType? LearningType { get; set; }
 
     public static implicit operator DraftApprenticeship(
         InnerApi.Responses.DraftApprenticeship source)
@@ -161,7 +166,9 @@ public class DraftApprenticeship
             DurationReducedByHours = source.DurationReducedByHours,
             HasLearnerDataChanges = source.HasLearnerDataChanges,
             LastLearnerDataSync = source.LastLearnerDataSync,
-            LearnerDataId = source.LearnerDataId
+            LearnerDataId = source.LearnerDataId,
+            ApprenticeshipType = source.ApprenticeshipType,
+            LearningType = source.LearningType
         };
     }
 }

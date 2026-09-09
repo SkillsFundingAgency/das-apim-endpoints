@@ -1,17 +1,9 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions.Execution;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
-using SFA.DAS.Testing.AutoFixture;
 using System.Net;
-using System.Threading.Tasks;
-using System;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateSkillsAndStrengthsCommand;
 using System.Threading;
-using FluentAssertions;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SkillsAndStrengthsController;
 public class WhenCallingPost

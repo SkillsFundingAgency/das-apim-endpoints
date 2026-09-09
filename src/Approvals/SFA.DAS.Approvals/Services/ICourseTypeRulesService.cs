@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
+using SFA.DAS.Approvals.InnerApi.CoursesApi;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
-using SFA.DAS.Approvals.InnerApi.Responses;
 
 namespace SFA.DAS.Approvals.Services
 {
@@ -12,13 +12,13 @@ namespace SFA.DAS.Approvals.Services
 
     public class CourseTypeRulesResult
     {
-        public GetStandardsListItem Standard { get; set; }
+        public GetCourseLookupResponse Course { get; set; }
         public GetLearnerAgeResponse LearnerAgeRules { get; set; }
     }
 
     public class RplRulesResult
     {
-        public GetStandardsListItem Standard { get; set; }
+        public GetCourseLookupResponse Course { get; set; }
         public GetRecognitionOfPriorLearningResponse RplRules { get; set; }
     }
-} 
+}

@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,9 +9,12 @@ using NUnit.Framework;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEmployerVacancies;
 using SFA.DAS.EmployerAccounts.InnerApi.Requests;
 using SFA.DAS.EmployerAccounts.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetEmployerVacancies;
@@ -69,5 +73,37 @@ public class WhenHandlingGetEmployerVacanciesQuery
         var actual = await handler.Handle(query, CancellationToken.None);
 
         actual.Vacancies.Should().BeEmpty();
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_The_Request_Is_Handled_And_Archived_Vacancy_Returned_If_Single_Vacancy(
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> apiClient,
+        GetEmployerVacanciesQuery query,
+        GetEmployerVacanciesQueryHandler handler)
+    {
+        var apiResponse = new GetPagedVacancySummaryApiResponse
+        {
+            PageInfo = new GetPagedVacancySummaryApiResponse.Info { TotalCount = 1 },
+            Items =
+            [
+                new VacancySummary
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Archived vacancy",
+                    Status = VacancyStatus.Archived
+                }
+            ]
+        };
+
+        apiClient.Setup(x =>
+                x.GetWithResponseCode<GetPagedVacancySummaryApiResponse>(
+                    It.Is<GetVacanciesByAccountIdApiRequest>(c => c.GetUrl.Contains(query.AccountId.ToString()))))
+            .ReturnsAsync(new ApiResponse<GetPagedVacancySummaryApiResponse>(apiResponse, HttpStatusCode.OK, ""));
+
+        var actual = await handler.Handle(query, CancellationToken.None);
+
+        actual.Vacancies.Should().HaveCount(1);
+        actual.Vacancies[0].Status.Should().Be(VacancyStatus.Archived);
+        actual.Vacancies[0].Title.Should().Be("Archived vacancy");
     }
 }

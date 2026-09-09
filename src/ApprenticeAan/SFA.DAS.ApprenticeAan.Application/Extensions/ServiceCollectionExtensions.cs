@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions;
 using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Application.Commands;

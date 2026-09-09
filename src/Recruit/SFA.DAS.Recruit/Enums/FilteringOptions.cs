@@ -17,5 +17,6 @@ public enum FilteringOptions
     EmployerReviewedApplications,
     NewSharedApplications,
     AllSharedApplications,
-    Dashboard
+    Dashboard,
+    Archived
 }

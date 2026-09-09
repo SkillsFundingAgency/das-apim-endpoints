@@ -3,5 +3,6 @@
     public class CardPageModel : PageModel
     {
        public UrlDetails LandingPage { get; set; }
+       public ContentItem CardImage { get; set; }
     }
 }

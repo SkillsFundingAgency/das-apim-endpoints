@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderResponseConfirmation;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 

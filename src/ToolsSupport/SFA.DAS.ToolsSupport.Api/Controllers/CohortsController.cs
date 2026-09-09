@@ -10,9 +10,9 @@ namespace SFA.DAS.ToolsSupport.Api.Controllers;
 public class CohortsController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly ILogger<UsersQueryController> _logger;
+    private readonly ILogger<CohortsController> _logger;
 
-    public CohortsController(IMediator mediator, ILogger<UsersQueryController> logger)
+    public CohortsController(IMediator mediator, ILogger<CohortsController> logger)
     {
         _mediator = mediator;
         _logger = logger;

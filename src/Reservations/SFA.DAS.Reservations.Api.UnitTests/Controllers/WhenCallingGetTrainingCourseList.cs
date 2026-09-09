@@ -14,48 +14,47 @@ using SFA.DAS.Reservations.Api.Models;
 using SFA.DAS.Reservations.Application.TrainingCourses.Queries.GetTrainingCourseList;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Reservations.Api.UnitTests.Controllers
+namespace SFA.DAS.Reservations.Api.UnitTests.Controllers;
+
+public class WhenCallingGetTrainingCourseList
 {
-    public class WhenCallingGetTrainingCourseList
+    [Test, MoqAutoData]
+    public async Task Then_Gets_Training_Courses_From_Mediator(
+        int standardCode,
+        GetTrainingCoursesResult mediatorResult,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy]TrainingCoursesController controller)
     {
-        [Test, MoqAutoData]
-        public async Task Then_Gets_Training_Courses_From_Mediator(
-            int standardCode,
-            GetTrainingCoursesResult mediatorResult,
-            [Frozen] Mock<IMediator> mockMediator,
-            [Greedy]TrainingCoursesController controller)
-        {
-            mockMediator
-                .Setup(mediator => mediator.Send(
-                    It.IsAny<GetTrainingCoursesQuery>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(mediatorResult);
+        mockMediator
+            .Setup(mediator => mediator.Send(
+                It.IsAny<GetTrainingCoursesQuery>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetList() as ObjectResult;
+        var controllerResult = await controller.GetList() as ObjectResult;
 
-            controllerResult.Should().NotBeNull();
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetTrainingCoursesListResponse;
-            model.Should().NotBeNull();
-            model.Standards.Should().BeEquivalentTo(mediatorResult.Courses.Select(course => (GetTrainingCoursesListItem)course));
-            model.Standards.All(m => m.Id > 0).Should().BeTrue();
-        }
+        controllerResult.Should().NotBeNull();
+        controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+        var model = controllerResult.Value as GetTrainingCoursesListResponse;
+        model.Should().NotBeNull();
+        model.Courses.Should().BeEquivalentTo(mediatorResult.Courses.Select(course => (GetTrainingCoursesListItem)course));
+        model.Courses.Should().HaveCount(mediatorResult.Courses.Count());
+    }
 
-        [Test, MoqAutoData]
-        public async Task And_Exception_Then_Returns_Bad_Request(
-            int standardCode,
-            [Frozen] Mock<IMediator> mockMediator,
-            [Greedy]TrainingCoursesController controller)
-        {
-            mockMediator
-                .Setup(mediator => mediator.Send(
-                    It.IsAny<GetTrainingCoursesQuery>(),
-                    It.IsAny<CancellationToken>()))
-                .Throws<InvalidOperationException>();
+    [Test, MoqAutoData]
+    public async Task And_Exception_Then_Returns_Bad_Request(
+        int standardCode,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy]TrainingCoursesController controller)
+    {
+        mockMediator
+            .Setup(mediator => mediator.Send(
+                It.IsAny<GetTrainingCoursesQuery>(),
+                It.IsAny<CancellationToken>()))
+            .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetList() as BadRequestResult;
+        var controllerResult = await controller.GetList() as BadRequestResult;
 
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
-        }
+        controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
     }
 }

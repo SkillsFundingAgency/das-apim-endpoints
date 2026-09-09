@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.BusinessMetrics;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.BusinessMetrics;
 
 namespace SFA.DAS.Recruit.Application.Queries.GetVacancyMetrics
 {
@@ -12,7 +12,7 @@ namespace SFA.DAS.Recruit.Application.Queries.GetVacancyMetrics
         {
             return new GetVacancyMetricsQueryResult
             {
-                VacancyMetrics = source.VacancyMetrics.Select(x => (VacancyMetric)x).ToList()
+                VacancyMetrics = [.. source.VacancyMetrics.Select(x => (VacancyMetric) x)]
             };
         }
 
@@ -23,6 +23,7 @@ namespace SFA.DAS.Recruit.Application.Queries.GetVacancyMetrics
             public long SearchResultsCount { get; init; }
             public long ApplicationStartedCount { get; init; }
             public long ApplicationSubmittedCount { get; init; }
+            public long SavedCount { get; init; } = 0;
 
             public static implicit operator VacancyMetric(GetVacancyMetricsResponse.VacancyMetric source)
             {
@@ -32,7 +33,8 @@ namespace SFA.DAS.Recruit.Application.Queries.GetVacancyMetrics
                     ApplicationStartedCount = source.ApplicationStartedCount,
                     ApplicationSubmittedCount = source.ApplicationSubmittedCount,
                     SearchResultsCount = source.SearchResultsCount,
-                    ViewsCount = source.ViewsCount
+                    ViewsCount = source.ViewsCount,
+                    SavedCount = source.SavedCount
                 };
             }
         }

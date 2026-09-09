@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using SFA.DAS.EmployerAccounts.Exceptions;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ReferenceData;
 
 namespace SFA.DAS.EmployerAccounts.Helpers
 {

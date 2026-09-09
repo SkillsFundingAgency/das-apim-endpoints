@@ -1,8 +1,8 @@
-﻿namespace SFA.DAS.ToolsSupport.InnerApi.Responses;
+namespace SFA.DAS.ToolsSupport.InnerApi.Responses;
 
 public class GetUsersByEmailResponse
 {
-    public List<UserProfile> Users { get; set; } = new ();
+    public List<UserProfile> Users { get; set; } = new();
 }
 
 public class UserProfile
@@ -14,5 +14,7 @@ public class UserProfile
     public string? Email { get; set; }
     public string? GovUkIdentifier { get; set; }
     public bool IsSuspended { get; set; }
+    public bool IsActive { get; set; }
+    public bool IsLocked { get; set; }
 }
 

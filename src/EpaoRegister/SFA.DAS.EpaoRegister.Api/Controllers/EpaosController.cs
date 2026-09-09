@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.EpaoRegister.Api.Infrastructure;
 using SFA.DAS.EpaoRegister.Api.Models;
 using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpao;
 using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses;
 using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaos;
-using SFA.DAS.SharedOuterApi.Exceptions;
 
 namespace SFA.DAS.EpaoRegister.Api.Controllers
 {

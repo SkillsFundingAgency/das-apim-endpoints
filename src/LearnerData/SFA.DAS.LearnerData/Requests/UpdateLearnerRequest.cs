@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+using SFA.DAS.LearnerData.Shared;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.LearnerData.Requests;
 
@@ -6,6 +7,7 @@ namespace SFA.DAS.LearnerData.Requests;
 
 public class UpdateLearnerRequest
 {
+    public string? ConsumerReference { get; set; }
     public UpdateLearnerRequestDeliveryDetails Delivery { get; set; }
     public LearnerRequestDetails Learner { get; set; }
 }
@@ -15,8 +17,12 @@ public class LearnerRequestDetails
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string? Email { get; set; }
+    [JsonRequired]
     public DateTime Dob { get; set; }
     public bool HasEhcp { get; set; }
+    [JsonRequired]
+    public long Uln { get; set; }
+    public string LearnerRef { get; set; }
 }
 
 public class UpdateLearnerRequestDeliveryDetails
@@ -37,8 +43,13 @@ public class OnProgrammeRequestDetails
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
     public DateTime? PauseDate { get; set; }
-    public List<LearningSupportRequestDetails> LearningSupport { get; set; }
+    public List<LearningSupport> LearningSupport { get; set; }
     public Care Care { get; set; }
+    public int AimSequenceNumber { get; set; }
+    public string LearnAimRef { get; set; }
+    public DateTime? AchievementDate { get; set; }
+    public int PercentageOfTrainingLeft { get; set; }
+    public bool? IsFlexiJob { get; set; }
 }
 
 public class CostDetails
@@ -60,15 +71,10 @@ public class MathsAndEnglish
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
     public DateTime? PauseDate { get; set; }
-    public int? PriorLearningPercentage { get; set; }
-    
-    public List<LearningSupportRequestDetails> LearningSupport { get; set; }
-}
-
-public class LearningSupportRequestDetails
-{
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
+    public int? PriorLearningAdjustment { get; set; }
+    public int? OtherFundingAdjustment { get; set; }
+    public int? AimSequenceNumber { get; set; }
+    public List<LearningSupport> LearningSupport { get; set; }
 }
 
 public class Care

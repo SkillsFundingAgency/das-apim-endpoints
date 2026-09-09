@@ -5,6 +5,6 @@ namespace SFA.DAS.Reservations.Application.TrainingCourses.Queries.GetTrainingCo
 {
     public class GetTrainingCoursesResult
     {
-        public IEnumerable<GetStandardsListItem> Courses { get ; set ; }
+        public IEnumerable<TrainingCourseListItem> Courses { get; set; }
     }
 }

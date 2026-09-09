@@ -1,4 +1,5 @@
-﻿using TechTalk.SpecFlow;
+﻿using SFA.DAS.LearnerData.Api.AcceptanceTests;
+using TechTalk.SpecFlow;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Bindings;
 
@@ -13,6 +14,9 @@ public class InnerApis(TestContext context)
     public void Initialise()
     {
         NUnit.Framework.TestContext.WriteLine("Initialising inner apis...");
+
+        StubMessageSession.SentMessages.Clear();
+        StubMessageSession.PublishedMessages.Clear();
 
         if (context.EarningsApi == null)
         {
@@ -45,7 +49,8 @@ public class InnerApis(TestContext context)
                 {"CollectionCalendarApiConfiguration:url", context?.CollectionCalendarApi?.BaseAddress + "/"},
                 {"CoursesApiConfiguration:url", context?.CoursesApi?.BaseAddress + "/"},
                 {"AzureAD:tenant", ""},
-                {"AzureAD:identifier", ""}
+                {"AzureAD:identifier", ""},
+                {"UseInMemoryCache", "true"}
             };
 
 

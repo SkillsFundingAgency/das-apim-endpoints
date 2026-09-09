@@ -1,5 +1,6 @@
-using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharing;
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharing;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System;
 
 namespace SFA.DAS.DigitalCertificates.InnerApi.Requests

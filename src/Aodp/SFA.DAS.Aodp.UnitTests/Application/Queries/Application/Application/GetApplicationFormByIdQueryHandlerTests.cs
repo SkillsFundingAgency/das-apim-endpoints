@@ -1,8 +1,8 @@
 ﻿using AutoFixture;
 using AutoFixture.AutoMoq;
 using Moq;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Aodp.Configuration;
+using SFA.DAS.Aodp.Services;
 
 namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Application.Application
 {

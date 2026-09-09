@@ -1,4 +1,4 @@
-namespace SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor
+﻿namespace SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor
 {
     public class GetOrganisationResponse
     {

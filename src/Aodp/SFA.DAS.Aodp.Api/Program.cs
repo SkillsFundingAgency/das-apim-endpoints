@@ -1,14 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.Extensions.Logging.ApplicationInsights;
-using Microsoft.OpenApi.Models;
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.Aodp.Api;
 using SFA.DAS.Aodp.Api.AppStart;
 using SFA.DAS.Aodp.Application.Commands.FormBuilder.Forms;
 using SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection;
-using SFA.DAS.SharedOuterApi.AppStart;
 using System.Text.Json.Serialization;
+using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;
+using SFA.DAS.Apim.Shared.AppStart;
 
 [assembly: ApiController]
 
@@ -51,9 +51,7 @@ builder.Services
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 
-builder.Logging.AddApplicationInsights();
-builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("SFA.DAS", LogLevel.Information);
-builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Warning);
+builder.Services.AddApplicationInsightsTelemetry(configuration);
 
 builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);

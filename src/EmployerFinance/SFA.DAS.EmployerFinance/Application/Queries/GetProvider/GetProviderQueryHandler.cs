@@ -2,8 +2,9 @@
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.EmployerFinance.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.EmployerFinance.Application.Queries.GetProvider
 {
@@ -19,7 +20,7 @@ namespace SFA.DAS.EmployerFinance.Application.Queries.GetProvider
         {
 
             var response = await _roatpServiceApiClient.Get<GetProviderResponse>(
-                new SharedOuterApi.InnerApi.Requests.ProviderCourses.GetProviderRequest(request.Id));
+                new SharedOuterApi.Types.InnerApi.Requests.ProviderCourses.GetProviderRequest(request.Id));
 
             return new GetProviderQueryResult
             {

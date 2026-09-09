@@ -84,12 +84,12 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
 
             var apprenticeshipDetailsResult = await _mediator.Send(new GetApprenticeshipQuery { ApprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId });
             if (apprenticeshipDetailsResult == null)
-                return Ok();
+                return Ok();            
 
             var ksbQueryResult = await _mediator.Send(new GetStandardOptionKsbsQuery
             {
                 Id = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.StandardUId,
-                Option = apprenticeshipDetailsResult.Option == null ? "core" : apprenticeshipDetailsResult.Option
+                Option = string.IsNullOrWhiteSpace(apprenticeshipDetailsResult.Option) ? "core" : apprenticeshipDetailsResult.Option
             });
 
             if (ksbQueryResult.KsbsResult != null && ksbQueryResult.KsbsResult.Ksbs.Count > 0)

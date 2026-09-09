@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-using SFA.DAS.Roatp.Infrastructure;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using SFA.DAS.Roatp.Infrastructure;
 
 namespace SFA.DAS.Roatp.Api.HealthCheck;
 

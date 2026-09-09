@@ -3,7 +3,9 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EpaoRegister.Api.Infrastructure;
 using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaos;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.EpaoRegister.Api.Models
 {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 
@@ -18,7 +19,7 @@ public class UserDto
     public required string Email { get; set; }
     public DateTime CreatedDate { get; set; }
     public DateTime LastSignedInDate { get; set; }
-    public IList<string> EmployerAccountIds { get; set; } = new List<string>();
+    public IList<long> EmployerAccountIds { get; set; } = [];
     public long? Ukprn { get; set; }
     public DateTime? TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn { get; set; }
     public DateTime? ClosedVacanciesBlockedProviderAlertDismissedOn { get; set; }

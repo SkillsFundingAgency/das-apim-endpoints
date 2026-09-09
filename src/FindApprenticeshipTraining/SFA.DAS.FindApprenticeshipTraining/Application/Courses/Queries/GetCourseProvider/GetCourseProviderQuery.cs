@@ -7,15 +7,15 @@ public sealed class GetCourseProviderQuery : IRequest<GetCourseProviderQueryResu
 {
     public long Ukprn { get; private set; }
     public string LarsCode { get; private set; }
-    public string Location { get; private set; }
+    public string LocationName { get; private set; }
     public Guid ShortlistUserId { get; private set; }
     public int? Distance { get; private set; }
 
-    public GetCourseProviderQuery(long ukprn, string larsCode, Guid shortlistUserId, string location, int? distance)
+    public GetCourseProviderQuery(long ukprn, string larsCode, Guid shortlistUserId, string locationName, int? distance)
     {
         Ukprn = ukprn;
         LarsCode = larsCode;
-        Location = location;
+        LocationName = locationName;
         ShortlistUserId = shortlistUserId;
         Distance = distance;
     }

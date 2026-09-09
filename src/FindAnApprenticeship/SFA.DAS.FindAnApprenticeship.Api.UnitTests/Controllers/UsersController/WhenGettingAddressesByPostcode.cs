@@ -1,16 +1,8 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 using System.Net;
-using System.Threading.Tasks;
-using System;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddressesByPostcode;
 using System.Threading;
-using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.UsersController;
 public class WhenGettingAddressesByPostcode

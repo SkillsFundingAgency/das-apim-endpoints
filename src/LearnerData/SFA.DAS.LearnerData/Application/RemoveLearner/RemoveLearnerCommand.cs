@@ -1,19 +1,19 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 namespace SFA.DAS.LearnerData.Application.RemoveLearner;
 
 public class RemoveLearnerCommand : IRequest
 {
-    public Guid LearningKey { get; set; }
+    public Guid LearnerKey { get; set; }
     public long Ukprn { get; set; }
+    public int AcademicYear { get; set; }
 }
 
 public class RemoveLearnerCommandHandler(
@@ -24,32 +24,33 @@ public class RemoveLearnerCommandHandler(
 {
     public async Task Handle(RemoveLearnerCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Removing learner with key {LearningKey}", command.LearningKey);
+        logger.LogInformation("Removing learner with key {LearnerKey}", command.LearnerKey);
 
-        var removeRequest = new RemoveLearnerApiDeleteRequest(command.LearningKey, command.Ukprn);
+        var removeRequest = new RemoveLearnerApiDeleteRequest(command.LearnerKey, command.Ukprn, command.AcademicYear);
 
-        var response = await learningApiClient.DeleteWithResponseCode<RemoveLearnerResponse>(removeRequest, true);
+        var response = await learningApiClient.DeleteWithResponseCode<List<Guid>>(removeRequest, true);
 
         if (!response.StatusCode.IsSuccessStatusCode())
         {
-            throw new Exception($"Failed to remove learner with key {command.LearningKey}. Status code: {response.StatusCode}.");
+            throw new Exception($"Failed to remove learner with key {command.LearnerKey}. Status code: {response.StatusCode}.");
         }
 
-        var lastDayOfLearning = response.Body?.LastDayOfLearning;
-
-        if (lastDayOfLearning == null)
+        if (response.Body == null)
         {
-            throw new Exception($"LastDayOfLearning returned from learning inner not found. Cannot withdraw from earnings.");
+            throw new Exception($"Failed to remove learner with key {command.LearnerKey}. Learning response body was null.");
         }
 
-        var deleteLearningRequest = new DeleteLearningRequest(command.LearningKey);
-        var earningsResponse = await earningsApiClient.DeleteWithResponseCode<NullResponse>(deleteLearningRequest);
-
-        if (!earningsResponse.StatusCode.IsSuccessStatusCode())
+        foreach (var learningKey in response.Body)
         {
-            throw new Exception($"Failed to withdraw learner from earnings with key {command.LearningKey}. Status code: {earningsResponse.StatusCode}.");
+            var deleteLearningRequest = new DeleteLearningRequest(learningKey);
+            var earningsResponse = await earningsApiClient.DeleteWithResponseCode<NullResponse>(deleteLearningRequest);
+
+            if (!earningsResponse.StatusCode.IsSuccessStatusCode())
+            {
+                throw new Exception($"Failed to withdraw learning from earnings with key {learningKey}. Status code: {earningsResponse.StatusCode}.");
+            }
         }
 
-        logger.LogInformation("Learner with key {LearningKey} removed and withdrawn in earnings successfully", command.LearningKey);
+        logger.LogInformation("Learner with key {LearnerKey} removed and all learnings withdrawn in earnings successfully", command.LearnerKey);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses

@@ -1,9 +1,11 @@
-using System;
+﻿using System;
 using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.DigitalCertificates.Api.Models.Certificates;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateCertificatePrintRequest;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkCertificate;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetStandardCertificate;
 
@@ -29,7 +31,10 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             {
                 var result = await _mediator.Send(new GetStandardCertificateQuery(id));
 
-                return result == null ? NotFound() : Ok(result);
+                if (result == null) return NotFound();
+
+                var response = (GetStandardCertificateResponse)result;
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -45,11 +50,36 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             {
                 var result = await _mediator.Send(new GetFrameworkCertificateQuery(id));
 
-                return result == null ? NotFound() : Ok(result);
+                if (result == null) return NotFound();
+
+                var response = (GetFrameworkCertificateResponse)result;
+                return Ok(response);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error attempting to retrieve framework certificate {FrameworkLearnerId}", id);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("{id}/printrequest")]
+        public async Task<IActionResult> CreatePrintRequest([FromRoute] Guid id, [FromBody] CreatePrintRequest request)
+        {
+            try
+            {
+                var command = (CreateCertificatePrintRequestCommand)request;
+                command.CertificateId = id;
+                await _mediator.Send(command);
+                return NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogWarning(ex, "Bad request when attempting to create print request for certificate {CertificateId}", id);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error attempting to create print request for certificate {CertificateId}", id);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
+﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts;
 
 namespace SFA.DAS.EmployerPR.InnerApi.Requests;
 public class AcceptCreateAccountRequestBody

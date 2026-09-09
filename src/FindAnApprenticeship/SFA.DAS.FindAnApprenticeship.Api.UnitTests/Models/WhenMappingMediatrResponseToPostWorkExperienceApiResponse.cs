@@ -1,7 +1,4 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
+﻿using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateWorkExperience;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models

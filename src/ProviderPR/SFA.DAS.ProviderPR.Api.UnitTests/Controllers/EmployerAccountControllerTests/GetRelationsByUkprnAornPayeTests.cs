@@ -8,6 +8,7 @@ using SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationshipsByUkp
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderPR.Api.UnitTests.Controllers.EmployerAccountControllerTests;
+
 public class GetRelationsByUkprnAornPayeTests
 {
     [Test, MoqAutoData]
@@ -47,8 +48,8 @@ public class GetRelationsByUkprnAornPayeTests
         var payeScheme = Uri.UnescapeDataString(encodedPaye);
         var query = new GetRelationshipsByUkprnPayeAornQuery(ukprn, aorn, payeScheme);
 
-        mediatorMock.Setup(m => m.Send(query, cancellationToken))
-            .ReturnsAsync(result);
+        mediatorMock.Setup(m => m.Send(It.Is<GetRelationshipsByUkprnPayeAornQuery>(x => x.Ukprn == ukprn && x.Aorn == aorn && x.Paye == payeScheme),
+        cancellationToken)).ReturnsAsync(result);
 
         var response = await sut.GetRelationshipByUkprnAornPaye(ukprn, aorn, encodedPaye, cancellationToken);
 

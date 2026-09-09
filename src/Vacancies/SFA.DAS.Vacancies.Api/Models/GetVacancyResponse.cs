@@ -1,4 +1,4 @@
-using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancy;
 using SFA.DAS.Vacancies.Enums;
 using System;

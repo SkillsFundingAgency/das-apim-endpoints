@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using static SFA.DAS.SharedOuterApi.InnerApi.Responses.GetPledgesResponse;
+using static SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.GetPledgesResponse;
 
 namespace SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetPledges
 {

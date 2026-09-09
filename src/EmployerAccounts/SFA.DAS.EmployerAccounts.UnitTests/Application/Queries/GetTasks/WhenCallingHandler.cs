@@ -9,17 +9,21 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetTasks;
 using SFA.DAS.EmployerAccounts.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerFinance;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFinance;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerFinance;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerFinance;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks;
@@ -439,13 +443,13 @@ public class WhenCallingHandler
     [Test, MoqAutoData]
     public async Task Then_NumberOfApprenticesToReview_Is_Returned(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
-        GetApprenticeshipUpdatesResponse apprenticeshipUpdatesResponse,
+        GetLearnerPendingChangeCountsForEmployerResponse apprenticeshipUpdatesResponse,
         GetTasksQuery request,
         GetTasksQueryHandler handler)
     {
         mockCommitmentsApi
-            .Setup(m => m.Get<GetApprenticeshipUpdatesResponse>(
-                It.Is<GetPendingApprenticeChangesRequest>(r => r.AccountId == request.AccountId)))
+            .Setup(m => m.Get<GetLearnerPendingChangeCountsForEmployerResponse>(
+                It.Is<GetPendingLearnerChangeCountsForEmployerRequest>(r => r.AccountId == request.AccountId)))
             .ReturnsAsync(apprenticeshipUpdatesResponse);
 
         mockCommitmentsApi.Setup(m =>
@@ -455,7 +459,7 @@ public class WhenCallingHandler
         // Act
         var result = await handler.Handle(request, CancellationToken.None);
 
-        result.NumberOfApprenticesToReview.Should().Be(3);
+        result.NumberOfApprenticesToReview.Should().Be(apprenticeshipUpdatesResponse.ManualPendingChangeCount + apprenticeshipUpdatesResponse.IlrPendingChangeCount);
     }
 
     [Test, MoqAutoData]

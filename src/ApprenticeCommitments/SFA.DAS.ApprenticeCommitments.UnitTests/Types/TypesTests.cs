@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
 using NUnit.Framework.Legacy;
-using SFA.DAS.ApprenticeCommitments.Types;
 
 namespace SFA.DAS.ApprenticeCommitments.Types.UnitTests.Types
 {

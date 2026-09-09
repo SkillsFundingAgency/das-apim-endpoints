@@ -1,5 +1,4 @@
 ﻿using static SFA.DAS.ToolsSupport.InnerApi.Responses.GetApprenticeshipChangeOfProviderChainResponse;
-using ApprenticeshipUpdate = SFA.DAS.ToolsSupport.InnerApi.Responses.ApprenticeshipUpdate;
 
 namespace SFA.DAS.ToolsSupport.Application.Queries;
 

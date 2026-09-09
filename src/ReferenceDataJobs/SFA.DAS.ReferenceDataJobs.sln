@@ -1,11 +1,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.3.32929.385
+# Visual Studio Version 18
+VisualStudioVersion = 18.7.11822.327 insiders
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{93697980-9D5B-4290-A779-743FB054A8CC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.UnitTests\SFA.DAS.SharedOuterApi.UnitTests.csproj", "{A953DE0E-4C13-4595-830E-E435E982D3A0}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ReferenceDataJobs", "SFA.DAS.ReferenceDataJobs\SFA.DAS.ReferenceDataJobs.csproj", "{B533614B-70C6-4D9B-BAF7-F45D1907FDD5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ReferenceDataJobs.Api", "SFA.DAS.ReferenceDataJobs.Api\SFA.DAS.ReferenceDataJobs.Api.csproj", "{F141E086-165A-49C8-AF8C-D7FD3646D2AE}"
@@ -16,20 +12,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ReferenceDataJobs.U
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9604F359-2791-4138-AF19-E248E93DDDCB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Types", "..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj", "{4B382186-57D9-5A6C-1D74-9EAB7074B281}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Types.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.Types.UnitTests\SFA.DAS.SharedOuterApi.Types.UnitTests.csproj", "{0C2923A8-A4BF-0481-0A98-3EE75752A64C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{93697980-9D5B-4290-A779-743FB054A8CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{93697980-9D5B-4290-A779-743FB054A8CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{93697980-9D5B-4290-A779-743FB054A8CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{93697980-9D5B-4290-A779-743FB054A8CC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A953DE0E-4C13-4595-830E-E435E982D3A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A953DE0E-4C13-4595-830E-E435E982D3A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A953DE0E-4C13-4595-830E-E435E982D3A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A953DE0E-4C13-4595-830E-E435E982D3A0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B533614B-70C6-4D9B-BAF7-F45D1907FDD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B533614B-70C6-4D9B-BAF7-F45D1907FDD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B533614B-70C6-4D9B-BAF7-F45D1907FDD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -46,6 +38,14 @@ Global
 		{624AA2CE-B7EE-4A65-B04A-2561A29DECB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{624AA2CE-B7EE-4A65-B04A-2561A29DECB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{624AA2CE-B7EE-4A65-B04A-2561A29DECB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

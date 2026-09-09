@@ -8,7 +8,7 @@ using Moq;
 using SFA.DAS.AdminRoatp.Api.Controllers;
 using SFA.DAS.AdminRoatp.Application.Commands.PatchOrganisation;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
 
 namespace SFA.DAS.AdminRoatp.Api.UnitTests.Controllers.OrganisationsControllerTests;
 public class OrganisationsControllerPatchOrganisationTests

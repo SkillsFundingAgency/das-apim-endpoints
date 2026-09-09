@@ -28,12 +28,17 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
                 .Setup(x => x.Send(It.Is<CreateOrUpdateUserCommand>(c =>
                     c.GovUkIdentifier == request.GovUkIdentifier &&
                     c.EmailAddress == request.EmailAddress &&
-                    c.PhoneNumber == request.PhoneNumber &&
-                    c.Names == request.Names &&
-                    c.DateOfBirth == request.DateOfBirth), CancellationToken.None))
+                    c.PhoneNumber == request.PhoneNumber), CancellationToken.None))
                 .ReturnsAsync(result);
 
-            var actual = await controller.CreateOrUpdateUser(request) as ObjectResult;
+            var apiRequest = new Models.Users.CreateOrUpdateUserRequest
+            {
+                GovUkIdentifier = request.GovUkIdentifier,
+                EmailAddress = request.EmailAddress,
+                PhoneNumber = request.PhoneNumber
+            };
+
+            var actual = await controller.CreateOrUpdateUser(apiRequest) as ObjectResult;
 
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -49,7 +54,14 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
             mediator.Setup(x => x.Send(It.IsAny<CreateOrUpdateUserCommand>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
-            var actual = await controller.CreateOrUpdateUser(request) as StatusCodeResult;
+            var apiRequest = new Models.Users.CreateOrUpdateUserRequest
+            {
+                GovUkIdentifier = request.GovUkIdentifier,
+                EmailAddress = request.EmailAddress,
+                PhoneNumber = request.PhoneNumber
+            };
+
+            var actual = await controller.CreateOrUpdateUser(apiRequest) as StatusCodeResult;
 
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);

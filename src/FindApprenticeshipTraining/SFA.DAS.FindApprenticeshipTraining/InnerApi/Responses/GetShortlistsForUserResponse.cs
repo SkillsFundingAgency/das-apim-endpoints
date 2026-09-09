@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using SFA.DAS.SharedOuterApi.Types.Constants;
+using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
@@ -20,6 +22,8 @@ public class ShortlistCourseModel
     public int Ordering { get; set; }
     public string LarsCode { get; set; }
     public string StandardName { get; set; }
+    public CourseType CourseType { get; set; }
+    public LearningType LearningType { get; set; }
     public List<ShortlistLocationModel> Locations { get; set; } = [];
 }
 
@@ -28,7 +32,7 @@ public class ShortlistLocationModel
     public int Ordering { get; set; }
     public decimal? Latitude { get; set; }
     public decimal? Longitude { get; set; }
-    public string LocationDescription { get; set; }
+    public string LocationName { get; set; }
     public List<ShortlistProviderModel> Providers { get; set; } = [];
 }
 
@@ -48,6 +52,9 @@ public class ShortlistProviderModel
     public string Email { get; set; }
     public string Phone { get; set; }
     public string Website { get; set; }
+    public bool HasOnlineDeliveryOption { get; set; }
+    public bool AtProvider { get; set; }
+    public decimal? ProviderDistance { get; set; }
     public string Leavers { get; set; }
     public string QarPeriod { get; set; }
     public string ReviewPeriod { get; set; }

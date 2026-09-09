@@ -1,13 +1,13 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Apim.Shared.Extensions;
 
 namespace SFA.DAS.Recruit.Application.ApplicationReview.Command.PatchApplicationReview
 {
@@ -19,8 +19,12 @@ namespace SFA.DAS.Recruit.Application.ApplicationReview.Command.PatchApplication
             var jsonPatchApplicationReviewDocument = new JsonPatchDocument<InnerApi.Recruit.Requests.ApplicationReview>();
             jsonPatchApplicationReviewDocument.Replace(x => x.HasEverBeenEmployerInterviewing, command.HasEverBeenEmployerInterviewing);
             jsonPatchApplicationReviewDocument.Replace(x => x.StatusUpdatedDate, DateTime.UtcNow);
-            jsonPatchApplicationReviewDocument.Replace(x => x.TemporaryReviewStatus, command.TemporaryReviewStatus);
 
+            var tempStatus = string.IsNullOrWhiteSpace(command.TemporaryReviewStatus)
+                ? null
+                : command.TemporaryReviewStatus;
+            jsonPatchApplicationReviewDocument.Replace(x => x.TemporaryReviewStatus, tempStatus);
+            
             if (!string.IsNullOrEmpty(command.Status))
             {
                 jsonPatchApplicationReviewDocument.Replace(x => x.Status, command.Status);

@@ -62,6 +62,27 @@ public class WhenGettingManageApprenticeshipDetails
     }
 
     [Test]
+    public async Task PaymentsStatus_IsMappedToResponse()
+    {
+        var freezeDate = new DateTime(2026, 6, 1);
+        _queryResult.PaymentsStatus = new PaymentsStatus
+        {
+            FreezeStatus = true,
+            PaymentFreezeDate = freezeDate,
+            ReasonFrozen = "Learner is on a break"
+        };
+
+        var result = await _controller.ManageApprenticeshipDetails(_apprenticeshipId);
+
+        var response = ((OkObjectResult)result).Value as GetManageApprenticeshipDetailsResponse;
+
+        response.PaymentsStatus.Should().NotBeNull();
+        response.PaymentsStatus.FreezeStatus.Should().BeTrue();
+        response.PaymentsStatus.PaymentFreezeDate.Should().Be(freezeDate);
+        response.PaymentsStatus.ReasonFrozen.Should().Be("Learner is on a break");
+    }
+
+    [Test]
     public async Task NotFoundIsReturnedWhenApprenticeshipNotFound()
     {
         _mediator.Setup(x => x.Send(It.Is<GetManageApprenticeshipDetailsQuery>(q =>

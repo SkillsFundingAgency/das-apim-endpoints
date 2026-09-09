@@ -1,5 +1,8 @@
 ﻿using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using SFA.DAS.Approvals.InnerApi;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeship
 {
@@ -58,6 +61,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
         public long? LearnerDataId { get; set; }
         public bool HasLearnerDataChanges { get; set; }
         public DateTime? LastLearnerDataSync { get; set; }
-
+        public string TrainingCourseVersion { get; set; }
+        public LearningType? LearningType { get; set; }
     }
 }

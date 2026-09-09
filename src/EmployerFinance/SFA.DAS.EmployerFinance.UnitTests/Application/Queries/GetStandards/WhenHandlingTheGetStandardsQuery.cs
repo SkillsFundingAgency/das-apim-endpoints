@@ -1,15 +1,8 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.EmployerFinance.Application.Queries.GetStandards;
+﻿using SFA.DAS.EmployerFinance.Application.Queries.GetStandards;
 using SFA.DAS.EmployerFinance.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.EmployerFinance.InnerApi.Requests;
 
 namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetStandards
 {
@@ -23,12 +16,12 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetStandards
             GetStandardsQueryHandler handler)
         {
             mockApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetActiveStandardsListRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetCoursesRequest>()))
                 .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Standards.Should().BeEquivalentTo(apiResponse.Standards);
+            result.Standards.Should().BeEquivalentTo(apiResponse.Courses);
         }
     }
 }

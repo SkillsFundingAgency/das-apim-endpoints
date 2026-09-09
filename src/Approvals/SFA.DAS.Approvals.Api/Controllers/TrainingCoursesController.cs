@@ -106,5 +106,27 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
+
+        [HttpGet]
+        [Route("courses")]
+        public async Task<IActionResult> GetCourses()
+        {
+            try
+            {
+                var queryResult = await mediator.Send(new GetCoursesQuery());
+
+                var model = new GetCoursesListResponse
+                {
+                    Courses = queryResult.Courses.Select(c => (GetCourseResponse)c).ToList()
+                };
+
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error attempting to get list of courses");
+                return BadRequest();
+            }
+        }
     }
 }

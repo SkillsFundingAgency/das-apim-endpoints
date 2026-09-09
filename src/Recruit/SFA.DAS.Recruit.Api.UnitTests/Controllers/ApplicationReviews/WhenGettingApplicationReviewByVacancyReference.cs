@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Recruit.Api.Controllers;
-using SFA.DAS.Recruit.Application.ApplicationReview.Command.PatchApplicationReview;
 using SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewsByVacancyReference;
 using System;
 using System.Net;
@@ -38,7 +37,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.ApplicationReviews
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<PatchApplicationReviewCommand>(),
+                    It.IsAny<GetApplicationReviewsByVacancyReferenceQuery>(),
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 

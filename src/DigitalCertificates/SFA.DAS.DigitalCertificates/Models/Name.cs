@@ -4,6 +4,7 @@ namespace SFA.DAS.DigitalCertificates.Models
 {
     public class Name
     {
+        public Guid UserIdentityId { get; set; }
         public DateTime? ValidSince { get; set; }
         public DateTime? ValidUntil { get; set; }
         public required string FamilyName { get; set; }

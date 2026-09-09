@@ -1,5 +1,6 @@
 ﻿using System.Net;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.ToolsSupport.InnerApi.Requests;
 

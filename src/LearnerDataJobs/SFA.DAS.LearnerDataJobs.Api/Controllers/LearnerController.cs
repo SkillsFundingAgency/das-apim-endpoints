@@ -11,6 +11,7 @@ namespace SFA.DAS.LearnerDataJobs.Api.Controllers;
 [ApiController]
 public class LearnersController(IMediator mediator, ILogger<LearnersController> logger) : ControllerBase
 {
+    //TODO: Check if this endpoint is ever used. If not, consider removing it (and the assocaited command and handler).
     [HttpGet("learners")]
     public async Task<IActionResult> GetAllLearners([FromQuery] int page = 1, [FromQuery] int pagesize = 100, [FromQuery] bool excludeApproved = true)
     {
@@ -35,7 +36,7 @@ public class LearnersController(IMediator mediator, ILogger<LearnersController> 
     
     [HttpPut]
     [Route("providers/{providerId}/learners")]
-    public async Task<IActionResult> PutLearner([FromRoute] long providerId, [FromBody] LearnerDataRequest request)
+    public async Task<IActionResult> PutLearner([FromRoute] long providerId, [FromBody] LearnerDataIncomingRequest request)
     {
         try
         {
@@ -54,7 +55,7 @@ public class LearnersController(IMediator mediator, ILogger<LearnersController> 
         }
     }
 
-    [HttpPatch]
+    [HttpPatch, Consumes("application/json", "application/json-patch+json", "text/json", "application/*+json")]
     [Route("providers/{providerId}/learners/{learnerDataId}/apprenticeshipId")]
     public async Task<IActionResult> PatchLearnerDataApprenticeshipId([FromRoute] long providerId, long learnerDataId, [FromBody] LearnerDataApprenticeshipIdRequest request)
     {

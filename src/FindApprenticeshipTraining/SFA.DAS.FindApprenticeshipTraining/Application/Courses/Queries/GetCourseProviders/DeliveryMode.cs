@@ -5,5 +5,6 @@ public enum DeliveryMode
     Workplace,
     Provider,
     DayRelease,
-    BlockRelease
+    BlockRelease,
+    Online
 }

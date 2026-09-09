@@ -1,0 +1,91 @@
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Common.Domain.Types;
+using SFA.DAS.LearnerData.Shared;
+
+namespace SFA.DAS.LearnerData.Requests.LearningInner
+{
+    public class UpdateLearningApiPutRequest : IPutApiRequest<UpdateLearningRequestBody>
+    {
+        public string PutUrl { get; }
+
+        public UpdateLearningRequestBody Data { get; set; }
+
+        public UpdateLearningApiPutRequest(long ukprn, Guid learnerKey, UpdateLearningRequestBody data)
+        {
+            PutUrl = $"{ukprn}/{learnerKey}";
+            Data = data;
+        }
+    }
+
+    public class UpdateLearningRequestBody
+    {
+        public int AcademicYear { get; set; }
+        public Delivery Delivery { get; set; }
+        public LearningUpdateDetails Learner { get; set; }
+        public List<MathsAndEnglishDetails> EnglishAndMathsCourses { get; set; }
+        public List<LearningSupport> LearningSupport { get; set; }
+        public OnProgrammeDetails OnProgramme { get; set; }
+    }
+
+    public class LearningUpdateDetails
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string? EmailAddress { get; set; }
+        public DateTime? CompletionDate { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public long Uln { get; set; }
+        public CareDetails Care { get; set; }
+    }
+
+    public class OnProgrammeDetails
+    {
+        public DateTime? AchievementDate { get; set; }
+        public DateTime ExpectedEndDate { get; set; }
+        public List<Cost> Costs { get; set; }
+        public DateTime? PauseDate { get; set; }
+        public List<BreakInLearning> BreaksInLearning { get; set; }
+    }
+
+    public class Cost
+    {
+        public int TrainingPrice { get; set; }
+        public int? EpaoPrice { get; set; }
+        public DateTime FromDate { get; set; }
+    }
+
+    public class MathsAndEnglishDetails
+    {
+        public string Course { get; set; }
+        public string LearnAimRef { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime PlannedEndDate { get; set; }
+        public DateTime? CompletionDate { get; set; }
+        public DateTime? WithdrawalDate { get; set; }
+        public DateTime? PauseDate { get; set; }
+        public decimal? CombinedFundingAdjustmentPercentage { get; set; }
+        public decimal Amount { get; set; }
+        public List<BreakInLearning> BreaksInLearning { get; set; }
+    }
+
+    public class Delivery
+    {
+        public DateTime? WithdrawalDate { get; set; }
+        public string TrainingCode { get; set; }
+        public LearningType? LearningType { get; set; } //todo for now this is nullable because we are not sending it/using it on the PUT, but it will be needed when we implement that
+    }
+
+    public class BreakInLearning
+    {
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public DateTime PriorPeriodExpectedEndDate { get; set; }
+    }
+
+    public class CareDetails
+    {
+        public bool HasEHCP { get; set; }
+        public bool IsCareLeaver { get; set; }
+        public bool CareLeaverEmployerConsentGiven { get; set; }
+    }
+}

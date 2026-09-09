@@ -5,11 +5,13 @@ using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeAccounts;
 using SFA.DAS.ApprenticeApp.InnerApi.ApprenticeAccounts.Requests;
 using SFA.DAS.ApprenticeApp.Models;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,7 +33,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
             };
 
             var expectedUrl =
-                $"apprentices?firstName={query.FirstName}&lastName={query.LastName}&dateOfBirth={query.DateOfBirth}";
+                $"apprentices?firstName={query.FirstName}&lastName={query.LastName}&dateOfBirth={query.DateOfBirth.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}";
 
 
             var apiResponse = new List<ApprenticeAccount>

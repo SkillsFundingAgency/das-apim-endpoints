@@ -6,9 +6,10 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Events;
 using SFA.DAS.Recruit.InnerApi.Models;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.Recruit.Handlers;
 public class SharedApplicationReviewedEventHandler(

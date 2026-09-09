@@ -2,6 +2,6 @@
 {
     public class EmployerAanConfiguration
     {
-        public string ApimEndpointsRedisConnectionString { get; set; }
+        public string ApimEndpointsRedisConnectionString { get; set; } = string.Empty;
     }
 }

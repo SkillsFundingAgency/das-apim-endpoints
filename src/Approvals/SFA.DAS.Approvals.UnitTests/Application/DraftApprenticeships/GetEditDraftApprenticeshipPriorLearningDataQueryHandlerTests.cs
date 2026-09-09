@@ -4,9 +4,12 @@ using System.Threading.Tasks;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipPriorLearningData;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
 {
@@ -83,6 +86,13 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.That(result.PriceReduced, Is.EqualTo(_draftApprenticeship.PriceReducedBy));
+        }
+
+        [Test]
+        public async Task Handle_LearnerDataId_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.That(result.LearnerDataId, Is.EqualTo(_draftApprenticeship.LearnerDataId));
         }
     }
 }

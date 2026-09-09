@@ -71,6 +71,7 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.TaskQueue
                 .Callback(() => cancellationTokenSource.Cancel());
 
             await _service.StartAsync(cancellationTokenSource.Token);
+            await Task.Delay(100); //TODO - added this after .net10 upgrade - Dirty fix
 
             _mediatorMock.Verify(x => x.Send(It.IsAny<IBaseRequest>(), It.IsAny<CancellationToken>()), Times.Once);
             _serviceScopeFactoryMock.Verify(x => x.CreateScope(), Times.Once);

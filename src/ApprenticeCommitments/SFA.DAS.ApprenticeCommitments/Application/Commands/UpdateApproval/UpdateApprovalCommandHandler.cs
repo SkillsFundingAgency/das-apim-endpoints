@@ -3,12 +3,11 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
+using SFA.DAS.ApprenticeCommitments.Extensions;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.TrainingProviderService;
+using SFA.DAS.SharedOuterApi.Types.Services;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
-using SFA.DAS.SharedOuterApi.Services;
-using SFA.DAS.ApprenticeCommitments.Extensions;
-using SFA.DAS.ApprenticeCommitments.Types;
 using static System.String;
 using ApprenticeshipResponse = SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi.ApprenticeshipResponse;
 
@@ -42,9 +41,15 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApproval
             UpdateApprovalCommand command,
             CancellationToken cancellationToken)
         {
-            var (apprenticeship, provider, course) = await GetExternalData(command) ?? default;
+            var (apprenticeship, provider, course) = await GetExternalData(command) ?? default;            
 
             if (apprenticeship == null) return default;
+
+            if (course.ApprenticeshipType == "ApprenticeshipUnit")
+            {
+                _logger.LogInformation("Method skipped due to ApprenticeshipType: Short Course | ApprenticeshipId: {Id}", apprenticeship.Id);
+                return default;
+            }
 
             await _apprenticeCommitmentsService.ChangeApproval(new ChangeApprovalRequestData
             {

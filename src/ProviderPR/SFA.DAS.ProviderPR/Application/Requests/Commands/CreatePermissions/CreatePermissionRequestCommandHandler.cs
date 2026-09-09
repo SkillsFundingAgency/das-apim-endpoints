@@ -1,13 +1,13 @@
 ﻿using MediatR;
-using SFA.DAS.ProviderPR.Application.Requests.Commands.AddAccount;
 using SFA.DAS.ProviderPR.Common;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Notifications.Commands;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using static SFA.DAS.SharedOuterApi.InnerApi.Responses.GetAccountTeamMembersWhichReceiveNotificationsResponse;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts;
+using static SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts.GetAccountTeamMembersWhichReceiveNotificationsResponse;
 
 namespace SFA.DAS.ProviderPR.Application.Requests.Commands.CreatePermissions;
 

@@ -3,7 +3,8 @@ using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Campaign.Application.Services;
 using SFA.DAS.Campaign.ExternalApi.Responses;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Campaign.UnitTests.Application.Services

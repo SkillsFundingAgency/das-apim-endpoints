@@ -6,17 +6,21 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerAccounts.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerFinance;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFinance;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerFinance;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerFinance;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks;
 
@@ -53,7 +57,7 @@ public class GetTasksQueryHandler(
             ApplicationStatusFilter = ApplicationStatus.Accepted
         });
         
-        var apprenticeChangesTask = commitmentsV2ApiClient.Get<GetApprenticeshipUpdatesResponse>(new GetPendingApprenticeChangesRequest(request.AccountId));
+        var apprenticeChangesTask = commitmentsV2ApiClient.Get<GetLearnerPendingChangeCountsForEmployerResponse>(new GetPendingLearnerChangeCountsForEmployerRequest(request.AccountId));
 
         var transferRequestsTask = commitmentsV2ApiClient.Get<GetTransferRequestSummaryResponse>(new GetTransferRequestsRequest(request.AccountId, TransferType.AsSender));
 
@@ -80,7 +84,7 @@ public class GetTasksQueryHandler(
         var cohortsForThisAccount = cohortsForThisAccountResponse.Cohorts?.ToList();
         var cohortsToReview = cohortsForThisAccountResponse.Cohorts?.Where(x => !x.IsDraft && x.WithParty == Party.Employer).ToList();
         var apprenticeChanges = await apprenticeChangesTask;
-        var apprenticeChangesCount = apprenticeChanges?.ApprenticeshipUpdates?.Count ?? 0;
+        var apprenticeChangesCount = apprenticeChanges == null ? 0 : apprenticeChanges.ManualPendingChangeCount + apprenticeChanges.IlrPendingChangeCount;
         var pendingTransferConnections = await pendingTransferConnectionsTask;
         var pledgeApplicationsAcceptedResponse = await acceptedPledgeApplicationsTask;
         var pledgeApplicationsToReviewResponse = await pledgeApplicationsToReviewTask;

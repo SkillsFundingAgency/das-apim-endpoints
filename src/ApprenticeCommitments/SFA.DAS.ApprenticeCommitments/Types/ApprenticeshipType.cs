@@ -1,5 +1,3 @@
-using System.ComponentModel;
-
 namespace SFA.DAS.ApprenticeCommitments.Types
 {
     public enum ApprenticeshipType

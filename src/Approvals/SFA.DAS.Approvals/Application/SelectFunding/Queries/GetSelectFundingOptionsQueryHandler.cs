@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerFinance;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFinance;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerFinance;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerFinance;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.SelectFunding.Queries;
 public class GetSelectFundingOptionsQueryHandler : IRequestHandler<GetSelectFundingOptionsQuery, GetSelectFundingOptionsQueryResult>
@@ -51,7 +52,8 @@ public class GetSelectFundingOptionsQueryHandler : IRequestHandler<GetSelectFund
             HasDirectTransfersAvailable = connections?.Any() ?? false,
             HasLtmTransfersAvailable = ltm.Applications?.Any() ?? false,
             HasAdditionalReservationFundsAvailable = !status.HasReachedReservationsLimit,
-            HasUnallocatedReservationsAvailable = status.HasPendingReservations
+            HasUnallocatedReservationsAvailable = status.HasPendingReservations,
+            RemainingReservationsCount = status.RemainingReservationsCount
         };
     }
 }

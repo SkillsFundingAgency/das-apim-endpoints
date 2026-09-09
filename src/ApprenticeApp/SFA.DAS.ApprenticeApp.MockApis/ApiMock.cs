@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using SFA.DAS.ApprenticeApp.MockApis;
 using WireMock.Logging;
 using WireMock.Server;
 

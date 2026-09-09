@@ -11,7 +11,7 @@ using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerP
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetStandard;
 using SFA.DAS.EmployerRequestApprenticeTraining.Models;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RequestApprenticeTraining;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Net;

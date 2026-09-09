@@ -4,26 +4,18 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.Learners.Queries;
 namespace SFA.DAS.Approvals.Api.Controllers;
 
 [ApiController]
 public class SelectLearnersController(IMediator mediator, ILogger<SelectLearnersController> logger) : Controller
 {
-    [HttpGet]
+    [HttpPost]
     [Route("/providers/{providerId}/unapproved/add/learners/select")]
     public async Task<IActionResult> Get(
         long providerId,
-        [FromQuery] long? accountLegalEntityId,
-        [FromQuery] long? cohortId,
-        [FromQuery] string searchTerm,
-        [FromQuery] string sortColumn,
-        [FromQuery] bool sortDescending,
-        [FromQuery] int page,
-        [FromQuery] int? pageSize,
-        [FromQuery] int? startMonth,
-        [FromQuery] int startYear
-        )
+        SearchLearnersRequest request)
     {
         try
         {
@@ -31,22 +23,25 @@ public class SelectLearnersController(IMediator mediator, ILogger<SelectLearners
             var result = await mediator.Send(new GetLearnersForProviderQuery
             {
                 ProviderId = providerId,
-                AccountLegalEntityId = accountLegalEntityId,
-                CohortId = cohortId,
-                SearchTerm = searchTerm,
-                SortField = sortColumn,
-                SortDescending = sortDescending,
-                Page = page,
-                PageSize = pageSize, 
-                StartMonth = startMonth,
-                StartYear = startYear
+                AccountLegalEntityId = request.AccountLegalEntityId,
+                CohortId = request.CohortId,
+                SearchTerm = request.SearchTerm,
+                SortField = request.SortColumn,
+                SortDescending = request.SortDescending,
+                Page = request.Page,
+                PageSize = request.PageSize,
+                StartMonth = request.StartMonth,
+                StartYear = request.StartYear,
+                CourseCode = request.CourseCode,
+                LearningType = request.LearningType,
+                ExcludeUlns = request.ExcludeUlns
             });
             return Ok(result);
         }
         catch (Exception e)
         {
             logger.LogError(e, "Error when getting  ILR records for Provider {providerId}", providerId);
-            return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
 
@@ -69,7 +64,7 @@ public class SelectLearnersController(IMediator mediator, ILogger<SelectLearners
         catch (Exception e)
         {
             logger.LogError(e, "Error when getting  ILR record for Learner {learnerId}", learnerId);
-            return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
 }

@@ -1,5 +1,4 @@
 using Azure.Identity;
-using FluentValidation;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Logging.ApplicationInsights;
@@ -8,18 +7,18 @@ using NServiceBus;
 using SFA.DAS.LearnerData.Api.AppStart;
 using SFA.DAS.LearnerData.Api.Middleware;
 using SFA.DAS.LearnerData.Application.CreateLearner;
-using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.LearnerData.Validators;
-using SFA.DAS.NServiceBus.Configuration;
 using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
-using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.Apim.Shared.AppStart;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 using System.Net;
 using System.Text.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.ConfigureKestrel(o => o.AddServerHeader = false);
 
 var configuration = builder.Configuration.BuildSharedConfiguration();
 
@@ -46,23 +45,25 @@ builder.Services
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 
+builder.AddDistributedCache(configuration);
+
 builder.Services.AddSingleton<ITelemetryInitializer, CorrelationTelemetryInitializer>();
 builder.Services.AddSingleton<IMessageSession>(provider =>
 {
     var endpointConfiguration = new EndpointConfiguration("SFA.DAS.LearnerData.OuterApi");
-    endpointConfiguration.EnableInstallers();
-    endpointConfiguration.UseMessageConventions();
+    endpointConfiguration.UseExtendedMessageConventions();
     endpointConfiguration.UseNewtonsoftJsonSerializer();
 
     endpointConfiguration.SendOnly();
     var nsbConnection = configuration["NServiceBusConfiguration:NServiceBusConnectionString"];
     var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
-    if (!configuration.IsLocalOrDev())
-    {
-        nsbConnection = nsbConnection.Replace("Endpoint=sb://", string.Empty).TrimEnd('/');
-        transport.CustomTokenCredential(new DefaultAzureCredential());
-    }
-    transport.ConnectionString(nsbConnection);
+    var fullyQualifiedNamespace = new Uri(
+        nsbConnection.Split(';')
+            .First(p => p.StartsWith("Endpoint=", StringComparison.OrdinalIgnoreCase))
+            .Substring("Endpoint=".Length)
+    ).Host;
+    transport.ConnectionString(fullyQualifiedNamespace);
+    transport.CustomTokenCredential(new DefaultAzureCredential());
 
     var decodedLicence = WebUtility.HtmlDecode(configuration["NServiceBusConfiguration:NServiceBusLicense"]);
     if (!string.IsNullOrWhiteSpace(decodedLicence)) endpointConfiguration.License(decodedLicence);
@@ -85,14 +86,13 @@ builder.Services.AddHealthChecks()
 
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(CreateLearnerCommand).Assembly));
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IValidator<CreateLearnerRequest>, CreateLearnerRequestValidator>();
-builder.Services.AddScoped<IValidator<IEnumerable<LearnerDataRequest>>, BulkLearnerDataRequestsValidator>();
 
 builder.Services.AddServices();
 
 var app = builder.Build();
 
 app.UseMiddleware<CorrelationIdMiddleware>();
+app.UseMiddleware<SecurityHeadersMiddleware>();
 
 if (app.Environment.IsDevelopment()) app.UseDeveloperExceptionPage();
 
@@ -106,7 +106,6 @@ app.UseSwagger()
     .UseHealthChecks()
     .UseAuthentication();
 
-app.UseMiddleware<StrictJsonValidationMiddleware<StubUpdateLearnerRequest>>();
 app.UseMiddleware<ConcurrencyTrackingMiddleware>();
 
 app.MapControllers();

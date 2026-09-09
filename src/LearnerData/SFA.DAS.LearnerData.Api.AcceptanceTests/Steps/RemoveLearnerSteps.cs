@@ -1,8 +1,7 @@
-﻿using FluentAssertions;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
+using FluentAssertions;
+using SFA.DAS.Apim.Shared.Infrastructure;
 using System.Net;
 using TechTalk.SpecFlow;
-using WireMock;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -46,18 +45,15 @@ internal class RemoveLearnerSteps(TestContext testContext, ScenarioContext scena
 
     private void ConfigureRemoveLearningApi()
     {
-        var learningKey = scenarioContext.Get<Guid>(LearnerKey);
+        var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
         var ukprn = scenarioContext.Get<long>(UkprnKey);
 
-        var responseBody = new RemoveLearnerResponse
-        {
-            LastDayOfLearning = DateTime.UtcNow
-        };
+        var responseBody = new List<Guid> { learnerKey };
 
         testContext.ApprenticeshipsApi.MockServer
             .Given(
                 Request.Create()
-                    .WithPath($"/{ukprn}/{learningKey}")
+                    .WithPath($"/{ukprn}/{learnerKey}")
                     .UsingDelete()
             )
             .RespondWith(

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using MediatR.Extensions.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -11,10 +10,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.Roatp.Api.AppStart;
-using SFA.DAS.Roatp.Api.HealthCheck;
 using SFA.DAS.Roatp.Application.Charities.Queries;
-using SFA.DAS.SharedOuterApi.AppStart;
 
 namespace SFA.DAS.Roatp.Api;
 
@@ -46,12 +44,7 @@ public class Startup
             services.AddAuthentication(azureAdConfiguration, policies);
         }
 
-        services.AddHealthChecks()
-            .AddCheck<CharitiesApiHealthCheck>(nameof(CharitiesApiHealthCheck));
-
         services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetCharityQueryHandler).Assembly));
-
-        services.AddFluentValidation(new[] { typeof(GetCharityQueryHandler).Assembly });
 
         services.AddServiceRegistration(_configuration);
         services.AddServiceHealthChecks();
@@ -78,7 +71,7 @@ public class Startup
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "RoatpOuterApi", Version = "v1" });
         });
     }
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
+    public static void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
     {
         if (env.IsDevelopment())
         {

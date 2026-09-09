@@ -1,5 +1,5 @@
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Interfaces;
 

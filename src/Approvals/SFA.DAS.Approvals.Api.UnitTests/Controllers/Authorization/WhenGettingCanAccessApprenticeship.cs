@@ -4,9 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Approvals.Application.Authorization.Queries;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Authorization;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Authorization;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Authorization;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Authorization;
 

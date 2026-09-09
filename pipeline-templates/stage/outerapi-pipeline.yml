@@ -4,14 +4,16 @@ parameters:
   AddXForwardedAuthorization: $False
   CheckClientCert: $False
   MandateCheckClientCert: $False
-  SharedOuterApiProjectPathToInclude: 'src/Shared/SFA.DAS.SharedOuterApi/SFA.DAS.SharedOuterApi.csproj'
-  SharedOuterApiTestProjectPathToInclude: 'src/Shared/SFA.DAS.SharedOuterApi.UnitTests/SFA.DAS.SharedOuterApi.UnitTests.csproj'
+  SharedOuterApiTypesProjectPathToInclude: 'src/Shared/SFA.DAS.SharedOuterApi.Types/SFA.DAS.SharedOuterApi.Types.csproj'
+  SharedOuterApiTypesTestProjectPathToInclude: 'src/Shared/SFA.DAS.SharedOuterApi.Types.UnitTests/SFA.DAS.SharedOuterApi.Types.UnitTests.csproj'
   AdditionalProjectPathToInclude: ''
   AdditionalTestProjectPathToInclude: ''
   ConfigurationSecrets: {}
   useProductAppInsights: ''
   AzureArtifactsFeed: ''
   RunTests: ''
+  HttpFile: ''
+  SubscriptionKeyMappings: []
 
 stages:
 - stage: Build
@@ -22,13 +24,13 @@ stages:
       SonarCloudProjectKey: SkillsFundingAgency_das-apim-endpoints_${{ parameters.OuterApiName }}
       TargetProjects: |
         src/${{ parameters.OuterApiName }}/**/*.csproj
-        ${{ parameters.SharedOuterApiProjectPathToInclude }}
-        ${{ parameters.SharedOuterApiTestProjectPathToInclude }}
+        ${{ parameters.SharedOuterApiTypesProjectPathToInclude }}
+        ${{ parameters.SharedOuterApiTypesTestProjectPathToInclude }}
         ${{ parameters.AdditionalProjectPathToInclude }}
         ${{ parameters.AdditionalTestProjectPathToInclude }}
       UnitTestProjects: |
         src/${{ parameters.OuterApiName }}/**/*UnitTests.csproj
-        ${{ parameters.SharedOuterApiTestProjectPathToInclude }}
+        ${{ parameters.SharedOuterApiTypesTestProjectPathToInclude }}
         ${{ parameters.AdditionalTestProjectPathToInclude }}
       AcceptanceTestProjects: 'src/${{ parameters.OuterApiName }}/**/*AcceptanceTests.csproj'
       PublishProject: 'src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.Api/SFA.DAS.${{ parameters.OuterApiName }}.Api.csproj'
@@ -82,6 +84,8 @@ stages:
       parameters:
         OuterApiName: ${{ parameters.OuterApiName }}
         ServiceConnection: SFA-DAS-DevTest-ARM
+        HttpFile: ${{ parameters.HttpFile }}
+        SubscriptionKeyMappings: ${{ parameters.SubscriptionKeyMappings }}
 
 - stage: Deploy_TEST
   dependsOn: Build
@@ -90,7 +94,6 @@ stages:
   - group: DevTest Management Resources
   - group: TEST DevTest Shared Resources
   - group: TEST das-apim-endpoints
-  - group: TEST das-apim-endpoints-LearnerData
   jobs:
   - template: ../../pipeline-templates/job/deploy.yml
     parameters:

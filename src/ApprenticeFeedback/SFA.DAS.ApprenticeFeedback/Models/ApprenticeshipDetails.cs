@@ -4,7 +4,7 @@ namespace SFA.DAS.ApprenticeFeedback.Models
 {
     public class ApprenticeshipDetails
     {
-        public LearnerData LearnerData { get; set; }
+        public InnerApi.Requests.LearnerData LearnerData { get; set; }
         public MyApprenticeshipData MyApprenticeshipData { get; set; }
     }
 }

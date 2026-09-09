@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using MediatR;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Roatp;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Roatp;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
 
 namespace SFA.DAS.AdminRoatp.Application.Commands.PostOrganisation;
 

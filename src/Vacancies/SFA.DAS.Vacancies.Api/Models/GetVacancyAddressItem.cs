@@ -1,4 +1,4 @@
-using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Vacancies.InnerApi.Responses;
 
 namespace SFA.DAS.Vacancies.Api.Models;

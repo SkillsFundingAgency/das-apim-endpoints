@@ -10,7 +10,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.InnerApi.Requests
         {
             var actual = new GetApplicationReviewsByVacancyReferenceApiRequest(vacancyReference);
 
-            actual.GetUrl.Should().Be($"api/applicationReviews/{vacancyReference}");
+            actual.GetUrl.Should().Be($"api/vacancies/byRef/{vacancyReference}/applicationReviews");
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.3.32804.467
+# Visual Studio Version 18
+VisualStudioVersion = 18.5.11723.231
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4B914D7C-1470-4A85-B819-BFA17C1ABC43}"
 EndProject
@@ -13,11 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticeAan.Api.U
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticeAan.Application.UnitTests", "SFA.DAS.ApprenticeAan.Application.UnitTests\SFA.DAS.ApprenticeAan.Application.UnitTests.csproj", "{9EC414A8-B018-4390-AB14-628DB896D08F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{CE1F1BD2-B2B5-457E-9627-A0502729CC99}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.UnitTests\SFA.DAS.SharedOuterApi.UnitTests.csproj", "{1A106EB9-4C8F-4EAA-8F76-AA8F661DD2E9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth", "..\Shared\SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth\SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.csproj", "{FF0B4A9B-D6F1-4194-B0DE-773D7EC6B8D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Types", "..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj", "{4B382186-57D9-5A6C-1D74-9EAB7074B281}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Types.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.Types.UnitTests\SFA.DAS.SharedOuterApi.Types.UnitTests.csproj", "{0C2923A8-A4BF-0481-0A98-3EE75752A64C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,18 +41,18 @@ Global
 		{9EC414A8-B018-4390-AB14-628DB896D08F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9EC414A8-B018-4390-AB14-628DB896D08F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9EC414A8-B018-4390-AB14-628DB896D08F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CE1F1BD2-B2B5-457E-9627-A0502729CC99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CE1F1BD2-B2B5-457E-9627-A0502729CC99}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CE1F1BD2-B2B5-457E-9627-A0502729CC99}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CE1F1BD2-B2B5-457E-9627-A0502729CC99}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1A106EB9-4C8F-4EAA-8F76-AA8F661DD2E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1A106EB9-4C8F-4EAA-8F76-AA8F661DD2E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1A106EB9-4C8F-4EAA-8F76-AA8F661DD2E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1A106EB9-4C8F-4EAA-8F76-AA8F661DD2E9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FF0B4A9B-D6F1-4194-B0DE-773D7EC6B8D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FF0B4A9B-D6F1-4194-B0DE-773D7EC6B8D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF0B4A9B-D6F1-4194-B0DE-773D7EC6B8D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF0B4A9B-D6F1-4194-B0DE-773D7EC6B8D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,7 +60,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{D6C2F873-D5C7-4549-AE68-D9E267CA8D7A} = {4B914D7C-1470-4A85-B819-BFA17C1ABC43}
 		{9EC414A8-B018-4390-AB14-628DB896D08F} = {4B914D7C-1470-4A85-B819-BFA17C1ABC43}
-		{1A106EB9-4C8F-4EAA-8F76-AA8F661DD2E9} = {4B914D7C-1470-4A85-B819-BFA17C1ABC43}
+		{0C2923A8-A4BF-0481-0A98-3EE75752A64C} = {4B914D7C-1470-4A85-B819-BFA17C1ABC43}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EEA44E89-F0D1-4CBA-88C8-35BFC652B5D9}

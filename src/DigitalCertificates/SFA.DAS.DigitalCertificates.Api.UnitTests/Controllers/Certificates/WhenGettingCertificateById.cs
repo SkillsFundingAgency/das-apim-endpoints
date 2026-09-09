@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,7 +34,8 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Certificates
             // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().Be(expectedResponse);
+            var expected = (Models.Certificates.GetStandardCertificateResponse)expectedResponse;
+            actual.Value.Should().BeEquivalentTo(expected);
 
             mediator.Verify(m => m.Send(It.Is<GetStandardCertificateQuery>(q => q.Id == id), It.IsAny<CancellationToken>()), Times.Once);
         }
@@ -46,7 +47,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Certificates
             [Greedy] CertificatesController controller)
         {
             // Arrange
-            GetStandardCertificateQueryResult? expectedResponse = null;
+            GetStandardCertificateQueryResult expectedResponse = null;
             mediator
                 .Setup(m => m.Send(It.IsAny<GetStandardCertificateQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedResponse);
