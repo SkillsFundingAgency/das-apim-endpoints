@@ -1,3 +1,5 @@
+using System.Net;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -5,8 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
 using NUnit.Framework;
 using SFA.DAS.EmployerFeedback.Api.Middleware;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Middleware
 {
