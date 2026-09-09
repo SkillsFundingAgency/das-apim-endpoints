@@ -93,9 +93,12 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Files
             var result = await _controller.CreateFile(command);
 
             // Assert
-            Assert.That(result, Is.InstanceOf<StatusCodeResult>());
-            Assert.That(((StatusCodeResult)result).StatusCode,
-                Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.InstanceOf<StatusCodeResult>());
+                Assert.That(((StatusCodeResult)result).StatusCode,
+                    Is.EqualTo(StatusCodes.Status500InternalServerError));
+            });
         }
 
         // --------------------
@@ -129,8 +132,11 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Files
                     default),
                 Times.Once);
 
-            Assert.That(result, Is.InstanceOf<OkObjectResult>());
-            Assert.That(((OkObjectResult)result).Value, Is.EqualTo(response));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.InstanceOf<OkObjectResult>());
+                Assert.That(((OkObjectResult)result).Value, Is.EqualTo(response));
+            });
         }
 
         [Test]
@@ -153,9 +159,12 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Files
             var result = await _controller.DeleteFile(fileId);
 
             // Assert
-            Assert.That(result, Is.InstanceOf<StatusCodeResult>());
-            Assert.That(((StatusCodeResult)result).StatusCode,
-                Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.InstanceOf<StatusCodeResult>());
+                Assert.That(((StatusCodeResult)result).StatusCode,
+                    Is.EqualTo(StatusCodes.Status500InternalServerError));
+            });
         }
 
         // --------------------
@@ -187,8 +196,11 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Files
                 m => m.Send(query, default),
                 Times.Once);
 
-            Assert.That(result, Is.InstanceOf<OkObjectResult>());
-            Assert.That(((OkObjectResult)result).Value, Is.EqualTo(response));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.InstanceOf<OkObjectResult>());
+                Assert.That(((OkObjectResult)result).Value, Is.EqualTo(response));
+            });
         }
 
         [Test]
@@ -211,9 +223,12 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Files
             var result = await _controller.GetFiles(query);
 
             // Assert
-            Assert.That(result, Is.InstanceOf<StatusCodeResult>());
-            Assert.That(((StatusCodeResult)result).StatusCode,
-                Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.InstanceOf<StatusCodeResult>());
+                Assert.That(((StatusCodeResult)result).StatusCode,
+                    Is.EqualTo(StatusCodes.Status500InternalServerError));
+            });
         }
     }
 }

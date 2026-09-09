@@ -14,9 +14,9 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Files
     [TestFixture]
     public class CreateFileMetadataCommandHandlerTests
     {
-        private IFixture _fixture;
-        private Mock<IAodpApiClient<AodpApiConfiguration>> _apiClientMock;
-        private CreateFileMetadataCommandHandler _handler;
+        private IFixture _fixture = null!;
+        private Mock<IAodpApiClient<AodpApiConfiguration>> _apiClientMock = null!;
+        private CreateFileMetadataCommandHandler _handler = null!;
 
         [SetUp]
         public void SetUp()

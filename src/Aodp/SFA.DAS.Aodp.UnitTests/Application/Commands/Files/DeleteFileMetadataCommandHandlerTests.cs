@@ -15,9 +15,9 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Files
     [TestFixture]
     public class DeleteFileMetadataCommandHandlerTests
     {
-        private IFixture _fixture;
-        private Mock<IAodpApiClient<AodpApiConfiguration>> _apiClientMock;
-        private DeleteFileMetadataCommandHandler _handler;
+        private IFixture _fixture = null!;
+        private Mock<IAodpApiClient<AodpApiConfiguration>> _apiClientMock = null!;
+        private DeleteFileMetadataCommandHandler _handler = null!;
 
         [SetUp]
         public void SetUp()

@@ -13,9 +13,9 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Files
     [TestFixture]
     public class GetFileMetadataQueryHandlerTests
     {
-        private IFixture _fixture;
-        private Mock<IAodpApiClient<AodpApiConfiguration>> _apiClientMock;
-        private GetFileMetadataQueryHandler _handler;
+        private IFixture _fixture = null!;
+        private Mock<IAodpApiClient<AodpApiConfiguration>> _apiClientMock = null!;
+        private GetFileMetadataQueryHandler _handler = null!;
 
         [SetUp]
         public void SetUp()
