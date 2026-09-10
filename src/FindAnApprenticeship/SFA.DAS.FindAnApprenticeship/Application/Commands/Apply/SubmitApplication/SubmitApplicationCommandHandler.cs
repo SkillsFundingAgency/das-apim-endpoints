@@ -18,8 +18,12 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using System;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Polly;
+using Polly.Retry;
+using SFA.DAS.Apim.Shared.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.SubmitApplication;
 
@@ -123,8 +127,16 @@ public class SubmitApplicationCommandHandler(
         var patch = new JsonPatchDocument<Domain.Models.Application>();
         patch.Replace(x => x.Status, ApplicationStatus.Submitted);
 
-        await candidateApiClient.PatchWithResponseCode(
-            new PatchApplicationApiRequest(applicationId, candidateId, patch));
+        var patchApplicationApiRequest = new PatchApplicationApiRequest(applicationId, candidateId, patch);
+        
+        var patchApplicationPolicy = PatchApplicationPolicy(patchApplicationApiRequest, applicationId);
+
+        var result = await patchApplicationPolicy.ExecuteAsync(() => candidateApiClient.PatchWithResponseCode(patchApplicationApiRequest));
+        if (!result.StatusCode.IsSuccessStatusCode())
+        {
+            logger.LogError("Failed to update application status for app '{Id}' - {Error}", applicationId, result.ErrorContent);
+            throw new ApplicationException($"Failed to update application status for app '{applicationId}'");
+        }
     }
 
     // Send Recruit notification emails
@@ -146,5 +158,17 @@ public class SubmitApplicationCommandHandler(
             .ToArray();
 
         await Task.WhenAll(sendEmailTasks);
+    }
+    
+    
+    private AsyncRetryPolicy<ApiResponse<string>> PatchApplicationPolicy(PatchApplicationApiRequest request, Guid applicationId)
+    {
+        return Policy
+            .HandleResult<ApiResponse<string>>(r => r.StatusCode != HttpStatusCode.OK)
+            .WaitAndRetryAsync(3, _ => TimeSpan.FromMilliseconds(200), 
+                (response, _, retryCount, _) =>
+                {
+                    logger.LogInformation("SubmitApplicationCommandHandler: Unable to update {ApplicationId}. Retry {RetryCount} due to {StatusCode} response", applicationId, retryCount, response.Result.StatusCode);
+                });
     }
 }
