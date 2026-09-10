@@ -27,7 +27,7 @@ namespace SFA.DAS.Campaign.Application.Queries.Hub
 
         public async Task<GetHubQueryResult> Handle(GetHubQuery request, CancellationToken cancellationToken)
         {
-            var article = _reliableCacheStorageService.GetData<CmsContent>(new GetHubEntriesRequest(request.Hub.ToTitleCase()), $"{request.Hub.ToTitleCase()}_hub", _contentService.HasContent);
+            var article = _reliableCacheStorageService.GetData<HubCmsContent>(new GetHubEntriesRequest(request.Hub.ToTitleCase()), $"{request.Hub.ToTitleCase()}_hub", _contentService.HasContent);
             var menu = _mediator.RetrieveMenu(cancellationToken);
             var banners = _mediator.RetrieveBanners(cancellationToken);
 
