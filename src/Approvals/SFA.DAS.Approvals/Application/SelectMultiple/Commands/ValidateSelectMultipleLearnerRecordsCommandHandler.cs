@@ -23,18 +23,18 @@ public class ValidateSelectMultipleLearnerRecordsCommandHandler(
 {
     public async Task Handle(ValidateSelectMultipleLearnerRecordsCommand command, CancellationToken cancellationToken)
     {
-        var reservationRequests = command.CsvRecords.Select(response =>
+        var reservationRequests = command.Learners.Select(learner =>
         {
-            Guid.TryParse(command.UserInfo.UserId, out var parsedUserId);
+            //Guid.TryParse(command.UserInfo.UserId, out var parsedUserId);
             return new ReservationRequest
             {
                 CourseId = response.CourseCode,
-                AccountLegalEntityId = response.LegalEntityId ?? 0,
-                ProviderId = (uint?)response.ProviderId,
+                AccountLegalEntityId = command.AccountLegalEntityId ?? 0, 
+                ProviderId = (uint?)command.ProviderId,
                 RowNumber = response.RowNumber,
                 Id = Guid.NewGuid(),
-                StartDate = GetStartDate(response.StartDateAsString),
-                TransferSenderAccountId = response.TransferSenderId
+                StartDate = learner.StartDate,
+                //TransferSenderAccountId = response.TransferSenderId ?!? could it be transfer sender for multiselect, we don't have cohort at this point, previous check were ignoring it when no cohort id 
             };
 
         }).ToList();
@@ -42,6 +42,7 @@ public class ValidateSelectMultipleLearnerRecordsCommandHandler(
             await reservationApiClient.PostWithResponseCode<BulkReservationValidationResults>(
                 new PostValidateReservationRequest(command.ProviderId, reservationRequests));
 
+        //use couses table 
         var providerStandardResults = await providerStandardsService.GetCoursesData(command.ProviderId);
 
         var uniqueCourseCodes = command.CsvRecords.Select(r => r.CourseCode).Distinct();
