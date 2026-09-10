@@ -192,7 +192,7 @@ public class PostOrganisationCommandHandlerTests
     [RecursiveMoqInlineAutoData(true, false)]
     [RecursiveMoqInlineAutoData(false, true)]
     [RecursiveMoqInlineAutoData(false, false)]
-    public async Task Handle_CallsV2AddCourseTypes_WithExpectedCourseTypes(
+    public async Task Handle_OnSuccessfullyCreatingMainProvider_UpdatesCourseTypeInCM(
         bool deliversApprenticeships,
         bool deliversApprenticeshipUnits,
         [Frozen] Mock<IRoatpServiceRestApiClient> roatpServiceRestApiClientMock,
@@ -213,7 +213,7 @@ public class PostOrganisationCommandHandlerTests
 
         if (deliversApprenticeshipUnits) courseTypes.Add((int)CourseType.ShortCourse);
 
-        var expectedCourseTypeNames = courseTypes.Select(x => ((CourseType)x).ToString()).ToArray();
+        var expectedCourseTypeNames = courseTypes.Select(x => (CourseType)x).ToArray();
 
         var response = new HttpResponseMessage { StatusCode = HttpStatusCode.Created };
 
@@ -248,12 +248,10 @@ public class PostOrganisationCommandHandlerTests
     }
 
     [Test]
-    [RecursiveMoqInlineAutoData(ProviderType.Main, 1)]
-    [RecursiveMoqInlineAutoData(ProviderType.Employer, 0)]
-    [RecursiveMoqInlineAutoData(ProviderType.Supporting, 0)]
-    public async Task Handle_CallsV2AddCourseTypes_OnlyForMainProvider(
+    [RecursiveMoqInlineAutoData(ProviderType.Employer)]
+    [RecursiveMoqInlineAutoData(ProviderType.Supporting)]
+    public async Task Handle_NonMainProvider_DoesNotUpdateCourseTypeInCM(
         ProviderType providerType,
-        int callsAddCourseTypesCount,
         [Frozen] Mock<IRoatpServiceRestApiClient> roatpServiceRestApiClientMock,
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpV2ApiClientMock,
         [Greedy] PostOrganisatonCommandHandler sut,
@@ -261,10 +259,7 @@ public class PostOrganisationCommandHandlerTests
         int ukprn,
         CancellationToken cancellationToken)
     {
-        command.Ukprn = ukprn;
         command.ProviderType = providerType;
-        command.DeliversApprenticeships = true;
-        command.DeliversApprenticeshipUnits = true;
 
         var response = new HttpResponseMessage { StatusCode = HttpStatusCode.Created };
 
@@ -287,10 +282,7 @@ public class PostOrganisationCommandHandlerTests
         actualResponse.Should().Be(HttpStatusCode.Created);
 
         roatpV2ApiClientMock.Verify(
-            x => x.PostWithResponseCode<int>(
-                It.Is<AddCourseTypesRequest>(request =>
-                    request.Ukprn == ukprn
-                    && request.PostUrl == $"/providers/{ukprn}/course-types"), true),
-            Times.Exactly(callsAddCourseTypesCount));
+            x => x.PostWithResponseCode<int>(It.IsAny<AddCourseTypesRequest>()),
+            Times.Never);
     }
 }

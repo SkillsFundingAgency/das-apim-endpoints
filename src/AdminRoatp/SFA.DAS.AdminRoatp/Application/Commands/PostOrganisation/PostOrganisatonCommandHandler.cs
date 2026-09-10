@@ -40,7 +40,7 @@ public class PostOrganisatonCommandHandler(IRoatpServiceRestApiClient _roatpServ
             tasks.Add(_roatpV2ApiClient.PostWithResponseCode<int>(new PostProviderRequest(command)));
 
             _logger.LogInformation("Creating course types in RoatpV2 for Posted organisation with ukprn {Ukprn}", command.Ukprn);
-            var courseTypeNames = courseTypes.Select(x => ((CourseType)x).ToString()).ToArray();
+            var courseTypeNames = courseTypes.Select(x => (CourseType)x).ToArray();
             var addCourseTypesCommand = new AddCourseTypesModel()
             {
                 CourseTypes = courseTypeNames,
