@@ -1,5 +1,4 @@
 using Azure.Identity;
-using FluentValidation;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Logging.ApplicationInsights;
@@ -8,8 +7,6 @@ using NServiceBus;
 using SFA.DAS.LearnerData.Api.AppStart;
 using SFA.DAS.LearnerData.Api.Middleware;
 using SFA.DAS.LearnerData.Application.CreateLearner;
-using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.LearnerData.Validators;
 using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
 using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.Apim.Shared.Infrastructure;
@@ -89,7 +86,6 @@ builder.Services.AddHealthChecks()
 
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(CreateLearnerCommand).Assembly));
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IValidator<CreateLearnerRequest>, CreateLearnerRequestValidator>();
 
 builder.Services.AddServices();
 

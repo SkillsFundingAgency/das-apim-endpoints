@@ -42,3 +42,8 @@ Scenario: Learning persists a StartDate different from the SLD payload - earning
 	And learning persists a different StartDate than the SLD payload
 	When a draft short course is created for the provider
 	Then the short course creation request sent to earnings has the learning-persisted StartDate, not the SLD payload's StartDate
+
+Scenario: Endpoint is called with a temporary uln - should be ignored
+	Given there is a provider
+	When a draft short course is created for the provider with a temporary uln
+	Then the earnings domain is not called

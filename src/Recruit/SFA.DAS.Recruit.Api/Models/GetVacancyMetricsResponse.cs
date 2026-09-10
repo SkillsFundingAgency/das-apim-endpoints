@@ -23,6 +23,7 @@ namespace SFA.DAS.Recruit.Api.Models
             public long SearchResultsCount { get; init; }
             public long ApplicationStartedCount { get; init; }
             public long ApplicationSubmittedCount { get; init; }
+            public long SavedCount { get; init; }
 
             public static implicit operator VacancyMetric(GetVacancyMetricsQueryResult.VacancyMetric source)
             {
@@ -32,7 +33,8 @@ namespace SFA.DAS.Recruit.Api.Models
                     ApplicationStartedCount = source.ApplicationStartedCount,
                     ApplicationSubmittedCount = source.ApplicationSubmittedCount,
                     SearchResultsCount = source.SearchResultsCount,
-                    ViewsCount = source.ViewsCount
+                    ViewsCount = source.ViewsCount,
+                    SavedCount = source.SavedCount
                 };
             }
         }
