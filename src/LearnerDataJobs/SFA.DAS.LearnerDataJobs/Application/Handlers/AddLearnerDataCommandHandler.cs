@@ -50,41 +50,20 @@ public class AddLearnerDataCommandHandler(IInternalApiClient<LearnerDataInnerApi
     {
         CourseDetails? course = null;
 
-        logger.LogInformation("UseNewCourses API is '{0}'", config["UseNewCoursesApi"]);
         logger.LogInformation("LearnerDataInnerApi:tenant '{0}'", config["LearnerDataInnerApi:tenant"]);
+        logger.LogInformation("Getting course details for course {0}", larsCode);
+        var response = await coursesClient.Get<CourseLookupDetailResponse?>(new GetCourseLookupDetailsByIdRequest(larsCode));
 
-        if (string.Equals(config["UseNewCoursesApi"], "true", StringComparison.OrdinalIgnoreCase))
+        if (response == null)
         {
-            logger.LogInformation("Getting course details for course {0}", larsCode);
-            var response = await coursesClient.Get<CourseLookupDetailResponse?>(new GetCourseLookupDetailsByIdRequest(larsCode));
-
-            if (response == null)
-            {
-                throw new Exception($"No course found for LARS code {larsCode}");
-            }
-            course = new CourseDetails
-            {
-                LarsCode = response.LarsCode,
-                Title = response.Title,
-                LearningType = response.LearningType
-            };
+            throw new Exception($"No course found for LARS code {larsCode}");
         }
-        else
+        course = new CourseDetails
         {
-            logger.LogInformation("Getting standard details for course {0}", larsCode);
-            var response = await coursesClient.Get<StandardDetailResponse?>(new GetStandardDetailsByIdRequest(larsCode));
-
-            if (response == null)
-            {
-                throw new Exception($"No standard found for LARS code {larsCode}");
-            }
-            course = new CourseDetails
-            {
-                LarsCode = response.LarsCode.ToString(),
-                Title = response.Title,
-                LearningType = response.ApprenticeshipType
-            };
-        }
+            LarsCode = response.LarsCode,
+            Title = response.Title,
+            LearningType = response.LearningType
+        };
         return course;
     }
 
