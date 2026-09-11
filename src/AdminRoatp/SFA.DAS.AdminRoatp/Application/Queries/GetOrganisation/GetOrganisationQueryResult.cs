@@ -21,7 +21,7 @@ public class GetOrganisationQueryResult
     public DateTime? RemovedDate { get; set; }
     public DateTime? StartDate { get; set; }
     public DateTime? LastUpdatedDate { get; set; }
-    public IEnumerable<AllowedCourseType> AllowedCourseTypes { get; set; } = [];
+    public IEnumerable<AllowedCourseTypeModel> AllowedCourseTypes { get; set; } = [];
 
     public static implicit operator GetOrganisationQueryResult(OrganisationResponse source) => new()
     {
@@ -40,6 +40,10 @@ public class GetOrganisationQueryResult
         RemovedReason = source.RemovedReason,
         StartDate = source.StartDate,
         LastUpdatedDate = source.LastUpdatedDate,
-        AllowedCourseTypes = source.AllowedCourseTypes
+        AllowedCourseTypes = source.AllowedCourseTypes.Select(x => new AllowedCourseTypeModel
+        {
+            CourseTypeId = x.CourseTypeId,
+            CourseTypeName = x.CourseTypeName
+        })
     };
 }
