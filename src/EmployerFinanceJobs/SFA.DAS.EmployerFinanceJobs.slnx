@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="../Shared/SFA.DAS.SharedOuterApi.Types.UnitTests/SFA.DAS.SharedOuterApi.Types.UnitTests.csproj" />
+  <Project Path="../Shared/SFA.DAS.SharedOuterApi.Types/SFA.DAS.SharedOuterApi.Types.csproj" />
+  <Project Path="SFA.DAS.EmployerFinanceJobs.Api/SFA.DAS.EmployerFinanceJobs.Api.csproj" />
+  <Project Path="SFA.DAS.EmployerFinanceJobs/SFA.DAS.EmployerFinanceJobs.csproj" Id="38e25434-db77-44e5-8711-aad771a8c02a" />
+</Solution>

@@ -2,7 +2,6 @@
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
@@ -25,6 +24,7 @@ namespace SFA.DAS.EmployerFinance.Api.AppStart
             services.AddTransient<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>, LevyTransferMatchingApiClient>(); 
             services.AddTransient<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>, ProviderCoursesApiClient>();
             services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();
+            services.AddTransient<IFundingProjectionApiClient<FundingProjectionApiConfiguration>, FundingProjectionApiClient>();
             services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
         }
     }

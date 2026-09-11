@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Commands\" />
+    <Folder Include="Domain\" />
+    <Folder Include="InnerApi\Responses\" />
+    <Folder Include="InnerApi\Requests\" />
+    <Folder Include="Queries\" />
+  </ItemGroup>
+
+</Project>
