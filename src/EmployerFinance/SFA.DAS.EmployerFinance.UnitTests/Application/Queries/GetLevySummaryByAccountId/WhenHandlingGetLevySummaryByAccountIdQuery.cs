@@ -13,13 +13,20 @@ internal class WhenHandlingGetLevySummaryByAccountIdQuery
     public async Task Then_Gets_Levy_Summary_From_Finance_Api_And_Returns_Result(
         GetLevySummaryByAccountIdQuery query,
         GetLevySummaryByAccountIdResponse apiResponse,
+        GetCommittedCostsByAccountIdResponse committedCostsResponse,
         [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockFinanceApiClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> mockFundingProjectionApiClient,
         [Greedy] GetLevySummaryByAccountIdQueryHandler handler)
     {
         mockFinanceApiClient
             .Setup(client => client.Get<GetLevySummaryByAccountIdResponse>(
                 It.Is<GetLevySummaryByAccountIdRequest>(r => r.AccountId.Equals(query.AccountId))))
             .ReturnsAsync(apiResponse);
+
+        mockFundingProjectionApiClient
+            .Setup(client => client.Get<GetCommittedCostsByAccountIdResponse>(
+                It.Is<GetCommittedCostsByAccountIdRequest>(r => r.AccountId.Equals(query.AccountId))))
+            .ReturnsAsync(committedCostsResponse);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -28,5 +35,7 @@ internal class WhenHandlingGetLevySummaryByAccountIdQuery
         result.TotalLevyDeclaredLast12Months.Should().Be(apiResponse.TotalLevyDeclaredLast12Months);
         result.TotalLevySpentLast12Months.Should().Be(apiResponse.TotalLevySpentLast12Months);
         result.TotalLevyExpiredLast12Months.Should().Be(apiResponse.TotalLevyExpiredLast12Months);
+        result.TotalCommittedLearnerCosts.Should().Be(committedCostsResponse.TotalCommittedLearnerCosts);
+        result.TotalCommittedTransfersCosts.Should().Be(committedCostsResponse.TotalCommittedTransfersCosts);
     }
 }
