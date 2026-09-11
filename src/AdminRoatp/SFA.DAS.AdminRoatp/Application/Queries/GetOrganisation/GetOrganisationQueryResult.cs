@@ -42,8 +42,7 @@ public class GetOrganisationQueryResult
         LastUpdatedDate = source.LastUpdatedDate,
         AllowedCourseTypes = source.AllowedCourseTypes.Select(x => new AllowedCourseTypeModel
         {
-            CourseTypeId = x.CourseTypeId,
-            CourseTypeName = x.CourseTypeName
+            CourseType = x.CourseTypeName
         })
     };
 }
