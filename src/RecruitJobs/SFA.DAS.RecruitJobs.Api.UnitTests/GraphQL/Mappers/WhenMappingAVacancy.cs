@@ -1,19 +1,19 @@
 using System.Collections.Generic;
 using System.Text.Json;
 using SFA.DAS.Recruit.Contracts.ApiResponses;
-using SFA.DAS.RecruitJobs.GraphQL.RecruitInner.Mappers;
-using GqlApplicationMethod = SFA.DAS.RecruitJobs.GraphQL.ApplicationMethod;
-using GqlApprenticeshipTypes = SFA.DAS.RecruitJobs.GraphQL.ApprenticeshipTypes;
-using GqlClosureReason = SFA.DAS.RecruitJobs.GraphQL.ClosureReason;
-using GqlEmployerNameOption = SFA.DAS.RecruitJobs.GraphQL.EmployerNameOption;
-using GqlGeoCodeMethod = SFA.DAS.RecruitJobs.GraphQL.GeoCodeMethod;
-using GqlOwnerType = SFA.DAS.RecruitJobs.GraphQL.OwnerType;
-using GqlSourceOrigin = SFA.DAS.RecruitJobs.GraphQL.SourceOrigin;
-using GqlSourceType = SFA.DAS.RecruitJobs.GraphQL.SourceType;
-using GqlDurationUnit = SFA.DAS.RecruitJobs.GraphQL.DurationUnit;
-using GqlWageType = SFA.DAS.RecruitJobs.GraphQL.WageType;
-using GqlAvailableWhere = SFA.DAS.RecruitJobs.GraphQL.AvailableWhere;
-using VacancyStatus = SFA.DAS.RecruitJobs.GraphQL.VacancyStatus;
+using SFA.DAS.SharedOuterApi.Recruit.GraphQL.RecruitInner.Mappers;
+using GqlApplicationMethod = SFA.DAS.SharedOuterApi.Recruit.GraphQL.ApplicationMethod;
+using GqlApprenticeshipTypes = SFA.DAS.SharedOuterApi.Recruit.GraphQL.ApprenticeshipTypes;
+using GqlClosureReason = SFA.DAS.SharedOuterApi.Recruit.GraphQL.ClosureReason;
+using GqlEmployerNameOption = SFA.DAS.SharedOuterApi.Recruit.GraphQL.EmployerNameOption;
+using GqlGeoCodeMethod = SFA.DAS.SharedOuterApi.Recruit.GraphQL.GeoCodeMethod;
+using GqlOwnerType = SFA.DAS.SharedOuterApi.Recruit.GraphQL.OwnerType;
+using GqlSourceOrigin = SFA.DAS.SharedOuterApi.Recruit.GraphQL.SourceOrigin;
+using GqlSourceType = SFA.DAS.SharedOuterApi.Recruit.GraphQL.SourceType;
+using GqlDurationUnit = SFA.DAS.SharedOuterApi.Recruit.GraphQL.DurationUnit;
+using GqlWageType = SFA.DAS.SharedOuterApi.Recruit.GraphQL.WageType;
+using GqlAvailableWhere = SFA.DAS.SharedOuterApi.Recruit.GraphQL.AvailableWhere;
+using VacancyStatus = SFA.DAS.SharedOuterApi.Recruit.GraphQL.VacancyStatus;
 
 namespace SFA.DAS.RecruitJobs.Api.UnitTests.GraphQL.Mappers;
 

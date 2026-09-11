@@ -1,18 +1,16 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
 using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.Recruit.Contracts.ApiRequests;
 using SFA.DAS.Recruit.Contracts.ApiResponses;
-using SFA.DAS.Recruit.Contracts.Client;
-using SFA.DAS.RecruitJobs.Domain;
-using SFA.DAS.RecruitJobs.GraphQL;
 using SFA.DAS.RecruitJobs.Handlers;
 using StrawberryShake;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using SFA.DAS.SharedOuterApi.Recruit.GraphQL;
 using ClosureReason = SFA.DAS.Recruit.Contracts.ApiResponses.ClosureReason;
 using OwnerType = SFA.DAS.Recruit.Contracts.ApiResponses.OwnerType;
 using VacancyStatus = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyStatus;
@@ -28,7 +26,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         Guid Id,
         long? VacancyReference,
         string? Title,
-        GraphQL.VacancyStatus Status,
+        SharedOuterApi.Recruit.GraphQL.VacancyStatus Status,
         string? TrainingProvider_Name,
         string? LegalEntityName,
         int? Ukprn) : IGetProviderTransferableVacancyDetails_Vacancies;
@@ -58,7 +56,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         Guid vacancyId,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
@@ -82,12 +80,12 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     [RecursiveMoqInlineAutoData(VacancyStatus.Referred)]
     [RecursiveMoqInlineAutoData(VacancyStatus.Archived)]
     public async Task Then_The_Vacancy_Is_Transferred(
-        GraphQL.VacancyStatus status,
+        SharedOuterApi.Recruit.GraphQL.VacancyStatus status,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
@@ -123,12 +121,12 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     [RecursiveMoqInlineAutoData(VacancyStatus.Rejected)]
     [RecursiveMoqInlineAutoData(VacancyStatus.Review)]
     public async Task Then_The_Vacancy_Is_Transferred_And_Made_Draft_Again(
-        GraphQL.VacancyStatus status,
+        SharedOuterApi.Recruit.GraphQL.VacancyStatus status,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
@@ -164,12 +162,12 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     [Test]
     [RecursiveMoqInlineAutoData(VacancyStatus.Live)]
     public async Task Then_The_Vacancy_Is_Transferred_And_Closed_And_Applications_Moved_Over(
-        GraphQL.VacancyStatus status,
+        SharedOuterApi.Recruit.GraphQL.VacancyStatus status,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
@@ -240,11 +238,11 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
-        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Live };
+        vacancyDetails = vacancyDetails with { Status = SharedOuterApi.Recruit.GraphQL.VacancyStatus.Live };
         var applicationReview = new GetApplicationReviewResponse { ApplicationId = Guid.NewGuid(), Status = reviewStatus };
         data.Setup(x => x.Vacancies).Returns([vacancyDetails]);
         recruitGqlClient
@@ -278,11 +276,11 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
-        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Live };
+        vacancyDetails = vacancyDetails with { Status = SharedOuterApi.Recruit.GraphQL.VacancyStatus.Live };
         var applicationReview = new GetApplicationReviewResponse { ApplicationId = Guid.NewGuid(), Status = reviewStatus };
         data.Setup(x => x.Vacancies).Returns([vacancyDetails]);
         recruitGqlClient
@@ -317,11 +315,11 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
-        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Live };
+        vacancyDetails = vacancyDetails with { Status = SharedOuterApi.Recruit.GraphQL.VacancyStatus.Live };
         var applicationReview = new GetApplicationReviewResponse { ApplicationId = Guid.NewGuid(), Status = reviewStatus };
         data.Setup(x => x.Vacancies).Returns([vacancyDetails]);
         recruitGqlClient
@@ -348,14 +346,14 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     }
 
     [Test]
-    [RecursiveMoqInlineAutoData(GraphQL.VacancyStatus.Approved)]
+    [RecursiveMoqInlineAutoData(SharedOuterApi.Recruit.GraphQL.VacancyStatus.Approved)]
     public async Task Then_The_Vacancy_Is_Transferred_And_Closed_And_Unapproved(
-        GraphQL.VacancyStatus status,
+        SharedOuterApi.Recruit.GraphQL.VacancyStatus status,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
@@ -403,11 +401,11 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         List<VacancyReview> vacancyReviews,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
-        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Submitted };
+        vacancyDetails = vacancyDetails with { Status = SharedOuterApi.Recruit.GraphQL.VacancyStatus.Submitted };
         var expectedTransferInfo = new TransferInfo
         {
             Ukprn = vacancyDetails.Ukprn!.Value,
@@ -459,11 +457,11 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         List<VacancyReview> vacancyReviews,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
-        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Submitted };
+        vacancyDetails = vacancyDetails with { Status = SharedOuterApi.Recruit.GraphQL.VacancyStatus.Submitted };
         data
             .Setup(x => x.Vacancies)
             .Returns([vacancyDetails]);
@@ -494,7 +492,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         await sut.HandleAsync(vacancyId, TransferReason.EmployerRevokedPermission, CancellationToken.None);
 
         // assert
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Operation<VacancyReview>("replace", "/manualOutcome", null, nameof(ManualQaOutcome.Transferred)));
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Operation<VacancyReview>("replace", "/manualOutcome", null, nameof(Domain.ManualQaOutcome.Transferred)));
         capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<VacancyReview>("replace", "/status", null, ReviewStatus.Closed));
         var closedDate = capturedPatchRequest.Data.Operations.First(x => x.path == "/closedDate").value as DateTime?;
         closedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
@@ -510,11 +508,11 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         List<VacancyReview> vacancyReviews,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
-        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Submitted };
+        vacancyDetails = vacancyDetails with { Status = SharedOuterApi.Recruit.GraphQL.VacancyStatus.Submitted };
         data
             .Setup(x => x.Vacancies)
             .Returns([vacancyDetails]);
@@ -552,11 +550,11 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
-        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Closed };
+        vacancyDetails = vacancyDetails with { Status = SharedOuterApi.Recruit.GraphQL.VacancyStatus.Closed };
         var expectedTransferInfo = new TransferInfo
         {
             Ukprn = vacancyDetails.Ukprn!.Value,
