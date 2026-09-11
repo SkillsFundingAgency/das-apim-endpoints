@@ -10,7 +10,7 @@ using SFA.DAS.Recruit.Contracts.ApiRequests;
 using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitJobs.Api.Controllers;
 using SFA.DAS.RecruitJobs.Api.Models.Requests;
-using SFA.DAS.RecruitJobs.GraphQL;
+using SFA.DAS.SharedOuterApi.Recruit.GraphQL;
 using StrawberryShake;
 using ClosureReason = SFA.DAS.Recruit.Contracts.ApiResponses.ClosureReason;
 using VacancyStatus = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyStatus;
