@@ -30,7 +30,7 @@ public class CreateLearnerCommandHandler(
     public async Task Handle(CreateLearnerCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Handling CreateLearnerCommand for Ukprn {Ukprn}", command.Ukprn);
-        var learningType = await GetLearningType(command.Request.Delivery.OnProgramme.First().StandardCode);
+        var learningType = await GetLearningType(command.Request.Delivery.OnProgramme.MinBy(x => x.StartDate)!.StandardCode);
 
         logger.LogInformation("Feature toggle ApprenticeshipCreateDraftLearner is {ApprenticeshipCreateDraftLearner}", featureFlags.ApprenticeshipCreateDraftLearner);
         if (featureFlags.ApprenticeshipCreateDraftLearner)
@@ -80,7 +80,7 @@ public class CreateLearnerCommandHandler(
         }
 
         logger.LogTrace("Publishing LearnerDataEvent");
-        var onProgramme = command.Request.Delivery.OnProgramme.First();
+        var onProgramme = command.Request.Delivery.OnProgramme.MinBy(x => x.StartDate)!;
         var evt = learnerDataEventMapper.Build(
             command.Ukprn,
             command.Request.Learner,
