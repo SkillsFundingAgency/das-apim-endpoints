@@ -15,12 +15,17 @@ public class AcknowledgeInvalidIlrChangesCommandHandler(
 {
     public async Task Handle(AcknowledgeInvalidIlrChangesCommand command, CancellationToken cancellationToken)
     {
-        var request = new PostInvalidIlrChangesRequest(command.ApprenticeshipId, new PostInvalidIlrChangesRequestData
-        {
-            ProviderId = command.ProviderId,
-            UserInfo = command.UserInfo,
-            Acknowledgements = command.Acknowledgements
-        });
+        var request = new PostInvalidIlrChangesRequest(
+            command.ApprenticeshipId,
+            new PostInvalidIlrChangesRequestData
+            {
+                ProviderId = command.ProviderId,
+                UserInfo = command.UserInfo,
+                Acknowledgements = command.Acknowledgements
+            },
+            string.IsNullOrWhiteSpace(command.InnerPath)
+                ? GetInvalidIlrChangesRequest.InvalidIlrChangesPath
+                : command.InnerPath);
 
         var response = await commitmentsApiClient.PostWithResponseCode<NullResponse>(request, false);
         response.EnsureSuccessStatusCode();

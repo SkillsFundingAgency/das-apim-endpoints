@@ -17,6 +17,8 @@ namespace SFA.DAS.Approvals.Enums
         [Description("Confirm dates")]
         ConfirmDates = 4,
         [Description("ILR change invalid")]
-        IlrChangeInvalid = 5
+        IlrChangeInvalid = 5,
+        [Description("Changes declined")]
+        ChangesDeclined = 6
     }
 }
