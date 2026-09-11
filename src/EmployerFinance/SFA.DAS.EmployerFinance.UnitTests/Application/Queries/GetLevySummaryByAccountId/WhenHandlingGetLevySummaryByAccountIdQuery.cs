@@ -1,24 +1,24 @@
-﻿using SFA.DAS.EmployerFinance.Application.Queries.GetLevySummaryByHashedAccountId;
+﻿using SFA.DAS.EmployerFinance.Application.Queries.GetLevySummaryByAccountId;
 using SFA.DAS.EmployerFinance.InnerApi.Requests;
 using SFA.DAS.EmployerFinance.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
-namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetLevySummaryByHashedAccountId;
+namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetLevySummaryByAccountId;
 
 [TestFixture]
-internal class WhenHandlingGetLevySummaryByHashedAccountIdQuery
+internal class WhenHandlingGetLevySummaryByAccountIdQuery
 {
     [Test, MoqAutoData]
     public async Task Then_Gets_Levy_Summary_From_Finance_Api_And_Returns_Result(
-        GetLevySummaryByHashedAccountIdQuery query,
-        GetLevySummaryByHashedAccountIdResponse apiResponse,
+        GetLevySummaryByAccountIdQuery query,
+        GetLevySummaryByAccountIdResponse apiResponse,
         [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockFinanceApiClient,
-        [Greedy] GetLevySummaryByHashedAccountIdQueryHandler handler)
+        [Greedy] GetLevySummaryByAccountIdQueryHandler handler)
     {
         mockFinanceApiClient
-            .Setup(client => client.Get<GetLevySummaryByHashedAccountIdResponse>(
-                It.Is<GetLevySummaryByHashedAccountIdRequest>(r => r.HashedAccountId.Equals(query.HashedAccountId))))
+            .Setup(client => client.Get<GetLevySummaryByAccountIdResponse>(
+                It.Is<GetLevySummaryByAccountIdRequest>(r => r.AccountId.Equals(query.AccountId))))
             .ReturnsAsync(apiResponse);
 
         var result = await handler.Handle(query, CancellationToken.None);
@@ -26,5 +26,6 @@ internal class WhenHandlingGetLevySummaryByHashedAccountIdQuery
         result.Should().NotBeNull();
         result.CurrentLevyFunds.Should().Be(apiResponse.CurrentLevyFunds);
         result.TotalLevyDeclaredLast12Months.Should().Be(apiResponse.TotalLevyDeclaredLast12Months);
+        result.TotalLevySpentLast12Months.Should().Be(apiResponse.TotalLevySpentLast12Months);
     }
 }
