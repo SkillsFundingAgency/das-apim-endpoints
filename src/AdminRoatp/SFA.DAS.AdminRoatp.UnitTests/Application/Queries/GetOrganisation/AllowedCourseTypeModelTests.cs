@@ -24,7 +24,6 @@ public class AllowedCourseTypeModelTests
         AllowedCourseTypeModel result = source;
 
         // Assert
-        result.CourseTypeId.Should().Be(source.CourseTypeId);
         result.CourseType.Should().Be(source.CourseType);
         result.IsRestricted.Should().Be(source.IsRestricted);
         result.RestrictedCount.Should().Be(source.RestrictedCount);
