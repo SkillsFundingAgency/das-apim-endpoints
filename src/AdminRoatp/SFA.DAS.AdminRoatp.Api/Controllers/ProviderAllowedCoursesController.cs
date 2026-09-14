@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.AdminRoatp.Application.Commands.AddProviderAllowedCourse;
 using SFA.DAS.AdminRoatp.Application.Commands.PatchProviderAllowedCourse;
-using SFA.DAS.AdminRoatp.Application.Commands.UpsertProviderAllowedCourse;
 using SFA.DAS.AdminRoatp.Application.Queries.GetProviderAllowedCourses;
 using SFA.DAS.AdminRoatp.Infrastructure;
 using SFA.DAS.AdminRoatp.InnerApi.Models;
@@ -17,17 +17,18 @@ public class ProviderAllowedCoursesController(IMediator _mediator, ILogger<Provi
 {
     [HttpPost("{larsCode}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> UpsertProviderAllowedCourse([FromRoute] int ukprn, [FromRoute] string larsCode, [FromBody] UpsertProviderAllowedCourseModel request)
+    public async Task<IActionResult> AddProviderAllowedCourse([FromRoute] int ukprn, [FromRoute] string larsCode, [FromBody] AddProviderAllowedCourseModel request)
     {
-        _logger.LogInformation("Request to upsert provider allowed course for UKPRN {Ukprn} and LarsCode {LarsCode}", ukprn, larsCode);
+        _logger.LogInformation("Request to add provider allowed course for UKPRN {Ukprn} and LarsCode {LarsCode}", ukprn, larsCode);
 
-        var command = new UpsertProviderAllowedCourseCommand
+        var command = new AddProviderAllowedCourseCommand
         {
             Ukprn = ukprn,
             LarsCode = larsCode,
             UserId = request.UserId,
             UserDisplayName = request.UserDisplayName,
-            LastDateStarts = request.LastDateStarts
+            LastDateStarts = request.LastDateStarts,
+            IsStartRestricted = request.IsStartRestricted,
         };
 
         await _mediator.Send(command);
