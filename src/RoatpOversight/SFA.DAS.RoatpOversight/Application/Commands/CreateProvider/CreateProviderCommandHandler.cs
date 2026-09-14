@@ -23,7 +23,7 @@ public class CreateProviderCommandHandler : IRequestHandler<CreateProviderComman
 
         if (!providerGetResponse.IsSuccessStatusCode)
         {
-            _logger.LogInformation("Creating provider for ukprn: {ukprn}", command.Ukprn);
+            _logger.LogInformation("Creating provider for ukprn: {Ukprn}", command.Ukprn);
             var response =
                 await _apiClient.CreateProvider(HttpUtility.UrlEncode(command.UserId),
                     HttpUtility.UrlEncode(command.UserDisplayName), command, cancellationToken);
@@ -31,7 +31,7 @@ public class CreateProviderCommandHandler : IRequestHandler<CreateProviderComman
             if (response.StatusCode != HttpStatusCode.Created)
             {
                 _logger.LogError(
-                    "Create provider for ukprn: {ukprn} did not come back with successful response, statusCode:{statusCode}",
+                    "Create provider for ukprn: {Ukprn} did not come back with successful response, statusCode:{StatusCode}",
                     command.Ukprn, response.StatusCode);
                 throw new InvalidOperationException(
                     $"Create provider for ukprn: {command.Ukprn} did not come back with successful response, statusCode: {response.StatusCode}");
