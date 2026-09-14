@@ -1,19 +1,18 @@
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
-using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Shared;
 
 namespace SFA.DAS.LearnerData.Services.ShortCourses;
 
 public interface ICreateUnapprovedShortCourseLearningRequestBuilder
 {
-    CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, ShortCourseOnProgramme onProg, Guid learningKey, Guid episodeKey, long ukprn, SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme resolvedOnProgramme);
+    CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, ShortCourseOnProgramme onProg, Guid learningKey, Guid episodeKey, long ukprn, ResolvedOnProgramme resolvedOnProgramme);
 }
 
 public class CreateUnapprovedShortCourseLearningRequestBuilder : ICreateUnapprovedShortCourseLearningRequestBuilder
 {
-    public CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, ShortCourseOnProgramme onProg, Guid learningKey, Guid episodeKey, long ukprn, SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme resolvedOnProgramme)
+    public CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, ShortCourseOnProgramme onProg, Guid learningKey, Guid episodeKey, long ukprn, ResolvedOnProgramme resolvedOnProgramme)
     {
         var milestones = onProg.Milestones.Select(x =>
             x == Milestone.LearningComplete

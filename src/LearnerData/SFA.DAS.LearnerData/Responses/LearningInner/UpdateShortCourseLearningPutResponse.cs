@@ -7,13 +7,11 @@ public class UpdateShortCourseLearningResponse
 
 public class UpdateShortCourseLearningPutResponse : IShortCourseLearningPaymentEventBuildContext
 {
-    public Guid UpdatedEpisodeKey { get; set; }
     public Guid LearningKey { get; set; }
     public Guid LearnerKey { get; set; }
-    public string CourseCode { get; set; } = "";
     public string[] Changes { get; set; } = [];
     public LearningInnerShortCourseLearner Learner { get; set; } = null!;
-    public LearningInnerShortCourseEpisode[] Episodes { get; set; } = [];
+    public LearningInnerShortCourseEpisode? Episode { get; set; }
     public bool IsNewLearning { get; set; }
     public bool IsNewEpisode { get; set; }
     public bool IsIgnored { get; set; }
@@ -40,6 +38,7 @@ public enum ShortCourseUpdateChanges
     LearnerRef = 3,
     Reinstated = 4,
     StartDate = 5,
-    ExpectedEndDate = 6
+    ExpectedEndDate = 6,
+    ForceEarningsSync = 7
 }
 #pragma warning restore CS8618

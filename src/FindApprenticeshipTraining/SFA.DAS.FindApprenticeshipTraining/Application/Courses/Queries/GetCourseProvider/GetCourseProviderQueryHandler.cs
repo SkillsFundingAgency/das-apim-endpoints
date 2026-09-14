@@ -28,7 +28,7 @@ public sealed class GetCourseProviderQueryHandler(
 {
     public async Task<GetCourseProviderQueryResult> Handle(GetCourseProviderQuery query, CancellationToken cancellationToken)
     {
-        LocationItem locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(query.Location);
+        LocationItem locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(query.LocationName);
 
         List<Task> tasks = new List<Task>();
 
@@ -36,7 +36,7 @@ public sealed class GetCourseProviderQueryHandler(
             new GetCourseProviderDetailsRequest(
                 query.LarsCode,
                 query.Ukprn,
-                query.Location,
+                query.LocationName,
                 locationItem?.Longitude,
                 locationItem?.Latitude,
                 query.ShortlistUserId

@@ -23,9 +23,9 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
         _sut = new CreateUnapprovedShortCourseLearningRequestBuilder();
     }
 
-    private static Requests.LearningInner.OnProgramme BuildResolvedOnProgramme(decimal price = ExpectedPrice, LearningType learningType = ExpectedLearningType)
+    private static ResolvedOnProgramme BuildResolvedOnProgramme(decimal price = ExpectedPrice, LearningType learningType = ExpectedLearningType)
     {
-        return new Requests.LearningInner.OnProgramme
+        return new ResolvedOnProgramme
         {
             Price = price,
             LearningType = learningType

@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+using SFA.DAS.SharedOuterApi.Types.Json;
 using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
@@ -31,6 +33,7 @@ public class Vacancy
     public string? ShortDescription { get; init; }
     public string? Description { get; init; }
     public string? AnonymousReason { get; init; }
+    [JsonConverter(typeof(JsonDisabilityConfidentBooleanConverter))]
     public bool? DisabilityConfident { get; init; }
     public ContactDetail? Contact { get; set; }
     public string? EmployerDescription { get; init; }

@@ -17,7 +17,7 @@ public sealed class GetCoursesQuery : IRequest<GetCoursesQueryResult>
     public List<LearningType> LearningTypes { get; set; } = [];
     public int? Distance { get; set; }
 
-    public string? Location { get; set; }
+    public string? LocationName { get; set; }
 
     public CoursesOrderBy OrderBy { get; set; }
 

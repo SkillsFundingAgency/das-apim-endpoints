@@ -34,7 +34,8 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
             // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().BeEquivalentTo(new { useractions = queryResult.UserActions });
+            var expected = (Models.Users.GetUserActionsResponse)queryResult;
+            actual.Value.Should().BeEquivalentTo(new { useractions = expected.UserActions });
 
             mediator.Verify(m => m.Send(It.Is<GetUserActionsQuery>(q => q.UserId == userId), It.IsAny<CancellationToken>()), Times.Once);
         }

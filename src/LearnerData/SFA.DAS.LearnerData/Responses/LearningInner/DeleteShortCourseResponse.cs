@@ -11,5 +11,5 @@ public class DeleteShortCourseItemResponse : IShortCourseLearningPaymentEventBui
     public Guid LearningKey { get; set; }
     public Guid LearnerKey { get; set; }
     public LearningInnerShortCourseLearner Learner { get; set; } = null!;
-    public LearningInnerShortCourseEpisode[] Episodes { get; set; } = [];
+    public LearningInnerShortCourseEpisode? Episode { get; set; }
 }

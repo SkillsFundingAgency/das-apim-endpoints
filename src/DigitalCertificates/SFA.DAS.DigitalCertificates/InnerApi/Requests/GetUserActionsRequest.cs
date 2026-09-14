@@ -12,6 +12,6 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
             UserId = userId;
         }
 
-        public string GetUrl => $"api/users/{UserId}/actions";
+        public string GetUrl => $"api/users/{UserId}/user-actions";
     }
 }

@@ -51,7 +51,7 @@ public sealed class CoursesController(IMediator _mediator) : ControllerBase
             LarsCode = larscode,
             OrderBy = model.OrderBy,
             Distance = model.Distance,
-            Location = model.Location,
+            LocationName = model.LocationName,
             DeliveryModes = model.DeliveryModes,
             EmployerProviderRatings = model.EmployerProviderRatings,
             ApprenticeProviderRatings = model.ApprenticeProviderRatings,
@@ -82,12 +82,12 @@ public sealed class CoursesController(IMediator _mediator) : ControllerBase
     [Produces("application/json")]
     [ProducesResponseType(typeof(GetCourseByLarsCodeQueryResult), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetCourseByLarsCode([FromRoute] string larscode, [FromQuery] int? distance, [FromQuery] string location)
+    public async Task<IActionResult> GetCourseByLarsCode([FromRoute] string larscode, [FromQuery] int? distance, [FromQuery] string locationName)
     {
         var result = await _mediator.Send(new GetCourseByLarsCodeQuery
         {
             LarsCode = larscode,
-            Location = location,
+            LocationName = locationName,
             Distance = distance
         });
 
@@ -106,7 +106,7 @@ public sealed class CoursesController(IMediator _mediator) : ControllerBase
                 ukprn,
                 larsCode,
                 request.ShortlistUserId,
-                request.Location,
+                request.LocationName,
                 request.Distance
             ),
             cancellationToken

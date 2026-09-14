@@ -43,7 +43,7 @@ public class WhenHandlingGetShortCourseEarningsQuery
     {
         var learning = BuildLearning(learnerRef: "ABC123");
         SetupLearningApi([learning]);
-        SetupEarningsApi(learning.LearningKey, []);
+        SetupEarningsApi(learning.Episodes.Single().LearningKey, []);
         SetupCacheService([learning]);
 
         var result = await _handler.Handle(BuildQuery(), CancellationToken.None);
@@ -56,7 +56,6 @@ public class WhenHandlingGetShortCourseEarningsQuery
     {
         var learning = BuildLearning(episodes: []);
         SetupLearningApi([learning]);
-        SetupEarningsApi(learning.LearningKey, []);
         SetupCacheService([learning]);
 
         var result = await _handler.Handle(BuildQuery(), CancellationToken.None);
@@ -108,25 +107,26 @@ public class WhenHandlingGetShortCourseEarningsQuery
     }
 
     [Test]
-    public async Task Then_LearningKey_Is_Mapped_To_String()
+    public async Task Then_LearnerKey_Is_Mapped_To_Key_And_LearningKey()
     {
         var learning = BuildLearning();
         SetupLearningApi([learning]);
-        SetupEarningsApi(learning.LearningKey, []);
+        SetupEarningsApi(learning.Episodes.Single().LearningKey, []);
         SetupCacheService([learning]);
 
         var result = await _handler.Handle(BuildQuery(), CancellationToken.None);
 
-        result.Learners[0].LearningKey.Should().Be(learning.LearningKey.ToString());
+        result.Learners[0].Key.Should().Be(learning.LearnerKey.ToString());
+        result.Learners[0].LearningKey.Should().Be(learning.LearnerKey.ToString());
     }
 
     [Test]
     public async Task Then_Course_Fields_Are_Mapped_Correctly()
     {
-        var episode = new LearningResponse.Episode { CourseCode = "91", Price = 1500m, IsApproved = true, LearnerRef = "X1" };
+        var episode = new LearningResponse.Episode { LearningKey = Guid.NewGuid(), CourseCode = "91", Price = 1500m, IsApproved = true, LearnerRef = "X1" };
         var learning = BuildLearning(episodes: [episode]);
         SetupLearningApi([learning]);
-        SetupEarningsApi(learning.LearningKey, []);
+        SetupEarningsApi(episode.LearningKey, []);
         SetupCacheService([learning]);
 
         var result = await _handler.Handle(BuildQuery(), CancellationToken.None);
@@ -142,13 +142,13 @@ public class WhenHandlingGetShortCourseEarningsQuery
     {
         var episodes = new List<LearningResponse.Episode>
         {
-            new() { CourseCode = "91", Price = 1500m, IsApproved = true, LearnerRef = "X1" },
-            new() { CourseCode = "92", Price = 1200m, IsApproved = false, LearnerRef = "X1" }
+            new() { LearningKey = Guid.NewGuid(), CourseCode = "91", Price = 1500m, IsApproved = true, LearnerRef = "X1" },
+            new() { LearningKey = Guid.NewGuid(), CourseCode = "92", Price = 1200m, IsApproved = false, LearnerRef = "X1" }
         };
 
         var learning = BuildLearning(episodes: episodes);
         SetupLearningApi([learning]);
-        SetupEarningsApi(learning.LearningKey, []);
+        foreach (var episode in episodes) SetupEarningsApi(episode.LearningKey, []);
         SetupCacheService([learning], new Dictionary<string, int>
         {
             ["91"] = 7,
@@ -166,10 +166,10 @@ public class WhenHandlingGetShortCourseEarningsQuery
     [TestCase(EmployerType.NonLevy, "GSO Short Courses (Apprenticeship Units) Non-Levy")]
     public async Task Then_FundingLineType_Is_Derived_From_EmployerType(EmployerType employerType, string expectedFundingLineType)
     {
-        var episode = new LearningResponse.Episode { CourseCode = "91", Price = 1000m, IsApproved = true, LearnerRef = "X1", EmployerType = employerType };
+        var episode = new LearningResponse.Episode { LearningKey = Guid.NewGuid(), CourseCode = "91", Price = 1000m, IsApproved = true, LearnerRef = "X1", EmployerType = employerType };
         var learning = BuildLearning(episodes: [episode]);
         SetupLearningApi([learning]);
-        SetupEarningsApi(learning.LearningKey, []);
+        SetupEarningsApi(episode.LearningKey, []);
         SetupCacheService([learning]);
 
         var result = await _handler.Handle(BuildQuery(), CancellationToken.None);
@@ -187,7 +187,7 @@ public class WhenHandlingGetShortCourseEarningsQuery
         {
             new() { CollectionYear = 2526, CollectionPeriod = 3, Amount = 750m, Type = "ThirtyPercentLearningComplete" }
         };
-        SetupEarningsApi(learning.LearningKey, earnings);
+        SetupEarningsApi(learning.Episodes.Single().LearningKey, earnings);
 
         var result = await _handler.Handle(BuildQuery(), CancellationToken.None);
 
@@ -199,11 +199,48 @@ public class WhenHandlingGetShortCourseEarningsQuery
     }
 
     [Test]
+    public async Task Then_Earnings_Are_Attributed_To_The_Correct_Course_When_Learner_Has_Multiple_Courses()
+    {
+        var episodeOne = new LearningResponse.Episode { LearningKey = Guid.NewGuid(), CourseCode = "91", Price = 1500m, IsApproved = true, LearnerRef = "X1" };
+        var episodeTwo = new LearningResponse.Episode { LearningKey = Guid.NewGuid(), CourseCode = "92", Price = 1200m, IsApproved = true, LearnerRef = "X1" };
+        var learning = BuildLearning(episodes: [episodeOne, episodeTwo]);
+        SetupLearningApi([learning]);
+        SetupCacheService([learning]);
+
+        SetupEarningsApi(episodeOne.LearningKey, [new ShortCourseEarning { CollectionYear = 2526, CollectionPeriod = 1, Amount = 100m, Type = "CourseOneEarning" }]);
+        SetupEarningsApi(episodeTwo.LearningKey, [new ShortCourseEarning { CollectionYear = 2526, CollectionPeriod = 2, Amount = 200m, Type = "CourseTwoEarning" }]);
+
+        var result = await _handler.Handle(BuildQuery(), CancellationToken.None);
+
+        var coursesByPrice = result.Learners[0].Courses.ToDictionary(x => x.CoursePrice);
+        coursesByPrice[1500m].Earnings.Single().Milestone.Should().Be("CourseOneEarning");
+        coursesByPrice[1200m].Earnings.Single().Milestone.Should().Be("CourseTwoEarning");
+    }
+
+    [Test]
+    public async Task Then_Learner_Is_Omitted_When_Not_Found_In_Cache()
+    {
+        var cachedLearning = BuildLearning(learnerRef: "CACHED");
+        var uncachedLearning = BuildLearning(learnerRef: "UNCACHED");
+        uncachedLearning.Learner.Uln = "8888888888";
+
+        SetupLearningApi([cachedLearning, uncachedLearning]);
+        SetupEarningsApi(cachedLearning.Episodes.Single().LearningKey, []);
+        SetupEarningsApi(uncachedLearning.Episodes.Single().LearningKey, []);
+        SetupCacheService([cachedLearning]);
+
+        var result = await _handler.Handle(BuildQuery(), CancellationToken.None);
+
+        result.Learners.Should().ContainSingle();
+        result.Learners[0].LearnerRef.Should().Be("CACHED");
+    }
+
+    [Test]
     public async Task Then_Pagination_Fields_Are_Mapped_Correctly()
     {
         var learning = BuildLearning();
         SetupLearningApi([learning], totalItems: 45);
-        SetupEarningsApi(learning.LearningKey, []);
+        SetupEarningsApi(learning.Episodes.Single().LearningKey, []);
         SetupCacheService([learning]);
 
         var result = await _handler.Handle(new GetShortCourseEarningsQuery(12345678, 2526, 1, page: 2, pageSize: 20), CancellationToken.None);
@@ -218,9 +255,9 @@ public class WhenHandlingGetShortCourseEarningsQuery
     {
         return new LearningResponse.Learning
         {
-            LearningKey = Guid.NewGuid(),
+            LearnerKey = Guid.NewGuid(),
             Learner = new LearningResponse.Learner { Uln = "1000000001", FirstName = "Test", LastName = "Learner", DateOfBirth = new DateTime(2000, 1, 1) },
-            Episodes = episodes ?? [new LearningResponse.Episode { CourseCode = "91", Price = 1000m, IsApproved = true, LearnerRef = learnerRef }]
+            Episodes = episodes ?? [new LearningResponse.Episode { LearningKey = Guid.NewGuid(), CourseCode = "91", Price = 1000m, IsApproved = true, LearnerRef = learnerRef }]
         };
     }
 
@@ -234,7 +271,8 @@ public class WhenHandlingGetShortCourseEarningsQuery
     private void SetupEarningsApi(Guid learningKey, List<ShortCourseEarning> earnings)
     {
         _mockEarningsApiClient
-            .Setup(x => x.GetWithResponseCode<GetFm99ShortCourseDataResponse>(It.IsAny<GetFm99ShortCourseDataRequest>()))
+            .Setup(x => x.GetWithResponseCode<GetFm99ShortCourseDataResponse>(
+                It.Is<GetFm99ShortCourseDataRequest>(r => r.LearningKey == learningKey.ToString())))
             .ReturnsAsync(new ApiResponse<GetFm99ShortCourseDataResponse>(
                 new GetFm99ShortCourseDataResponse { Earnings = earnings },
                 System.Net.HttpStatusCode.OK, ""));

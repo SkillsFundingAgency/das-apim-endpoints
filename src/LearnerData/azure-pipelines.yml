@@ -35,7 +35,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/2.2.19
+    ref: refs/tags/3.0.37
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github
@@ -52,6 +52,7 @@ stages:
 - template: ../../pipeline-templates/stage/outerapi-pipeline.yml
   parameters:
     OuterApiName: LearnerData
+    AzureArtifactsFeed: 'dct-pkg'
     ConfigurationSecrets:
       NServiceBusLicense: $(NServiceBusLicense)
       UserBearerTokenSigningKey: $(UserBearerTokenSigningKey)

@@ -49,11 +49,7 @@ public class RemoveShortCourseCommandHandler(
 
     private string GetLearnerRef(DeleteShortCourseItemResponse learningResponse, long ukprn)
     {
-        var learnerRef = learningResponse.Episodes
-            .Where(e => e.Ukprn == ukprn)
-            .OrderByDescending(e => e.StartDate)
-            .Select(e => e.LearnerRef)
-            .FirstOrDefault();
+        var learnerRef = learningResponse.Episode?.LearnerRef;
 
         if (string.IsNullOrWhiteSpace(learnerRef))
         {

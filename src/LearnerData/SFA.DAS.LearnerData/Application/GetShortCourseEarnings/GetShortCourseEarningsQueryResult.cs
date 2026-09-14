@@ -12,6 +12,7 @@ public class GetShortCourseEarningsQueryResult
 #pragma warning disable CS8618
 public class ShortCourseEarningsLearner
 {
+    public string Key { get; set; }
     public string LearningKey { get; set; }
     public string LearnerRef { get; set; } = "";
     public List<ShortCourseEarningsCourse> Courses { get; set; }

@@ -1,0 +1,19 @@
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+using System;
+
+namespace SFA.DAS.Admin.InnerApi.Requests.Assessor
+{
+    public class GetStandardCertificateRequest : IGetApiRequest
+    {
+        public Guid Id { get; }
+        public bool IncludeLogs { get; }
+
+        public GetStandardCertificateRequest(Guid id, bool includeLogs = false)
+        {
+            Id = id;
+            IncludeLogs = includeLogs;
+        }
+
+        public string GetUrl => $"api/v1/certificates/{Id}?includeLogs={IncludeLogs.ToString().ToLower()}";
+    }
+}

@@ -39,7 +39,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserA
                         r.Data.CertificateId == command.CertificateId &&
                         r.Data.CertificateType == command.CertificateType &&
                         r.Data.CourseName == command.CourseName &&
-                        r.PostUrl == $"api/users/{command.UserId}/actions"), true))
+                        r.PostUrl == $"api/users/{command.UserId}/user-actions"), true))
                 .ReturnsAsync(apiResponse);
 
             // Act
@@ -57,7 +57,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserA
                         r.Data.CertificateId == command.CertificateId &&
                         r.Data.CertificateType == command.CertificateType &&
                         r.Data.CourseName == command.CourseName &&
-                        r.PostUrl == $"api/users/{command.UserId}/actions"), true), Times.Once);
+                        r.PostUrl == $"api/users/{command.UserId}/user-actions"), true), Times.Once);
         }
 
         [Test, MoqAutoData]

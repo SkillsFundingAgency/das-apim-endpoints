@@ -37,7 +37,8 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
             // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().Be(queryResult.Response);
+            var expected = (Models.Sharing.GetSharingByIdResponse)queryResult;
+            actual.Value.Should().BeEquivalentTo(expected.Response);
 
             mediator.Verify(m => m.Send(It.Is<GetSharingByIdQuery>(q =>
             q.SharingId == sharingId &&
@@ -85,7 +86,8 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
             // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().Be(queryResult.Response);
+            var expected = (Models.Sharing.GetSharingByIdResponse)queryResult;
+            actual.Value.Should().BeEquivalentTo(expected.Response);
 
             mediator.Verify(m => m.Send(It.Is<GetSharingByIdQuery>(q =>
             q.SharingId == sharingId &&

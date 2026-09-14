@@ -41,9 +41,7 @@ namespace SFA.DAS.ApprenticeApp.Api.UnitTests.FeatureSteps
 
         [Then(@"the patch request should be passed to the inner API")]
         public void ThenThePatchRequestShouldBePassedToTheInnerAPI()
-        {
-            _context.ApprenticeAccountsInnerApi.LogEntries.Should().NotBeEmpty();
-
+        {            
             var logEntry = _context.ApprenticeAccountsInnerApi.LogEntries
                 .Should()
                 .Contain(x =>

@@ -4,22 +4,21 @@ using NUnit.Framework;
 using SFA.DAS.Apim.Shared.Common;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 
-namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
-{
-    public class GetProviderAdditionalStandardsRequestTests
-    {
-        [Test, AutoData]
-        public void Version_WhenRequested_ReturnsApiVersionNumberTwo(int providerId)
-        {
-            var req = new GetProviderAdditionalStandardsRequest(providerId);
-            req.Version.Should().Be(ApiVersionNumber.Two);
-        }
+namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests;
 
-        [Test, AutoData]
-        public void GetUrl_GivenProviderId_ReturnsExpectedPath(int providerId)
-        {
-            var req = new GetProviderAdditionalStandardsRequest(providerId);
-            req.GetUrl.Should().Be($"api/providers/{providerId}/courses");
-        }
+public class GetProviderAdditionalStandardsRequestTests
+{
+    [Test, AutoData]
+    public void WhenBuildingGetProviderAdditionalStandardsRequest_ReturnsExpectedApiVersion(int providerId)
+    {
+        var req = new GetProviderAdditionalStandardsRequest(providerId);
+        req.Version.Should().Be(ApiVersionNumber.Two);
+    }
+
+    [Test, AutoData]
+    public void WhenBuildingGetProviderAdditionalStandardsRequest_ReturnsExpectedUrl(int providerId)
+    {
+        var req = new GetProviderAdditionalStandardsRequest(providerId);
+        req.GetUrl.Should().Be($"api/providers/{providerId}/courses");
     }
 }

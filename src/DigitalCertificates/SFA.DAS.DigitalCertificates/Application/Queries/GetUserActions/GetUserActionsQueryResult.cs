@@ -22,6 +22,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetUserActions
                     ActionStatus = ua.ActionStatus ?? string.Empty,
                     FamilyName = ua.FamilyName ?? string.Empty,
                     GivenNames = ua.GivenNames ?? string.Empty,
+                    Uln = ua.Uln,
                     CertificateId = ua.CertificateId,
                     CertificateType = ua.CertificateType,
                     CourseName = ua.CourseName,
@@ -48,6 +49,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetUserActions
         public required string ActionStatus { get; set; }
         public required string FamilyName { get; set; }
         public required string GivenNames { get; set; }
+        public long? Uln { get; set; }
         public Guid? CertificateId { get; set; }
         public string CertificateType { get; set; }
         public string CourseName { get; set; } = string.Empty;

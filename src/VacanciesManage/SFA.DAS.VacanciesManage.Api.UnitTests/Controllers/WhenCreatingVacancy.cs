@@ -1,5 +1,7 @@
 using AutoFixture.NUnit4;
 using FluentAssertions;
+using FluentValidation;
+using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -34,6 +36,7 @@ public class WhenCreatingVacancy
         CreateVacancyCommandResponse mediatorResponse,
         CreateVacancyRequest request,
         [Frozen] Mock<IMediator> mockMediator,
+        [Frozen] Mock<IValidator<CreateVacancyRequest>> mockValidator,
         [Greedy] VacancyController controller)
     {
         var id = Guid.Parse(guid);
@@ -47,6 +50,9 @@ public class WhenCreatingVacancy
                 ), CancellationToken.None))
             .ReturnsAsync(mediatorResponse);
 
+        mockValidator.Setup(v => v.ValidateAsync(request))
+            .Returns(Task.FromResult(new ValidationResult()));
+
         var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request, isSandbox) as IStatusCodeActionResult;
 
         controllerResult.StatusCode.Should().Be((int)expectedStatusCode);
@@ -58,6 +64,7 @@ public class WhenCreatingVacancy
         CreateVacancyCommandResponse mediatorResponse,
         CreateVacancyRequest request,
         [Frozen] Mock<IMediator> mockMediator,
+        [Frozen] Mock<IValidator<CreateVacancyRequest>> mockValidator,
         [Greedy] VacancyController controller)
     {
         var accountId = "ABC123";
@@ -74,6 +81,8 @@ public class WhenCreatingVacancy
                     && c.IsSandbox.Equals(false)
                 ), CancellationToken.None))
             .ReturnsAsync(mediatorResponse);
+        mockValidator.Setup(v => v.ValidateAsync(request))
+            .Returns(Task.FromResult(new ValidationResult()));
 
         var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as CreatedResult;
 
@@ -88,6 +97,7 @@ public class WhenCreatingVacancy
         CreateVacancyCommandResponse mediatorResponse,
         CreateVacancyRequest request,
         [Frozen] Mock<IMediator> mockMediator,
+        [Frozen] Mock<IValidator<CreateVacancyRequest>> mockValidator,
         [Greedy] VacancyController controller)
     {
         var accountIdentifier = $"Provider-{ukprn}-product";
@@ -100,6 +110,8 @@ public class WhenCreatingVacancy
                     && c.IsSandbox.Equals(false)
                 ), CancellationToken.None))
             .ReturnsAsync(mediatorResponse);
+        mockValidator.Setup(v => v.ValidateAsync(request))
+            .Returns(Task.FromResult(new ValidationResult()));
 
         var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as CreatedResult;
 
@@ -112,8 +124,11 @@ public class WhenCreatingVacancy
         long accountIdentifier,
         Guid id,
         CreateVacancyRequest request,
+        [Frozen] Mock<IValidator<CreateVacancyRequest>> mockValidator,
         [Greedy] VacancyController controller)
     {
+        mockValidator.Setup(v => v.ValidateAsync(request))
+            .Returns(Task.FromResult(new ValidationResult()));
 
         var controllerResult = await controller.CreateVacancy(accountIdentifier.ToString(), id, request) as StatusCodeResult;
 
@@ -124,10 +139,14 @@ public class WhenCreatingVacancy
     public async Task Then_If_The_Ukprn_Is_Not_Correct_For_The_AccountIdentifier_Then_Forbidden_Returned(
         Guid id,
         CreateVacancyRequest request,
+        [Frozen] Mock<IValidator<CreateVacancyRequest>> mockValidator,
         [Greedy] VacancyController controller)
     {
         var ukprn = "ABC123";
         var accountIdentifier = $"Provider-{ukprn}-product";
+
+        mockValidator.Setup(v => v.ValidateAsync(request))
+            .Returns(Task.FromResult(new ValidationResult()));
 
         var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as BadRequestObjectResult;
 
@@ -149,6 +168,7 @@ public class WhenCreatingVacancy
         string errorContent,
         CreateVacancyRequest request,
         [Frozen] Mock<IMediator> mockMediator,
+        [Frozen] Mock<IValidator<CreateVacancyRequest>> mockValidator,
         [Greedy] VacancyController controller)
     {
         // arrange
@@ -160,6 +180,8 @@ public class WhenCreatingVacancy
                 It.IsAny<CreateVacancyCommand>(),
                 It.IsAny<CancellationToken>()))
             .ThrowsAsync(new HttpRequestContentException("Error", HttpStatusCode.BadRequest, $"{{\"errors\":[{{\"field\":\"{fieldName}\",\"message\":\"An error message\"}}]}}"));
+        mockValidator.Setup(v => v.ValidateAsync(request))
+            .Returns(Task.FromResult(new ValidationResult()));
 
         // act
         var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as ObjectResult;
@@ -183,6 +205,7 @@ public class WhenCreatingVacancy
         string errorContent,
         CreateVacancyRequest request,
         [Frozen] Mock<IMediator> mockMediator,
+        [Frozen] Mock<IValidator<CreateVacancyRequest>> mockValidator,
         [Greedy] VacancyController controller)
     {
         // arrange
@@ -194,6 +217,8 @@ public class WhenCreatingVacancy
                 It.IsAny<CreateVacancyCommand>(),
                 It.IsAny<CancellationToken>()))
             .ThrowsAsync(new HttpRequestContentException("Error", HttpStatusCode.BadRequest, $"{{\"errors\":[{{\"field\":\"{fieldName}\",\"message\":\"An error message\"}}]}}"));
+        mockValidator.Setup(v => v.ValidateAsync(request))
+            .Returns(Task.FromResult(new ValidationResult()));
 
         // act
         var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as ObjectResult;
@@ -209,6 +234,7 @@ public class WhenCreatingVacancy
         string errorContent,
         CreateVacancyRequest request,
         [Frozen] Mock<IMediator> mockMediator,
+        [Frozen] Mock<IValidator<CreateVacancyRequest>> mockValidator,
         [Greedy] VacancyController controller)
     {
         var accountId = "ABC123";
@@ -218,6 +244,8 @@ public class WhenCreatingVacancy
                 It.IsAny<CreateVacancyCommand>(),
                 It.IsAny<CancellationToken>()))
             .ThrowsAsync(new SecurityException("Error"));
+        mockValidator.Setup(v => v.ValidateAsync(request))
+            .Returns(Task.FromResult(new ValidationResult()));
 
         var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as StatusCodeResult;
 
@@ -225,23 +253,35 @@ public class WhenCreatingVacancy
     }
 
     [Test, MoqAutoData]
-    public async Task Then_If_Exception_Internal_Server_Error_Is_Returned(
+    public async Task Then_If_ValidationException_Bad_Request_Is_Returned(
         Guid id,
-        string errorContent,
+        bool isSandbox,
+        HttpStatusCode expectedStatusCode,
+        CreateVacancyCommandResponse mediatorResponse,
         CreateVacancyRequest request,
+        ValidationResult validationResult,
         [Frozen] Mock<IMediator> mockMediator,
+        [Frozen] Mock<IValidator<CreateVacancyRequest>> mockValidator,
         [Greedy] VacancyController controller)
     {
-        var accountId = "ABC123";
-        var accountIdentifier = $"Employer-{accountId}-product";
-        mockMediator
-            .Setup(mediator => mediator.Send(
-                It.IsAny<CreateVacancyCommand>(),
-                It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new Exception());
+        // arrange
+        request.Address = null;
+        const string accountId = "ABC123";
+        const string accountIdentifier = $"Employer-{accountId}-product";
+        mockMediator.Setup(x =>
+                x.Send(It.Is<CreateVacancyCommand>(c =>
+                    c.Id.Equals(id)
+                    && c.IsSandbox.Equals(isSandbox)
+                ), CancellationToken.None))
+            .ReturnsAsync(mediatorResponse);
+        
+        mockValidator.Setup(v => v.ValidateAsync(request))
+            .Returns(Task.FromResult(validationResult));
 
-        var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as StatusCodeResult;
-
-        controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+        // act & assert — controller throws ValidationException when validation fails
+        await FluentActions
+            .Invoking(() => controller.CreateVacancy(accountIdentifier, id, request))
+            .Should()
+            .ThrowAsync<ValidationException>();
     }
 }

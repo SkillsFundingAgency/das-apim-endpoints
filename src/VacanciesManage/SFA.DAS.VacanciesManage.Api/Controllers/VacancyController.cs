@@ -1,6 +1,6 @@
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.SharedOuterApi.Types.Models;
@@ -11,12 +11,15 @@ using System;
 using System.Net;
 using System.Security;
 using System.Threading.Tasks;
+using ValidationException = FluentValidation.ValidationException;
 
 namespace SFA.DAS.VacanciesManage.Api.Controllers;
 
 [ApiController]
 [Route("[controller]/")]
-public class VacancyController(IMediator mediator, ILogger<VacancyController> logger) : ControllerBase
+public class VacancyController(
+    IMediator mediator,
+    IValidator<CreateVacancyRequest> validator) : ControllerBase
 {
     /// <summary>
     /// POST apprenticeship vacancy
@@ -40,6 +43,13 @@ public class VacancyController(IMediator mediator, ILogger<VacancyController> lo
     {
         try
         {
+            var result = await validator.ValidateAsync(request);
+
+            if (!result.IsValid)
+            {
+                throw new ValidationException(result.Errors);
+            }
+
             var account = new AccountIdentifier(accountIdentifier);
 
             if (isSandbox.HasValue && isSandbox.Value)
@@ -84,11 +94,6 @@ public class VacancyController(IMediator mediator, ILogger<VacancyController> lo
         catch (SecurityException)
         {
             return new StatusCodeResult((int)HttpStatusCode.Forbidden);
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, "Error creating vacancy");
-            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
 

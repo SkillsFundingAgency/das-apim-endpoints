@@ -1,24 +1,19 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.Approvals.UnitTests.Services;
 
 public class WhenMappingLearnerRecords
 {
     [Test, MoqAutoData]
-    public async Task Then_It_Maps_The_Main_Fields_Correctly(
+    public void Then_It_Maps_The_Main_Fields_Correctly(
         LearnerDataRecord inputDataRecord,
         List<GetAllStandardsResponse.TrainingProgramme> standards,
-        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApi,
         [Greedy] MapLearnerRecords sut)
     {
-        var result = await sut.Map([inputDataRecord], standards);
+        var result = sut.Map([inputDataRecord], standards);
 
         result[0].Id.Should().Be(inputDataRecord.Id);
         result[0].FirstName.Should().Be(inputDataRecord.FirstName);
@@ -28,28 +23,27 @@ public class WhenMappingLearnerRecords
     }
 
     [Test, MoqAutoData]
-    public async Task Then_It_Maps_The_Course_Field_From_List_When_TrainingName_Is_Null_Or_Empty(
+    public void Then_It_Maps_The_Course_Field_From_List_When_TrainingName_Is_Null_Or_Empty(
         List<LearnerDataRecord> inputDataRecords,
         List<GetAllStandardsResponse.TrainingProgramme> courses,
-        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApi,
         [Greedy] MapLearnerRecords sut
     )
     {
         inputDataRecords[0].TrainingName = null;
-        inputDataRecords[0].TrainingCode = null;
+        inputDataRecords[0].TrainingCode = "122";
         inputDataRecords[1].TrainingName = string.Empty;
-        inputDataRecords[1].TrainingCode = null;
-        courses[0].CourseCode = inputDataRecords[0].StandardCode.ToString();
-        courses[1].CourseCode = inputDataRecords[1].StandardCode.ToString();
+        inputDataRecords[1].TrainingCode = "221";
+        courses[0].CourseCode = inputDataRecords[0].TrainingCode.ToString();
+        courses[1].CourseCode = inputDataRecords[1].TrainingCode.ToString();
 
-        var result = await sut.Map(inputDataRecords, courses);
+        var result = sut.Map(inputDataRecords, courses);
 
         result[0].Course.Should().Be(courses[0].Name);
         result[1].Course.Should().Be(courses[1].Name);
     }
 
     [Test, MoqAutoData]
-    public async Task Then_It_uses_TrainingName_When_Present(
+    public void Then_It_uses_TrainingName_When_Present(
         LearnerDataRecord learner,
         List<GetAllStandardsResponse.TrainingProgramme> courses,
         [Greedy] MapLearnerRecords sut)
@@ -59,7 +53,7 @@ public class WhenMappingLearnerRecords
         learner.TrainingCode = "ZSC00002";
 
         // Act
-        var result = await sut.Map([learner], courses);
+        var result = sut.Map([learner], courses);
 
         // Assert
         result[0].Course.Should().Be("Unit course name from ILR");

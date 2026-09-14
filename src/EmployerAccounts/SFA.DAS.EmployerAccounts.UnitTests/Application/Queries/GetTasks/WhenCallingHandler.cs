@@ -443,13 +443,13 @@ public class WhenCallingHandler
     [Test, MoqAutoData]
     public async Task Then_NumberOfApprenticesToReview_Is_Returned(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
-        GetApprenticeshipUpdatesResponse apprenticeshipUpdatesResponse,
+        GetLearnerPendingChangeCountsForEmployerResponse apprenticeshipUpdatesResponse,
         GetTasksQuery request,
         GetTasksQueryHandler handler)
     {
         mockCommitmentsApi
-            .Setup(m => m.Get<GetApprenticeshipUpdatesResponse>(
-                It.Is<GetPendingApprenticeChangesRequest>(r => r.AccountId == request.AccountId)))
+            .Setup(m => m.Get<GetLearnerPendingChangeCountsForEmployerResponse>(
+                It.Is<GetPendingLearnerChangeCountsForEmployerRequest>(r => r.AccountId == request.AccountId)))
             .ReturnsAsync(apprenticeshipUpdatesResponse);
 
         mockCommitmentsApi.Setup(m =>
@@ -459,7 +459,7 @@ public class WhenCallingHandler
         // Act
         var result = await handler.Handle(request, CancellationToken.None);
 
-        result.NumberOfApprenticesToReview.Should().Be(3);
+        result.NumberOfApprenticesToReview.Should().Be(apprenticeshipUpdatesResponse.ManualPendingChangeCount + apprenticeshipUpdatesResponse.IlrPendingChangeCount);
     }
 
     [Test, MoqAutoData]

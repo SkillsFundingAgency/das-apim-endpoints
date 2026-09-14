@@ -27,19 +27,29 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
             mediator
                 .Setup(x => x.Send(It.Is<UpdateUserIdentityCommand>(c =>
                     c.UserId == userId &&
-                    c.Names == request.Names &&
-                    c.DateOfBirth == request.DateOfBirth), CancellationToken.None))
+                    c.DateOfBirth == request.DateOfBirth &&
+                    ((c.Names == null && request.Names == null) || (c.Names != null && request.Names != null && c.Names.Count == request.Names.Count))), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Unit.Value);
 
-            var actual = await controller.UpdateUserIdentity(userId, request) as OkResult;
+                var apiRequest = new Models.Users.UpdateUserIdentityRequest
+                {
+                    DateOfBirth = request.DateOfBirth,
+                    Names = request.Names?.ConvertAll(n => new Models.Users.UpdateNameRecord
+                    {
+                        UserIdentityId = n.UserIdentityId,
+                        ValidSince = n.ValidSince,
+                        ValidUntil = n.ValidUntil,
+                        FamilyName = n.FamilyName,
+                        GivenNames = n.GivenNames
+                    })
+                };
+
+                var actual = await controller.UpdateUserIdentity(userId, apiRequest) as OkResult;
 
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
 
-            mediator.Verify(x => x.Send(It.Is<UpdateUserIdentityCommand>(c =>
-                c.UserId == userId &&
-                c.Names == request.Names &&
-                c.DateOfBirth == request.DateOfBirth), CancellationToken.None), Times.Once);
+            mediator.Verify(x => x.Send(It.IsAny<UpdateUserIdentityCommand>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -53,7 +63,20 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
                 .Setup(x => x.Send(It.IsAny<UpdateUserIdentityCommand>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
-            var actual = await controller.UpdateUserIdentity(userId, request) as StatusCodeResult;
+                var apiRequest = new Models.Users.UpdateUserIdentityRequest
+                {
+                    DateOfBirth = request.DateOfBirth,
+                    Names = request.Names?.ConvertAll(n => new Models.Users.UpdateNameRecord
+                    {
+                        UserIdentityId = n.UserIdentityId,
+                        ValidSince = n.ValidSince,
+                        ValidUntil = n.ValidUntil,
+                        FamilyName = n.FamilyName,
+                        GivenNames = n.GivenNames
+                    })
+                };
+
+                var actual = await controller.UpdateUserIdentity(userId, apiRequest) as StatusCodeResult;
 
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);

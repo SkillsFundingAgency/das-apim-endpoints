@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.DigitalCertificates.Api.Models.Locations;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetLocations;
 using System;
 using System.Net;
@@ -33,7 +34,8 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
                     return Ok();
                 }
 
-                return Ok(result.Addresses);
+                var response = (GetLocationsResponse)result;
+                return Ok(response.Addresses);
             }
             catch (Exception e)
             {

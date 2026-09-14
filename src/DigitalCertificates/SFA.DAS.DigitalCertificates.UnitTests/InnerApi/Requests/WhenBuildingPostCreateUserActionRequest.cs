@@ -16,7 +16,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Requests
             var request = new PostCreateUserActionRequest(new PostCreateUserActionRequestData(), userId);
 
             // Assert
-            request.PostUrl.Should().Be($"api/users/{userId}/actions");
+            request.PostUrl.Should().Be($"api/users/{userId}/user-actions");
         }
 
         [Test, AutoData]
