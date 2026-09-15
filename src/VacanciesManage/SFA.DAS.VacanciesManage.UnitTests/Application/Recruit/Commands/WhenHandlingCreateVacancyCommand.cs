@@ -431,7 +431,7 @@ public class WhenHandlingCreateVacancyCommand
 
         accountLegalEntityPermissionService
             .Setup(x => x.HasProviderGotEmployersPermissionAsync(
-                It.IsAny<int>(),
+                It.IsAny<long>(),
                 It.IsAny<long>(),
                 It.IsAny<List<SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships.Operation>>()))
             .ReturnsAsync(false);
@@ -529,7 +529,7 @@ public class WhenHandlingCreateVacancyCommand
         // Assert
         command.PostVacancyRequest.Status.Should().Be(VacancyStatus.Submitted);
         command.PostVacancyRequest.SubmittedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
-        mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Never);
+        mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Once);
     }
 
     [Test, RecursiveMoqAutoData]
@@ -592,7 +592,7 @@ public class WhenHandlingCreateVacancyCommand
         command.PostVacancyRequest.Qualifications.Should().BeEmpty();
         command.PostVacancyRequest.Skills.Should().BeEmpty();
         command.PostVacancyRequest.ApprenticeshipType.Should().Be(ApprenticeshipTypes.Foundation);
-        mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Never);
+        mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Once);
     }
 
     [Test, RecursiveMoqAutoData]
