@@ -14,7 +14,7 @@ namespace SFA.DAS.Campaign.UnitTests.ExternalApi.Requests
             var actual = new GetHubEntriesRequest(hubType);
             
             //Assert
-            actual.GetUrl.Should().Be($"entries?content_type=hub&include=2&fields.hubType={hubType}");
+            actual.GetUrl.Should().Be($"entries?content_type=hub&include=3&fields.hubType={hubType}");
         }
     }
 }
