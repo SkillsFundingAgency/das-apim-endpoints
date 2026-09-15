@@ -7,8 +7,6 @@ using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Services;
 using System.Diagnostics.CodeAnalysis;
-using SFA.DAS.EmployerFinanceJobs.Queries.GetEmployerFundingProjectionByAccountId;
-
 namespace SFA.DAS.EmployerFinanceJobs.Api.AppStart;
 
 [ExcludeFromCodeCoverage]
@@ -21,6 +19,5 @@ public static class AddServiceRegistrationExtension
         services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IFundingProjectionApiClient<FundingProjectionApiConfiguration>, FundingProjectionApiClient>();
-        services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEmployerFundingProjectionByAccountIdQuery).Assembly));
     }
 }
