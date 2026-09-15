@@ -16,12 +16,12 @@ public class GetLevySummaryByAccountIdQueryHandler(
     public async Task<GetLevySummaryByAccountIdQueryResult> Handle(GetLevySummaryByAccountIdQuery request, CancellationToken cancellationToken)
     {
         var levySummaryTask = financeApiClient.Get<GetLevySummaryByAccountIdResponse>(new GetLevySummaryByAccountIdRequest(request.AccountId));
-        var committedCostsTask = fundingProjectionApiClient.Get<GetCommittedCostsByAccountIdResponse>(new GetCommittedCostsByAccountIdRequest(request.AccountId));
+        var fundingProjectionTask = fundingProjectionApiClient.Get<GetEmployerFundingProjectionByAccountIdResponse>(new GetEmployerFundingProjectionByAccountIdRequest(request.AccountId));
 
-        await Task.WhenAll(levySummaryTask, committedCostsTask);
+        await Task.WhenAll(levySummaryTask, fundingProjectionTask);
 
         var levySummary = levySummaryTask.Result;
-        var committedCosts = committedCostsTask.Result;
+        var fundingProjection = fundingProjectionTask.Result;
 
         return new GetLevySummaryByAccountIdQueryResult
         {
@@ -29,8 +29,8 @@ public class GetLevySummaryByAccountIdQueryHandler(
             TotalLevyDeclaredLast12Months = levySummary.TotalLevyDeclaredLast12Months,
             TotalLevySpentLast12Months = levySummary.TotalLevySpentLast12Months,
             TotalLevyExpiredLast12Months = levySummary.TotalLevyExpiredLast12Months,
-            TotalCommittedLearnerCosts = committedCosts.TotalCommittedLearnerCosts,
-            TotalCommittedTransfersCosts = committedCosts.TotalCommittedTransfersCosts
+            TotalCommittedLearnerCosts = fundingProjection.CommittedLearnerCostTotal,
+            TotalCommittedTransfersCosts = fundingProjection.CommittedTransferOutTotal
         };
     }
 }
