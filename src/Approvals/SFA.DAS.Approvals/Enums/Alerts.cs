@@ -17,6 +17,6 @@ namespace SFA.DAS.Approvals.Enums
         [Description("Confirm dates")]
         ConfirmDates = 4,
         [Description("View changes")]
-        ViewChanges = 7
+        ViewChanges = 8
     }
 }
