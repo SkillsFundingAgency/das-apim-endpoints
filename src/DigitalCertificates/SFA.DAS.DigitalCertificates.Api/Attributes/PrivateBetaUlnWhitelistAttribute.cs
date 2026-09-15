@@ -5,8 +5,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificates;
-using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch;
+using SFA.DAS.DigitalCertificates.Api.Models.Users;
 using SFA.DAS.DigitalCertificates.Configuration;
 
 namespace SFA.DAS.DigitalCertificates.Api.Attributes
@@ -72,17 +71,17 @@ namespace SFA.DAS.DigitalCertificates.Api.Attributes
         {
             return result switch
             {
-                GetCertificatesResult certificatesResult =>
+                GetCertificatesResponse certificatesResult =>
                     IsAllowed(certificatesResult),
 
-                GetCertificatesMatchResult certificatesMatchResult =>
+                GetCertificatesMatchResponse certificatesMatchResult =>
                     IsAllowed(certificatesMatchResult),
 
                 _ => true
             };
         }
 
-        private bool IsAllowed(GetCertificatesResult certificatesResult)
+        private bool IsAllowed(GetCertificatesResponse certificatesResult)
         {
             if (certificatesResult.Authorisation == null)
             {
@@ -106,7 +105,7 @@ namespace SFA.DAS.DigitalCertificates.Api.Attributes
             return false;
         }
 
-        private bool IsAllowed(GetCertificatesMatchResult certificatesMatchResult)
+        private bool IsAllowed(GetCertificatesMatchResponse certificatesMatchResult)
         {
             var matchedUlns = certificatesMatchResult.Matches
                 .Select(match => match.Uln)
