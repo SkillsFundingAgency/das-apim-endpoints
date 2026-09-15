@@ -1,22 +1,20 @@
-﻿using SFA.DAS.EmployerFinanceJobs.InnerApi.Requests;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using FluentAssertions;
+using SFA.DAS.EmployerFinanceJobs.InnerApi.Requests;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerFinanceJobs.UnitTests.InnerApi;
 
 [TestFixture]
 internal class WhenBuildingGetEmployerFundingProjectionByAccountIdRequest
 {
-    [Test]
-    public void Then_The_Url_Is_Correctly_Built()
+    [Test, MoqAutoData]
+    public void Then_The_Url_Is_Correctly_Built(int accountId)
     {
         // Arrange
-        var accountId = 123456;
         var request = new GetEmployerFundingProjectionByAccountIdRequest(accountId);
         // Act
         var url = request.GetUrl;
         // Assert
-        Assert.That(url, Is.EqualTo($"api/employer/{accountId}/funding-projection"));
+        url.Should().Be($"api/employer/{accountId}/funding-projection");
     }
 }
