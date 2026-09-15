@@ -2,16 +2,12 @@
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.EmployerFinanceJobs.Api.Controllers;
 using SFA.DAS.EmployerFinanceJobs.Queries.GetEmployerFundingProjectionByAccountId;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 
 namespace SFA.DAS.EmployerFinanceJobs.UnitTests.ControllerTests;
 
