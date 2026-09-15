@@ -32,4 +32,10 @@
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Application\Queries\" />
+    <Folder Include="ControllerTests\" />
+    <Folder Include="InnerApi\" />
+  </ItemGroup>
+
 </Project>
