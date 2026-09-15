@@ -26,16 +26,16 @@ public class SelectMultipleController : Controller
     [Route("Validate")]
     public async Task<IActionResult> Validate(SelectMultipleValidateApimRequest request)
     {
-        var result = await _mediator.Send(
+        await _mediator.Send(
             new ValidateSelectMultipleLearnerRecordsCommand
             {
                 ProviderId = request.ProviderId,
                 AccountLegalEntityId = request.AccountLegalEntityId,
-                Learners = request.Learners?.ToList(),
-                
+                LearnerIds = request.LearnerIds,
+
             });
 
-        return Ok(result);
+        return Ok();
     }
 
     //[HttpPost]
