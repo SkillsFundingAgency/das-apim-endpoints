@@ -14,7 +14,7 @@ public class AllowedCourseTypeModelTests
         AllowedCourseTypeModel result = source;
 
         // Assert
-        result.CourseTypeName.Should().Be(source.CourseType);
+        result.CourseType.Should().Be(source.CourseType);
     }
 
     [Test, AutoData]
@@ -24,8 +24,7 @@ public class AllowedCourseTypeModelTests
         AllowedCourseTypeModel result = source;
 
         // Assert
-        result.CourseTypeId.Should().Be(source.CourseTypeId);
-        result.CourseTypeName.Should().Be(source.CourseType);
+        result.CourseType.Should().Be(source.CourseType);
         result.IsRestricted.Should().Be(source.IsRestricted);
         result.RestrictedCount.Should().Be(source.RestrictedCount);
         result.AllowedCount.Should().Be(source.AllowedCount);
