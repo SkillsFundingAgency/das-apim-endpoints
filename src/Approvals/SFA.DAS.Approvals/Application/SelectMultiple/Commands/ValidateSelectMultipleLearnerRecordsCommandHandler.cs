@@ -43,13 +43,12 @@ public class ValidateSelectMultipleLearnerRecordsCommandHandler(
 
         var reservationRequests = learnerDataResponse.Body.Select(learner =>
         {
-            //Guid.TryParse(command.UserInfo.UserId, out var parsedUserId);
             return new ReservationRequest
             {
                 CourseId = learner.TrainingCode,
                 AccountLegalEntityId = command.AccountLegalEntityId ?? 0, 
                 ProviderId = (uint?)command.ProviderId,
-                //RowNumber = response.RowNumber,
+                RowNumber = (int)learner.Uln,//fix 
                 Id = Guid.NewGuid(),
                 StartDate = learner.StartDate,
                 //TransferSenderAccountId = response.TransferSenderId ?!? could it be transfer sender for multiselect, we don't have cohort at this point, previous check were ignoring it when no cohort id 
