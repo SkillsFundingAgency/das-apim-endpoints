@@ -27,17 +27,15 @@ public class PostOrganisatonCommandHandler(IRoatpServiceRestApiClient _roatpServ
         if (command.DeliversApprenticeships) courseTypes.Add((int)CourseType.Apprenticeship);
         if (command.DeliversApprenticeshipUnits) courseTypes.Add((int)CourseType.ShortCourse);
 
-        var tasks = new List<Task>();
-
         _logger.LogInformation("Creating courseTypes for Posted organisation with ukprn {Ukprn}", command.Ukprn);
         UpdateCourseTypesModel model = new UpdateCourseTypesModel(courseTypes.ToArray(), command.RequestingUserDisplayName);
-        tasks.Add(_roatpServiceApiClient.PutCourseTypes(command.Ukprn, model, cancellationToken));
+        await _roatpServiceApiClient.PutCourseTypes(command.Ukprn, model, cancellationToken);
 
 
         if (command.ProviderType == ProviderType.Main)
         {
             _logger.LogInformation("Creating provider in RoatpV2 for Posted organisation with ukprn {Ukprn}", command.Ukprn);
-            tasks.Add(_roatpV2ApiClient.PostWithResponseCode<int>(new PostProviderRequest(command)));
+            await _roatpV2ApiClient.PostWithResponseCode<int>(new PostProviderRequest(command));
 
             _logger.LogInformation("Creating course types in RoatpV2 for Posted organisation with ukprn {Ukprn}", command.Ukprn);
             var courseTypeNames = courseTypes.Select(x => (CourseType)x).ToArray();
@@ -47,10 +45,8 @@ public class PostOrganisatonCommandHandler(IRoatpServiceRestApiClient _roatpServ
                 UserId = command.RequestingUserId,
                 UserDisplayName = command.RequestingUserDisplayName
             };
-            tasks.Add(_roatpV2ApiClient.PostWithResponseCode<int>(new AddCourseTypesRequest(command.Ukprn, addCourseTypesCommand)));
+            await _roatpV2ApiClient.PostWithResponseCode<int>(new AddCourseTypesRequest(command.Ukprn, addCourseTypesCommand));
         }
-
-        await Task.WhenAll(tasks);
 
         return response.StatusCode;
     }
