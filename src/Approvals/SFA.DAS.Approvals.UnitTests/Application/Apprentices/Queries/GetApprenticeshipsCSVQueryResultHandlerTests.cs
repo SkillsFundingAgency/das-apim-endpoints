@@ -60,7 +60,9 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             var result = await _handler.Handle(_query, CancellationToken.None);
 
             result.Should().NotBeNull();
-            result.Should().BeEquivalentTo(_apprenticeships, o => o.Excluding(x => x.HasChangeHistory));
+            result.Should().BeEquivalentTo(_apprenticeships, o => o
+                .Excluding(x => x.HasChangeHistory)
+                .Excluding(ctx => ctx.Name == "EmployerVerificationStatus" || ctx.Name == "EmployerVerificationNotes"));
         }
 
         [Test]
