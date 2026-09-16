@@ -725,7 +725,7 @@ public class ApprenticesController(
     }
 
     [HttpGet]
-    [Route("/{providerId:long}/apprentices/{apprenticeshipId:long}/invalid-ilr-changes")]
+    [Route("/provider/{providerId:long}/apprentices/{apprenticeshipId:long}/invalid-ilr-changes")]
     public async Task<IActionResult> GetInvalidIlrChanges(long providerId, long apprenticeshipId)
     {
         try
@@ -756,7 +756,7 @@ public class ApprenticesController(
     }
 
     [HttpPost]
-    [Route("/{providerId:long}/apprentices/{apprenticeshipId:long}/invalid-ilr-changes")]
+    [Route("/provider/{providerId:long}/apprentices/{apprenticeshipId:long}/invalid-ilr-changes")]
     public async Task<IActionResult> AcknowledgeInvalidIlrChanges(long providerId, long apprenticeshipId, [FromBody] AcknowledgeInvalidIlrChangesApiRequest request)
     {
         try
