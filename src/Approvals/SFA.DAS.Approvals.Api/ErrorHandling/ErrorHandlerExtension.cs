@@ -25,18 +25,18 @@ namespace SFA.DAS.Approvals.ErrorHandling
                         context.Response.SetSubStatusCode(HttpSubStatusCode.DomainException);
                         logger.LogError($"Model Error thrown: {modelException}");
                         await context.Response.WriteAsync(modelException.Content);
+                        return;
                     }
-                    if (contextFeature.Error is BulkUploadApimDomainException bulkUploadDomainException)
+                    else if (contextFeature.Error is BulkUploadApimDomainException bulkUploadDomainException)
                     {
                         context.Response.SetStatusCode(HttpStatusCode.BadRequest);
                         context.Response.SetSubStatusCode(HttpSubStatusCode.BulkUploadDomainException);
                         logger.LogError($"Model Error thrown: {bulkUploadDomainException}");
                         await context.Response.WriteAsync(bulkUploadDomainException.Content);
+                        return;
                     }
-                    else
-                    {
-                        logger.LogError($"Something went wrong: {contextFeature.Error}");
-                    }
+
+                    logger.LogError($"Something went wrong: {contextFeature.Error}");
                 }
             }
 
