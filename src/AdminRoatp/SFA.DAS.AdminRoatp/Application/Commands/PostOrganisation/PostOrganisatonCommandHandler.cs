@@ -37,7 +37,7 @@ public class PostOrganisatonCommandHandler(IRoatpServiceRestApiClient _roatpServ
         if (command.ProviderType == ProviderType.Main)
         {
             _logger.LogInformation("Creating provider in RoatpV2 for Posted organisation with ukprn {Ukprn}", command.Ukprn);
-            tasks.Add(_roatpV2ApiClient.PostWithResponseCode<int>(new PostProviderRequest(command)));
+            await _roatpV2ApiClient.PostWithResponseCode<int>(new PostProviderRequest(command));
 
             _logger.LogInformation("Creating course types in RoatpV2 for Posted organisation with ukprn {Ukprn}", command.Ukprn);
             var courseTypeNames = courseTypes.Select(x => (CourseType)x).ToArray();
