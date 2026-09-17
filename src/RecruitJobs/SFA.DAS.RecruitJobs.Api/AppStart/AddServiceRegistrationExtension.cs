@@ -46,5 +46,6 @@ public static class AddServiceRegistrationExtension
         services.AddTransient<IVacancyReviewService, VacancyReviewService>();
         services.AddTransient<ILocationLookupService, LocationLookupService>();
         services.AddTransient<SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>, SFA.DAS.Recruit.Contracts.Client.RecruitApiClient>();
+        services.AddTransient<ICandidateApiClient<CandidateApiConfiguration>, CandidateApiClient>();
     }
 }
