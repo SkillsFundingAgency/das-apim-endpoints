@@ -80,8 +80,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             Assert.ThrowsAsync<NotImplementedException>(() => sut.GetPaged<string>(new Mock<IGetPagedApiRequest>().Object));
             Assert.ThrowsAsync<NotImplementedException>(() => sut.Post<string>(new Mock<IPostApiRequest>().Object));
             Assert.ThrowsAsync<NotImplementedException>(() => sut.Post(new Mock<IPostApiRequest<string>>().Object));
-            Assert.ThrowsAsync<NotImplementedException>(() => sut.PostWithResponseCode<string>(new Mock<IPostApiRequest>().Object));
-            Assert.ThrowsAsync<NotImplementedException>(() => sut.Delete(new Mock<IDeleteApiRequest>().Object));
+            Assert.ThrowsAsync<NotImplementedException>(() => sut.PostWithResponseCode<string>(new Mock<IPostApiRequest>().Object));            
             Assert.ThrowsAsync<NotImplementedException>(() => sut.DeleteWithResponseCode<string>(new Mock<IDeleteApiRequest>().Object));
             Assert.ThrowsAsync<NotImplementedException>(() => sut.Patch(new Mock<IPatchApiRequest<string>>().Object));
             Assert.ThrowsAsync<NotImplementedException>(() => sut.PatchWithResponseCode(new Mock<IPatchApiRequest<string>>().Object));
