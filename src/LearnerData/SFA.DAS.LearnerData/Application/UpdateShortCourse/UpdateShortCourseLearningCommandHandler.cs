@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Common.Domain.Types;
 using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Events;

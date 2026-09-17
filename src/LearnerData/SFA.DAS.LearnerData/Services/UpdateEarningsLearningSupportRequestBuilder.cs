@@ -1,4 +1,3 @@
-using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
@@ -8,12 +7,12 @@ namespace SFA.DAS.LearnerData.Services;
 
 public interface IUpdateEarningsLearningSupportRequestBuilder
 {
-    UpdateLearningSupportApiPutRequest Build(UpdateLearnerCommand command, UpdateLearnerApiPutResponse learningApiPutResponse, UpdateLearningApiPutRequest putRequest);
+    UpdateLearningSupportApiPutRequest Build(UpdateLearnerApiPutResponse learningApiPutResponse, UpdateLearningApiPutRequest putRequest);
 }
 
 public class UpdateEarningsLearningSupportRequestBuilder : IUpdateEarningsLearningSupportRequestBuilder
 {
-    public UpdateLearningSupportApiPutRequest Build(UpdateLearnerCommand command, UpdateLearnerApiPutResponse learningApiPutResponse, UpdateLearningApiPutRequest putRequest)
+    public UpdateLearningSupportApiPutRequest Build(UpdateLearnerApiPutResponse learningApiPutResponse, UpdateLearningApiPutRequest putRequest)
     {
         var payload = new UpdateLearningSupportRequest
         {
@@ -24,6 +23,6 @@ public class UpdateEarningsLearningSupportRequestBuilder : IUpdateEarningsLearni
             }).ToList()
         };
 
-        return new UpdateLearningSupportApiPutRequest(command.LearningKey, payload);
+        return new UpdateLearningSupportApiPutRequest(learningApiPutResponse.LearningKey, payload);
     }
 }

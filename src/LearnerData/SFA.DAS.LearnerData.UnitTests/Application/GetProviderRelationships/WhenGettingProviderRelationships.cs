@@ -93,4 +93,51 @@ public class WhenGettingProviderRelationships
         // Assert
         result.Should().BeNull();
     }
+
+    [Test, MoqAutoData]
+    public async Task GetEmployerDetails_Calls_With_Correct_Values_Return_SupportedCourses(
+        GetProviderAccountLegalEntitiesResponse providerLegalEntitiesresponse,
+        GetProviderSummaryResponse providerSummary,
+        GetProviderRelationshipQuery request,
+        List<EmployerDetails> employers,
+        GetCoursesForProviderResponse coursesResponse,
+       [Frozen] Mock<IGetProviderRelationshipService> getProviderRelationshipService,
+       [Frozen] Mock<IRoatpV2TrainingProviderService> roatpService,
+       [Greedy] GetProviderRelationshipQueryHandler sut)
+    {
+        // Arrange
+        providerSummary.StatusId = 1;
+        providerSummary.ProviderTypeId = 1;
+
+        getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(request.Ukprn)).
+            ReturnsAsync(providerLegalEntitiesresponse);
+
+        getProviderRelationshipService.Setup(t => t.GetCoursesForProviderByUkprn(request.Ukprn)).
+           ReturnsAsync(coursesResponse);
+
+        roatpService.Setup(t => t.GetProviderSummary(request.Ukprn)).
+            ReturnsAsync(providerSummary);
+
+        getProviderRelationshipService.Setup(t => t.GetEmployerDetails(providerLegalEntitiesresponse, It.IsAny<CancellationToken>())).
+            ReturnsAsync(employers);
+
+        // Act
+        var result = await sut.Handle(request, CancellationToken.None);
+
+        // Assert
+        result.Should().NotBeNull();
+
+        result.SupportedCourses.Should().NotBeNull();
+
+        var expectedCourses = coursesResponse.CourseTypes.SelectMany(t => t.Courses).ToDictionary(c => c.LarsCode);
+
+        foreach (var course in result.SupportedCourses.SelectMany(t => t.Courses))
+        {
+            expectedCourses.Should().ContainKey(course.LarsCode);
+            var expectedCourse = expectedCourses[course.LarsCode];
+            course.EffectiveFrom.Should().Be(expectedCourse.EffectiveFrom);
+            course.EffectiveTo.Should().Be(expectedCourse.EffectiveTo);
+            course.LastDateStarts.Should().Be(expectedCourse.LastDateStarts);
+        }
+    }
 }

@@ -26,7 +26,6 @@ pr:
 variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
-- group: RELEASE das-apim-endpoints-FindAnApprenticeship
 - name: ProductShortName
   value: faa
 
@@ -59,3 +58,6 @@ stages:
     useProductAppInsights: 'True'
     CheckClientCert: $True
     RunTests: 'True'
+    HttpFile: 'CreateCandidateAndSubmitApplication.http'
+    SubscriptionKeyMappings:
+      - productName: FindAnApprenticeshipOuterApi
