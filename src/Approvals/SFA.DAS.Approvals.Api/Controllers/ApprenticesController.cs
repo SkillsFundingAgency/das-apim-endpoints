@@ -726,7 +726,7 @@ public class ApprenticesController(
     }
 
     [HttpGet]
-    [Route("/{providerId:long}/apprentices/{apprenticeshipId:long}/invalid-ilr-changes")]
+    [Route("/provider/{providerId:long}/apprentices/{apprenticeshipId:long}/invalid-ilr-changes")]
     public async Task<IActionResult> GetInvalidIlrChanges(long providerId, long apprenticeshipId)
     {
         try
@@ -757,7 +757,7 @@ public class ApprenticesController(
     }
 
     [HttpPost]
-    [Route("/{providerId:long}/apprentices/{apprenticeshipId:long}/invalid-ilr-changes")]
+    [Route("/provider/{providerId:long}/apprentices/{apprenticeshipId:long}/invalid-ilr-changes")]
     public async Task<IActionResult> AcknowledgeInvalidIlrChanges(long providerId, long apprenticeshipId, [FromBody] AcknowledgeInvalidIlrChangesApiRequest request)
     {
         try
@@ -779,7 +779,7 @@ public class ApprenticesController(
     }
 
     [HttpGet]
-    [Route("/{providerId:long}/apprentices/{apprenticeshipId:long}/declined-changes")]
+    [Route("/provider/{providerId:long}/apprentices/{apprenticeshipId:long}/declined-changes")]
     public async Task<IActionResult> GetDeclinedChanges(long providerId, long apprenticeshipId)
     {
         try
@@ -813,7 +813,7 @@ public class ApprenticesController(
     }
 
     [HttpPost]
-    [Route("/{providerId:long}/apprentices/{apprenticeshipId:long}/declined-changes")]
+    [Route("/provider/{providerId:long}/apprentices/{apprenticeshipId:long}/declined-changes")]
     public async Task<IActionResult> AcknowledgeDeclinedChanges(long providerId, long apprenticeshipId, [FromBody] AcknowledgeInvalidIlrChangesApiRequest request)
     {
         try
