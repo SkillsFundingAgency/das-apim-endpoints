@@ -42,6 +42,7 @@ public abstract class BaseLearnerApiPutResponse
         Care = 13,
         EnglishAndMathsBreaksInLearningUpdated = 14,
         AchievementDateChanged = 15,
-		Reinstated = 16
+		Reinstated = 16,
+        NewApprenticeshipLearner = 17
     }
 }
