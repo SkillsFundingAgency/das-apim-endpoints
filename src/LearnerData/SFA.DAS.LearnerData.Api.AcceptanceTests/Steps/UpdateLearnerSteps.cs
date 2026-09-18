@@ -3,6 +3,7 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.Net;
@@ -142,6 +143,21 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         body!.Learner.LearnerRef.Should().Be(expectedLearnerRef);
     }
 
+    [Then(@"the release-earnings request sent to the earnings domain has the learner key and ref ""(.*)""")]
+    public void ThenTheReleaseEarningsRequestHasTheLearnerKeyAndRef(string expectedLearnerRef)
+    {
+        var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
+        var learningKey = scenarioContext.Get<UpdateLearnerApiPutResponse>().LearningKey;
+        var requestUrl = $"learning/{learningKey}/release-earnings";
+
+        var entry = testContext.EarningsApi.MockServer.LogEntries
+            .Single(request => request.RequestMessage.Url.Contains(requestUrl) && request.RequestMessage.Method == "POST");
+
+        var body = JsonConvert.DeserializeObject<ReleaseEarningsRequest>(entry.RequestMessage.Body);
+        body!.LearnerKey.Should().Be(learnerKey);
+        body.LearnerRef.Should().Be(expectedLearnerRef);
+    }
+
     [Then(@"sld data is stored to the cache")]
     public async Task ThenSldDataIsStoredToTheCache()
     {
@@ -279,6 +295,8 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
                 return $"learning/{learningKey.ToString()}/learning-support";
             case "english-and-maths":
                 return $"learning/{learningKey.ToString()}/english-and-maths";
+            case "release-earnings":
+                return $"learning/{learningKey.ToString()}/release-earnings";
             default:
                 throw new ArgumentOutOfRangeException(nameof(updateRequestType), updateRequestType, null);
         }
