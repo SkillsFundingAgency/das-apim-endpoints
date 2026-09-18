@@ -62,6 +62,8 @@ public class UpdateLearnerCommandHandler(
             }
             else
             {
+                var releaseEarnings = false;
+
                 //Update Earnings
                 if (learningApiPutResponse.Changes.HasOnProgrammeUpdate())
                 {
@@ -69,14 +71,7 @@ public class UpdateLearnerCommandHandler(
                     var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(command.UpdateLearnerRequest, learningApiPutResponse, request.Data);
                     await earningsApiClient.Put(earningsOnProgrammeApiRequest);
 
-                    logger.LogInformation("Releasing earnings to payments for learning {LearningKey}", learningApiPutResponse.LearningKey);
-                    var releaseEarningsRequest = new ReleaseEarningsApiPostRequest(learningApiPutResponse.LearningKey,
-                        new ReleaseEarningsRequest
-                        {
-                            LearnerKey = command.LearnerKey,
-                            LearnerRef = command.UpdateLearnerRequest.Learner.LearnerRef
-                        });
-                    await earningsApiClient.Post(releaseEarningsRequest);
+                    releaseEarnings = true;
                 }
 
                 if (learningApiPutResponse.Changes.HasEnglishAndMathsUpdate())
@@ -84,6 +79,8 @@ public class UpdateLearnerCommandHandler(
                     logger.LogInformation("Updating Earnings with English and Maths changes for learning {LearningKey}", learningApiPutResponse.LearningKey);
                     var englishAndMathsRequest = updateEarningsEnglishAndMathsRequestBuilder.Build(command, learningApiPutResponse, request);
                     await earningsApiClient.Put(englishAndMathsRequest);
+
+                    releaseEarnings = true;
                 }
 
                 if (learningApiPutResponse.Changes.HasLearningSupportUpdate())
@@ -91,9 +88,25 @@ public class UpdateLearnerCommandHandler(
                     logger.LogInformation("Updating Earnings with Learning Support changes for learning {LearningKey}", learningApiPutResponse.LearningKey);
                     var earningsLearningSupportRequest = updateEarningsLearningSupportRequestBuilder.Build(learningApiPutResponse, request);
                     await earningsApiClient.Put(earningsLearningSupportRequest);
+
+                    releaseEarnings = true;
                 }
 
                 logger.LogInformation("Earnings updated for learning {LearningKey}", learningApiPutResponse.LearningKey);
+
+                if (releaseEarnings)
+                {
+                    var releaseEarningsRequest = new ReleaseEarningsApiPostRequest(learningApiPutResponse.LearningKey,
+                        new ReleaseEarningsRequest
+                        {
+                            LearnerKey = command.LearnerKey,
+                            LearnerRef = command.UpdateLearnerRequest.Learner.LearnerRef
+                        });
+                    await earningsApiClient.Post(releaseEarningsRequest);
+
+                    logger.LogInformation("Release earnings to payments for learning {LearningKey}", learningApiPutResponse.LearningKey);
+                }
+
             }
         }
 
