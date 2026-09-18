@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.AdminRoatp.Application.Queries.GetProviderRestrictedApprenticeships;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
 using SFA.DAS.AdminRoatp.InnerApi.Responses;
 using SFA.DAS.Apim.Shared.Extensions;
@@ -9,7 +8,7 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.AdminRoatp.Application.Queries.GetProviderNotRestrictedApprenticeships;
 
-public class GetProviderNotRestrictedApprenticeshipsQueryHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _courseManagementApiClient, ILogger<GetProviderRestrictedApprenticeshipsQueryHandler> _logger) : IRequestHandler<GetProviderNotRestrictedApprenticeshipsQuery, GetProviderNotRestrictedApprenticeshipsResponse>
+public class GetProviderNotRestrictedApprenticeshipsQueryHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _courseManagementApiClient, ILogger<GetProviderNotRestrictedApprenticeshipsQueryHandler> _logger) : IRequestHandler<GetProviderNotRestrictedApprenticeshipsQuery, GetProviderNotRestrictedApprenticeshipsResponse>
 {
     public async Task<GetProviderNotRestrictedApprenticeshipsResponse> Handle(GetProviderNotRestrictedApprenticeshipsQuery request, CancellationToken cancellationToken)
     {
