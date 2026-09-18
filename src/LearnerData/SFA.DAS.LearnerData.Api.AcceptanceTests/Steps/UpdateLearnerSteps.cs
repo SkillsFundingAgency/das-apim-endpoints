@@ -3,6 +3,8 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.Net;
 using System.Net.Http.Headers;
@@ -25,6 +27,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     private const string SldLearnerDataKey = "SldLearnerDataKey";
     private const string SubsequentOnProgrammeKey = "SubsequentOnProgrammeKey";
     private const string ApprovalCheckStatusCodeKey = "ApprovalCheckStatusCodeKey";
+    private const string LearnerRefKey = "LearnerRefKey";
 
     [Given(@"there is a learner")]
     public void GivenThereIsALearner()
@@ -83,6 +86,12 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
                 .WithBodyAsJson(new StandardDetailResponse { ApprenticeshipType = "Apprenticeship" }));
     }
 
+    [Given(@"the learner has a LearnerRef of ""(.*)""")]
+    public void GivenTheLearnerHasALearnerRefOf(string learnerRef)
+    {
+        scenarioContext.Set(learnerRef, LearnerRefKey);
+    }
+
     [Then(@"a LearnerDataEvent is published")]
     public void ThenALearnerDataEventIsPublished()
     {
@@ -118,6 +127,35 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     {
         var requests = testContext.EarningsApi.MockServer.LogEntries;
         requests.Should().BeEmpty("Expected no requests to the earnings domain, but found some.");
+    }
+
+    [Then(@"the LearnerRef sent to the learning domain is ""(.*)""")]
+    public void ThenTheLearnerRefSentToTheLearningDomainIs(string expectedLearnerRef)
+    {
+        var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
+        var ukprn = scenarioContext.Get<long>(UkprnKey);
+        var requestUrl = $"/{ukprn}/{learnerKey}";
+
+        var entry = testContext.ApprenticeshipsApi.MockServer.LogEntries
+            .Single(request => request.RequestMessage.Url.Contains(requestUrl) && request.RequestMessage.Method == "PUT");
+
+        var body = JsonConvert.DeserializeObject<UpdateLearningRequestBody>(entry.RequestMessage.Body);
+        body!.Learner.LearnerRef.Should().Be(expectedLearnerRef);
+    }
+
+    [Then(@"the release-earnings request sent to the earnings domain has the learner key and ref ""(.*)""")]
+    public void ThenTheReleaseEarningsRequestHasTheLearnerKeyAndRef(string expectedLearnerRef)
+    {
+        var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
+        var learningKey = scenarioContext.Get<UpdateLearnerApiPutResponse>().LearningKey;
+        var requestUrl = $"learning/{learningKey}/release-earnings";
+
+        var entry = testContext.EarningsApi.MockServer.LogEntries
+            .Single(request => request.RequestMessage.Url.Contains(requestUrl) && request.RequestMessage.Method == "POST");
+
+        var body = JsonConvert.DeserializeObject<ReleaseEarningsRequest>(entry.RequestMessage.Body);
+        body!.LearnerKey.Should().Be(learnerKey);
+        body.LearnerRef.Should().Be(expectedLearnerRef);
     }
 
     [Then(@"sld data is stored to the cache")]
@@ -232,6 +270,11 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
             requestBody.Delivery.OnProgramme = [onProgramme];
         }
 
+        if (scenarioContext.TryGetValue(LearnerRefKey, out string learnerRef))
+        {
+            requestBody.Learner.LearnerRef = learnerRef;
+        }
+
         var httpContent = new StringContent(JsonConvert.SerializeObject(requestBody), new MediaTypeHeaderValue("application/json"));
         var response = await testContext.OuterApiClient.PutAsync($"/providers/{ukprn}/learning/{learnerKey}", httpContent);
         var contentString = await response.Content.ReadAsStringAsync();
@@ -252,6 +295,8 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
                 return $"learning/{learningKey.ToString()}/learning-support";
             case "english-and-maths":
                 return $"learning/{learningKey.ToString()}/english-and-maths";
+            case "release-earnings":
+                return $"learning/{learningKey.ToString()}/release-earnings";
             default:
                 throw new ArgumentOutOfRangeException(nameof(updateRequestType), updateRequestType, null);
         }

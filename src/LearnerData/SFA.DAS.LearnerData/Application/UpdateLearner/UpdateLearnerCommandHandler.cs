@@ -5,6 +5,7 @@ using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Common.Domain.Types;
 using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
@@ -67,6 +68,15 @@ public class UpdateLearnerCommandHandler(
                     logger.LogInformation("Updating Earnings with OnProgramme changes for learning {LearningKey}", learningApiPutResponse.LearningKey);
                     var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(command.UpdateLearnerRequest, learningApiPutResponse, request.Data);
                     await earningsApiClient.Put(earningsOnProgrammeApiRequest);
+
+                    logger.LogInformation("Releasing earnings to payments for learning {LearningKey}", learningApiPutResponse.LearningKey);
+                    var releaseEarningsRequest = new ReleaseEarningsApiPostRequest(learningApiPutResponse.LearningKey,
+                        new ReleaseEarningsRequest
+                        {
+                            LearnerKey = command.LearnerKey,
+                            LearnerRef = command.UpdateLearnerRequest.Learner.LearnerRef
+                        });
+                    await earningsApiClient.Post(releaseEarningsRequest);
                 }
 
                 if (learningApiPutResponse.Changes.HasEnglishAndMathsUpdate())
