@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\" />
-    <Folder Include="Domain\" />
-    <Folder Include="InnerApi\Requests\" />
-    <Folder Include="InnerApi\Responses\" />
     <Folder Include="Queries\" />
   </ItemGroup>
 

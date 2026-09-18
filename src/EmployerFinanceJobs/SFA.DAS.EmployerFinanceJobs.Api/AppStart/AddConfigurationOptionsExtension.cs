@@ -12,5 +12,7 @@ public static class AddConfigurationOptionsExtension
         services.AddOptions();
         services.Configure<FundingProjectionApiConfiguration>(configuration.GetSection("FundingProjectionApiConfiguration"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<FundingProjectionApiConfiguration>>()!.Value);
+        services.Configure<CommitmentsV2ApiConfiguration>(configuration.GetSection("CommitmentsV2ApiConfiguration"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2ApiConfiguration>>()!.Value);
     }
 }
