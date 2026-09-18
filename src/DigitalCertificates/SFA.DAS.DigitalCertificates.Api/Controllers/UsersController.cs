@@ -55,7 +55,8 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             {
                 CreateOrUpdateUserCommand command = request;
                 var result = await _mediator.Send(command);
-                return Ok(result.UserId);
+                var response = (CreateOrUpdateUserResponse)result;
+                return Ok(response);
             }
             catch (Exception e)
             {

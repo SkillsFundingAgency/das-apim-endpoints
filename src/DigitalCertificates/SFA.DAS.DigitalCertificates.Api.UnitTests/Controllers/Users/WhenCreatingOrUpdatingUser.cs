@@ -42,7 +42,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
 
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().Be(result.UserId);
+            actual.Value.Should().BeEquivalentTo(new { userId = result.UserId });
         }
 
         [Test, MoqAutoData]
