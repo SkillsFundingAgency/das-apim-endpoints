@@ -21,7 +21,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
 
         public class PostUpdateUserIdentityRequestData
         {
-            public List<Name> Names { get; set; }
+            public List<IdentityName> Names { get; set; }
             public DateTime DateOfBirth { get; set; }
         }
     }
