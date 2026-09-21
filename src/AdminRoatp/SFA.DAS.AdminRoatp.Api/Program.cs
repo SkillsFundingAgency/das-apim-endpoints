@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Newtonsoft.Json.Converters;
 using SFA.DAS.AdminRoatp.Api.AppStart;
 using SFA.DAS.Apim.Shared.AppStart;
+using SFA.DAS.Telemetry.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,11 @@ builder.Services
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
+
+if (configuration.GetValue<bool>("EnableTelemetryUriRedaction"))
+{
+    builder.Services.AddTelemetryUriRedaction("userid,userdisplayname");
+}
 
 var app = builder.Build();
 
