@@ -60,29 +60,28 @@ public class ValidateSelectMultipleLearnerRecordsCommandHandler(
                 new PostValidateReservationRequest(command.ProviderId, reservationRequests));
 
 
-        //var providerStandardResults = await providerCoursesService.GetCoursesData(command.ProviderId);
+        var providerStandardResults = await providerCoursesService.GetCoursesData(command.ProviderId);
 
-        //var uniqueCourseCodes = command.CsvRecords.Select(r => r.CourseCode).Distinct();
-        //var otjTrainingHours = await bulkCourseMetadataService.GetOtjTrainingHoursForBulkUploadAsync(uniqueCourseCodes);
+        var uniqueCourseCodes = learnerDataResponse.Body.Select(r => r.TrainingCode).Distinct();
+        var otjTrainingHours = await bulkCourseMetadataService.GetOtjTrainingHoursForBulkUploadAsync(uniqueCourseCodes);
 
-        //BulkUploadValidateApiRequest bulkUploadValidateApiRequest = new BulkUploadValidateApiRequest
+        ValidateSelectMultipleLearnersApiRequest validateSelectMultipleLearnersApiRequest = new ValidateSelectMultipleLearnersApiRequest    
+        {
+            CsvRecords = await courseTypesToCsvService.MapAndAddCourseTypeData(command.CsvRecords),
+            ProviderId = command.ProviderId,            
+            UserInfo = command.UserInfo,
+            BulkReservationValidationResults = reservationValidationResult.Body,
+            ProviderStandardsData = providerStandardResults,
+            OtjTrainingHours = otjTrainingHours
+        };
+
+        //if (!validateSelectMultipleLearnersApiRequest.ProviderStandardsData.IsMainProvider)
         //{
-        //    CsvRecords = await courseTypesToCsvService.MapAndAddCourseTypeData(command.CsvRecords),
-        //    ProviderId = command.ProviderId,
-        //    LogId = command.FileUploadLogId,
-        //    UserInfo = command.UserInfo,
-        //    BulkReservationValidationResults = reservationValidationResult.Body,
-        //    ProviderStandardsData = providerStandardResults,
-        //    OtjTrainingHours = otjTrainingHours
-        //};
-
-        //if (!bulkUploadValidateApiRequest.ProviderStandardsData.IsMainProvider)
-        //{
-        //    bulkUploadValidateApiRequest.ProviderStandardsData.Standards = null;
+        //    validateSelectMultipleLearnersApiRequest.ProviderStandardsData.Standards = null;
         //}
 
-        //await apiClient.PostWithResponseCode<object>(
-        //    new PostValidateBulkUploadRequest(command.ProviderId, bulkUploadValidateApiRequest));
+        await apiClient.PostWithResponseCode<object>(
+            new PostValidateSelectMultipleLearnersRequest(command.ProviderId, validateSelectMultipleLearnersApiRequest));
         //return Unit.Value;
     }
 
