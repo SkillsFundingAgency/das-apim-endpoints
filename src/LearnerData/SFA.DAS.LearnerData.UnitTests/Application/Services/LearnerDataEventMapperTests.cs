@@ -22,6 +22,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
             var correlationId = _fixture.Create<Guid>();
             var receivedDate = _fixture.Create<DateTime>();
             var consumerReference = _fixture.Create<string>();
+            var expectedCost = onProgramme.Costs!.OrderBy(c => c.FromDate).First();
 
             // Act
             var result = _sut.Build(ukprn, learner, onProgramme, learningType, correlationId, receivedDate, consumerReference);
@@ -38,8 +39,8 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                 StartDate = onProgramme.StartDate,
                 PlannedEndDate = onProgramme.ExpectedEndDate,
                 PercentageLearningToBeDelivered = onProgramme.PercentageOfTrainingLeft,
-                EpaoPrice = onProgramme.Costs!.First().EpaoPrice,
-                TrainingPrice = onProgramme.Costs!.First().TrainingPrice,
+                EpaoPrice = expectedCost.EpaoPrice,
+                TrainingPrice = expectedCost.TrainingPrice,
                 AgreementId = onProgramme.AgreementId,
                 IsFlexiJob = onProgramme.IsFlexiJob!.Value,
                 StandardCode = onProgramme.StandardCode,
