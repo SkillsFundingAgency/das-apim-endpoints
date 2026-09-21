@@ -21,7 +21,7 @@ public class CreateProviderCommandHandler : IRequestHandler<CreateProviderComman
     {
         var providerGetResponse = await _apiClient.GetProvider(command.Ukprn);
 
-        if (!providerGetResponse.IsSuccessStatusCode)
+        if (providerGetResponse.StatusCode == HttpStatusCode.BadRequest)
         {
             _logger.LogInformation("Creating provider for ukprn: {Ukprn}", command.Ukprn);
             var response =
