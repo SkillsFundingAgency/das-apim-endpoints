@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -74,6 +75,21 @@ public class GetApprenticeshipsQueryHandlerTests
 
         result.Should().NotBeNull();
         result.Should().BeEquivalentTo(_apprenticeships);
+    }
+
+    [Test]
+    public async Task Handle_maps_employer_verification_fields()
+    {
+        _query.AccountId = null;
+        var source = _apprenticeships.Apprenticeships.First();
+        source.EmployerVerificationStatus = 2;
+        source.EmployerVerificationNotes = "PAYENotFound";
+
+        var result = await _handler.Handle(_query, CancellationToken.None);
+
+        var mapped = result.Apprenticeships.Should().ContainSingle(x => x.Id == source.Id).Subject;
+        mapped.EmployerVerificationStatus.Should().Be(2);
+        mapped.EmployerVerificationNotes.Should().Be("PAYENotFound");
     }
 
     [Test]
