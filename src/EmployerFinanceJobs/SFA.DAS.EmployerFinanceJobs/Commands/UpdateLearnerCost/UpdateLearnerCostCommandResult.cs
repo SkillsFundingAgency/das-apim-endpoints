@@ -2,7 +2,7 @@
 
 public sealed record UpdateLearnerCostCommandResult
 {
-    public int TotalRecords { get; set; }
-    public int SuccessfulRecords { get; set; }
-    public int FailedRecords { get; set; }
+    public int TotalRecords { get; init; }
+    public int SuccessfulRecords { get; init; }
+    public int FailedRecords { get; init; }
 }

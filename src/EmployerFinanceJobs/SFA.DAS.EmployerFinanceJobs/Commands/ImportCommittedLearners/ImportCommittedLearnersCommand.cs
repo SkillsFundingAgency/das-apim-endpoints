@@ -2,5 +2,5 @@
 
 namespace SFA.DAS.EmployerFinanceJobs.Commands.ImportCommittedLearners;
 
-public sealed record ImportCommittedLearnersCommand(DateTime CutOffDateTime)
+public sealed record ImportCommittedLearnersCommand
     : IRequest<ImportCommittedLearnersCommandResult>;
