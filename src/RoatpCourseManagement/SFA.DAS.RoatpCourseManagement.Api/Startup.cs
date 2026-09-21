@@ -12,10 +12,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.RoatpCourseManagement.Api.AppStart;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProviderCourses;
-using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
+using SFA.DAS.Telemetry.Startup;
 
 namespace SFA.DAS.RoatpCourseManagement.Api
 {
@@ -86,6 +87,11 @@ namespace SFA.DAS.RoatpCourseManagement.Api
             services.AddApplicationInsightsTelemetry();
 
             services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
+
+            if (_configuration.GetValue<bool>("EnableTelemetryUriRedaction"))
+            {
+                services.AddTelemetryUriRedaction("userid,userdisplayname");
+            }
 
             services.AddSwaggerGen(c =>
             {
