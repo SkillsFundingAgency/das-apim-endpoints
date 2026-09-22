@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.EmployerFinance.InnerApi.Requests;
 
-public sealed record GetEmployerFundingProjectionByAccountIdRequest(long AccountId) : IGetApiRequest
+public sealed record GetEmployerFundingProjectionByAccountIdRequest(long AccountId, int Months = 12) : IGetApiRequest
 {
-    public string GetUrl => $"api/employer/{AccountId}/funding-projection";
+    public string GetUrl => $"api/employer/{AccountId}/funding-projection?months={Months}";
 }
