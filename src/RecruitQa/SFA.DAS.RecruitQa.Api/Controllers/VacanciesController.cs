@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Recruit.GraphQL;
 using SFA.DAS.RecruitQa.Api.Models;
 using SFA.DAS.RecruitQa.Data.Models;
@@ -9,7 +8,7 @@ using SFA.DAS.RecruitQa.GraphQL.RecruitInner.Mappers;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using StrawberryShake;
-using Wage = SFA.DAS.Recruit.Contracts.ApiResponses.Wage;
+using VacancyStatus = SFA.DAS.Recruit.GraphQL.VacancyStatus;
 
 namespace SFA.DAS.RecruitQa.Api.Controllers;
 
@@ -147,6 +146,45 @@ public class VacanciesController: ControllerBase
         await recruitApiClient.PatchWithResponseCode(new Recruit.Contracts.ApiRequests.PatchVacanciesByVacancyIdApiRequest
         {
             VacancyId = id,
+            Data = data
+        });
+        
+        return TypedResults.Ok();
+    }
+    
+    [HttpPost, Route("refer/{vacancyReference:long}")]
+    public async Task<IResult> ReferVacancyFromQa(
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromRoute] long vacancyReference,
+        CancellationToken cancellationToken)
+    {
+        var response = await recruitGqlClient.GetVacancyByReference.ExecuteAsync(vacancyReference, cancellationToken);
+        if (response.IsErrorResult())
+        {
+            return TypedResults.Problem(response.ToProblemDetails());
+        }
+
+        if (response is not { Data.Vacancies.Count: 1 })
+        {
+            return TypedResults.NotFound();
+        }
+        
+        var vacancy = response.Data.Vacancies[0];
+        if (vacancy is not { Status: VacancyStatus.Submitted, ClosedDate: null })
+        {
+            var closedState = vacancy.ClosedDate is not null
+                ? $" and was closed on '{vacancy.ClosedDate:g}'"
+                : null;
+            return TypedResults.BadRequest($"Vacancy must submitted and active to be referred, vacancy is in status '{vacancy.Status}'{closedState}");
+        }
+
+        var data = new JsonPatchDocument<Recruit.Contracts.ApiResponses.Vacancy>();
+        data.Replace(x => x.Status, Recruit.Contracts.ApiResponses.VacancyStatus.Referred);
+        data.Replace(x => x.LastUpdatedDate, DateTime.UtcNow);
+        await recruitApiClient.PatchWithResponseCode(new Recruit.Contracts.ApiRequests.PatchVacanciesByVacancyIdApiRequest
+        {
+            VacancyId = vacancy.Id,
             Data = data
         });
         
