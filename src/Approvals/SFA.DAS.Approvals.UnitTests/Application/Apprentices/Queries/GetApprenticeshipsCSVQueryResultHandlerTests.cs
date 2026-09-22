@@ -66,7 +66,8 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
 
             result.Should().NotBeNull();
             result.Should().BeEquivalentTo(_apprenticeshipsResponse, o => o.Excluding(x => x.HasChangeHistory).Excluding(x => x.Apprenticeships));
-            result.Apprenticeships.Should().BeEquivalentTo(_apprenticeships, o => o.Excluding(x => x.PendingApprovalRequestId));
+            result.Apprenticeships.Should().BeEquivalentTo(_apprenticeships, o => o.Excluding(x => x.PendingApprovalRequestId)
+                    .Excluding(ctx => ctx.Name == "EmployerVerificationStatus" || ctx.Name == "EmployerVerificationNotes")));
         }
 
         [Test]

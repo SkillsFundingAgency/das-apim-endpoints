@@ -1,18 +1,16 @@
+using SFA.DAS.Common.Domain.Types;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SFA.DAS.LearnerData.Services;
 
 public interface IUpdateLearningRequestBodyBuilder
 {
     UpdateLearningRequestBody Build(long ukprn, UpdateLearnerRequest updateLearnerRequest);
-    UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest);
+    UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest, int academicYear, LearningType learningType);
 }
 
 public class UpdateLearningRequestBodyBuilder(
@@ -28,35 +26,29 @@ public class UpdateLearningRequestBodyBuilder(
             updateLearnerRequest.Learner,
             updateLearnerRequest.Delivery.EnglishAndMaths,
             updateLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(),
-            updateLearnerRequest.EnglishAndMathsLearningSupport());
+            updateLearnerRequest.EnglishAndMathsLearningSupport(),
+            academicYear: 0);
     }
 
-    public UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest)
+    public UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest, int academicYear, LearningType learningType)
     {
-        var baseLearner = new LearnerRequestDetails
-        {
-            FirstName = createLearnerRequest.Learner.FirstName,
-            LastName = createLearnerRequest.Learner.LastName,
-            Email = createLearnerRequest.Learner.Email,
-            Dob = createLearnerRequest.Learner.Dob ?? DateTime.MinValue,
-            HasEhcp = createLearnerRequest.Learner.HasEhcp ?? false,
-            Uln = createLearnerRequest.Learner.Uln
-        };
-
         return BuildInternal(
             ukprn,
-            baseLearner,
+            createLearnerRequest.Learner,
             createLearnerRequest.Delivery.EnglishAndMaths?.Cast<MathsAndEnglish>().ToList(),
             createLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(),
-            createLearnerRequest.EnglishAndMathsLearningSupport());
+            createLearnerRequest.EnglishAndMathsLearningSupport(),
+            academicYear,
+            learningType);
     }
 
-    private UpdateLearningRequestBody BuildInternal(
-        long ukprn,
+    private UpdateLearningRequestBody BuildInternal(long ukprn,
         LearnerRequestDetails learner,
         List<MathsAndEnglish> englishAndMaths,
         List<OnProgrammeRequestDetails> onProgramme,
-        List<KeyValuePair<string, List<LearningSupport>>> englishAndMathsLearningSupport)
+        List<KeyValuePair<string, List<LearningSupport>>> englishAndMathsLearningSupport,
+        int academicYear,
+        LearningType? learningType = null)
     {
         var (firstOnProgramme, latestOnProgramme, allMatchingOnProgrammes) = SelectEpisode(onProgramme);
 
@@ -82,9 +74,12 @@ public class UpdateLearningRequestBodyBuilder(
 
         return new UpdateLearningRequestBody
         {
+            AcademicYear = academicYear,
             Delivery = new Delivery
             {
-                WithdrawalDate = latestOnProgramme.WithdrawalDate
+                WithdrawalDate = latestOnProgramme.WithdrawalDate,
+                TrainingCode = firstOnProgramme.StandardCode.ToString(),
+                LearningType = learningType
             },
             Learner = new LearningUpdateDetails
             {

@@ -19,5 +19,7 @@ public record GetVacancyMetricsResponse
         public long ApplicationStartedCount { get; init; }
         [JsonProperty("applicationSubmittedCount")]
         public long ApplicationSubmittedCount { get; init; }
+        [JsonProperty("savedCount")]
+        public long SavedCount { get; init; }
     }
 }
