@@ -7,7 +7,6 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-
 namespace SFA.DAS.ApprenticeApp.Api.Controllers
 {
     [ApiController]
@@ -36,10 +35,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 Statuses = statuses
             });
 
-            if (result?.Notifications == null)
-                return NotFound();
-
-            return Ok(result.Notifications);
+            return Ok(result?.Notifications ?? new List<LearnerNotification>());
         }
 
         [HttpGet("{notificationIdentifier}")]
@@ -86,6 +82,21 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             });
 
             return Ok();
+            
+        }
+
+        [HttpDelete("{notificationIdentifier}")]
+        public async Task<IActionResult> DeleteLearnerNotification(
+            Guid accountIdentifier,
+            long notificationIdentifier)
+        {
+            await _mediator.Send(new DeleteLearnerNotificationCommand
+            {
+                AccountIdentifier = accountIdentifier,
+                NotificationIdentifier = notificationIdentifier
+            });
+
+            return NoContent();
         }
     }
 }

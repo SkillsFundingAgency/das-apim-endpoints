@@ -76,6 +76,27 @@ public class CreateUnapprovedApprenticeshipLearningRequestBuilderTests
         payload.OnProgramme.FundingBandMaximum.Should().Be(15000);
         payload.Learner.Uln.Should().Be(requestBody.Learner.Uln.ToString());
         payload.Prices.Should().HaveCount(learningResponse.Prices.Count);
+        payload.IsNewApprenticeshipLearner.Should().BeFalse();
+    }
+
+    [Test]
+    public async Task Build_Should_Set_IsNewApprenticeshipLearner_When_Learning_Response_Contains_NewApprenticeshipLearner_Change()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var learningResponse = _fixture.Build<CreateDraftLearnerApiPutResponse>()
+            .With(x => x.Changes, new List<BaseLearnerApiPutResponse.LearningUpdateChanges> { BaseLearnerApiPutResponse.LearningUpdateChanges.NewApprenticeshipLearner })
+            .Create();
+
+        var request = _fixture.Create<CreateLearnerRequest>();
+        var requestBody = _fixture.Create<UpdateLearningRequestBody>();
+
+        // Act
+        var result = await _sut.Build(ukprn, request, learningResponse, requestBody);
+
+        // Assert
+        var payload = (SFA.DAS.LearnerData.Requests.EarningsInner.CreateUnapprovedApprenticeshipLearningRequest)result.Data;
+        payload.IsNewApprenticeshipLearner.Should().BeTrue();
     }
 
     [Test]
