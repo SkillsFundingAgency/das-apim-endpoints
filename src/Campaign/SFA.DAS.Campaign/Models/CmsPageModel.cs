@@ -132,6 +132,7 @@ namespace SFA.DAS.Campaign.Models
                     {
                         Slug = parentPage.Fields.Slug,
                         Title = parentPage.Fields.Title,
+                        ShortPageTitle = parentPage.Fields.ShortPageTitle,
                         Summary = parentPage.Fields.Summary,
                         HubType = parentPage.Fields.HubType,
                         MetaDescription = parentPage.Fields.MetaDescription
