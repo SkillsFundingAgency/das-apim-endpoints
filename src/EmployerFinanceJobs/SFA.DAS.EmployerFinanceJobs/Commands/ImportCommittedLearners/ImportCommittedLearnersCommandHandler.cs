@@ -71,13 +71,13 @@ public class ImportCommittedLearnersCommandHandler(
     private async Task<ImportJobStateApiResponse> GetOrCreateJobStateAsync()
     {
         var jobStateResponse = await fundingProjectionApiClient.PostWithResponseCode<ImportJobStateApiResponse>(
-            new GetOrCreateJobApiRequest(JobName.ImportLearnerCost));
+            new GetOrCreateJobApiRequest(JobName.ImportLearners));
 
         if (jobStateResponse.StatusCode is not HttpStatusCode.OK and not HttpStatusCode.Created)
         {
             logger.LogError("Failed to get or create job state. Status: {StatusCode}", jobStateResponse.StatusCode);
             throw new InvalidOperationException(
-                $"Failed to get or create job state for {JobName.ImportLearnerCost}. Status: {jobStateResponse.StatusCode}");
+                $"Failed to get or create job state for {JobName.ImportLearners}. Status: {jobStateResponse.StatusCode}");
         }
 
         return jobStateResponse.Body;
