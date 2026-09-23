@@ -22,6 +22,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
             string providerName,
             int? ukprn,
             bool isMatched,
+            bool isUlnMatched,
             bool isFailed)
         {
             // Arrange & Act
@@ -37,6 +38,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
                 ProviderName = providerName,
                 Ukprn = ukprn,
                 IsMatched = isMatched,
+                IsUlnMatched = isUlnMatched,
                 IsFailed = isFailed
             };
 
@@ -51,6 +53,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
             command.ProviderName.Should().Be(providerName);
             command.Ukprn.Should().Be(ukprn);
             command.IsMatched.Should().Be(isMatched);
+            command.IsUlnMatched.Should().Be(isUlnMatched);
             command.IsFailed.Should().Be(isFailed);
         }
     }
