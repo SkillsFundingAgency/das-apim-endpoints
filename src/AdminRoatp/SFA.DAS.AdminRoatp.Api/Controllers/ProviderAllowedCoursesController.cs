@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.AdminRoatp.Application.Commands.AddProviderAllowedCourse;
 using SFA.DAS.AdminRoatp.Application.Commands.PatchProviderAllowedCourse;
+using SFA.DAS.AdminRoatp.Application.Queries.GetProviderAllowedCourseDetails;
 using SFA.DAS.AdminRoatp.Application.Queries.GetProviderAllowedCourses;
 using SFA.DAS.AdminRoatp.Infrastructure;
 using SFA.DAS.AdminRoatp.InnerApi.Models;
@@ -63,5 +64,15 @@ public class ProviderAllowedCoursesController(IMediator _mediator, ILogger<Provi
         GetProviderAllowedCoursesQuery query = new(ukprn, courseType);
         GetProviderAllowedCoursesResponse result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
+    }
+
+    [HttpGet("{larsCode}")]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(GetProviderAllowedCourseDetailsResponse))]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> GetProviderAllowedCourseDetails([FromRoute] int ukprn, [FromRoute] string larsCode, CancellationToken cancellationToken = default)
+    {
+        GetProviderAllowedCourseDetailsQuery query = new(ukprn, larsCode);
+        GetProviderAllowedCourseDetailsResponse? result = await _mediator.Send(query, cancellationToken);
+        return result == null ? NoContent() : Ok(result);
     }
 }
