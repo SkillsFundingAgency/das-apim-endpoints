@@ -81,7 +81,7 @@ public class WhenCallingPostGenerateReport
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Created_Is_Returned_Without_Uploading_When_No_Reviews(
+    public async Task Then_Empty_Result_Is_Uploaded_When_No_Reviews(
         Guid id,
         [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
@@ -95,11 +95,19 @@ public class WhenCallingPostGenerateReport
                 It.IsAny<PostReportsGenerateByReportIdApiRequest>(), It.IsAny<bool>()))
             .ReturnsAsync(new ApiResponse<GetApplicationReviewReportResponse>(baseData, HttpStatusCode.OK, null!));
 
+        recruitApiClient
+            .Setup(x => x.PostWithResponseCode<NullResponse>(
+                It.IsAny<PostReportsGenerateByReportIdUploadApiRequest>(), It.IsAny<bool>()))
+            .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.OK, null!));
+
         var result = await controller.PostGenerateReport(recruitApiClient.Object, candidateApiClient.Object, courseService.Object, id, CancellationToken.None);
 
         result.Should().BeOfType<Created>();
         recruitApiClient.Verify(x => x.PostWithResponseCode<NullResponse>(
-            It.IsAny<PostReportsGenerateByReportIdUploadApiRequest>(), It.IsAny<bool>()), Times.Never());
+            It.Is<PostReportsGenerateByReportIdUploadApiRequest>(r =>
+                r.ReportId == id &&
+                ((PostUploadApplicationSummaryReportRequest)r.Data).Reports.Count == 0),
+            It.IsAny<bool>()), Times.Once());
     }
 
     [Test, MoqAutoData]

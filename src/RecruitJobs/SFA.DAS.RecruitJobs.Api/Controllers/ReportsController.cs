@@ -43,61 +43,61 @@ public class ReportsController(ILogger<ReportsController> logger) : ControllerBa
         }
 
         var reviews = baseResponse.Body?.ApplicationReviewReports;
+        var summaryReports = new List<ApplicationSummaryReport>();
 
         if (reviews == null || reviews.Count == 0)
         {
-            logger.LogInformation("RecruitJobs: No application reviews found for report {ReportId}", id);
-            return TypedResults.Created();
+            logger.LogInformation("RecruitJobs: No application reviews found for report {ReportId} — uploading empty result to mark as Generated", id);
         }
-
-        var vacancyReferences = reviews.Select(r => r.VacancyReference).Distinct().ToList();
-        var allApplications = new ConcurrentBag<ReportApplication>();
-
-        await Parallel.ForEachAsync(vacancyReferences, new ParallelOptions
+        else
         {
-            MaxDegreeOfParallelism = 10,
-            CancellationToken = cancellationToken
-        }, async (vacancyRef, ct) =>
-        {
-            var response = await candidateApiClient.Get<GetApplicationsByVacancyReferenceApiResponse>(
-                new GetApplicationsByVacancyReferenceApiRequest(vacancyRef));
+            var vacancyReferences = reviews.Select(r => r.VacancyReference).Distinct().ToList();
+            var allApplications = new ConcurrentBag<ReportApplication>();
 
-            if (response?.Applications.Count > 0)
-                foreach (var app in response.Applications)
-                    allApplications.Add(app);
-        });
-
-        var appLookup = allApplications
-            .GroupBy(a => (a.Id, a.CandidateId))
-            .ToDictionary(g => g.Key, g => g.First());
-
-        // Step 3: enrich each review with candidate + course data
-        var courseCache = new Dictionary<string, SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses.StandardDetailResponse>(StringComparer.OrdinalIgnoreCase);
-        var summaryReports = new List<ApplicationSummaryReport>();
-
-        foreach (var review in reviews)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            if (!appLookup.TryGetValue((review.ApplicationId, review.CandidateId), out var application))
-                continue;
-
-            if (application.Candidate == null)
-                continue;
-
-            var programmeKey = review.ProgrammeId.ToString();
-            if (!courseCache.TryGetValue(programmeKey, out var course))
+            await Parallel.ForEachAsync(vacancyReferences, new ParallelOptions
             {
-                course = await courseService.GetStandardDetailsById(programmeKey);
-                if (course == null)
-                {
-                    logger.LogWarning("RecruitJobs: Course not found for programme {ProgrammeId} — skipping application {ApplicationId}", review.ProgrammeId, review.ApplicationId);
-                    continue;
-                }
-                courseCache[programmeKey] = course;
-            }
+                MaxDegreeOfParallelism = 10,
+                CancellationToken = cancellationToken
+            }, async (vacancyRef, ct) =>
+            {
+                var response = await candidateApiClient.Get<GetApplicationsByVacancyReferenceApiResponse>(
+                    new GetApplicationsByVacancyReferenceApiRequest(vacancyRef));
 
-            summaryReports.Add(BuildSummaryReport(review, application, course));
+                if (response?.Applications.Count > 0)
+                    foreach (var app in response.Applications)
+                        allApplications.Add(app);
+            });
+
+            var appLookup = allApplications
+                .GroupBy(a => (a.Id, a.CandidateId))
+                .ToDictionary(g => g.Key, g => g.First());
+
+            var courseCache = new Dictionary<string, SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses.StandardDetailResponse>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var review in reviews)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                if (!appLookup.TryGetValue((review.ApplicationId, review.CandidateId), out var application))
+                    continue;
+
+                if (application.Candidate == null)
+                    continue;
+
+                var programmeKey = review.ProgrammeId.ToString();
+                if (!courseCache.TryGetValue(programmeKey, out var course))
+                {
+                    course = await courseService.GetStandardDetailsById(programmeKey);
+                    if (course == null)
+                    {
+                        logger.LogWarning("RecruitJobs: Course not found for programme {ProgrammeId} — skipping application {ApplicationId}", review.ProgrammeId, review.ApplicationId);
+                        continue;
+                    }
+                    courseCache[programmeKey] = course;
+                }
+
+                summaryReports.Add(BuildSummaryReport(review, application, course));
+            }
         }
 
         // Step 4: upload enriched data back to Recruit API
