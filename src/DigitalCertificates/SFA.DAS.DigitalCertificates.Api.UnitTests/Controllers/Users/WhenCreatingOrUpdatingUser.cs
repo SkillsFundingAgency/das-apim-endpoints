@@ -10,7 +10,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Api.Controllers;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser;
-using SFA.DAS.DigitalCertificates.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
@@ -19,7 +18,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
     {
         [Test, MoqAutoData]
         public async Task Then_The_UserId_Is_Returned_From_Mediator(
-            CreateOrUpdateUserRequest request,
+            Models.Users.CreateOrUpdateUserRequest request,
             CreateOrUpdateUserResult result,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] UsersController controller)
@@ -47,7 +46,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
 
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
-            CreateOrUpdateUserRequest request,
+            Models.Users.CreateOrUpdateUserRequest request,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] UsersController controller)
         {

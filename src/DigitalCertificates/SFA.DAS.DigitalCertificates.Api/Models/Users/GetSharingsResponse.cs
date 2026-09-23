@@ -12,14 +12,14 @@ namespace SFA.DAS.DigitalCertificates.Api.Models.Users
         public string CourseName { get; set; }
         public IEnumerable<SharingDto> Sharings { get; set; }
 
-        public static implicit operator GetSharingsResponse(InnerApi.Responses.GetSharingsResponse source)
+        public static implicit operator GetSharingsResponse(Contracts.ApiResponses.GetSharingsResponse source)
         {
             if (source == null) return null;
             return new GetSharingsResponse
             {
                 UserId = source.UserId,
                 CertificateId = source.CertificateId,
-                CertificateType = source.CertificateType,
+                CertificateType = source.CertificateType.ToString(),
                 CourseName = source.CourseName,
                 Sharings = source.Sharings?.Select(s => new SharingDto
                 {

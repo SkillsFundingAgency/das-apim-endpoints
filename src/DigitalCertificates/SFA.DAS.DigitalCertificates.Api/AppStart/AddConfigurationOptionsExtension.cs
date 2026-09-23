@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.Apim.Shared.Configuration;
 using SFA.DAS.DigitalCertificates.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
+using DigitalCertificatesApiConfiguration = SFA.DAS.DigitalCertificates.Contracts.Client.DigitalCertificatesApiConfiguration;
 
 
 namespace SFA.DAS.DigitalCertificates.Api.AppStart

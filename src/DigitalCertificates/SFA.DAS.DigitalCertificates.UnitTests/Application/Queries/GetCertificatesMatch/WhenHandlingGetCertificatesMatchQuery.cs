@@ -11,9 +11,12 @@ using NUnit.Framework;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch;
 using SFA.DAS.DigitalCertificates.Configuration;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor;
-using SFA.DAS.DigitalCertificates.InnerApi.Responses;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
+using AuthorisationResponse = SFA.DAS.DigitalCertificates.Contracts.ApiResponses.AuthorisationResponse;
+using GetUserIdentityResponse = SFA.DAS.DigitalCertificates.Contracts.ApiResponses.GetUserIdentityResponse;
+using GetUsersByUserIdIdentityApiRequest = SFA.DAS.DigitalCertificates.Contracts.ApiRequests.GetUsersByUserIdIdentityApiRequest;
+using IdentityNameDto = SFA.DAS.DigitalCertificates.Contracts.ApiResponses.IdentityNameDto;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
@@ -35,13 +38,13 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
         {
             // Arrange
             query.UserId = userId;
-            identityBody.Authorisation = new IdentityAuthorisation { AuthorisationId = Guid.NewGuid(), Uln = 1234567890 };
+            identityBody.Authorisation = new AuthorisationResponse { AuthorisationId = Guid.NewGuid(), Uln = 1234567890 };
 
             var identityResponse = new ApiResponse<GetUserIdentityResponse>(identityBody, HttpStatusCode.OK, string.Empty);
 
             mockDigitalCertificatesApiClient
                 .Setup(c => c.GetWithResponseCode<GetUserIdentityResponse>(
-                    It.Is<GetUserIdentityRequest>(r => r.UserId == userId)))
+                    It.Is<GetUsersByUserIdIdentityApiRequest>(r => r.UserId == userId)))
                 .ReturnsAsync(identityResponse);
 
             configuration.MaxMasks = 5;
@@ -72,7 +75,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             var identityResponse = new ApiResponse<GetUserIdentityResponse>(null, HttpStatusCode.NotFound, string.Empty);
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.GetWithResponseCode<GetUserIdentityResponse>(It.IsAny<GetUserIdentityRequest>()))
+                .Setup(c => c.GetWithResponseCode<GetUserIdentityResponse>(It.IsAny<GetUsersByUserIdIdentityApiRequest>()))
                 .ReturnsAsync(identityResponse);
 
             configuration.MaxMasks = 5;
@@ -104,14 +107,14 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             query.UserId = userId;
             identityBody.Authorisation = null;
             identityBody.DateOfBirth = new DateTime(1990, 1, 1, 0, 0, 0, DateTimeKind.Unspecified);
-            identityBody.Identity = [new IdentityName { FamilyName = "Smith", GivenNames = "John" }];
+            identityBody.Identity = [new IdentityNameDto { FamilyName = "Smith", GivenNames = "John" }];
             identityBody.Excluded = [];
 
             var identityResponse = new ApiResponse<GetUserIdentityResponse>(identityBody, HttpStatusCode.OK, string.Empty);
 
             mockDigitalCertificatesApiClient
                 .Setup(c => c.GetWithResponseCode<GetUserIdentityResponse>(
-                    It.Is<GetUserIdentityRequest>(r => r.UserId == userId)))
+                    It.Is<GetUsersByUserIdIdentityApiRequest>(r => r.UserId == userId)))
                 .ReturnsAsync(identityResponse);
 
             var searchResponse = new ApiResponse<GetCertificateSearchResponse>(null, HttpStatusCode.NotFound, string.Empty);
@@ -148,7 +151,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             {
                 Authorisation = null,
                 DateOfBirth = new DateTime(1990, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
-                Identity = [new IdentityName { FamilyName = "Smith", GivenNames = "John" }],
+                Identity = [new IdentityNameDto { FamilyName = "Smith", GivenNames = "John" }],
                 Excluded = []
             };
 
@@ -156,7 +159,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
 
             mockDigitalCertificatesApiClient
                 .Setup(c => c.GetWithResponseCode<GetUserIdentityResponse>(
-                    It.Is<GetUserIdentityRequest>(r => r.UserId == userId)))
+                    It.Is<GetUsersByUserIdIdentityApiRequest>(r => r.UserId == userId)))
                 .ReturnsAsync(identityResponse);
 
             var olderMatch = new CertificateSearchMatch
@@ -257,7 +260,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             {
                 Authorisation = null,
                 DateOfBirth = new DateTime(1990, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
-                Identity = [new IdentityName { FamilyName = "Smith", GivenNames = "John" }],
+                Identity = [new IdentityNameDto { FamilyName = "Smith", GivenNames = "John" }],
                 Excluded = []
             };
 
@@ -265,7 +268,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
 
             mockDigitalCertificatesApiClient
                 .Setup(c => c.GetWithResponseCode<GetUserIdentityResponse>(
-                    It.Is<GetUserIdentityRequest>(r => r.UserId == userId)))
+                    It.Is<GetUsersByUserIdIdentityApiRequest>(r => r.UserId == userId)))
                 .ReturnsAsync(identityResponse);
 
             var searchBody = new GetCertificateSearchResponse
@@ -320,7 +323,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             {
                 Authorisation = null,
                 DateOfBirth = new DateTime(1990, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
-                Identity = [new IdentityName { FamilyName = "Jones", GivenNames = "Jane" }],
+                Identity = [new IdentityNameDto { FamilyName = "Jones", GivenNames = "Jane" }],
                 Excluded = []
             };
 
@@ -328,7 +331,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
 
             mockDigitalCertificatesApiClient
                 .Setup(c => c.GetWithResponseCode<GetUserIdentityResponse>(
-                    It.Is<GetUserIdentityRequest>(r => r.UserId == userId)))
+                    It.Is<GetUsersByUserIdIdentityApiRequest>(r => r.UserId == userId)))
                 .ReturnsAsync(identityResponse);
 
             var searchBody = new GetCertificateSearchResponse
@@ -382,7 +385,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             {
                 Authorisation = null,
                 DateOfBirth = new DateTime(1990, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
-                Identity = [new IdentityName { FamilyName = "Taylor", GivenNames = "Alex" }],
+                Identity = [new IdentityNameDto { FamilyName = "Taylor", GivenNames = "Alex" }],
                 Excluded = []
             };
 
@@ -390,7 +393,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
 
             mockDigitalCertificatesApiClient
                 .Setup(c => c.GetWithResponseCode<GetUserIdentityResponse>(
-                    It.Is<GetUserIdentityRequest>(r => r.UserId == userId)))
+                    It.Is<GetUsersByUserIdIdentityApiRequest>(r => r.UserId == userId)))
                 .ReturnsAsync(identityResponse);
 
             var searchBody = new GetCertificateSearchResponse
