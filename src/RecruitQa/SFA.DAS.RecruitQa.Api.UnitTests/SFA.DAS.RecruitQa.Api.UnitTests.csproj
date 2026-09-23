@@ -32,8 +32,4 @@
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controller\Vacancies\" />
-  </ItemGroup>
-
 </Project>
