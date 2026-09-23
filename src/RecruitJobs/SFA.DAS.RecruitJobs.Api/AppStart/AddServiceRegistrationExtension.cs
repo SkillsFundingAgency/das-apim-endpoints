@@ -23,7 +23,8 @@ public static class AddServiceRegistrationExtension
 {
     public static void AddServiceRegistration(this IServiceCollection services)
     {
-        services.AddHttpClient();
+        services.AddHttpClient(string.Empty)
+            .ConfigureHttpClient(c => c.Timeout = TimeSpan.FromMinutes(5));
         services.AddTransient<ICacheStorageService, CacheStorageService>();
         services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
