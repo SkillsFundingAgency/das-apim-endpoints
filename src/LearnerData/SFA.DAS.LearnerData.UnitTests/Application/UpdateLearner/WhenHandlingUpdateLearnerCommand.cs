@@ -235,6 +235,9 @@ public class WhenHandlingUpdateLearnerCommand
                 It.Is<UpdateLearningSupportApiPutRequest>(r => r == updateLearningSupportApiPutRequest)),
             Times.Once);
 
+        _earningsApiClient.Verify(x => x.Post(
+            It.IsAny<ReleaseEarningsApiPostRequest>()), Times.Once);
+
         _earningsApiClient.VerifyNoOtherCalls();
     }
 
@@ -266,6 +269,9 @@ public class WhenHandlingUpdateLearnerCommand
         _earningsApiClient.Verify(x => x.Put(
                 It.Is<UpdateEnglishAndMathsApiPutRequest>(r => r == englishAndMathsApiPutRequest)),
             Times.Once);
+
+        _earningsApiClient.Verify(x => x.Post(
+                It.IsAny<ReleaseEarningsApiPostRequest>()), Times.Once);
 
         _earningsApiClient.VerifyNoOtherCalls();
     }
