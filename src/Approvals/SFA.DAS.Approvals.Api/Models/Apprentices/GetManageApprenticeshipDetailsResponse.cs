@@ -82,6 +82,8 @@ public class GetManageApprenticeshipDetailsResponse
         public int? EmployerVerificationStatus { get; set; }
         public string EmployerVerificationNotes { get; set; }
         public bool HasChangeHistory {  get; set; }
+        public bool HasUnacknowledgedInvalidIlrChanges { get; set; }
+        public bool HasUnacknowledgedDeclinedChanges { get; set; }
     }
 
     public class PriceEpisode
