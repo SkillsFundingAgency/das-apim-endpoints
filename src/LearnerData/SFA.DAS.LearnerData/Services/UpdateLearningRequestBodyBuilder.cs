@@ -89,6 +89,7 @@ public class UpdateLearningRequestBodyBuilder(
                 CompletionDate = latestOnProgramme.CompletionDate,
                 DateOfBirth = learner.Dob,
                 Uln = learner.Uln,
+                LearnerRef = learner.LearnerRef,
                 Care = new CareDetails
                 {
                     HasEHCP = learner.HasEhcp,

@@ -186,12 +186,21 @@ public class WhenHandlingUpdateLearnerCommand
         _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
             .Returns(Task.CompletedTask);
 
+        _earningsApiClient.Setup(x => x.Post(It.IsAny<ReleaseEarningsApiPostRequest>()))
+            .Returns(Task.CompletedTask);
+
         // Act
         await _sut.Handle(command, CancellationToken.None);
 
         //Assert
         _earningsApiClient.Verify(x => x.Put(
                 It.Is<UpdateOnProgrammeApiPutRequest>(r => r == updateOnProgPutRequest)),
+            Times.Once);
+
+        _earningsApiClient.Verify(x => x.Post(
+                It.Is<ReleaseEarningsApiPostRequest>(r =>
+                    r.Data.LearnerKey == command.LearnerKey &&
+                    r.Data.LearnerRef == command.UpdateLearnerRequest.Learner.LearnerRef)),
             Times.Once);
 
         _earningsApiClient.VerifyNoOtherCalls();
@@ -226,6 +235,9 @@ public class WhenHandlingUpdateLearnerCommand
                 It.Is<UpdateLearningSupportApiPutRequest>(r => r == updateLearningSupportApiPutRequest)),
             Times.Once);
 
+        _earningsApiClient.Verify(x => x.Post(
+            It.IsAny<ReleaseEarningsApiPostRequest>()), Times.Once);
+
         _earningsApiClient.VerifyNoOtherCalls();
     }
 
@@ -257,6 +269,9 @@ public class WhenHandlingUpdateLearnerCommand
         _earningsApiClient.Verify(x => x.Put(
                 It.Is<UpdateEnglishAndMathsApiPutRequest>(r => r == englishAndMathsApiPutRequest)),
             Times.Once);
+
+        _earningsApiClient.Verify(x => x.Post(
+                It.IsAny<ReleaseEarningsApiPostRequest>()), Times.Once);
 
         _earningsApiClient.VerifyNoOtherCalls();
     }
