@@ -5,7 +5,7 @@ using System.Net;
 
 namespace SFA.DAS.EmployerFinanceJobs.Api.Controllers;
 
-[Route("[controller]")]
+[Route("funding-projection")]
 [ApiController]
 public class FundingProjectionController(IMediator mediator, ILogger<FundingProjectionController> logger) : ControllerBase
 {

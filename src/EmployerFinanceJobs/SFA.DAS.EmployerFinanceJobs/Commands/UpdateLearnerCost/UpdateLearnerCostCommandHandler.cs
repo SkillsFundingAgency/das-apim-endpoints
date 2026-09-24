@@ -48,7 +48,7 @@ public class UpdateLearnerCostCommandHandler(ICommitmentsV2ApiClient<Commitments
                 CancellationToken = cancellationToken
             };
 
-            await Parallel.ForEachAsync(pendingLearners, options, async (learner, ct) =>
+            await Parallel.ForEachAsync(pendingLearners, options, async (learner, _) =>
             {
                 if (!await ProcessLearnerAsync(learner))
                 {

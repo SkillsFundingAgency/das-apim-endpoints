@@ -174,7 +174,7 @@ public class ImportCommittedLearnersCommandHandler(
             CancellationToken = cancellationToken
         };
 
-        await Parallel.ForEachAsync(learnersToImport, parallelOptions, async (learner, ct) =>
+        await Parallel.ForEachAsync(learnersToImport, parallelOptions, async (learner, _) =>
         {
             results.Add(await ImportLearnerAsync(learner));
         });
