@@ -71,9 +71,7 @@ public class CreateUnapprovedApprenticeshipLearningRequestBuilder(ICourseService
             }).ToList(),
             PeriodsInLearning = GetPeriodsInLearning(matchingOnProgrammes),
             EnglishAndMaths = GetEnglishAndMaths(requestBody.EnglishAndMathsCourses),
-            // todo verify squash
             LearningSupport = requestBody.OnProgramme.LearningSupport
-                .Concat(requestBody.EnglishAndMathsCourses.SelectMany(x => x.LearningSupport))
                 .Select(x => new ApprenticeshipLearningSupportItem
                 {
                     StartDate = x.StartDate,
@@ -114,7 +112,13 @@ public class CreateUnapprovedApprenticeshipLearningRequestBuilder(ICourseService
             PauseDate = course.PauseDate,
             WithdrawalDate = course.WithdrawalDate,
             CompletionDate = course.CompletionDate,
-            PeriodsInLearning = GetEnglishAndMathsPeriods(course)
+            PeriodsInLearning = GetEnglishAndMathsPeriods(course),
+            LearningSupport = course.LearningSupport
+                .Select(x => new ApprenticeshipLearningSupportItem
+                {
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate
+                }).ToList()
         }).ToList();
     }
 
