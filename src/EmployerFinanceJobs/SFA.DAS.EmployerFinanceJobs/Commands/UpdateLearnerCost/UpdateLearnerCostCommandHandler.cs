@@ -100,6 +100,12 @@ public class UpdateLearnerCostCommandHandler(ICommitmentsV2ApiClient<Commitments
                 return false;
             }
 
+            if (apprenticeship.PriceReducedBy == 0) // skip learners with zero/no reduced price
+            {
+                logger.LogInformation("Apprenticeship {ApprenticeshipId} has no reduced price", learner.ApprenticeshipId);
+                return true;
+            }
+
             // Update learner with apprenticeship details and cost
             await fundingProjectionApiClient.Put(
                 new PutCommittedLearnerApiRequest(
