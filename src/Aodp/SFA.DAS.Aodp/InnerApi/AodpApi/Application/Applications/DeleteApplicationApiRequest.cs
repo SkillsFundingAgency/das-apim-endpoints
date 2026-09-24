@@ -3,5 +3,6 @@
 public class DeleteApplicationApiRequest : IDeleteApiRequest
 {
     public Guid ApplicationId { get; set; }
-    public string DeleteUrl => $"/api/applications/{ApplicationId}";
+    public string? UserType { get; set; }
+    public string DeleteUrl => $"/api/applications/{ApplicationId}?userType={UserType}";
 }
