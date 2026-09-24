@@ -2,6 +2,7 @@
 using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.Aodp.InnerApi.AodpApi.Files;
 using SFA.DAS.Aodp.Services;
+using SFA.DAS.Apim.Shared.Extensions;
 namespace SFA.DAS.Aodp.Application.Commands.Files
 {
 
@@ -22,6 +23,8 @@ namespace SFA.DAS.Aodp.Application.Commands.Files
             try
             {
                 var metadata = await _apiClient.PostWithResponseCode<EmptyResponse>(new CreateFileMetadataApiRequest() { Data = command });
+
+                metadata.EnsureSuccessStatusCode();
 
                 response.Value = metadata.Body;
                 response.Success = true;
