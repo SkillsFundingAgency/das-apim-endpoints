@@ -35,7 +35,8 @@ public class GetInvalidIlrChangesQueryHandlerTests
         apiClient.Setup(x => x.GetWithResponseCode<GetInvalidIlrChangesResponse>(
                 It.Is<GetInvalidIlrChangesRequest>(request =>
                     request.ApprenticeshipId == query.ApprenticeshipId &&
-                    request.ProviderId == query.ProviderId)))
+                    request.ProviderId == query.ProviderId &&
+                    request.Path == query.InnerPath)))
             .ReturnsAsync(new ApiResponse<GetInvalidIlrChangesResponse>(innerResponse, HttpStatusCode.OK, string.Empty));
 
         var handler = new GetInvalidIlrChangesQueryHandler(apiClient.Object, new ServiceParameters(Party.Provider, query.ProviderId));
@@ -60,5 +61,33 @@ public class GetInvalidIlrChangesQueryHandlerTests
         var result = await handler.Handle(query, CancellationToken.None);
 
         result.Should().BeNull();
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_ThenCallsDeclinedChangesInnerPathWhenRequested(
+        GetApprenticeshipResponse apprenticeship,
+        GetInvalidIlrChangesResponse innerResponse,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient)
+    {
+        var query = new GetInvalidIlrChangesQuery(555, 1001, GetInvalidIlrChangesRequest.DeclinedChangesPath);
+        apprenticeship.ProviderId = query.ProviderId;
+        apprenticeship.EmployerAccountId = 123;
+
+        apiClient.Setup(x => x.GetWithResponseCode<GetApprenticeshipResponse>(
+                It.Is<GetApprenticeshipRequest>(request => request.ApprenticeshipId == query.ApprenticeshipId)))
+            .ReturnsAsync(new ApiResponse<GetApprenticeshipResponse>(apprenticeship, HttpStatusCode.OK, string.Empty));
+
+        apiClient.Setup(x => x.GetWithResponseCode<GetInvalidIlrChangesResponse>(
+                It.Is<GetInvalidIlrChangesRequest>(request =>
+                    request.Path == GetInvalidIlrChangesRequest.DeclinedChangesPath)))
+            .ReturnsAsync(new ApiResponse<GetInvalidIlrChangesResponse>(innerResponse, HttpStatusCode.OK, string.Empty));
+
+        var handler = new GetInvalidIlrChangesQueryHandler(apiClient.Object, new ServiceParameters(Party.Provider, query.ProviderId));
+
+        await handler.Handle(query, CancellationToken.None);
+
+        apiClient.Verify(x => x.GetWithResponseCode<GetInvalidIlrChangesResponse>(
+            It.Is<GetInvalidIlrChangesRequest>(request =>
+                request.GetUrl == $"api/apprenticeships/{query.ApprenticeshipId}/declined-changes?providerId={query.ProviderId}")), Times.Once);
     }
 }
