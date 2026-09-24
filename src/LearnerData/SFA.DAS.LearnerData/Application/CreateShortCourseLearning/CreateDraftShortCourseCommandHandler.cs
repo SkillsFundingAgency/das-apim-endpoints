@@ -13,6 +13,7 @@ using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Net;
+using SFA.DAS.Common.Domain.Types;
 
 namespace SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
 
@@ -28,8 +29,16 @@ public class CreateDraftShortCourseCommandHandler(
     ILearnerDataCacheService learnerDataCacheService
 ) : IRequestHandler<CreateDraftShortCourseCommand, CreateDraftShortCourseResult>
 {
+    private const long TemporaryUln = 9999999999;
+
     public async Task<CreateDraftShortCourseResult> Handle(CreateDraftShortCourseCommand command, CancellationToken cancellationToken)
     {
+        if (command.ShortCourseRequest.Learner.Uln == TemporaryUln)
+        {
+            logger.LogInformation("Ignoring temporary ULN {TemporaryUln} learner detected for provider {Ukprn}", TemporaryUln, command.Ukprn);
+            return new CreateDraftShortCourseResult();
+        }
+
         logger.LogInformation("Creating draft short course for provider {ProviderUkprn}", command.Ukprn);
 
         await learnerDataCacheService.StoreLearner(command.ShortCourseRequest, command.Ukprn, cancellationToken);

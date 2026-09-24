@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using RestEase;
 using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts;
 using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeSubscriptions;
 using SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeAccounts;
+using SFA.DAS.ApprenticeApp.Models;
 using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Controllers;
 
 namespace SFA.DAS.ApprenticeApp.Api.Controllers
@@ -49,6 +51,21 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
 
             return Ok(queryResult.Apprentices);
         }
+
+        [HttpPatch]
+        [Route("/apprentice/{id}/MyApprenticeship")]
+        [Consumes("application/json-patch+json")]
+        public async Task<IActionResult> UpdateMyApprenticeship(Guid id, [FromBody] object data)
+        {
+            var result = await _mediator.Send(new PatchMyApprenticeshipCommand 
+            { 
+                ApprenticeId = id,
+                PatchData = data 
+            });
+
+            return result ? NoContent() : NotFound();
+        }
+
 
         [HttpPatch("/apprentices/{id}"), Consumes("application/json", "application/json-patch+json", "text/json", "application/*+json")]
         public async Task<IActionResult> UpdateApprentice([Path] Guid id, [Body] object patch)
