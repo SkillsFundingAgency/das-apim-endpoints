@@ -33,7 +33,7 @@ public class UpdateLearningRequestBodyBuilderTests
         var actualRequestBody = sut.Build(command.Ukprn, command.UpdateLearnerRequest);
 
         // Assert
-        actualRequestBody.Delivery.WithdrawalDate.Should().Be(withdrawalDate);
+        actualRequestBody.OnProgramme.WithdrawalDate.Should().Be(withdrawalDate);
     }
 
     [Test]
@@ -212,7 +212,7 @@ public class UpdateLearningRequestBodyBuilderTests
         actualRequestBody.Learner.Care.HasEHCP.Should().BeTrue();
         actualRequestBody.Learner.Care.IsCareLeaver.Should().BeTrue();
         actualRequestBody.Learner.Care.CareLeaverEmployerConsentGiven.Should().BeTrue();
-        actualRequestBody.Delivery.TrainingCode.Should().Be("123");
+        actualRequestBody.OnProgramme.TrainingCode.Should().Be("123");
         actualRequestBody.AcademicYear.Should().Be(2526);
         actualRequestBody.Delivery.LearningType.Should().Be(LearningType.Apprenticeship);
     }
@@ -397,6 +397,6 @@ public class UpdateLearningRequestBodyBuilderTests
         var actualRequestBody = sut.Build(command.Ukprn, command.UpdateLearnerRequest);
 
         // Assert
-        actualRequestBody.Delivery.TrainingCode.Should().Be(firstOnProgramme.StandardCode.ToString());
+        actualRequestBody.OnProgramme.TrainingCode.Should().Be(firstOnProgramme.StandardCode.ToString());
     }
 }

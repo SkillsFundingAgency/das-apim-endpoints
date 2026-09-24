@@ -18,6 +18,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Extensions
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated)]
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices)]
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.DateOfBirthChanged)]
+        [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.OnprogrammeLearningSupport)]
         public void HasOnProgrammeUpdate_ReturnsTrue_ForOnProgrammeChanges(UpdateLearnerApiPutResponse.LearningUpdateChanges change)
         {
             var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges> { change };
@@ -39,6 +40,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Extensions
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMaths)]
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsWithdrawal)]
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsBreaksInLearningUpdated)]
+        [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsLearningSupport)]
         public void HasEnglishAndMathsUpdate_ReturnsTrue_ForEnglishAndMathsChanges(UpdateLearnerApiPutResponse.LearningUpdateChanges change)
         {
             var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges> { change };
@@ -55,28 +57,6 @@ namespace SFA.DAS.LearnerData.UnitTests.Extensions
             };
 
             changes.HasEnglishAndMathsUpdate().Should().BeFalse();
-        }
-
-        [Test]
-        public void HasLearningSupportUpdate_ReturnsTrue_WhenLearningSupportChangePresent()
-        {
-            var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>
-            {
-                UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport
-            };
-
-            changes.HasLearningSupportUpdate().Should().BeTrue();
-        }
-
-        [Test]
-        public void HasLearningSupportUpdate_ReturnsFalse_WhenNoRelevantChanges()
-        {
-            var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>
-            {
-                UpdateLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate
-            };
-
-            changes.HasLearningSupportUpdate().Should().BeFalse();
         }
 
         [Test]

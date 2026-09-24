@@ -291,8 +291,6 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         {
             case "on-programme":
                 return $"learning/{learningKey.ToString()}/on-programme";
-            case "learning-support":
-                return $"learning/{learningKey.ToString()}/learning-support";
             case "english-and-maths":
                 return $"learning/{learningKey.ToString()}/english-and-maths";
             case "release-earnings":

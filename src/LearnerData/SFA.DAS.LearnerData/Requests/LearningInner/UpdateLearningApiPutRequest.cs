@@ -23,7 +23,6 @@ namespace SFA.DAS.LearnerData.Requests.LearningInner
         public Delivery Delivery { get; set; }
         public LearningUpdateDetails Learner { get; set; }
         public List<MathsAndEnglishDetails> EnglishAndMathsCourses { get; set; }
-        public List<LearningSupport> LearningSupport { get; set; }
         public OnProgrammeDetails OnProgramme { get; set; }
     }
 
@@ -46,6 +45,9 @@ namespace SFA.DAS.LearnerData.Requests.LearningInner
         public List<Cost> Costs { get; set; }
         public DateTime? PauseDate { get; set; }
         public List<BreakInLearning> BreaksInLearning { get; set; }
+        public List<LearningSupport> LearningSupport { get; set; }
+        public DateTime? WithdrawalDate { get; set; }
+        public string TrainingCode { get; set; }
     }
 
     public class Cost
@@ -67,12 +69,11 @@ namespace SFA.DAS.LearnerData.Requests.LearningInner
         public decimal? CombinedFundingAdjustmentPercentage { get; set; }
         public decimal Amount { get; set; }
         public List<BreakInLearning> BreaksInLearning { get; set; }
+        public List<LearningSupport> LearningSupport { get; set; }
     }
 
     public class Delivery
     {
-        public DateTime? WithdrawalDate { get; set; }
-        public string TrainingCode { get; set; }
         public LearningType? LearningType { get; set; } //todo for now this is nullable because we are not sending it/using it on the PUT, but it will be needed when we implement that
     }
 
