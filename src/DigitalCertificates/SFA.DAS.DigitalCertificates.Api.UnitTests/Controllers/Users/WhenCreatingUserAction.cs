@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Api.Controllers;
+using SFA.DAS.DigitalCertificates.Api.Models.Users;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAction;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -19,7 +20,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
         [Test, MoqAutoData]
         public async Task Then_The_ActionCode_Is_Returned(
             Guid userId,
-            Models.Users.CreateUserActionRequest request,
+            CreateUserActionRequest request,
             CreateUserActionResult result,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] UsersController controller)
@@ -42,7 +43,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
             // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var expected = (Models.Users.CreateUserActionResponse)result;
+            var expected = (CreateUserActionResponse)result;
             actual.Value.Should().BeEquivalentTo(expected);
 
             mediator.Verify(m => m.Send(It.Is<CreateUserActionCommand>(c =>
@@ -53,7 +54,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             Guid userId,
-            Models.Users.CreateUserActionRequest request,
+            CreateUserActionRequest request,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] UsersController controller)
         {

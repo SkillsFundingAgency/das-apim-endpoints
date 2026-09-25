@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Api.Controllers;
+using SFA.DAS.DigitalCertificates.Api.Models.Users;
 using SFA.DAS.DigitalCertificates.Application.Commands.UpdateUserIdentity;
-using SFA.DAS.DigitalCertificates.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
@@ -31,20 +31,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
                     ((c.Names == null && request.Names == null) || (c.Names != null && request.Names != null && c.Names.Count == request.Names.Count))), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Unit.Value);
 
-                var apiRequest = new Models.Users.UpdateUserIdentityRequest
-                {
-                    DateOfBirth = request.DateOfBirth,
-                    Names = request.Names?.ConvertAll(n => new Models.Users.UpdateNameRecord
-                    {
-                        UserIdentityId = n.UserIdentityId,
-                        ValidSince = n.ValidSince,
-                        ValidUntil = n.ValidUntil,
-                        FamilyName = n.FamilyName,
-                        GivenNames = n.GivenNames
-                    })
-                };
-
-                var actual = await controller.UpdateUserIdentity(userId, apiRequest) as OkResult;
+            var actual = await controller.UpdateUserIdentity(userId, request) as OkResult;
 
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -63,20 +50,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
                 .Setup(x => x.Send(It.IsAny<UpdateUserIdentityCommand>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
-                var apiRequest = new Models.Users.UpdateUserIdentityRequest
-                {
-                    DateOfBirth = request.DateOfBirth,
-                    Names = request.Names?.ConvertAll(n => new Models.Users.UpdateNameRecord
-                    {
-                        UserIdentityId = n.UserIdentityId,
-                        ValidSince = n.ValidSince,
-                        ValidUntil = n.ValidUntil,
-                        FamilyName = n.FamilyName,
-                        GivenNames = n.GivenNames
-                    })
-                };
-
-                var actual = await controller.UpdateUserIdentity(userId, apiRequest) as StatusCodeResult;
+            var actual = await controller.UpdateUserIdentity(userId, request) as StatusCodeResult;
 
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);

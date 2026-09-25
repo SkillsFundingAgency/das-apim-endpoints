@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Api.Controllers;
+using SFA.DAS.DigitalCertificates.Api.Models.Sharing;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetSharingById;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -37,7 +38,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
             // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var expected = (Models.Sharing.GetSharingByIdResponse)queryResult;
+            var expected = (GetSharingByIdResponse)queryResult;
             actual.Value.Should().BeEquivalentTo(expected.Response);
 
             mediator.Verify(m => m.Send(It.Is<GetSharingByIdQuery>(q =>
@@ -86,7 +87,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
             // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var expected = (Models.Sharing.GetSharingByIdResponse)queryResult;
+            var expected = (GetSharingByIdResponse)queryResult;
             actual.Value.Should().BeEquivalentTo(expected.Response);
 
             mediator.Verify(m => m.Send(It.Is<GetSharingByIdQuery>(q =>

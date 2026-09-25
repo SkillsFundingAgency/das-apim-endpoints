@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
-using SFA.DAS.DigitalCertificates.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
+using SFA.DAS.DigitalCertificates.Extensions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,10 +20,21 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAction
 
         public async Task<CreateUserActionResult> Handle(CreateUserActionCommand command, CancellationToken cancellationToken)
         {
-            var request = new PostCreateUserActionRequest((PostCreateUserActionRequestData)command, command.UserId);
+            var request = new PostUsersByUserIdUserActionsApiRequest(new CreateUserActionRequest
+            {
+                ActionType = command.ActionType.ToActionType(),
+                FamilyName = command.FamilyName,
+                GivenNames = command.GivenNames,
+                CertificateId = command.CertificateId,
+                CertificateType = command.CertificateType.ToCertificateType(),
+                CourseName = command.CourseName
+            })
+            {
+                UserId = command.UserId
+            };
 
             var response = await _digitalCertificatesApiClient
-                 .PostWithResponseCode<PostCreateUserActionRequestData, PostCreateUserActionResponse>(request);
+                 .PostWithResponseCode<CreateUserActionResponse>(request);
 
             response.EnsureSuccessStatusCode();
 

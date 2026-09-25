@@ -9,6 +9,9 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Services;
 using SFA.DAS.SharedOuterApi.Types.Services;
+using DigitalCertificatesApiClient = SFA.DAS.DigitalCertificates.Contracts.Client.DigitalCertificatesApiClient;
+using DigitalCertificatesApiConfiguration = SFA.DAS.DigitalCertificates.Contracts.Client.DigitalCertificatesApiConfiguration;
+using IDigitalCertificatesApiClient = SFA.DAS.DigitalCertificates.Contracts.Client.IDigitalCertificatesApiClient<SFA.DAS.DigitalCertificates.Contracts.Client.DigitalCertificatesApiConfiguration>;
 
 namespace SFA.DAS.DigitalCertificates.Api.AppStart
 {
@@ -24,7 +27,7 @@ namespace SFA.DAS.DigitalCertificates.Api.AppStart
             services.AddTransient<INotificationService, NotificationService>();
 
             services.AddTransient<IAssessorsApiClient<AssessorsApiConfiguration>, AssessorsApiClient>();
-            services.AddTransient<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>, DigitalCertificatesApiClient>();
+            services.AddTransient<IDigitalCertificatesApiClient, DigitalCertificatesApiClient>();
             services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
         }
     }

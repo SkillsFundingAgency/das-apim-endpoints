@@ -1,12 +1,9 @@
 ﻿using MediatR;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
-using SFA.DAS.DigitalCertificates.InnerApi.Responses;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
 using SFA.DAS.DigitalCertificates.Models;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,8 +21,8 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetSharingByCode
 
         public async Task<GetSharingByCodeQueryResult> Handle(GetSharingByCodeQuery request, CancellationToken cancellationToken)
         {
-            var emailSharingTask = _digitalCertificatesApiClient.GetWithResponseCode<GetSharingByEmailLinkCodeResponse>(new GetSharingByEmailLinkCodeRequest(request.Code));
-            var directSharingTask = _digitalCertificatesApiClient.GetWithResponseCode<GetSharingByLinkCodeResponse>(new GetSharingByLinkCodeRequest(request.Code));
+            var emailSharingTask = _digitalCertificatesApiClient.GetWithResponseCode<GetSharingByEmailLinkCodeResponse>(new GetSharingSharingemailEmaillinkcodeByEmailLinkCodeApiRequest(request.Code));
+            var directSharingTask = _digitalCertificatesApiClient.GetWithResponseCode<GetSharingByLinkCodeResponse>(new GetSharingLinkcodeByLinkCodeApiRequest(request.Code));
 
             await Task.WhenAll(emailSharingTask, directSharingTask);
 
@@ -46,7 +43,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetSharingByCode
                 responseModel = new SharingByCode
                 {
                     CertificateId = body.CertificateId,
-                    CertificateType = body.CertificateType,
+                    CertificateType = body.CertificateType.ToString(),
                     ExpiryTime = body.ExpiryTime,
                     SharingEmailId = body.SharingEmailId
                 };
@@ -60,7 +57,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetSharingByCode
                 responseModel = new SharingByCode
                 {
                     CertificateId = body.CertificateId,
-                    CertificateType = body.CertificateType,
+                    CertificateType = body.CertificateType.ToString(),
                     ExpiryTime = body.ExpiryTime,
                     SharingId = body.SharingId
                 };

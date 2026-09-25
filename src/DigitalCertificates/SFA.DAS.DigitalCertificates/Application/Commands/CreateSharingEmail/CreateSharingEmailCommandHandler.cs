@@ -1,12 +1,10 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Notifications.Messages.Commands;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
-using SFA.DAS.DigitalCertificates.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -30,11 +28,15 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingEmail
 
         public async Task<CreateSharingEmailResult> Handle(CreateSharingEmailCommand command, CancellationToken cancellationToken)
         {
-            PostCreateSharingEmailRequestData requestData = command;
+            var request = new PostSharingByIdEmailApiRequest(new CreateSharingEmailRequest
+            {
+                EmailAddress = command.EmailAddress
+            })
+            {
+                Id = command.SharingId
+            };
 
-            var request = new PostCreateSharingEmailRequest(requestData, command.SharingId.ToString());
-
-            var response = await _digitalCertificatesApiClient.PostWithResponseCode<PostCreateSharingEmailRequestData, PostCreateSharingEmailResponse>(request);
+            var response = await _digitalCertificatesApiClient.PostWithResponseCode<CreateSharingEmailResponse>(request);
 
             response.EnsureSuccessStatusCode();
 

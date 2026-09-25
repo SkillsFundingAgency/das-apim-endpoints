@@ -1,5 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
 
 namespace SFA.DAS.DigitalCertificates.Application.Queries.GetUserActions
 {
@@ -7,33 +9,33 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetUserActions
     {
         public IEnumerable<UserActionDetail> UserActions { get; set; } = new List<UserActionDetail>();
 
-        public static implicit operator GetUserActionsQueryResult(SFA.DAS.DigitalCertificates.InnerApi.Responses.GetUserActionsResponse source)
+        public static implicit operator GetUserActionsQueryResult(GetUserActionsResponse source)
         {
             if (source == null) return null;
 
             var result = new GetUserActionsQueryResult
             {
-                UserActions = source.UserActions?.ConvertAll(ua => new UserActionDetail
+                UserActions = source.UserActions?.Select(ua => new UserActionDetail
                 {
                     Id = ua.Id,
                     UserId = ua.UserId,
-                    ActionType = ua.ActionType,
+                    ActionType = ua.ActionType.ToString(),
                     ActionTime = ua.ActionTime,
-                    ActionStatus = ua.ActionStatus ?? string.Empty,
+                    ActionStatus = ua.ActionStatus.ToString(),
                     FamilyName = ua.FamilyName ?? string.Empty,
                     GivenNames = ua.GivenNames ?? string.Empty,
                     Uln = ua.Uln,
                     CertificateId = ua.CertificateId,
-                    CertificateType = ua.CertificateType,
+                    CertificateType = ua.CertificateType.ToString(),
                     CourseName = ua.CourseName,
                     ActionCode = ua.ActionCode,
-                    AdminActions = ua.AdminActions?.ConvertAll(a => new AdminActionDetail
+                    AdminActions = ua.AdminActions?.Select(a => new AdminActionDetail
                     {
                         Username = a.Username,
                         ActionTime = a.ActionTime,
-                        Action = a.Action
-                    })
-                }) ?? new List<UserActionDetail>()
+                        Action = a.Action.ToString()
+                    }).ToList()
+                }).ToList() ?? new List<UserActionDetail>()
             };
 
             return result;
