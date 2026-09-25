@@ -22,7 +22,6 @@ public class UpdateLearnerCommandHandler(
     IUpdateLearningPutRequestBuilder updateLearningPutRequestBuilder,
     IUpdateEarningsOnProgrammeRequestBuilder updateEarningsOnProgrammeRequestBuilder,
     IUpdateEarningsEnglishAndMathsRequestBuilder updateEarningsEnglishAndMathsRequestBuilder,
-    IUpdateEarningsLearningSupportRequestBuilder updateEarningsLearningSupportRequestBuilder,
     ILearnerDataCacheService learnerDataCacheService,
     IMessageSession messageSession,
     IApprovedApprenticeshipExistsChecker approvedApprenticeshipExistsChecker,
@@ -79,15 +78,6 @@ public class UpdateLearnerCommandHandler(
                     logger.LogInformation("Updating Earnings with English and Maths changes for learning {LearningKey}", learningApiPutResponse.LearningKey);
                     var englishAndMathsRequest = updateEarningsEnglishAndMathsRequestBuilder.Build(command, learningApiPutResponse, request);
                     await earningsApiClient.Put(englishAndMathsRequest);
-
-                    releaseEarnings = true;
-                }
-
-                if (learningApiPutResponse.Changes.HasLearningSupportUpdate())
-                {
-                    logger.LogInformation("Updating Earnings with Learning Support changes for learning {LearningKey}", learningApiPutResponse.LearningKey);
-                    var earningsLearningSupportRequest = updateEarningsLearningSupportRequestBuilder.Build(learningApiPutResponse, request);
-                    await earningsApiClient.Put(earningsLearningSupportRequest);
 
                     releaseEarnings = true;
                 }

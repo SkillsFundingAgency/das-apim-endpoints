@@ -27,7 +27,6 @@ public class WhenHandlingUpdateLearnerCommand
     private Mock<IEarningsApiClient<EarningsApiConfiguration>> _earningsApiClient;
     private Mock<IUpdateLearningPutRequestBuilder> _updateLearningPutRequestBuilder;
     private Mock<IUpdateEarningsOnProgrammeRequestBuilder> _updateEarningsOnProgrammeRequestBuilder;
-    private Mock<IUpdateEarningsLearningSupportRequestBuilder> _updateEarningsLearningSupportRequestBuilder;
     private Mock<IUpdateEarningsEnglishAndMathsRequestBuilder> _updateEarningsEnglishAndMathsRequestBuilder;
     private Mock<ILearnerDataCacheService> _distributedCache;
     private Mock<ILogger<UpdateLearnerCommandHandler>> _logger;
@@ -48,7 +47,6 @@ public class WhenHandlingUpdateLearnerCommand
         _updateLearningPutRequestBuilder = new Mock<IUpdateLearningPutRequestBuilder>();
         _updateEarningsOnProgrammeRequestBuilder = new Mock<IUpdateEarningsOnProgrammeRequestBuilder>();
         _updateEarningsEnglishAndMathsRequestBuilder = new Mock<IUpdateEarningsEnglishAndMathsRequestBuilder>();
-        _updateEarningsLearningSupportRequestBuilder = new Mock<IUpdateEarningsLearningSupportRequestBuilder>();
         _distributedCache = new Mock<ILearnerDataCacheService>();
         _logger = new Mock<ILogger<UpdateLearnerCommandHandler>>();
         _messageSession = new Mock<IMessageSession>();
@@ -63,7 +61,6 @@ public class WhenHandlingUpdateLearnerCommand
             _updateLearningPutRequestBuilder.Object,
             _updateEarningsOnProgrammeRequestBuilder.Object,
             _updateEarningsEnglishAndMathsRequestBuilder.Object,
-            _updateEarningsLearningSupportRequestBuilder.Object,
             _distributedCache.Object,
             _messageSession.Object,
             _approvedApprenticeshipExistsChecker.Object,
@@ -207,24 +204,27 @@ public class WhenHandlingUpdateLearnerCommand
     }
 
     [Test]
-    public async Task Then_Earnings_Is_Updated_With_LearningSupport_Updates()
+    public async Task Then_Earnings_Is_Updated_With_OnProgrammeLearningSupport_Updates()
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
 
-        var updateLearningSupportApiPutRequest = _fixture.Create<UpdateLearningSupportApiPutRequest>();
+        var updateOnProgPutRequest = _fixture.Create<UpdateOnProgrammeApiPutRequest>();
 
         var updateLearningApiResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
         updateLearningApiResponse.Changes.Clear();
-        updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport); // LSF change
+        updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.OnprogrammeLearningSupport);
 
         MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
         var apiPutRequest = MockLearningPutRequestBuilder(command);
 
-        _updateEarningsLearningSupportRequestBuilder.Setup(x => x.Build(updateLearningApiResponse, apiPutRequest))
-            .Returns(updateLearningSupportApiPutRequest);
+        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data))
+            .ReturnsAsync(updateOnProgPutRequest);
 
-        _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateLearningSupportApiPutRequest>()))
+        _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
+            .Returns(Task.CompletedTask);
+
+        _earningsApiClient.Setup(x => x.Post(It.IsAny<ReleaseEarningsApiPostRequest>()))
             .Returns(Task.CompletedTask);
 
         // Act
@@ -232,7 +232,54 @@ public class WhenHandlingUpdateLearnerCommand
 
         //Assert
         _earningsApiClient.Verify(x => x.Put(
-                It.Is<UpdateLearningSupportApiPutRequest>(r => r == updateLearningSupportApiPutRequest)),
+                It.Is<UpdateOnProgrammeApiPutRequest>(r => r == updateOnProgPutRequest)),
+            Times.Once);
+
+        _earningsApiClient.Verify(x => x.Post(
+                It.Is<ReleaseEarningsApiPostRequest>(r =>
+                    r.Data.LearnerKey == command.LearnerKey &&
+                    r.Data.LearnerRef == command.UpdateLearnerRequest.Learner.LearnerRef)),
+            Times.Once);
+
+        _earningsApiClient.VerifyNoOtherCalls();
+    }
+
+    [Test]
+    public async Task Then_Earnings_Is_Updated_With_EnglishAndMathsLearningSupport_Updates()
+    {
+        // Arrange
+        var command = _fixture.Create<UpdateLearnerCommand>();
+
+        var englishAndMathsApiPutRequest = _fixture.Create<UpdateEnglishAndMathsApiPutRequest>();
+
+        var updateLearningApiResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
+        updateLearningApiResponse.Changes.Clear();
+        updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsLearningSupport); // LSF change
+
+        MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
+        var apiPutRequest = MockLearningPutRequestBuilder(command);
+
+        _updateEarningsEnglishAndMathsRequestBuilder.Setup(x => x.Build(command, updateLearningApiResponse, apiPutRequest))
+            .Returns(englishAndMathsApiPutRequest);
+
+        _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateEnglishAndMathsApiPutRequest>()))
+            .Returns(Task.CompletedTask);
+
+        _earningsApiClient.Setup(x => x.Post(It.IsAny<ReleaseEarningsApiPostRequest>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        //Assert
+        _earningsApiClient.Verify(x => x.Put(
+                It.Is<UpdateEnglishAndMathsApiPutRequest>(r => r == englishAndMathsApiPutRequest)),
+            Times.Once);
+
+        _earningsApiClient.Verify(x => x.Post(
+                It.Is<ReleaseEarningsApiPostRequest>(r =>
+                    r.Data.LearnerKey == command.LearnerKey &&
+                    r.Data.LearnerRef == command.UpdateLearnerRequest.Learner.LearnerRef)),
             Times.Once);
 
         _earningsApiClient.Verify(x => x.Post(
@@ -262,12 +309,21 @@ public class WhenHandlingUpdateLearnerCommand
         _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateEnglishAndMathsApiPutRequest>()))
             .Returns(Task.CompletedTask);
 
+        _earningsApiClient.Setup(x => x.Post(It.IsAny<ReleaseEarningsApiPostRequest>()))
+            .Returns(Task.CompletedTask);
+
         // Act
         await _sut.Handle(command, CancellationToken.None);
 
         //Assert
         _earningsApiClient.Verify(x => x.Put(
                 It.Is<UpdateEnglishAndMathsApiPutRequest>(r => r == englishAndMathsApiPutRequest)),
+            Times.Once);
+
+        _earningsApiClient.Verify(x => x.Post(
+                It.Is<ReleaseEarningsApiPostRequest>(r =>
+                    r.Data.LearnerKey == command.LearnerKey &&
+                    r.Data.LearnerRef == command.UpdateLearnerRequest.Learner.LearnerRef)),
             Times.Once);
 
         _earningsApiClient.Verify(x => x.Post(

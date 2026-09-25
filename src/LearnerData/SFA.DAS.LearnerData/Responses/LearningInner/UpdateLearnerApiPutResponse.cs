@@ -28,7 +28,7 @@ public abstract class BaseLearnerApiPutResponse
     {
         CompletionDate = 0,
         EnglishAndMaths = 1,
-        LearningSupport = 2,
+        OnprogrammeLearningSupport = 2,
         Prices = 3,
         ExpectedEndDate = 4,
         Withdrawal = 5,
@@ -43,6 +43,7 @@ public abstract class BaseLearnerApiPutResponse
         EnglishAndMathsBreaksInLearningUpdated = 14,
         AchievementDateChanged = 15,
 		Reinstated = 16,
-        NewApprenticeshipLearner = 17
+        NewApprenticeshipLearner = 17,
+        EnglishAndMathsLearningSupport = 18
     }
 }
