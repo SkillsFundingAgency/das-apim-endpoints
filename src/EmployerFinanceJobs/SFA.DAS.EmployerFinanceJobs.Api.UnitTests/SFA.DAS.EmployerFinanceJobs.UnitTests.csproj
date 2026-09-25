@@ -38,4 +38,10 @@
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Application\Command\" />
+    <Folder Include="ControllerTests\" />
+    <Folder Include="InnerApi\Requests\" />
+  </ItemGroup>
+
 </Project>

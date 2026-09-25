@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace SFA.DAS.EmployerFinanceJobs.Api.AppStart;
 
