@@ -64,6 +64,8 @@ public class GetApprenticeshipQueryResult
     public int? EmployerVerificationStatus { get; set; }
     public string EmployerVerificationNotes { get; set; }
     public bool HasChangeHistory { get; set; }
+    public bool HasUnacknowledgedInvalidIlrChanges { get; set; }
+    public bool HasUnacknowledgedDeclinedChanges { get; set; }
     public int? WithdrawnReasonCode { get; set; }
     public bool FreezeStatus { get; set; }
     public byte? FreezePaymentsReason { get; set; }
