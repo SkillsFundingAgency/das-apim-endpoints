@@ -282,6 +282,9 @@ public class WhenHandlingUpdateLearnerCommand
                     r.Data.LearnerRef == command.UpdateLearnerRequest.Learner.LearnerRef)),
             Times.Once);
 
+        _earningsApiClient.Verify(x => x.Post(
+            It.IsAny<ReleaseEarningsApiPostRequest>()), Times.Once);
+
         _earningsApiClient.VerifyNoOtherCalls();
     }
 
@@ -322,6 +325,9 @@ public class WhenHandlingUpdateLearnerCommand
                     r.Data.LearnerKey == command.LearnerKey &&
                     r.Data.LearnerRef == command.UpdateLearnerRequest.Learner.LearnerRef)),
             Times.Once);
+
+        _earningsApiClient.Verify(x => x.Post(
+                It.IsAny<ReleaseEarningsApiPostRequest>()), Times.Once);
 
         _earningsApiClient.VerifyNoOtherCalls();
     }
