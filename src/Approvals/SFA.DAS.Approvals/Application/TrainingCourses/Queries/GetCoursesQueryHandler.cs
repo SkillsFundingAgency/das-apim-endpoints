@@ -5,15 +5,12 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
 using System.Linq;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RequestApprenticeTraining;
 
 namespace SFA.DAS.Approvals.Application.TrainingCourses.Queries;
+
 public class GetCoursesQueryHandler(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
     : IRequestHandler<GetCoursesQuery, GetCoursesResult>
 {
@@ -28,7 +25,7 @@ public class GetCoursesQueryHandler(ICoursesApiClient<CoursesApiConfiguration> c
             .GroupBy(c => c.LarsCode)
             .ToDictionary(
             g => g.Key,
-            g => g.Min(c => c.CourseDates!.EffectiveFrom));
+            g => g.Min(c => c.CourseDates.EffectiveFrom));
 
         var latestOldCourses = allOldCourses
             .Where(c => !activeLarsCodes.Contains(c.LarsCode))
@@ -50,7 +47,6 @@ public class GetCoursesQueryHandler(ICoursesApiClient<CoursesApiConfiguration> c
         };
     }
 
-
     private async Task<(List<GetCoursesListItem> ActiveCourses, List<GetCoursesListItem> OldCourses)> GetCoursesAsync()
     {
         var activeCoursesTask = coursesApiClient.Get<GetCoursesListResponse>(new GetCoursesExportRequest());
@@ -65,30 +61,4 @@ public class GetCoursesQueryHandler(ICoursesApiClient<CoursesApiConfiguration> c
             OldCourses: (await oldCoursesTask).Courses.ToList()
         );
     }
-
-
-    //public async Task<GetCoursesResult> Handle(GetCoursesQuery request, CancellationToken cancellationToken)
-    //{
-    //    var activeCourses = (await coursesApiClient.Get<GetCoursesListResponse>(new GetCoursesExportRequest())).Courses.ToList();
-    //    var activeLarsCodes = activeCourses.Select(c => c.LarsCode).ToList();
-    //    var allOldCourses = (await coursesApiClient.Get<GetCoursesListResponse>(new GetOldCoursesRequest())).Courses.ToList();
-
-    //    var oldCoursesIgnoringActiveOnes = allOldCourses.Where(c => !activeLarsCodes.Contains(c.LarsCode)).ToList();
-    //    var oldLatestCourses = oldCoursesIgnoringActiveOnes.GroupBy(c => c.LarsCode).Select(g => g.OrderByDescending(g => g.CourseDates?.EffectiveTo ?? DateTime.MaxValue).First()).ToList();
-    //    var allCourses = activeCourses.Concat(oldLatestCourses).ToList();
-    //    foreach (var course in allCourses)
-    //    {
-    //        var earliestEffectiveFrom = allOldCourses.Where(c => c.LarsCode == course.LarsCode).OrderBy(c => c.CourseDates?.EffectiveFrom).Select(c => c.CourseDates?.EffectiveFrom).FirstOrDefault();
-    //        if (earliestEffectiveFrom != default)
-    //        {
-    //            course.CourseDates.EffectiveFrom = earliestEffectiveFrom.Value;
-    //        }
-    //    }
-
-    //    return new GetCoursesResult
-    //    {
-    //        Courses = allCourses
-    //    };
-    //}
-
 }
