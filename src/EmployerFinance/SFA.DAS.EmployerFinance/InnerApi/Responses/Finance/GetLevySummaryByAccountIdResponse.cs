@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.EmployerFinance.InnerApi.Responses;
+﻿namespace SFA.DAS.EmployerFinance.InnerApi.Responses.Finance;
 
 public sealed record GetLevySummaryByAccountIdResponse
 {
