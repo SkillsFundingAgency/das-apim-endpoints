@@ -10,7 +10,9 @@ parameters:
 jobs:
 - job: CodeBuild
   pool:
-    name: DAS - APIM Continuous Integration Agents
+    name: DAS - APIM Continuous Integration Beta
+    demands:
+    - Agent.OS -equals Linux
   variables:
   - group: ESFA - SonarCloud
   - name: buildConfiguration
