@@ -11,7 +11,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.AdminRoatp.Api.UnitTests.Controllers.ProviderAllowedCoursesControllerTests;
 
-public class ProviderAllowedCoursesControllerGetTests
+public class ProviderAllowedCoursesControllerGetByCourseTypeTests
 {
     [Test, MoqAutoData]
     public async Task WhenGetProviderAllowedCoursesIsInvoked_ThenReturnsOkResult(
