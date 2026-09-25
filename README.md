@@ -923,3 +923,62 @@ Data: {
 * Start the api project ```SFA.DAS.ReferenceDataJobs.Api```
 
 Starting the API will then show the swagger definition with the available operations. 
+
+### Employer Feedback
+
+The Employer Feedback outer api relies on the following inner apis:
+
+* [das-employer-feedback-api](https://github.com/SkillsFundingAgency/das-employer-feedback-api)
+* [das-employer-accounts](https://github.com/SkillsFundingAgency/das-employer-accounts)
+* [das-commitments](https://github.com/SkillsFundingAgency/das-commitments)
+* [das-employer-profiles-api](https://github.com/SkillsFundingAgency/das-employer-profiles-api)
+* [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
+
+
+You are able to run the API by doing the following:
+
+
+* In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev.
+```
+ParitionKey: LOCAL
+RowKey: SFA.DAS.EmployerFeedback.OuterApi_1.0
+Data: {
+  "AzureAd": {
+        "tenant": "**********.onmicrosoft.com",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+  "AccountsInnerApi": {
+    "url": "https://localhost:5008/",
+    "identifier": "https://******.onmicrosoft.com/*****"
+  },
+  "CommitmentsV2ApiConfiguration": {
+    "url": "https://localhost:5011/",
+    "identifier": "https://******.onmicrosoft.com/*****"
+  },
+  "EmployerFeedbackApiConfiguration": {
+    "url": "https://localhost:6602/",
+    "identifier": "https://******.onmicrosoft.com/*****"
+  },
+  "EmployerProfilesApiConfiguration": {
+    "url": "https://localhost:5001/",
+    "identifier": "https://******.onmicrosoft.com/*****"
+  },
+  "RoatpV2ApiConfiguration": {
+    "url": "https://localhost:5111/",
+    "identifier": "https://******.onmicrosoft.com/*****"
+  },
+  "NServiceBusConfiguration": {
+        "NServiceBusConnectionString": "*********",
+        "NServiceBusLicense": "*********"
+    },
+  "EmployerFeedbackConfiguration": {
+    "ApimEndpointsRedisConnectionString": " ",
+    "AccountProvidersCourseStatusCompletionLag": 3,
+    "AccountProvidersCourseStatusStartLag": 60,
+    "AccountProvidersCourseStatusNewStartWindow": 2
+  }
+}
+```
+* Start the api project ```SFA.DAS.EmployerFeedback.Api```
+
+Starting the API will then show the swagger definition with the available operations. 
