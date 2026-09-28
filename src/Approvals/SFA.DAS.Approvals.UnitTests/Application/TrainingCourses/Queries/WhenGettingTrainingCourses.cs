@@ -123,38 +123,5 @@ namespace SFA.DAS.Approvals.UnitTests.Application.TrainingCourses.Queries
             courses[0].LarsCode.Should().Be(oldCourses[0].LarsCode);
             courses[0].CourseDates.EffectiveTo.Should().Be(DateTime.MaxValue);
         }
-
-        [Test, MoqAutoData]
-        public async Task Then_NewCourses_Get_EarliestEffectiveFrom_From_OldCourses_And_Not_Return_OldCourses(
-            GetCoursesQuery query,
-            GetCoursesListResponse apiResponseForNewCourses,
-            GetCoursesListResponse apiResponseForOldCourses,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
-            GetCoursesQueryHandler handler)
-        {
-            mockApiClient
-                .Setup(client => client.Get<GetCoursesListResponse>(It.IsAny<GetCoursesExportRequest>()))
-                .ReturnsAsync(apiResponseForNewCourses);
-
-            var oldCourses = apiResponseForOldCourses.Courses.ToList();
-            var newCourses = apiResponseForNewCourses.Courses.ToList();
-
-            for (var i = 0; i < 3; i++)
-            {
-                oldCourses[i].LarsCode = newCourses[i].LarsCode;
-            }
-
-            mockApiClient
-                .Setup(client => client.Get<GetCoursesListResponse>(It.IsAny<GetOldCoursesRequest>()))
-                .ReturnsAsync(apiResponseForOldCourses);
-
-            var result = await handler.Handle(query, CancellationToken.None);
-
-            var courses = result.Courses.ToList();
-            courses[0].CourseDates.EffectiveFrom.Should().Be(oldCourses[0].CourseDates.EffectiveFrom);
-            courses[1].CourseDates.EffectiveFrom.Should().Be(oldCourses[1].CourseDates.EffectiveFrom);
-            courses[2].CourseDates.EffectiveFrom.Should().Be(oldCourses[2].CourseDates.EffectiveFrom);
-            courses.Count.Should().Be(3);
-        }
     }
 }

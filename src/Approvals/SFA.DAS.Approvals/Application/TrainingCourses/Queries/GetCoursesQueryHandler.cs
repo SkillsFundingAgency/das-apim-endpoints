@@ -8,10 +8,11 @@ using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.Approvals.Application.TrainingCourses.Queries;
 
-public class GetCoursesQueryHandler(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
+public class GetCoursesQueryHandler(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, ILogger<GetCoursesQueryHandler> logger)
     : IRequestHandler<GetCoursesQuery, GetCoursesResult>
 {
     public async Task<GetCoursesResult> Handle(GetCoursesQuery request, CancellationToken cancellationToken)
@@ -20,13 +21,6 @@ public class GetCoursesQueryHandler(ICoursesApiClient<CoursesApiConfiguration> c
 
         var activeLarsCodes = activeCourses.Select(c => c.LarsCode).ToHashSet();
 
-        var earliestEffectiveFromByLarsCode = allOldCourses
-            .Where(c => c.CourseDates?.EffectiveFrom != null)
-            .GroupBy(c => c.LarsCode)
-            .ToDictionary(
-            g => g.Key,
-            g => g.Min(c => c.CourseDates.EffectiveFrom));
-
         var latestOldCourses = allOldCourses
             .Where(c => !activeLarsCodes.Contains(c.LarsCode))
             .GroupBy(c => c.LarsCode)
@@ -34,13 +28,6 @@ public class GetCoursesQueryHandler(ICoursesApiClient<CoursesApiConfiguration> c
             .ToList();
 
         var allCourses = activeCourses.Concat(latestOldCourses).ToList();
-        foreach (var course in allCourses)
-        {
-            if (course.CourseDates != null && earliestEffectiveFromByLarsCode.TryGetValue(course.LarsCode, out var earliestEffectiveFrom))
-            {
-                course.CourseDates.EffectiveFrom = earliestEffectiveFrom;
-            }
-        }
         return new GetCoursesResult
         {
             Courses = allCourses
