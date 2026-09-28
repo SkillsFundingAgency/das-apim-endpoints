@@ -54,7 +54,7 @@ public class RemoveProviderRestrictedApprenticeshipCommandHandler(IRoatpCourseMa
 
                 response.EnsureSuccessStatusCode();
             }
-            else
+            if (providerAllowedCourseResponse.Body?.IsCourseRestricted == false)
             {
                 var apiRequest = new DeleteProviderAllowedCourseRequest(command.Ukprn, command.LarsCode, command.UserId, command.UserDisplayName);
 
