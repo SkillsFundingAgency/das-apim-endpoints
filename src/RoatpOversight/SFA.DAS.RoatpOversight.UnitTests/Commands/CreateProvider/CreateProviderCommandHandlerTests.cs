@@ -11,12 +11,15 @@ namespace SFA.DAS.RoatpOversight.UnitTests.Commands.CreateProvider;
 public class CreateProviderCommandHandlerTests
 {
     [Test, MoqAutoData]
-    public async Task Handler_InvokesApi(
+    public async Task Handler_WhenProviderDoesNotExist_InvokesCreateApi(
         [Frozen] Mock<IRoatpV2ApiClient> apiClientMock,
         CreateProviderCommandHandler sut,
         CreateProviderCommand command,
         CancellationToken cancellationToken)
     {
+        apiClientMock.Setup(x => x.GetProvider(command.Ukprn)).ReturnsAsync(new HttpResponseMessage
+        { StatusCode = HttpStatusCode.BadRequest });
+
         apiClientMock.Setup(c => c.CreateProvider(command.UserId, command.UserDisplayName, command, cancellationToken))
             .ReturnsAsync(new HttpResponseMessage { StatusCode = HttpStatusCode.Created, Version = new Version() });
 
@@ -26,12 +29,30 @@ public class CreateProviderCommandHandlerTests
     }
 
     [Test, MoqAutoData]
+    public async Task Handler_WhenProviderExists_DoesNotInvokeCreateApi(
+        [Frozen] Mock<IRoatpV2ApiClient> apiClientMock,
+        CreateProviderCommandHandler sut,
+        CreateProviderCommand command,
+        CancellationToken cancellationToken)
+    {
+        apiClientMock.Setup(x => x.GetProvider(command.Ukprn)).ReturnsAsync(new HttpResponseMessage
+        { StatusCode = HttpStatusCode.NoContent });
+
+        await sut.Handle(command, cancellationToken);
+
+        apiClientMock.Verify(c => c.CreateProvider(command.UserId, command.UserDisplayName, command, cancellationToken), Times.Never);
+    }
+
+    [Test, MoqAutoData]
     public async Task Handler_UnexpectedApiResponse_ThrowsInvalidOperation(
         [Frozen] Mock<IRoatpV2ApiClient> apiClientMock,
         CreateProviderCommandHandler sut,
         CreateProviderCommand command,
         CancellationToken cancellationToken)
     {
+        apiClientMock.Setup(x => x.GetProvider(command.Ukprn)).ReturnsAsync(new HttpResponseMessage
+        { StatusCode = HttpStatusCode.BadRequest });
+
         apiClientMock.Setup(c => c.CreateProvider(command.UserId, command.UserDisplayName, command, cancellationToken))
             .ReturnsAsync(new HttpResponseMessage { StatusCode = HttpStatusCode.BadRequest, Version = new Version() });
 
