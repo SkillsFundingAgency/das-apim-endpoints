@@ -12,5 +12,10 @@ namespace SFA.DAS.Campaign.Application.Services
         {
             return !cmsContent.Body.ContentItemsAreNullOrEmpty();
         }
+
+        public bool HasContent(ApiResponse<HubCmsContent> hubCmsContent)
+        {
+            return !hubCmsContent.Body.ContentItemsAreNullOrEmpty();
+        }
     }
 }
