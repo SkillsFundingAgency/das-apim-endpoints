@@ -23,7 +23,8 @@ public static class AddServiceRegistrationExtension
 {
     public static void AddServiceRegistration(this IServiceCollection services)
     {
-        services.AddHttpClient();
+        services.AddHttpClient(string.Empty)
+            .ConfigureHttpClient(c => c.Timeout = TimeSpan.FromMinutes(5));
         services.AddTransient<ICacheStorageService, CacheStorageService>();
         services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
@@ -46,5 +47,6 @@ public static class AddServiceRegistrationExtension
         services.AddTransient<IVacancyReviewService, VacancyReviewService>();
         services.AddTransient<ILocationLookupService, LocationLookupService>();
         services.AddTransient<SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>, SFA.DAS.Recruit.Contracts.Client.RecruitApiClient>();
+        services.AddTransient<ICandidateApiClient<CandidateApiConfiguration>, CandidateApiClient>();
     }
 }
