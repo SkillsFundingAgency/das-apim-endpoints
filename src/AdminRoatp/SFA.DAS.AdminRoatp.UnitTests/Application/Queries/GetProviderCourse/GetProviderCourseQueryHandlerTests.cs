@@ -39,7 +39,7 @@ public class GetProviderCourseQueryHandlerTests
     }
 
     [Test, MoqAutoData]
-    public async Task WhenHandlingRequestAndBadRequestIsReturned_ThenReturnsNull(
+    public async Task WhenHandlingRequest_AndBadRequestIsReturned_ThenReturnsNull(
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
         GetProviderCourseQuery query,
         GetProviderCourseQueryHandler sut)
@@ -54,7 +54,7 @@ public class GetProviderCourseQueryHandlerTests
     }
 
     [Test, MoqAutoData]
-    public async Task WhenHandlingRequestAndApiReturnsInvalidResponseCode_ThenThrowsApiResponseException(
+    public async Task WhenHandlingRequest_AndApiReturnsInvalidResponseCode_ThenThrowsApiResponseException(
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
         GetProviderCourseQuery query,
         GetProviderCourseQueryHandler sut)
