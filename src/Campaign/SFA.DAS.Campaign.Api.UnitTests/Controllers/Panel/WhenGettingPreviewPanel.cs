@@ -57,5 +57,24 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Panel
                 Assert.That(actualResult.Message.Equals($"Preview Panel not found for panel id {panelId}."));
             });
         }
+
+        [Test, MoqAutoData]
+        public async Task GivenPanelIsNotFound_ThenNotFoundObjectResultReturned
+            (int panelId,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] PanelController controller)
+        {
+            mockMediator.Setup(mediator => mediator.Send(It.Is<GetPreviewPanelQuery>(p => p.Id.Equals(panelId)), It.IsAny<CancellationToken>())).ReturnsAsync(new GetPreviewPanelQueryResult { PanelModel = null });
+
+            var controllerResult = await controller.GetPreviewPanelAsync(panelId, CancellationToken.None) as ObjectResult;
+            var actualResult = controllerResult.Value as NotFoundResponse;
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(actualResult, Is.Not.Null);
+                Assert.That(controllerResult.StatusCode.Equals(404));
+                Assert.That(actualResult.Message.Equals($"Preview Panel not found for panel id {panelId}."));
+            });
+        }
     }
 }
