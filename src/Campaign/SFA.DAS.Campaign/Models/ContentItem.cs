@@ -12,6 +12,7 @@ namespace SFA.DAS.Campaign.Models
         public ResourceItem EmbeddedResource { get; set; }
         public List<VideoTranscript> VideoTranscripts { get; set; }
         public CtaPanelModel CtaPanel { get; set; }
+        public StatsSectionModel StatsSection { get; set; }
     }
 
     public class VideoTranscript

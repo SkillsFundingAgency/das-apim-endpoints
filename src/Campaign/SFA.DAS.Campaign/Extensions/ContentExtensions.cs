@@ -353,6 +353,53 @@ namespace SFA.DAS.Campaign.Extensions
             };
         }
 
+        public static StatsSectionModel BuildStatsSection(this SubContentItems contentItem, CmsContent article)
+        {
+            return article.BuildStatsSection(contentItem.Content?
+                .Where(c => EmbeddedEntryInlineNodeTypeKey.Equals(c.NodeType))
+                .Select(c => c.Data?.Target?.Sys?.Id));
+        }
+
+        public static StatsSectionModel BuildStatsSection(this FluffyContent contentItem, CmsContent article)
+        {
+            return article.BuildStatsSection(contentItem.Content?
+                .Where(c => EmbeddedEntryInlineNodeTypeKey.Equals(c.NodeType))
+                .Select(c => c.Data?.Target?.Sys?.Id));
+        }
+
+        private static StatsSectionModel BuildStatsSection(this CmsContent article, IEnumerable<string> linkedItemIds)
+        {
+            return linkedItemIds?
+                .Select(article.GetStatsSection)
+                .FirstOrDefault(statsSection => statsSection != null);
+        }
+
+        public static StatsSectionModel GetStatsSection(this CmsContent article, string linkedItemId)
+        {
+            if (linkedItemId == null)
+            {
+                return null;
+            }
+
+            var entry = article.Includes?.Entry?.FirstOrDefault(c =>
+                c.Sys?.Id != null && c.Sys.Id.Equals(linkedItemId, StringComparison.CurrentCultureIgnoreCase));
+            if (entry?.Fields == null
+                || !ContentfulConstants.StatsSectionContentTypeId.Equals(entry.Sys.ContentType?.Sys?.Id,
+                    StringComparison.CurrentCultureIgnoreCase))
+            {
+                return null;
+            }
+
+            return new StatsSectionModel
+            {
+                Text = entry.Fields.Text,
+                HighlightValue = entry.Fields.HighlightValue,
+                QuoteName = entry.Fields.QuoteName,
+                QuoteRole = entry.Fields.QuoteRole,
+                ReferenceText = entry.Fields.ReferenceText
+            };
+        }
+
         private static bool IsVideoTranscript(this Entry entry)
         {
             return entry?.Sys?.ContentType?.Sys?.Id != null
@@ -643,7 +690,8 @@ namespace SFA.DAS.Campaign.Extensions
                     Values = contentItem.BuildParagraph(),
                     TableValue = contentItem.BuildTable(article),
                     VideoTranscripts = contentItem.BuildVideoTranscripts(article),
-                    CtaPanel = contentItem.BuildCtaPanel(article)
+                    CtaPanel = contentItem.BuildCtaPanel(article),
+                    StatsSection = contentItem.BuildStatsSection(article)
                 });
             }
         }
@@ -680,7 +728,7 @@ namespace SFA.DAS.Campaign.Extensions
         {
             if (EmbeddedEntryBlockNodeTypeKey.Equals(contentItem.NodeType, StringComparison.CurrentCultureIgnoreCase))
             {
-                article.AddCtaPanel(contentItem.NodeType, contentItem.Data?.Target?.Sys?.Id, contentItems);
+                article.AddEmbeddedEntry(contentItem.NodeType, contentItem.Data?.Target?.Sys?.Id, contentItems);
             }
         }
 
@@ -688,19 +736,21 @@ namespace SFA.DAS.Campaign.Extensions
         {
             if (EmbeddedEntryBlockNodeTypeKey.Equals(contentItem.NodeType, StringComparison.CurrentCultureIgnoreCase))
             {
-                article.AddCtaPanel(contentItem.NodeType, contentItem.Data?.Target?.Sys?.Id, contentItems);
+                article.AddEmbeddedEntry(contentItem.NodeType, contentItem.Data?.Target?.Sys?.Id, contentItems);
             }
         }
 
-        private static void AddCtaPanel(this CmsContent article, string nodeType, string linkedItemId, List<ContentItem> contentItems)
+        private static void AddEmbeddedEntry(this CmsContent article, string nodeType, string linkedItemId, List<ContentItem> contentItems)
         {
             var ctaPanel = article.GetCtaPanel(linkedItemId);
-            if (ctaPanel != null)
+            var statsSection = article.GetStatsSection(linkedItemId);
+            if (ctaPanel != null || statsSection != null)
             {
                 contentItems.Add(new ContentItem
                 {
                     Type = nodeType,
-                    CtaPanel = ctaPanel
+                    CtaPanel = ctaPanel,
+                    StatsSection = statsSection
                 });
             }
         }

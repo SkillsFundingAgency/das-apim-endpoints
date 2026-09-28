@@ -247,7 +247,8 @@ namespace SFA.DAS.Campaign.Models
                     Values = contentItem.BuildParagraph(),
                     TableValue = contentItem.BuildTable(article),
                     VideoTranscripts = contentItem.BuildVideoTranscripts(article),
-                    CtaPanel = contentItem.BuildCtaPanel(article)
+                    CtaPanel = contentItem.BuildCtaPanel(article),
+                    StatsSection = contentItem.BuildStatsSection(article)
                 });
             }
         }

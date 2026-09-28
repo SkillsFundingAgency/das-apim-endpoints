@@ -223,6 +223,79 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             actual.MainContent.Items[0].CtaPanel.Should().BeEquivalentTo(ExpectedCtaPanel);
         }
 
+        private static readonly StatsSectionModel ExpectedStatsSection = new StatsSectionModel
+        {
+            Text = "of employers said apprentices improved productivity",
+            HighlightValue = "86%",
+            QuoteName = "Jane Smith",
+            QuoteRole = "Managing Director",
+            ReferenceText = "Employer survey 2025"
+        };
+
+        [Test]
+        public void Then_A_Stats_Section_Block_In_Tabbed_Content_Is_Added_To_The_Content_Items()
+        {
+            var source = BuildSource(tabContent: CtaPanelBlock.Replace("cta1", "stats1"));
+
+            var actual = new CmsPageModel().Build(source, null, null);
+
+            var items = actual.TabbedContents.Single().Content.Items;
+            items.Should().ContainSingle();
+            items[0].Type.Should().Be("embedded-entry-block");
+            items[0].StatsSection.Should().BeEquivalentTo(ExpectedStatsSection);
+            items[0].CtaPanel.Should().BeNull();
+        }
+
+        [Test]
+        public void Then_A_Stats_Section_Block_In_The_Main_Content_Is_Added_To_The_Content_Items()
+        {
+            var source = BuildSource(mainContent: CtaPanelBlock.Replace("cta1", "stats1"));
+
+            var actual = new CmsPageModel().Build(source, null, null);
+
+            actual.MainContent.Items.Should().ContainSingle();
+            actual.MainContent.Items[0].Type.Should().Be("embedded-entry-block");
+            actual.MainContent.Items[0].StatsSection.Should().BeEquivalentTo(ExpectedStatsSection);
+            actual.MainContent.Items[0].CtaPanel.Should().BeNull();
+        }
+
+        [Test]
+        public void Then_An_Inline_Stats_Section_In_Tabbed_Content_Is_Added_To_The_Paragraph()
+        {
+            var source = BuildSource(tabContent: CtaPanelInline.Replace("cta1", "stats1"));
+
+            var actual = new CmsPageModel().Build(source, null, null);
+
+            var items = actual.TabbedContents.Single().Content.Items;
+            items.Should().ContainSingle();
+            items[0].Type.Should().Be("paragraph");
+            items[0].StatsSection.Should().BeEquivalentTo(ExpectedStatsSection);
+            items[0].CtaPanel.Should().BeNull();
+        }
+
+        [Test]
+        public void Then_An_Inline_Stats_Section_In_The_Main_Content_Is_Added_To_The_Paragraph()
+        {
+            var source = BuildSource(mainContent: CtaPanelInline.Replace("cta1", "stats1"));
+
+            var actual = new CmsPageModel().Build(source, null, null);
+
+            actual.MainContent.Items.Should().ContainSingle();
+            actual.MainContent.Items[0].Type.Should().Be("paragraph");
+            actual.MainContent.Items[0].StatsSection.Should().BeEquivalentTo(ExpectedStatsSection);
+            actual.MainContent.Items[0].CtaPanel.Should().BeNull();
+        }
+
+        [Test]
+        public void Then_A_Cta_Panel_Has_No_Stats_Section()
+        {
+            var source = BuildSource(tabContent: CtaPanelBlock);
+
+            var actual = new CmsPageModel().Build(source, null, null);
+
+            actual.TabbedContents.Single().Content.Items.Single().StatsSection.Should().BeNull();
+        }
+
         [Test]
         public void Then_An_Embedded_Entry_Block_That_Is_Not_A_Cta_Panel_Is_Not_Added()
         {
@@ -266,6 +339,12 @@ namespace SFA.DAS.Campaign.UnitTests.Models
                         ""fields"": {{
                             ""heading"": ""Ready to hire?"", ""description"": ""Find out how"", ""icon"": ""arrow"",
                             ""buttonText"": ""Get started"", ""url"": ""/employers/get-started"" }}
+                    }},
+                    {{
+                        ""sys"": {{ ""id"": ""stats1"", ""contentType"": {{ ""sys"": {{ ""id"": ""statsSection"", ""type"": ""Link"", ""linkType"": ""ContentType"" }} }} }},
+                        ""fields"": {{
+                            ""text"": ""of employers said apprentices improved productivity"", ""highlightValue"": ""86%"",
+                            ""quoteName"": ""Jane Smith"", ""quoteRole"": ""Managing Director"", ""referenceText"": ""Employer survey 2025"" }}
                     }} ] }}
             }}";
 
