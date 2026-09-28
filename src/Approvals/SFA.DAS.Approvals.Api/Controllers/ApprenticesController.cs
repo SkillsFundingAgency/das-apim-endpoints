@@ -30,6 +30,7 @@ using SFA.DAS.Approvals.Application.InvalidIlrChanges.Queries;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.AcknowledgeApprovalRequestAlerts;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprovalRequests;
 using SFA.DAS.Approvals.Exceptions;
+using SFA.DAS.Approvals.InnerApi.Requests;
 
 namespace SFA.DAS.Approvals.Api.Controllers;
 
@@ -639,7 +640,7 @@ public class ApprenticesController(
                 ApprenticeConfirmationStatus = request.ApprenticeConfirmationStatus,
                 DeliveryModel = request.DeliveryModel
             };
-
+       
             var apprenticesData = await mediator.Send(query);
 
             if (apprenticesData == null)
@@ -780,6 +781,63 @@ public class ApprenticesController(
     }
 
     [HttpGet]
+    [Route("/provider/{providerId:long}/apprentices/{apprenticeshipId:long}/declined-changes")]
+    public async Task<IActionResult> GetDeclinedChanges(long providerId, long apprenticeshipId)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetInvalidIlrChangesQuery(
+                providerId,
+                apprenticeshipId,
+                GetInvalidIlrChangesRequest.DeclinedChangesPath));
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+        catch (ResourceNotFoundException exception)
+        {
+            logger.LogError(exception, "Declined changes not found for apprenticeship {ApprenticeshipId}", apprenticeshipId);
+            return NotFound();
+        }
+        catch (UnauthorizedAccessException exception)
+        {
+            logger.LogError(exception, "Permission denied when accessing declined changes for apprenticeship {ApprenticeshipId}", apprenticeshipId);
+            return Unauthorized();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Error getting declined changes for apprenticeship {ApprenticeshipId}", apprenticeshipId);
+            return BadRequest();
+        }
+    }
+
+    [HttpPost]
+    [Route("/provider/{providerId:long}/apprentices/{apprenticeshipId:long}/declined-changes")]
+    public async Task<IActionResult> AcknowledgeDeclinedChanges(long providerId, long apprenticeshipId, [FromBody] AcknowledgeInvalidIlrChangesApiRequest request)
+    {
+        try
+        {
+            await mediator.Send(new AcknowledgeInvalidIlrChangesCommand
+            {
+                ProviderId = providerId,
+                ApprenticeshipId = apprenticeshipId,
+                UserInfo = request.UserInfo,
+                InnerPath = GetInvalidIlrChangesRequest.DeclinedChangesPath,
+                Acknowledgements = request.Acknowledgements
+            });
+            return Ok();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Error acknowledging declined changes for apprenticeship {ApprenticeshipId}", apprenticeshipId);
+            return BadRequest();
+        }
+    }
+
+    [HttpGet]
     [Route("/employer/{accountId:long}/apprentices/{apprenticeshipId:long}/approval-requests")]
     public async Task<IActionResult> GetApprovalRequest(long accountId, long apprenticeshipId, [FromQuery] byte status)
     {
@@ -809,7 +867,7 @@ public class ApprenticesController(
 
     [HttpPut]
     [Route("/employer/{accountId:long}/apprentices/{apprenticeshipId:long}/alerts-acknowledged")]
-    public async Task<IActionResult> UpdateApprovalRequestAlertAcknowledge(long accountId, long apprenticeshipId, [FromBody] UpdateApprovalRequestAlertAcknowledgeRequest request)
+    public async Task<IActionResult> UpdateApprovalRequestAlertAcknowledge(long accountId, long apprenticeshipId, [FromBody] Models.Apprentices.UpdateApprovalRequestAlertAcknowledgeRequest request)
     {
         try
         {
