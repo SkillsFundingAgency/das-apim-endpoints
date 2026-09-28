@@ -45,7 +45,7 @@ public class GetInvalidIlrChangesQueryHandler(
         }
 
         var invalidIlrChangesResponse = await commitmentsApiClient.GetWithResponseCode<GetInvalidIlrChangesResponse>(
-            new GetInvalidIlrChangesRequest(query.ApprenticeshipId, query.ProviderId));
+            new GetInvalidIlrChangesRequest(query.ApprenticeshipId, query.ProviderId, query.InnerPath));
 
         if (invalidIlrChangesResponse.StatusCode == HttpStatusCode.NotFound)
         {
