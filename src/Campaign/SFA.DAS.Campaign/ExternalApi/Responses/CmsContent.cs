@@ -215,6 +215,30 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
 
         [JsonPropertyName("text")]
         public string Text { get; set; }
+
+        [JsonPropertyName("heading")]
+        public string Heading { get; set; }
+
+        [JsonPropertyName("icon")]
+        public string Icon { get; set; }
+
+        [JsonPropertyName("buttonText")]
+        public string ButtonText { get; set; }
+
+        [JsonPropertyName("url")]
+        public string Url { get; set; }
+
+        [JsonPropertyName("highlightValue")]
+        public string HighlightValue { get; set; }
+
+        [JsonPropertyName("quoteName")]
+        public string QuoteName { get; set; }
+
+        [JsonPropertyName("quoteRole")]
+        public string QuoteRole { get; set; }
+
+        [JsonPropertyName("referenceText")]
+        public string ReferenceText { get; set; }
     }
 
     public class PurpleContent
