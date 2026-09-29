@@ -75,7 +75,8 @@ public class CreateUnapprovedApprenticeshipLearningRequestBuilder(ICourseService
             {
                 StartDate = x.StartDate,
                 EndDate = x.EndDate
-            }).ToList()
+            }).ToList(),
+            IsNewApprenticeshipLearner = learningApiPutResponse.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.NewApprenticeshipLearner)
         };
 
         return new PostCreateUnapprovedApprenticeshipLearningRequest(request);
