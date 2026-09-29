@@ -189,6 +189,9 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         [JsonPropertyName("pageTitle")]
         public string PageTitle { get; set; }
 
+        [JsonPropertyName("shortPageTitle")]
+        public string ShortPageTitle { get; set; }
+
         [JsonPropertyName("metaDescription")]
         public string MetaDescription { get; set; }
 
