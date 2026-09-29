@@ -65,7 +65,7 @@ public class GetAllCoursesQueryHandlerTests
     }
 
     [Test, MoqAutoData]
-    public async Task WhenHandlingRequestAndStandardsAreEmpty_ThenReturnsEmptyCourses(
+    public async Task WhenHandlingRequest_AndStandardsAreEmpty_ThenReturnsEmptyCourses(
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
         GetAllCoursesQueryHandler sut)
     {
@@ -79,7 +79,7 @@ public class GetAllCoursesQueryHandlerTests
     }
 
     [Test, MoqAutoData]
-    public async Task WhenHandlingRequestAndApiReturnsInvalidResponseCode_ThenThrowsApiResponseException(
+    public async Task WhenHandlingRequest_AndApiReturnsInvalidResponseCode_ThenThrowsApiResponseException(
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
         GetAllCoursesQueryHandler sut)
     {
