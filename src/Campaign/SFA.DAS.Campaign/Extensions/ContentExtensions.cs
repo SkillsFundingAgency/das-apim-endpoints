@@ -36,6 +36,37 @@ namespace SFA.DAS.Campaign.Extensions
             return item == null;
         }
 
+        public static bool ContentItemsAreNullOrEmpty(this HubCmsContent pageContent)
+        {
+            if (pageContent == null || pageContent.Total == 0)
+            {
+                return true;
+            }
+
+            return pageContent.Items.FirstOrDefault() == null;
+        }
+
+        public static ResourceItem GetEmbeddedResource(this HubCmsContent hub, string id)
+        {
+            var embeddedResource = hub.Includes.Asset.FirstOrDefault(c => c.Sys.Id.Equals(id));
+
+            if (embeddedResource != null)
+            {
+                return new ResourceItem
+                {
+                    Id = id,
+                    Title = embeddedResource.Fields.Title,
+                    Description = embeddedResource.Fields.Description,
+                    FileName = embeddedResource.Fields.File.FileName,
+                    Url = $"https:{embeddedResource.Fields.File.Url}",
+                    ContentType = embeddedResource.Fields.File.ContentType,
+                    Size = embeddedResource.Fields.File.Details.Size
+                };
+            }
+
+            return new ResourceItem();
+        }
+
         public static List<string> BuildParagraph(this SubContentItems contentItemContent)
         {
             var returnList = new List<string>();
