@@ -22,7 +22,8 @@ public class DeleteApplicationCommandHandler : IRequestHandler<DeleteApplication
         {
             await _apiClient.Delete(new DeleteApplicationApiRequest()
             {
-                ApplicationId = request.ApplicationId
+                ApplicationId = request.ApplicationId,
+                UserType = request.UserType
             });
             response.Success = true;
         }
