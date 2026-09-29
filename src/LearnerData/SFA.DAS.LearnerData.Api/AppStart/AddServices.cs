@@ -1,5 +1,7 @@
-﻿using SFA.DAS.Api.Common.Infrastructure;
+﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
@@ -23,6 +25,9 @@ public static class AddApiServicesExtension
         services.AddTransient<ILearningApiClient<LearningApiConfiguration>, LearningApiClient>();
         services.AddTransient<IEarningsApiClient<EarningsApiConfiguration>, EarningsApiClient>();
         services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
+        services.TryAddSingleton(TimeProvider.System);
+        services.AddTransient(typeof(IAccessTokenApiClient<>), typeof(AccessTokenApiClient<>));
+        services.AddTransient<ISldDataApiClient<SLDDataApiConfiguration>, SldDataApiClient>();
         services.AddTransient<ILearningSupportService, LearningSupportService>();
         services.AddTransient<IBreaksInLearningService, BreaksInLearningService>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
