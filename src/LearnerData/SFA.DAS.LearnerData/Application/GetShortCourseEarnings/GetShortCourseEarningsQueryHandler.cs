@@ -77,7 +77,7 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
         var tasks = learningKeys.Select(async learningKey =>
         {
             var response = await _earningsApiClient.GetWithResponseCode<GetFm99ShortCourseDataResponse>(
-                new GetFm99ShortCourseDataRequest(request.Ukprn, learningKey));
+                new GetFm99ShortCourseDataRequest(request.Ukprn, learningKey, request.CollectionYear));
 
             if (!response.StatusCode.IsSuccessStatusCode())
             {

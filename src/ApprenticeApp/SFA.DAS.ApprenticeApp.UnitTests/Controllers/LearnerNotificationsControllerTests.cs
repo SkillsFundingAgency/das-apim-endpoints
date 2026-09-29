@@ -51,19 +51,26 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Controllers
         }
 
         [Test, MoqAutoData]
-        public async Task GetLearnerNotifications_Returns_NotFound_When_Null(
+        public async Task GetLearnerNotifications_Returns_Ok_With_Empty_List_When_Notifications_Are_Null(
             [Frozen] Mock<IMediator> mediatorMock,
             [Greedy] LearnerNotificationsController controller)
         {
             // Arrange
-            controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() };
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
 
             var accountIdentifier = Guid.NewGuid();
-            var expectedResult = new GetLearnerNotificationsQueryResult { Notifications = null };
+            var expectedResult = new GetLearnerNotificationsQueryResult
+            {
+                Notifications = null
+            };
 
             mediatorMock
                 .Setup(m => m.Send(
-                    It.Is<GetLearnerNotificationsQuery>(q => q.AccountIdentifier == accountIdentifier),
+                    It.Is<GetLearnerNotificationsQuery>(
+                        q => q.AccountIdentifier == accountIdentifier),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedResult);
 
@@ -71,7 +78,14 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Controllers
             var actionResult = await controller.GetLearnerNotifications(accountIdentifier);
 
             // Assert
-            actionResult.Should().BeOfType<NotFoundResult>();
+            var okResult = actionResult.Should()
+                .BeOfType<OkObjectResult>()
+                .Subject;
+
+            okResult.Value.Should()
+                .BeAssignableTo<IEnumerable<LearnerNotification>>()
+                .Which.Should()
+                .BeEmpty();
         }
 
         [Test, MoqAutoData]
