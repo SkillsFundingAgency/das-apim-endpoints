@@ -8,11 +8,10 @@ using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Linq;
-using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.Approvals.Application.TrainingCourses.Queries;
 
-public class GetCoursesQueryHandler(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, ILogger<GetCoursesQueryHandler> logger)
+public class GetCoursesQueryHandler(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
     : IRequestHandler<GetCoursesQuery, GetCoursesResult>
 {
     public async Task<GetCoursesResult> Handle(GetCoursesQuery request, CancellationToken cancellationToken)
