@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace SFA.DAS.Approvals.Enums
 {
-    [Flags]
+    
     public enum Alerts
     {
         [Description("ILR data mismatch")]
@@ -19,6 +19,8 @@ namespace SFA.DAS.Approvals.Enums
         [Description("ILR changes invalid")]
         IlrChangeInvalid = 5,
         [Description("Changes declined")]
-        ChangesDeclined = 6
+        ChangesDeclined = 6,
+        [Description("ILR changes pending")]
+        IlrChangesPending = 7
     }
 }

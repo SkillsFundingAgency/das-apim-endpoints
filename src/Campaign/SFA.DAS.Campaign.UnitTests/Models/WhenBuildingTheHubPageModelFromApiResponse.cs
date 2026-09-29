@@ -14,7 +14,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         public void Then_If_No_Items_Returned_Then_Null_Returned(MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
-            var source = new CmsContent { Items = new List<Item>(), Total = 1 };
+            var source = new HubCmsContent { Items = new List<HubItem>(), Total = 1 };
 
             //Act
             var actual = new HubPageModel().Build(source, menuContent, bannerContent);
@@ -23,7 +23,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             actual.Should().BeNull();
         }
         [Test, RecursiveMoqAutoData]
-        public void Then_If_Total_Is_Zero_Items_Returned_Then_Null_Returned(CmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        public void Then_If_Total_Is_Zero_Items_Returned_Then_Null_Returned(HubCmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             source.Total = 0;
@@ -36,7 +36,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
 
         [Test, RecursiveMoqAutoData]
-        public void Then_No_Content_Items_Returns_Empty_Header_Image_And_Cards(CmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        public void Then_No_Content_Items_Returns_Empty_Header_Image_And_Cards(HubCmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             source.Items.FirstOrDefault().Fields.HeaderImage = null;
@@ -52,7 +52,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         [Test]
         [RecursiveMoqInlineAutoData("hub", PageType.Hub)]
         [RecursiveMoqInlineAutoData("test", PageType.Unknown)]
-        public void Then_The_PageType_Is_Correctly_Set(string pageType, PageType type, CmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        public void Then_The_PageType_Is_Correctly_Set(string pageType, PageType type, HubCmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             source.Items.FirstOrDefault().Sys.ContentType.Sys.Id = pageType;
@@ -65,7 +65,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
 
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Page_Level_Fields_Are_Set(CmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        public void Then_The_Page_Level_Fields_Are_Set(HubCmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Act
             var actual = new HubPageModel().Build(source, menuContent, bannerContent);
@@ -79,16 +79,16 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
 
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Header_Image_Is_Added(CmsContent source, string contentValue, AssetFields fields, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        public void Then_The_Header_Image_Is_Added(HubCmsContent source, string contentValue, HubAssetFields fields, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             fields.File.Url = $"//{fields.File.Url}";
 
-            source.Includes.Asset = new List<Asset>()
+            source.Includes.Asset = new List<HubAsset>()
             {
-                new Asset
+                new HubAsset
                 {
-                    Sys = new AssetSys
+                    Sys = new HubSys
                     {
                         Id = source.Items[0].Fields.HeaderImage.Sys.Id
                     },
@@ -113,29 +113,20 @@ namespace SFA.DAS.Campaign.UnitTests.Models
 
 
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Cards_Are_Built(CmsContent source, EntryFields linkedPage, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        public void Then_The_Cards_Are_Built(HubCmsContent source, HubEntryFields linkedPage, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             source.Items[0].Fields.Cards[0].Sys.Id = "2K5MZPYdhDNyPEsDk4EgZh";
-            source.Includes.Entry = new List<Entry>
+            source.Includes.Entry = new List<HubEntry>
             {
-                new Entry
+                new HubEntry
                 {
-                    Sys = new AssetSys
+                    Sys = new HubSys
                     {
                         Id = "2K5MZPYdhDNyPEsDk4EgZh",
-                        Space = new LandingPage
+                        ContentType = new HubLink
                         {
-                            Sys = new LandingPageSys
-                            {
-                                Id = "123abc",
-                                Type = "Link",
-                                LinkType = "Space"
-                            }
-                        },
-                        ContentType = new LandingPage
-                        {
-                            Sys = new LandingPageSys
+                            Sys = new HubLinkSys
                             {
                                 Id = "article",
                                 LinkType = "ContentType",
@@ -160,29 +151,20 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
 
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Cards2_Are_Built(CmsContent source, EntryFields linkedPage, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        public void Then_The_Cards2_Are_Built(HubCmsContent source, HubEntryFields linkedPage, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             source.Items[0].Fields.Cards2[0].Sys.Id = "2K5MZPYdhDNyPEsDk4EgZh";
-            source.Includes.Entry = new List<Entry>
+            source.Includes.Entry = new List<HubEntry>
             {
-                new Entry
+                new HubEntry
                 {
-                    Sys = new AssetSys
+                    Sys = new HubSys
                     {
                         Id = "2K5MZPYdhDNyPEsDk4EgZh",
-                        Space = new LandingPage
+                        ContentType = new HubLink
                         {
-                            Sys = new LandingPageSys
-                            {
-                                Id = "123abc",
-                                Type = "Link",
-                                LinkType = "Space"
-                            }
-                        },
-                        ContentType = new LandingPage
-                        {
-                            Sys = new LandingPageSys
+                            Sys = new HubLinkSys
                             {
                                 Id = "article",
                                 LinkType = "ContentType",
@@ -207,29 +189,20 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
 
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Cards3_Are_Built(CmsContent source, EntryFields linkedPage, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        public void Then_The_Cards3_Are_Built(HubCmsContent source, HubEntryFields linkedPage, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             source.Items[0].Fields.Cards3[0].Sys.Id = "2K5MZPYdhDNyPEsDk4EgZh";
-            source.Includes.Entry = new List<Entry>
+            source.Includes.Entry = new List<HubEntry>
             {
-                new Entry
+                new HubEntry
                 {
-                    Sys = new AssetSys
+                    Sys = new HubSys
                     {
                         Id = "2K5MZPYdhDNyPEsDk4EgZh",
-                        Space = new LandingPage
+                        ContentType = new HubLink
                         {
-                            Sys = new LandingPageSys
-                            {
-                                Id = "123abc",
-                                Type = "Link",
-                                LinkType = "Space"
-                            }
-                        },
-                        ContentType = new LandingPage
-                        {
-                            Sys = new LandingPageSys
+                            Sys = new HubLinkSys
                             {
                                 Id = "article",
                                 LinkType = "ContentType",
@@ -254,7 +227,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
 
         [Test, RecursiveMoqAutoData]
-        public void Then_The_Cards_Titles_Are_Set(CmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        public void Then_The_Cards_Titles_Are_Set(HubCmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Act
             var actual = new HubPageModel().Build(source, menuContent, bannerContent);
@@ -266,7 +239,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
 
         [Test, RecursiveMoqAutoData]
-        public void Then_Null_Card_Collections_Return_Empty_Lists(CmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        public void Then_Null_Card_Collections_Return_Empty_Lists(HubCmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             //Arrange
             source.Items[0].Fields.Cards2 = null;
@@ -278,6 +251,303 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             //Assert
             actual.MainContent.Cards2.Should().BeEmpty();
             actual.MainContent.Cards3.Should().BeEmpty();
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_The_Sections_Are_Built(HubCmsContent source, HubEntryFields sectionFields, HubEntryFields stepperLink, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            sectionFields.CtaPanel = null;
+            sectionFields.StandardLinks = null;
+            sectionFields.StepperLinks = new List<HubLink>
+            {
+                new HubLink { Sys = new HubLinkSys { Id = "stepper-link-id", Type = "Link", LinkType = "Entry" } }
+            };
+            source.Items[0].Fields.Sections = new List<HubLink>
+            {
+                new HubLink { Sys = new HubLinkSys { Id = "section-id", Type = "Link", LinkType = "Entry" } }
+            };
+            source.Includes.Entry = new List<HubEntry>
+            {
+                BuildEntry("section-id", "hubSection", sectionFields),
+                BuildEntry("stepper-link-id", "article", stepperLink)
+            };
+
+            //Act
+            var actual = new HubPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.Sections.Count.Should().Be(1);
+            var section = actual.MainContent.Sections[0];
+            section.SectionType.Should().Be(sectionFields.SectionType);
+            section.Heading.Should().Be(sectionFields.Heading);
+            section.Introduction.Should().Be(sectionFields.Introduction);
+            section.StepperLinks.Count.Should().Be(1);
+            section.StepperLinks[0].Title.Should().Be(stepperLink.Title);
+            section.StepperLinks[0].Slug.Should().Be(stepperLink.Slug);
+            section.StepperLinks[0].PageType.Should().Be(PageType.Article);
+            section.StandardLinks.Should().BeEmpty();
+            section.CtaPanel.Should().BeNull();
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_The_Section_Cta_Panel_Is_Built(HubCmsContent source, HubEntryFields sectionFields, HubEntryFields ctaPanel, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            sectionFields.StepperLinks = null;
+            sectionFields.StandardLinks = null;
+            sectionFields.CtaPanel = new HubLink { Sys = new HubLinkSys { Id = "cta-panel-id", Type = "Link", LinkType = "Entry" } };
+            source.Items[0].Fields.Sections = new List<HubLink>
+            {
+                new HubLink { Sys = new HubLinkSys { Id = "section-id", Type = "Link", LinkType = "Entry" } }
+            };
+            source.Includes.Entry = new List<HubEntry>
+            {
+                BuildEntry("section-id", "hubSection", sectionFields),
+                BuildEntry("cta-panel-id", "ctaPanel", ctaPanel)
+            };
+
+            //Act
+            var actual = new HubPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            var actualPanel = actual.MainContent.Sections[0].CtaPanel;
+            actualPanel.Heading.Should().Be(ctaPanel.Heading);
+            actualPanel.Description.Should().Be(ctaPanel.Description);
+            actualPanel.Icon.Should().Be(ctaPanel.Icon);
+            actualPanel.ButtonText.Should().Be(ctaPanel.ButtonText);
+            actualPanel.Url.Should().Be(ctaPanel.Url);
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_A_Cta_Panel_In_The_Standard_Links_Is_Built(HubCmsContent source, HubEntryFields sectionFields, HubEntryFields ctaPanel, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            sectionFields.StepperLinks = null;
+            sectionFields.CtaPanel = null;
+            sectionFields.StandardLinks = new List<HubLink>
+            {
+                new HubLink { Sys = new HubLinkSys { Id = "cta-panel-id", Type = "Link", LinkType = "Entry" } }
+            };
+            source.Items[0].Fields.Sections = new List<HubLink>
+            {
+                new HubLink { Sys = new HubLinkSys { Id = "section-id", Type = "Link", LinkType = "Entry" } }
+            };
+            source.Includes.Entry = new List<HubEntry>
+            {
+                BuildEntry("section-id", "hubSection", sectionFields),
+                BuildEntry("cta-panel-id", "ctaPanel", ctaPanel)
+            };
+
+            //Act
+            var actual = new HubPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            var actualLink = actual.MainContent.Sections[0].StandardLinks[0];
+            actualLink.PageType.Should().Be(PageType.CtaPanel);
+            actualLink.CtaPanel.Should().NotBeNull();
+            actualLink.CtaPanel.Url.Should().Be(ctaPanel.Url);
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_The_Section_Statistics_Are_Built(HubCmsContent source, HubEntryFields sectionFields, HubEntryFields statsSection, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            sectionFields.StepperLinks = null;
+            sectionFields.StandardLinks = null;
+            sectionFields.CtaPanel = null;
+            sectionFields.StatisticsSections = new List<HubLink>
+            {
+                new HubLink { Sys = new HubLinkSys { Id = "stats-section-id", Type = "Link", LinkType = "Entry" } }
+            };
+            source.Items[0].Fields.Sections = new List<HubLink>
+            {
+                new HubLink { Sys = new HubLinkSys { Id = "section-id", Type = "Link", LinkType = "Entry" } }
+            };
+            source.Includes.Entry = new List<HubEntry>
+            {
+                BuildEntry("section-id", "hubSection", sectionFields),
+                BuildEntry("stats-section-id", "statsSection", statsSection)
+            };
+
+            //Act
+            var actual = new HubPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.Sections[0].StatisticsSections.Count.Should().Be(1);
+            var actualStatistic = actual.MainContent.Sections[0].StatisticsSections[0];
+            actualStatistic.Text.Should().Be(statsSection.Text);
+            actualStatistic.HighlightValue.Should().Be(statsSection.HighlightValue);
+            actualStatistic.QuoteName.Should().Be(statsSection.QuoteName);
+            actualStatistic.QuoteRole.Should().Be(statsSection.QuoteRole);
+            actualStatistic.ReferenceText.Should().Be(statsSection.ReferenceText);
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_Statistics_Linking_To_Other_Content_Types_Are_Ignored(HubCmsContent source, HubEntryFields sectionFields, HubEntryFields linkedPage, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            sectionFields.StatisticsSections = new List<HubLink>
+            {
+                new HubLink { Sys = new HubLinkSys { Id = "stats-section-id", Type = "Link", LinkType = "Entry" } }
+            };
+            source.Items[0].Fields.Sections = new List<HubLink>
+            {
+                new HubLink { Sys = new HubLinkSys { Id = "section-id", Type = "Link", LinkType = "Entry" } }
+            };
+            source.Includes.Entry = new List<HubEntry>
+            {
+                BuildEntry("section-id", "hubSection", sectionFields),
+                BuildEntry("stats-section-id", "article", linkedPage)
+            };
+
+            //Act
+            var actual = new HubPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.Sections[0].StatisticsSections.Should().BeEmpty();
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_A_Null_StatisticsSections_Collection_Returns_An_Empty_List(HubCmsContent source, HubEntryFields sectionFields, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            sectionFields.StatisticsSections = null;
+            source.Items[0].Fields.Sections = new List<HubLink>
+            {
+                new HubLink { Sys = new HubLinkSys { Id = "section-id", Type = "Link", LinkType = "Entry" } }
+            };
+            source.Includes.Entry = new List<HubEntry>
+            {
+                BuildEntry("section-id", "hubSection", sectionFields)
+            };
+
+            //Act
+            var actual = new HubPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.Sections[0].StatisticsSections.Should().BeEmpty();
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_Sections_Linking_To_Other_Content_Types_Are_Ignored(HubCmsContent source, HubEntryFields linkedPage, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            source.Items[0].Fields.Sections = new List<HubLink>
+            {
+                new HubLink { Sys = new HubLinkSys { Id = "section-id", Type = "Link", LinkType = "Entry" } }
+            };
+            source.Includes.Entry = new List<HubEntry>
+            {
+                BuildEntry("section-id", "article", linkedPage)
+            };
+
+            //Act
+            var actual = new HubPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.Sections.Should().BeEmpty();
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_A_Null_Sections_Collection_Returns_An_Empty_List(HubCmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            source.Items[0].Fields.Sections = null;
+
+            //Act
+            var actual = new HubPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.Sections.Should().BeEmpty();
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_The_Carousel_Images_Are_Built(HubCmsContent source, HubAssetFields firstImage, HubAssetFields secondImage, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            firstImage.File.Url = $"//{firstImage.File.Url}";
+            secondImage.File.Url = $"//{secondImage.File.Url}";
+            source.Items[0].Fields.HeaderImage = null;
+            source.Items[0].Fields.Carousel = new List<HubLink>
+            {
+                new HubLink { Sys = new HubLinkSys { Id = "first-image-id", Type = "Link", LinkType = "Asset" } },
+                new HubLink { Sys = new HubLinkSys { Id = "second-image-id", Type = "Link", LinkType = "Asset" } }
+            };
+            source.Includes.Asset = new List<HubAsset>
+            {
+                new HubAsset { Sys = new HubSys { Id = "first-image-id" }, Fields = firstImage },
+                new HubAsset { Sys = new HubSys { Id = "second-image-id" }, Fields = secondImage }
+            };
+
+            //Act
+            var actual = new HubPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.Carousel.Count.Should().Be(2);
+            actual.MainContent.Carousel[0].Type.Should().Be("Asset");
+            actual.MainContent.Carousel[0].EmbeddedResource.Id.Should().Be("first-image-id");
+            actual.MainContent.Carousel[0].EmbeddedResource.Title.Should().Be(firstImage.Title);
+            actual.MainContent.Carousel[0].EmbeddedResource.Description.Should().Be(firstImage.Description);
+            actual.MainContent.Carousel[0].EmbeddedResource.FileName.Should().Be(firstImage.File.FileName);
+            actual.MainContent.Carousel[0].EmbeddedResource.Url.Should().Be($"https:{firstImage.File.Url}");
+            actual.MainContent.Carousel[0].EmbeddedResource.ContentType.Should().Be(firstImage.File.ContentType);
+            actual.MainContent.Carousel[0].EmbeddedResource.Size.Should().Be(firstImage.File.Details.Size);
+            actual.MainContent.Carousel[1].EmbeddedResource.Id.Should().Be("second-image-id");
+            actual.MainContent.Carousel[1].EmbeddedResource.Url.Should().Be($"https:{secondImage.File.Url}");
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_A_Null_Carousel_Returns_An_Empty_List(HubCmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            source.Items[0].Fields.Carousel = null;
+
+            //Act
+            var actual = new HubPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.Carousel.Should().BeEmpty();
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_Carousel_Images_Not_In_The_Included_Assets_Return_An_Empty_Resource(HubCmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            source.Items[0].Fields.HeaderImage = null;
+            source.Items[0].Fields.Carousel = new List<HubLink>
+            {
+                new HubLink { Sys = new HubLinkSys { Id = "missing-image-id", Type = "Link", LinkType = "Asset" } }
+            };
+            source.Includes.Asset = new List<HubAsset>();
+
+            //Act
+            var actual = new HubPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.Carousel.Count.Should().Be(1);
+            actual.MainContent.Carousel[0].EmbeddedResource.Url.Should().BeNull();
+        }
+
+        private static HubEntry BuildEntry(string id, string contentTypeId, HubEntryFields fields)
+        {
+            return new HubEntry
+            {
+                Sys = new HubSys
+                {
+                    Id = id,
+                    ContentType = new HubLink
+                    {
+                        Sys = new HubLinkSys
+                        {
+                            Id = contentTypeId,
+                            LinkType = "ContentType",
+                            Type = "Link",
+                        }
+                    }
+                },
+                Fields = fields
+            };
         }
     }
 }
