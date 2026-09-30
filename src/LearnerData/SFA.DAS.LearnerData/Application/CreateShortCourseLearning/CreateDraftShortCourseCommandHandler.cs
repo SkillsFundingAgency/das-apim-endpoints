@@ -164,7 +164,6 @@ public class CreateDraftShortCourseCommandHandler(
             IsFlexiJob = false,
             PlannedOTJTrainingHours = 0,
             AgreementId = onProg.AgreementId,
-            StandardCode = 0,
             ConsumerReference = consumerReference,
             LarsCode = earningsOnProg.CourseCode,
             CorrelationId = correlationId,

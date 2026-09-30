@@ -43,7 +43,6 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                 TrainingPrice = expectedCost.TrainingPrice,
                 AgreementId = onProgramme.AgreementId,
                 IsFlexiJob = onProgramme.IsFlexiJob!.Value,
-                StandardCode = onProgramme.StandardCode,
                 CorrelationId = correlationId,
                 ReceivedDate = receivedDate,
                 ConsumerReference = consumerReference,

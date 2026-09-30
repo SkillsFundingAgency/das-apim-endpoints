@@ -248,7 +248,6 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             IsFlexiJob = false,
             PlannedOTJTrainingHours = 0,
             AgreementId = onProg.AgreementId,
-            StandardCode = 0,
             ConsumerReference = command.Request.ConsumerReference,
             LarsCode = resolvedOnProg.CourseCode,
             CorrelationId = correlationId,
