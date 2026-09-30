@@ -29,7 +29,7 @@ public class GetLevySummaryByAccountIdQueryHandler(
             new GetLevySummaryByAccountIdRequest(request.AccountId));
 
         var committedLearnersTask = GetAllPagedAsync(request.AccountId, transferSenderId: null);
-        var committedTransferOutTask = GetAllPagedAsync(request.AccountId, transferSenderId: request.AccountId);
+        var committedTransferOutTask = GetAllPagedAsync(accountId: null, transferSenderId: request.AccountId);
 
         await Task.WhenAll(levySummaryTask, committedLearnersTask, committedTransferOutTask);
 
@@ -63,15 +63,15 @@ public class GetLevySummaryByAccountIdQueryHandler(
     }
 
     private async Task<IEnumerable<GetCommittedLearnersCostByAccountIdResponse.ApprenticeshipDetailsResponse>> GetAllPagedAsync(
-        long accountId, long? transferSenderId)
+        long? accountId, long? transferSenderId)
     {
         var firstPage = await commitmentsV2ApiClient.Get<GetCommittedLearnersCostByAccountIdResponse>(
             new GetCommittedLearnersCostByAccountIdRequest(accountId, PageNumber: 1, PageItemCount, transferSenderId));
 
-        if (firstPage.TotalApprenticeships <= PageItemCount)
+        if (firstPage.TotalApprenticeshipsFound <= PageItemCount)
             return firstPage.Apprenticeships;
 
-        var totalPages = (int)Math.Ceiling((double)firstPage.TotalApprenticeships / PageItemCount);
+        var totalPages = (int)Math.Ceiling((double)firstPage.TotalApprenticeshipsFound / PageItemCount);
 
         var remainingPages = new ConcurrentBag<GetCommittedLearnersCostByAccountIdResponse>();
 
