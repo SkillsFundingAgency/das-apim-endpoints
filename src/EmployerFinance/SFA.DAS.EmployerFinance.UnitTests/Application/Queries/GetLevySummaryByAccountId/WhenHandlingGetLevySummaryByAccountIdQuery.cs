@@ -18,7 +18,7 @@ public class GetLevySummaryByAccountIdQueryHandlerTests
 
     private static void SetupCommitmentsPage(
         Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mock,
-        long accountId,
+        long? accountId,
         long? transferSenderId,
         int pageNumber,
         GetCommittedLearnersCostByAccountIdResponse response)
@@ -43,8 +43,8 @@ public class GetLevySummaryByAccountIdQueryHandlerTests
         [Greedy] GetLevySummaryByAccountIdQueryHandler handler)
     {
         // Arrange
-        committedLearnersResponse.TotalApprenticeships = 10;
-        committedTransferOutResponse.TotalApprenticeships = 5;
+        committedLearnersResponse.TotalApprenticeshipsFound = 10;
+        committedTransferOutResponse.TotalApprenticeshipsFound = 5;
         committedLearnersResponse.Apprenticeships.ToList().ForEach(a => a.HasChangeHistory = false);
         committedTransferOutResponse.Apprenticeships.ToList().ForEach(a => a.HasChangeHistory = false);
 
@@ -54,7 +54,7 @@ public class GetLevySummaryByAccountIdQueryHandlerTests
             .ReturnsAsync(levySummaryResponse);
 
         SetupCommitmentsPage(mockCommitmentsV2ApiClient, query.AccountId, null, 1, committedLearnersResponse);
-        SetupCommitmentsPage(mockCommitmentsV2ApiClient, query.AccountId, query.AccountId, 1, committedTransferOutResponse);
+        SetupCommitmentsPage(mockCommitmentsV2ApiClient, null, query.AccountId, 1, committedTransferOutResponse);
 
         // Act
         var result = await handler.Handle(query, CancellationToken.None);
@@ -82,8 +82,8 @@ public class GetLevySummaryByAccountIdQueryHandlerTests
         [Greedy] GetLevySummaryByAccountIdQueryHandler handler)
     {
         // Arrange
-        committedLearnersResponse.TotalApprenticeships = PageItemCount;
-        committedTransferOutResponse.TotalApprenticeships = PageItemCount;
+        committedLearnersResponse.TotalApprenticeshipsFound = PageItemCount;
+        committedTransferOutResponse.TotalApprenticeshipsFound = PageItemCount;
         committedLearnersResponse.Apprenticeships.ToList().ForEach(a => a.HasChangeHistory = false);
         committedTransferOutResponse.Apprenticeships.ToList().ForEach(a => a.HasChangeHistory = false);
 
@@ -93,7 +93,7 @@ public class GetLevySummaryByAccountIdQueryHandlerTests
             .ReturnsAsync(levySummaryResponse);
 
         SetupCommitmentsPage(mockCommitmentsV2ApiClient, query.AccountId, null, 1, committedLearnersResponse);
-        SetupCommitmentsPage(mockCommitmentsV2ApiClient, query.AccountId, query.AccountId, 1, committedTransferOutResponse);
+        SetupCommitmentsPage(mockCommitmentsV2ApiClient, null, query.AccountId, 1, committedTransferOutResponse);
 
         // Act
         await handler.Handle(query, CancellationToken.None);
@@ -117,9 +117,9 @@ public class GetLevySummaryByAccountIdQueryHandlerTests
         [Greedy] GetLevySummaryByAccountIdQueryHandler handler)
     {
         // Arrange — 150 apprenticeships spans two pages
-        pageOneResponse.TotalApprenticeships = 150;
-        pageTwoResponse.TotalApprenticeships = 150;
-        transferPageOneResponse.TotalApprenticeships = 5;
+        pageOneResponse.TotalApprenticeshipsFound = 150;
+        pageTwoResponse.TotalApprenticeshipsFound = 150;
+        transferPageOneResponse.TotalApprenticeshipsFound = 5;
 
         pageOneResponse.Apprenticeships.ToList().ForEach(a => a.HasChangeHistory = false);
         pageTwoResponse.Apprenticeships.ToList().ForEach(a => a.HasChangeHistory = false);
@@ -132,7 +132,7 @@ public class GetLevySummaryByAccountIdQueryHandlerTests
 
         SetupCommitmentsPage(mockCommitmentsV2ApiClient, query.AccountId, null, 1, pageOneResponse);
         SetupCommitmentsPage(mockCommitmentsV2ApiClient, query.AccountId, null, 2, pageTwoResponse);
-        SetupCommitmentsPage(mockCommitmentsV2ApiClient, query.AccountId, query.AccountId, 1, transferPageOneResponse);
+        SetupCommitmentsPage(mockCommitmentsV2ApiClient, null, query.AccountId, 1, transferPageOneResponse);
 
         // Act
         var result = await handler.Handle(query, CancellationToken.None);
@@ -166,8 +166,8 @@ public class GetLevySummaryByAccountIdQueryHandlerTests
         [Greedy] GetLevySummaryByAccountIdQueryHandler handler)
     {
         // Arrange — all learners have change history
-        committedLearnersResponse.TotalApprenticeships = committedLearnersResponse.Apprenticeships.Count();
-        committedTransferOutResponse.TotalApprenticeships = committedTransferOutResponse.Apprenticeships.Count();
+        committedLearnersResponse.TotalApprenticeshipsFound = committedLearnersResponse.Apprenticeships.Count();
+        committedTransferOutResponse.TotalApprenticeshipsFound = committedTransferOutResponse.Apprenticeships.Count();
         committedLearnersResponse.Apprenticeships.ToList().ForEach(a => a.HasChangeHistory = true);
         committedTransferOutResponse.Apprenticeships.ToList().ForEach(a => a.HasChangeHistory = false);
 
@@ -177,7 +177,7 @@ public class GetLevySummaryByAccountIdQueryHandlerTests
             .ReturnsAsync(levySummaryResponse);
 
         SetupCommitmentsPage(mockCommitmentsV2ApiClient, query.AccountId, null, 1, committedLearnersResponse);
-        SetupCommitmentsPage(mockCommitmentsV2ApiClient, query.AccountId, query.AccountId, 1, committedTransferOutResponse);
+        SetupCommitmentsPage(mockCommitmentsV2ApiClient, null, query.AccountId, 1, committedTransferOutResponse);
 
         mockCommitmentsV2ApiClient
             .Setup(c => c.Get<GetPriceEpisodeResponse>(It.IsAny<GetPriceEpisodeByApprenticeshipIdRequest>()))
@@ -209,8 +209,8 @@ public class GetLevySummaryByAccountIdQueryHandlerTests
         [Greedy] GetLevySummaryByAccountIdQueryHandler handler)
     {
         // Arrange
-        committedLearnersResponse.TotalApprenticeships = committedLearnersResponse.Apprenticeships.Count();
-        committedTransferOutResponse.TotalApprenticeships = committedTransferOutResponse.Apprenticeships.Count();
+        committedLearnersResponse.TotalApprenticeshipsFound = committedLearnersResponse.Apprenticeships.Count();
+        committedTransferOutResponse.TotalApprenticeshipsFound = committedTransferOutResponse.Apprenticeships.Count();
         committedLearnersResponse.Apprenticeships.ToList().ForEach(a => a.HasChangeHistory = false);
         committedTransferOutResponse.Apprenticeships.ToList().ForEach(a => a.HasChangeHistory = false);
 
@@ -220,7 +220,7 @@ public class GetLevySummaryByAccountIdQueryHandlerTests
             .ReturnsAsync(levySummaryResponse);
 
         SetupCommitmentsPage(mockCommitmentsV2ApiClient, query.AccountId, null, 1, committedLearnersResponse);
-        SetupCommitmentsPage(mockCommitmentsV2ApiClient, query.AccountId, query.AccountId, 1, committedTransferOutResponse);
+        SetupCommitmentsPage(mockCommitmentsV2ApiClient, null, query.AccountId, 1, committedTransferOutResponse);
 
         // Act
         await handler.Handle(query, CancellationToken.None);
@@ -247,8 +247,8 @@ public class GetLevySummaryByAccountIdQueryHandlerTests
         apprenticeships[0].HasChangeHistory = true;
         apprenticeships.Skip(1).ToList().ForEach(a => a.HasChangeHistory = false);
 
-        committedLearnersResponse.TotalApprenticeships = apprenticeships.Count;
-        committedTransferOutResponse.TotalApprenticeships = committedTransferOutResponse.Apprenticeships.Count();
+        committedLearnersResponse.TotalApprenticeshipsFound = apprenticeships.Count;
+        committedTransferOutResponse.TotalApprenticeshipsFound = committedTransferOutResponse.Apprenticeships.Count();
         committedTransferOutResponse.Apprenticeships.ToList().ForEach(a => a.HasChangeHistory = false);
 
         mockFinanceApiClient
@@ -257,7 +257,7 @@ public class GetLevySummaryByAccountIdQueryHandlerTests
             .ReturnsAsync(levySummaryResponse);
 
         SetupCommitmentsPage(mockCommitmentsV2ApiClient, query.AccountId, null, 1, committedLearnersResponse);
-        SetupCommitmentsPage(mockCommitmentsV2ApiClient, query.AccountId, query.AccountId, 1, committedTransferOutResponse);
+        SetupCommitmentsPage(mockCommitmentsV2ApiClient, null, query.AccountId, 1, committedTransferOutResponse);
 
         mockCommitmentsV2ApiClient
             .Setup(c => c.Get<GetPriceEpisodeResponse>(
@@ -294,8 +294,8 @@ public class GetLevySummaryByAccountIdQueryHandlerTests
         var apprenticeship = committedLearnersResponse.Apprenticeships.First();
         apprenticeship.HasChangeHistory = true;
         committedLearnersResponse.Apprenticeships = new List<GetCommittedLearnersCostByAccountIdResponse.ApprenticeshipDetailsResponse> { apprenticeship };
-        committedLearnersResponse.TotalApprenticeships = 1;
-        committedTransferOutResponse.TotalApprenticeships = committedTransferOutResponse.Apprenticeships.Count();
+        committedLearnersResponse.TotalApprenticeshipsFound = 1;
+        committedTransferOutResponse.TotalApprenticeshipsFound = committedTransferOutResponse.Apprenticeships.Count();
         committedTransferOutResponse.Apprenticeships.ToList().ForEach(a => a.HasChangeHistory = false);
 
         mockFinanceApiClient
@@ -304,7 +304,7 @@ public class GetLevySummaryByAccountIdQueryHandlerTests
             .ReturnsAsync(levySummaryResponse);
 
         SetupCommitmentsPage(mockCommitmentsV2ApiClient, query.AccountId, null, 1, committedLearnersResponse);
-        SetupCommitmentsPage(mockCommitmentsV2ApiClient, query.AccountId, query.AccountId, 1, committedTransferOutResponse);
+        SetupCommitmentsPage(mockCommitmentsV2ApiClient, null, query.AccountId, 1, committedTransferOutResponse);
 
         mockCommitmentsV2ApiClient
             .Setup(c => c.Get<GetPriceEpisodeResponse>(
