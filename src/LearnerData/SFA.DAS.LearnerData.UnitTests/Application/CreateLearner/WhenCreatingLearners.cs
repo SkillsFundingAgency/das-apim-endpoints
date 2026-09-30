@@ -126,6 +126,7 @@ public class WhenCreatingLearners
         await _sut.Handle(command, CancellationToken.None);
 
         // Assert
+        var expectedOnProgramme = request.Delivery.OnProgramme.MinBy(x => x.StartDate)!;
         @event.Should().BeEquivalentTo(new
         {
             ULN = request.Learner.Uln,
@@ -153,7 +154,7 @@ public class WhenCreatingLearners
     {
         // Arrange
         var command = GetProcessLearnersCommand();
-        var standardCode = command.Request.Delivery.OnProgramme.First().StandardCode;
+        var standardCode = command.Request.Delivery.OnProgramme.MinBy(x => x.StartDate)!.StandardCode;
 
         _mockCourseService
             .Setup(x => x.GetStandardDetailsById(standardCode.ToString()))
@@ -484,7 +485,7 @@ public class WhenCreatingLearners
         }
 
         command.Request.Learner.Uln = _fixture.Create<long>();
-        command.Request.Delivery.OnProgramme.First().Costs = new List<CostDetails> { _fixture.Create<CostDetails>() };
+        command.Request.Delivery.OnProgramme.MinBy(x => x.StartDate)!.Costs = new List<CostDetails> { _fixture.Create<CostDetails>() };
 
         return command;
     }
