@@ -9,18 +9,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerFinance.InnerApi.Responses.Finance;
 
 namespace SFA.DAS.EmployerFinance.Application.Queries.GetLevyProjectionsByAccountId;
 
-public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<FinanceApiConfiguration> financeApiClient) : IRequestHandler<GetLevyProjectionsByAccountIdQuery, GetLevyProjectionsByAccountIdQueryResult>
+public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<FinanceApiConfiguration> financeApiClient)
+    : IRequestHandler<GetLevyProjectionsByAccountIdQuery, GetLevyProjectionsByAccountIdQueryResult>
 {
     public async Task<GetLevyProjectionsByAccountIdQueryResult> Handle(GetLevyProjectionsByAccountIdQuery request, CancellationToken cancellationToken)
     {
         var now = DateTime.UtcNow.Date;
-        var historicData = await FetchHistoricDataAsync(now, request.AccountId);
-        var projectionData = ProjectFromHistoricData(now, request.Months, historicData);
-        
-        return new GetLevyProjectionsByAccountIdQueryResult { Projections = projectionData };
+
+        var historicDataTask = FetchHistoricDataAsync(now, request.AccountId);
+        var lastSubmissionTask = financeApiClient.Get<GetLevyLastSubmissionDateResponse>(
+            new GetLevyLastSubmissionDateRequest(request.AccountId));
+
+        await Task.WhenAll(historicDataTask, lastSubmissionTask);
+
+        return new GetLevyProjectionsByAccountIdQueryResult
+        {
+            Projections = ProjectFromHistoricData(now, request.Months, historicDataTask.Result),
+            LatestLevyDeclarationInDate = lastSubmissionTask.Result.LastSubmissionDate
+        };
     }
 
     private async Task<List<MonthlyBreakdown>> FetchHistoricDataAsync(DateTime now, long accountId)
@@ -49,8 +59,8 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
                 .ThenBy(x => x.CalendarPeriodMonth)
         ];
     }
-    
-    private IReadOnlyList<MonthlyBreakdown> ProjectFromHistoricData(DateTime now, int months, List<MonthlyBreakdown> historicLevyIn)
+
+    private static IReadOnlyList<MonthlyBreakdown> ProjectFromHistoricData(DateTime now, int months, List<MonthlyBreakdown> historicLevyIn)
     {
         var pointInTime = now;
         var projections = new List<MonthlyBreakdown>();
@@ -61,8 +71,8 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
             {
                 levyData = historicLevyIn.FirstOrDefault(x => x.CalendarPeriodMonth == pointInTime.Month && x.CalendarPeriodYear == pointInTime.Year);
             }
-            
-            levyData ??= historicLevyIn.FirstOrDefault(x => x.CalendarPeriodMonth == pointInTime.Month && x.CalendarPeriodYear == pointInTime.Year-1);
+
+            levyData ??= historicLevyIn.FirstOrDefault(x => x.CalendarPeriodMonth == pointInTime.Month && x.CalendarPeriodYear == pointInTime.Year - 1);
             projections.Add(new MonthlyBreakdown
             {
                 CalendarPeriodMonth = pointInTime.Month,

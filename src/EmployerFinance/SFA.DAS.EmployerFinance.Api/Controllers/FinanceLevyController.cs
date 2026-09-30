@@ -5,6 +5,7 @@ using SFA.DAS.EmployerFinance.Application.Queries.GetLevySummaryByAccountId;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerFinance.Application.Queries.GetLastLevyDeclarationDate;
 using SFA.DAS.EmployerFinance.Application.Queries.GetLevyProjectionsByAccountId;
 
 namespace SFA.DAS.EmployerFinance.Api.Controllers;
@@ -43,6 +44,23 @@ public class FinanceLevyController(IMediator mediator, ILogger<FinanceLevyContro
         catch (Exception e)
         {
             logger.LogError(e, "Error getting levy projections for account {AccountId}", accountId);
+            return BadRequest();
+        }
+    }
+
+    [HttpGet]
+    [Route("last-declaration-date")]
+    public async Task<IActionResult> GetLastLevyDeclarationDate([FromRoute, Required] long accountId)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetLastLevyDeclarationDateQuery(accountId));
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error getting last levy declaration date for account {AccountId}", accountId);
             return BadRequest();
         }
     }
