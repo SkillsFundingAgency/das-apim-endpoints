@@ -16,28 +16,64 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
 {
     public async Task<GetLevyProjectionsByAccountIdQueryResult> Handle(GetLevyProjectionsByAccountIdQuery request, CancellationToken cancellationToken)
     {
-        var toDate = DateTime.UtcNow;
-        var startDate = DateTime.UtcNow.AddMonths(-request.Months);
+        var now = DateTime.UtcNow.Date;
+        var historicData = await FetchHistoricDataAsync(now, request.AccountId);
+        var projectionData = ProjectFromHistoricData(now, request.Months, historicData);
+        
+        return new GetLevyProjectionsByAccountIdQueryResult { Projections = projectionData };
+    }
+
+    private async Task<List<MonthlyBreakdown>> FetchHistoricDataAsync(DateTime now, long accountId)
+    {
+        var startOfMonth = new DateTime(now.Year, now.Month, 1);
+        
+        // this gives use the last 12 months + any potential current month levy in
+        var startDate = startOfMonth.AddYears(-1);
+        var endDate = startOfMonth.AddMonths(1).AddSeconds(-1);
 
         var response = await financeApiClient.Get<List<TransactionLine>>(
-            new GetAccountTransactionSummaryByDateRequest(request.AccountId, startDate, toDate));
-
-        var projections = response
-            .GroupBy(t => new { t.TransactionDate.Year, t.TransactionDate.Month })
-            .Select(g => new MonthlyBreakdown
-            {
-                CalendarPeriodMonth = g.Key.Month,
-                CalendarPeriodYear = g.Key.Year,
-                CalendarMonthName = new DateTime(g.Key.Year, g.Key.Month, 1).ToString("MMMM"),
-                LevyIn = g.Where(t => t.TransactionType == TransactionItemType.Declaration).Sum(t => t.Amount)
-            })
-            .OrderBy(x => x.CalendarPeriodYear)
-            .ThenBy(x => x.CalendarPeriodMonth)
-            .ToList();
-
-        return new GetLevyProjectionsByAccountIdQueryResult
+            new GetAccountTransactionSummaryByDateRequest(accountId, startDate, endDate));
+        
+        return
+        [
+            .. response
+                .GroupBy(t => new { t.TransactionDate.Year, t.TransactionDate.Month })
+                .Select(g => new MonthlyBreakdown
+                {
+                    CalendarPeriodMonth = g.Key.Month,
+                    CalendarPeriodYear = g.Key.Year,
+                    CalendarMonthName = new DateTime(g.Key.Year, g.Key.Month, 1).ToString("MMMM"),
+                    LevyIn = g.Where(t => t.TransactionType == TransactionItemType.Declaration).Sum(t => t.Amount)
+                })
+                .OrderBy(x => x.CalendarPeriodYear)
+                .ThenBy(x => x.CalendarPeriodMonth)
+        ];
+    }
+    
+    private IReadOnlyList<MonthlyBreakdown> ProjectFromHistoricData(DateTime now, int months, List<MonthlyBreakdown> historicLevyIn)
+    {
+        var pointInTime = now;
+        var projections = new List<MonthlyBreakdown>();
+        for (var i = 0; i < months; i++)
         {
-            Projections = projections
-        };
+            MonthlyBreakdown levyData = null;
+            if (pointInTime.Month == now.Month && pointInTime.Year == now.Year)
+            {
+                levyData = historicLevyIn.FirstOrDefault(x => x.CalendarPeriodMonth == pointInTime.Month && x.CalendarPeriodYear == pointInTime.Year);
+            }
+            
+            levyData ??= historicLevyIn.FirstOrDefault(x => x.CalendarPeriodMonth == pointInTime.Month && x.CalendarPeriodYear == pointInTime.Year-1);
+            projections.Add(new MonthlyBreakdown
+            {
+                CalendarPeriodMonth = pointInTime.Month,
+                CalendarPeriodYear = pointInTime.Year,
+                CalendarMonthName = pointInTime.ToString("MMMM"),
+                LevyIn = levyData?.LevyIn ?? 0m
+            });
+
+            pointInTime = pointInTime.AddMonths(1);
+        }
+
+        return projections;
     }
 }
