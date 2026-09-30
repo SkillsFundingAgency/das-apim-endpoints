@@ -15,18 +15,18 @@ using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
-namespace SFA.DAS.Approvals.Application.SelectMultiple.Commands;
+namespace SFA.DAS.Approvals.Application.SelectMultiple.Queries;
 
-public class ValidateSelectMultipleLearnerRecordsCommandHandler(
+public class ValidateSelectMultipleLearnerRecordsQueryHandler(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
     IReservationApiClient<ReservationApiConfiguration> reservationApiClient,
     IInternalApiClient<LearnerDataInnerApiConfiguration> learnerDataClient,
     IProviderCoursesOrStandardsService providerCoursesService,
     IBulkCourseMetadataService bulkCourseMetadataService,
     IAddCourseTypeDataToCsvService courseTypesToCsvService)
-    : IRequestHandler<ValidateSelectMultipleLearnerRecordsCommand>
+    : IRequestHandler<ValidateSelectMultipleLearnerRecordsQuery, ValidateSelectMultipleLearnerRecordsQueryResult>
 {
-    public async Task Handle(ValidateSelectMultipleLearnerRecordsCommand command, CancellationToken cancellationToken)
+    public async Task<ValidateSelectMultipleLearnerRecordsQueryResult> Handle(ValidateSelectMultipleLearnerRecordsQuery command, CancellationToken cancellationToken)
     {
         var learnerDataResponse = await learnerDataClient.PostWithResponseCode<List<LearnerDataRecord>>(
            new PostGetLearnersForProviderByIdsRequest(
@@ -78,7 +78,7 @@ public class ValidateSelectMultipleLearnerRecordsCommandHandler(
                 CourseCode = learner.TrainingCode,
                 StartDateAsString = learner.StartDate.ToString("yyyy-MM-dd"),
                 EndDateAsString = learner.PlannedEndDate.ToString("yyyy-MM-dd"),
-                ProviderRef = command.ProviderId.ToString(),
+                ProviderId = command.ProviderId,
                 //OriginatorReference = ,
                 //EPAOrgId = ,
                 CostAsString = learner.TrainingPrice.ToString(),
@@ -111,9 +111,13 @@ public class ValidateSelectMultipleLearnerRecordsCommandHandler(
             validateSelectMultipleLearnersApiRequest.ProviderStandardsData.Standards = null;
         }
 
-        await apiClient.PostWithResponseCode<object>(
+        var validationResponse = await apiClient.PostWithResponseCode<PostValidateSelectMultipleLearnersResponse>(
             new PostValidateSelectMultipleLearnersRequest(command.ProviderId, validateSelectMultipleLearnersApiRequest));
-        //return Unit.Value;
+        
+        return new ValidateSelectMultipleLearnerRecordsQueryResult
+        {
+            ValidationErrors = validationResponse.Body.ValidationErrors
+        };
     }
 
     public static DateTime? GetStartDate(string date, string format = "yyyy-MM-dd")

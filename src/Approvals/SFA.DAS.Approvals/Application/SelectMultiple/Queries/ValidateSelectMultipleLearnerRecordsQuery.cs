@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using MediatR;
 
-namespace SFA.DAS.Approvals.Application.SelectMultiple.Commands;
+namespace SFA.DAS.Approvals.Application.SelectMultiple.Queries;
 
-public class ValidateSelectMultipleLearnerRecordsCommand : IRequest
+public class ValidateSelectMultipleLearnerRecordsQuery : IRequest<ValidateSelectMultipleLearnerRecordsQueryResult>
 {
     public long ProviderId { get; set; }
     public long? AccountLegalEntityId { get; set; }
