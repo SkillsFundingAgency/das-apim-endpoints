@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.AdminRoatp.Application.Queries.GetAllCourses;
 using SFA.DAS.AdminRoatp.Application.Queries.GetProvidersAllowedToDeliverCourse;
 using SFA.DAS.AdminRoatp.Application.Queries.GetProvidersNotAllowedToDeliverCourse;
 using SFA.DAS.AdminRoatp.InnerApi.Responses;
@@ -10,6 +11,16 @@ namespace SFA.DAS.AdminRoatp.Api.Controllers;
 [Route("/courses")]
 public class CourseController(IMediator _mediator, ILogger<CourseController> _logger) : ControllerBase
 {
+    [HttpGet]
+    [ProducesResponseType(typeof(GetAllCoursesQueryResult), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAllCourses(CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("Request received to get all courses");
+
+        GetAllCoursesQueryResult result = await _mediator.Send(new GetAllCoursesQuery(), cancellationToken);
+        return Ok(result);
+    }
+
     [HttpGet("{larsCode}/providers/allowed")]
     [ProducesResponseType(typeof(RestrictedCourseDetailsModel), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
