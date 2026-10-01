@@ -1,3 +1,5 @@
+using System.Text;
+using System.Text.Json;
 using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.LearnerData.Services;
@@ -12,6 +14,7 @@ public class SldDataApiLoggingHandler(ILogger<SldDataApiLoggingHandler> logger) 
         var uri = request.RequestUri;
         var target = uri == null ? "(no uri)" : $"{uri.Scheme}://{uri.Authority}{uri.AbsolutePath}";
         var hasAuthorization = request.Headers.Authorization != null;
+        var tokenClaims = DescribeToken(request.Headers.Authorization?.Parameter);
 
         HttpResponseMessage response;
         try
@@ -34,10 +37,11 @@ public class SldDataApiLoggingHandler(ILogger<SldDataApiLoggingHandler> logger) 
         }
 
         logger.LogInformation(
-            "SLD request {Method} {Target} (authorization header sent: {HasAuthorization}) returned {StatusCode}. Correlation id {CorrelationId}, content type {ContentType}, content length {ContentLength}{Body}",
+            "SLD request {Method} {Target} (authorization header sent: {HasAuthorization}, token claims: {TokenClaims}) returned {StatusCode}. Correlation id {CorrelationId}, content type {ContentType}, content length {ContentLength}{Body}",
             request.Method,
             target,
             hasAuthorization,
+            tokenClaims,
             (int)response.StatusCode,
             correlationIds == null ? null : string.Join(",", correlationIds),
             response.Content?.Headers.ContentType?.ToString(),
@@ -45,5 +49,37 @@ public class SldDataApiLoggingHandler(ILogger<SldDataApiLoggingHandler> logger) 
             body.Length == 0 ? string.Empty : $", body starts: {body}");
 
         return response;
+    }
+
+    // Only the non-secret identifying claims are read from the token payload; the token itself is never logged
+    private static string DescribeToken(string? token)
+    {
+        if (string.IsNullOrEmpty(token))
+        {
+            return "none";
+        }
+
+        try
+        {
+            var parts = token.Split('.');
+            if (parts.Length < 2)
+            {
+                return "not a JWT";
+            }
+
+            var payload = parts[1].Replace('-', '+').Replace('_', '/');
+            payload = payload.PadRight(payload.Length + (4 - payload.Length % 4) % 4, '=');
+            using var document = JsonDocument.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(payload)));
+
+            var claims = new[] { "aud", "iss", "appid", "azp", "tid", "roles", "scp", "exp" }
+                .Where(name => document.RootElement.TryGetProperty(name, out _))
+                .Select(name => $"{name}={document.RootElement.GetProperty(name)}");
+
+            return string.Join("; ", claims);
+        }
+        catch (Exception ex)
+        {
+            return $"unreadable ({ex.GetType().Name})";
+        }
     }
 }
