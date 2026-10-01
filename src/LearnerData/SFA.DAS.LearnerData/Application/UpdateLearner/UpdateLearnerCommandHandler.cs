@@ -7,6 +7,7 @@ using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Services.ShortCourses;
@@ -69,27 +70,36 @@ public class UpdateLearnerCommandHandler(
                 {
                     logger.LogInformation("Updating Earnings with OnProgramme changes for learning {LearningKey}", learningApiPutResponse.LearningKey);
                     var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(command.UpdateLearnerRequest, learningApiPutResponse, request.Data);
-                    await earningsApiClient.Put(earningsOnProgrammeApiRequest);
+                    var earningsOnProgrammeResponse = await earningsApiClient.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(earningsOnProgrammeApiRequest);
 
-                    releaseEarnings = true;
+                    if (earningsOnProgrammeResponse.Body.HasNewEarningsProfileVersionBeenGenerated)
+                    {
+                        releaseEarnings = true;
+                    }
                 }
 
                 if (learningApiPutResponse.Changes.HasEnglishAndMathsUpdate())
                 {
                     logger.LogInformation("Updating Earnings with English and Maths changes for learning {LearningKey}", learningApiPutResponse.LearningKey);
                     var englishAndMathsRequest = updateEarningsEnglishAndMathsRequestBuilder.Build(command, learningApiPutResponse, request);
-                    await earningsApiClient.Put(englishAndMathsRequest);
+                    var englishAndMathsResponse = await earningsApiClient.PutWithResponseCode<UpdateEnglishAndMathsRequest, UpdateEnglishAndMathsEarningsApiPutResponse>(englishAndMathsRequest);
 
-                    releaseEarnings = true;
+                    if (englishAndMathsResponse.Body.HasNewEarningsProfileVersionBeenGenerated)
+                    {
+                        releaseEarnings = true;
+                    }
                 }
 
                 if (learningApiPutResponse.Changes.HasLearningSupportUpdate())
                 {
                     logger.LogInformation("Updating Earnings with Learning Support changes for learning {LearningKey}", learningApiPutResponse.LearningKey);
                     var earningsLearningSupportRequest = updateEarningsLearningSupportRequestBuilder.Build(learningApiPutResponse, request);
-                    await earningsApiClient.Put(earningsLearningSupportRequest);
+                    var earningsLearningSupportResponse = await earningsApiClient.PutWithResponseCode<UpdateLearningSupportRequest, UpdateLearningSupportEarningsApiPutResponse>(earningsLearningSupportRequest);
 
-                    releaseEarnings = true;
+                    if (earningsLearningSupportResponse.Body.HasNewEarningsProfileVersionBeenGenerated)
+                    {
+                        releaseEarnings = true;
+                    }
                 }
 
                 logger.LogInformation("Earnings updated for learning {LearningKey}", learningApiPutResponse.LearningKey);

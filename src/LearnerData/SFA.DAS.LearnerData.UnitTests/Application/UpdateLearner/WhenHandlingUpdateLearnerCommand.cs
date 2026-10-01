@@ -15,6 +15,7 @@ using SFA.DAS.Apim.Shared.Models;
 using System.Net;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.LearnerData.Configuration;
+using SFA.DAS.LearnerData.Responses.EarningsInner;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner;
 
@@ -183,8 +184,8 @@ public class WhenHandlingUpdateLearnerCommand
         _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data))
             .ReturnsAsync(updateOnProgPutRequest);
 
-        _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
-            .Returns(Task.CompletedTask);
+        _earningsApiClient.Setup(x => x.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateOnProgrammeEarningsApiPutResponse>(new UpdateOnProgrammeEarningsApiPutResponse{HasNewEarningsProfileVersionBeenGenerated = true}, HttpStatusCode.OK, ""));
 
         _earningsApiClient.Setup(x => x.Post(It.IsAny<ReleaseEarningsApiPostRequest>()))
             .Returns(Task.CompletedTask);
@@ -193,7 +194,7 @@ public class WhenHandlingUpdateLearnerCommand
         await _sut.Handle(command, CancellationToken.None);
 
         //Assert
-        _earningsApiClient.Verify(x => x.Put(
+        _earningsApiClient.Verify(x => x.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(
                 It.Is<UpdateOnProgrammeApiPutRequest>(r => r == updateOnProgPutRequest)),
             Times.Once);
 
@@ -224,14 +225,14 @@ public class WhenHandlingUpdateLearnerCommand
         _updateEarningsLearningSupportRequestBuilder.Setup(x => x.Build(updateLearningApiResponse, apiPutRequest))
             .Returns(updateLearningSupportApiPutRequest);
 
-        _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateLearningSupportApiPutRequest>()))
-            .Returns(Task.CompletedTask);
+        _earningsApiClient.Setup(x => x.PutWithResponseCode<UpdateLearningSupportRequest, UpdateLearningSupportEarningsApiPutResponse>(It.IsAny<UpdateLearningSupportApiPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateLearningSupportEarningsApiPutResponse>(new UpdateLearningSupportEarningsApiPutResponse{HasNewEarningsProfileVersionBeenGenerated = true}, HttpStatusCode.OK, ""));
 
         // Act
         await _sut.Handle(command, CancellationToken.None);
 
         //Assert
-        _earningsApiClient.Verify(x => x.Put(
+        _earningsApiClient.Verify(x => x.PutWithResponseCode<UpdateLearningSupportRequest, UpdateLearningSupportEarningsApiPutResponse>(
                 It.Is<UpdateLearningSupportApiPutRequest>(r => r == updateLearningSupportApiPutRequest)),
             Times.Once);
 
@@ -259,14 +260,14 @@ public class WhenHandlingUpdateLearnerCommand
         _updateEarningsEnglishAndMathsRequestBuilder.Setup(x => x.Build(command, updateLearningApiResponse, apiPutRequest))
             .Returns(englishAndMathsApiPutRequest);
 
-        _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateEnglishAndMathsApiPutRequest>()))
-            .Returns(Task.CompletedTask);
+        _earningsApiClient.Setup(x => x.PutWithResponseCode<UpdateEnglishAndMathsRequest, UpdateEnglishAndMathsEarningsApiPutResponse>(It.IsAny<UpdateEnglishAndMathsApiPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateEnglishAndMathsEarningsApiPutResponse>(new UpdateEnglishAndMathsEarningsApiPutResponse { HasNewEarningsProfileVersionBeenGenerated = true }, HttpStatusCode.OK, ""));
 
         // Act
         await _sut.Handle(command, CancellationToken.None);
 
         //Assert
-        _earningsApiClient.Verify(x => x.Put(
+        _earningsApiClient.Verify(x => x.PutWithResponseCode<UpdateEnglishAndMathsRequest, UpdateEnglishAndMathsEarningsApiPutResponse>(
                 It.Is<UpdateEnglishAndMathsApiPutRequest>(r => r == englishAndMathsApiPutRequest)),
             Times.Once);
 

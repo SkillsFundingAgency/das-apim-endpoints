@@ -112,6 +112,14 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         await CallUpdateLearnerEndpoint();
     }
 
+    [When(@"the learner is updated with new earnings profile version")]
+    public async Task WhenTheLearnerIsUpdatedWithNewEarningsProfileVersion()
+    {
+        ConfigureLearnerInnerApi();
+        ConfigureEarningsInnerApiToRespondOkToEverything(true);
+        await CallUpdateLearnerEndpoint();
+    }
+
     [Then(@"a (.*) update request is sent to the earnings domain")]
     public void ThenARequestIsSentToTheEarningsDomain(string updateRequestType)
     {
@@ -245,7 +253,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         scenarioContext.Set(response);
     }
 
-    private void ConfigureEarningsInnerApiToRespondOkToEverything()
+    private void ConfigureEarningsInnerApiToRespondOkToEverything(bool hasNewEarningsProfileVersionBeenGenerated = false)
     {
         testContext.EarningsApi.MockServer
             .Given(
@@ -256,6 +264,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(200)
+                    .WithBody($"{{\"HasNewEarningsProfileVersionBeenGenerated\":{hasNewEarningsProfileVersionBeenGenerated.ToString().ToLower()}}}")
             );
     }
 
