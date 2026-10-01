@@ -29,7 +29,7 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandler(
 
         if (learnerIds.Count == 0)
         {
-            throw new ApplicationException("LearnerIds must not be empty");
+            throw new ArgumentException("LearnerIds must not be empty", nameof(command.LearnerIds));
         }
 
         var learnerDataResponse = await learnerDataClient.PostWithResponseCode<List<LearnerDataRecord>>(
@@ -42,12 +42,12 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandler(
 
         if (!string.IsNullOrEmpty(learnerDataResponse.ErrorContent))
         {
-            throw new ApplicationException($"Getting Learner Data Failed, Status Code {learnerDataResponse.StatusCode} Error : {learnerDataResponse.ErrorContent}");
+            throw new InvalidOperationException($"Getting Learner Data Failed, Status Code {learnerDataResponse.StatusCode} Error : {learnerDataResponse.ErrorContent}");
         }
 
         if (learnerDataResponse.Body == null || learnerDataResponse.Body.Count != learnerIds.Count)
         {
-            throw new ApplicationException($"Getting Learner Data Failed, expected {learnerIds.Count} learners but received {learnerDataResponse.Body?.Count ?? 0}");
+            throw new InvalidOperationException($"Getting Learner Data Failed, expected {learnerIds.Count} learners but received {learnerDataResponse.Body?.Count ?? 0}");
         }
 
         var reservationRequests = learnerDataResponse.Body.Select((learner, index) =>
@@ -69,12 +69,12 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandler(
 
         if (!string.IsNullOrEmpty(reservationValidationResult.ErrorContent))
         {
-            throw new ApplicationException($"Validating Reservations Failed, Status Code {reservationValidationResult.StatusCode} Error : {reservationValidationResult.ErrorContent}");
+            throw new InvalidOperationException($"Validating Reservations Failed, Status Code {reservationValidationResult.StatusCode} Error : {reservationValidationResult.ErrorContent}");
         }
 
         if (reservationValidationResult.Body == null)
         {
-            throw new ApplicationException("Validating Reservations Failed, response body was null");
+            throw new InvalidOperationException("Validating Reservations Failed, response body was null");
         }
 
         var providerStandardResults = await providerCoursesService.GetCoursesData(command.ProviderId);
@@ -122,12 +122,12 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandler(
 
         if (!string.IsNullOrEmpty(validationResponse.ErrorContent))
         {
-            throw new ApplicationException($"Validating Select Multiple Learners Failed, Status Code {validationResponse.StatusCode} Error : {validationResponse.ErrorContent}");
+            throw new InvalidOperationException($"Validating Select Multiple Learners Failed, Status Code {validationResponse.StatusCode} Error : {validationResponse.ErrorContent}");
         }
 
         if (validationResponse.Body == null)
         {
-            throw new ApplicationException("Validating Select Multiple Learners Failed, response body was null");
+            throw new InvalidOperationException("Validating Select Multiple Learners Failed, response body was null");
         }
 
         return new ValidateSelectMultipleLearnerRecordsQueryResult

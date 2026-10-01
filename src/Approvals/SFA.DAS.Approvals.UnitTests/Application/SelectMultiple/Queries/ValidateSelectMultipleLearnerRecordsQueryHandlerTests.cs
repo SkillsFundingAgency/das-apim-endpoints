@@ -27,8 +27,8 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandlerTests
 
         var act = () => handler.Handle(query, CancellationToken.None);
 
-        await act.Should().ThrowAsync<ApplicationException>()
-            .WithMessage("LearnerIds must not be empty");
+        await act.Should().ThrowAsync<ArgumentException>()
+            .WithMessage("LearnerIds must not be empty*");
     }
 
     [Test, MoqAutoData]
@@ -46,7 +46,7 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandlerTests
 
         var act = () => handler.Handle(query, CancellationToken.None);
 
-        await act.Should().ThrowAsync<ApplicationException>()
+        await act.Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("Getting Learner Data Failed, Status Code BadRequest Error : learner missing");
         reservationApiClient.Verify(
             x => x.PostWithResponseCode<BulkReservationValidationResults>(It.IsAny<IPostApiRequest>(), true),
@@ -67,7 +67,7 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandlerTests
 
         var act = () => handler.Handle(query, CancellationToken.None);
 
-        await act.Should().ThrowAsync<ApplicationException>()
+        await act.Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("Getting Learner Data Failed, expected 2 learners but received 1");
     }
 
@@ -88,7 +88,7 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandlerTests
 
         var act = () => handler.Handle(query, CancellationToken.None);
 
-        await act.Should().ThrowAsync<ApplicationException>()
+        await act.Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("Validating Reservations Failed, Status Code BadRequest Error : no reservation");
         providerCoursesService.Verify(x => x.GetCoursesData(It.IsAny<long>()), Times.Never);
     }
@@ -116,7 +116,7 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandlerTests
 
         var act = () => handler.Handle(query, CancellationToken.None);
 
-        await act.Should().ThrowAsync<ApplicationException>()
+        await act.Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("Validating Select Multiple Learners Failed, Status Code BadRequest Error : commitments failed");
     }
 
