@@ -5,6 +5,7 @@ using SFA.DAS.AdminRoatp.InnerApi.Models;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
 using SFA.DAS.AdminRoatp.InnerApi.Responses;
 using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
@@ -46,7 +47,7 @@ public class RemoveProviderRestrictedApprenticeshipCommandHandler(IRoatpCourseMa
 
         var request = new AddProviderAllowedCourseRequest(command.Ukprn, command.LarsCode, model);
 
-        var response = await _courseManagementApiClient.PostWithResponseCode<Unit>(request);
+        ApiResponse<Unit> response = await _courseManagementApiClient.PostWithResponseCode<Unit>(request);
 
         response.EnsureSuccessStatusCode();
     }
@@ -64,7 +65,7 @@ public class RemoveProviderRestrictedApprenticeshipCommandHandler(IRoatpCourseMa
 
         var request = new PatchProviderAllowedCourseRequest(patchCommand);
 
-        var response = await _courseManagementApiClient.PatchWithResponseCode(request);
+        ApiResponse<string> response = await _courseManagementApiClient.PatchWithResponseCode(request);
 
         response.EnsureSuccessStatusCode();
     }
@@ -73,7 +74,7 @@ public class RemoveProviderRestrictedApprenticeshipCommandHandler(IRoatpCourseMa
     {
         var request = new DeleteProviderAllowedCourseRequest(command.Ukprn, command.LarsCode, command.UserId, command.UserDisplayName);
 
-        var response = await _courseManagementApiClient.DeleteWithResponseCode<Unit>(request);
+        ApiResponse<Unit> response = await _courseManagementApiClient.DeleteWithResponseCode<Unit>(request);
 
         response.EnsureSuccessStatusCode();
     }
