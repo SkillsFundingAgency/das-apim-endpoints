@@ -27,7 +27,18 @@ public static class AddApiServicesExtension
         services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
         services.TryAddSingleton(TimeProvider.System);
         services.AddTransient(typeof(IAccessTokenApiClient<>), typeof(AccessTokenApiClient<>));
-        services.AddTransient<ISldDataApiClient<SLDDataApiConfiguration>, SldDataApiClient>();
+        services.AddSingleton<SldDataApiCertificateValidator>();
+        services.AddHttpClient(SldDataApiHttpClientFactory.ClientName)
+            .ConfigurePrimaryHttpMessageHandler(serviceProvider => new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = serviceProvider.GetRequiredService<SldDataApiCertificateValidator>().IsServerCertificateValid
+            });
+        services.AddTransient<ISldDataApiClient<SLDDataApiConfiguration>>(serviceProvider => new SldDataApiClient(
+            new AccessTokenApiClient<SLDDataApiConfiguration>(
+                serviceProvider.GetRequiredService<ILogger<AccessTokenApiClient<SLDDataApiConfiguration>>>(),
+                new SldDataApiHttpClientFactory(serviceProvider.GetRequiredService<IHttpClientFactory>()),
+                serviceProvider.GetRequiredService<SLDDataApiConfiguration>(),
+                serviceProvider.GetRequiredService<TimeProvider>())));
         services.AddTransient<ILearningSupportService, LearningSupportService>();
         services.AddTransient<IBreaksInLearningService, BreaksInLearningService>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();

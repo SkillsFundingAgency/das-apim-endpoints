@@ -25,7 +25,9 @@ public class WhenRegisteringSldDataApiServices
                 ["SLDDataApiConfiguration:TokenSettings:ClientId"] = "client-id",
                 ["SLDDataApiConfiguration:TokenSettings:ClientSecret"] = "client-secret",
                 ["SLDDataApiConfiguration:TokenSettings:Scope"] = "api://sld-id/.default",
-                ["SLDDataApiConfiguration:TokenSettings:ShouldSkipForLocal"] = "true"
+                ["SLDDataApiConfiguration:TokenSettings:ShouldSkipForLocal"] = "true",
+                ["SLDDataApiConfiguration:CertificateThumbprints:0"] = "0123456789ABCDEF0123456789ABCDEF01234567",
+                ["SLDDataApiConfiguration:CertificateThumbprints:1"] = "76543210FEDCBA9876543210FEDCBA9876543210"
             })
             .Build();
 
@@ -52,6 +54,9 @@ public class WhenRegisteringSldDataApiServices
         config.TokenSettings.ClientSecret.Should().Be("client-secret");
         config.TokenSettings.Scope.Should().Be("api://sld-id/.default");
         config.TokenSettings.ShouldSkipForLocal.Should().BeTrue();
+        config.CertificateThumbprints.Should().Equal(
+            "0123456789ABCDEF0123456789ABCDEF01234567",
+            "76543210FEDCBA9876543210FEDCBA9876543210");
     }
 
     [Test]
