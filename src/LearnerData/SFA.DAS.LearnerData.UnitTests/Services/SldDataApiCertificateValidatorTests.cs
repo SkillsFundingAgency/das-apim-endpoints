@@ -1,4 +1,5 @@
 using System.Net.Security;
+using Microsoft.Extensions.Logging.Abstractions;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using SFA.DAS.LearnerData.Configuration;
@@ -127,10 +128,10 @@ public class SldDataApiCertificateValidatorTests
     }
 
     private static SldDataApiCertificateValidator CreateValidatorForUrl(string url, params string[] thumbprints) =>
-        new(new SLDDataApiConfiguration { Url = url, CertificateThumbprints = thumbprints });
+        new(new SLDDataApiConfiguration { Url = url, CertificateThumbprints = thumbprints }, NullLogger<SldDataApiCertificateValidator>.Instance);
 
     private static SldDataApiCertificateValidator CreateValidator(params string[] thumbprints) =>
-        new(new SLDDataApiConfiguration { CertificateThumbprints = thumbprints });
+        new(new SLDDataApiConfiguration { CertificateThumbprints = thumbprints }, NullLogger<SldDataApiCertificateValidator>.Instance);
 
     private static X509Certificate2 CreateSelfSignedCertificate()
     {

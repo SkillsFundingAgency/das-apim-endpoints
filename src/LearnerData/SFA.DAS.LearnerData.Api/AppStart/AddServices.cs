@@ -28,11 +28,13 @@ public static class AddApiServicesExtension
         services.TryAddSingleton(TimeProvider.System);
         services.AddTransient(typeof(IAccessTokenApiClient<>), typeof(AccessTokenApiClient<>));
         services.AddSingleton<SldDataApiCertificateValidator>();
+        services.AddTransient<SldDataApiLoggingHandler>();
         services.AddHttpClient(SldDataApiHttpClientFactory.ClientName)
             .ConfigurePrimaryHttpMessageHandler(serviceProvider => new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = serviceProvider.GetRequiredService<SldDataApiCertificateValidator>().IsServerCertificateValid
-            });
+            })
+            .AddHttpMessageHandler<SldDataApiLoggingHandler>();
         services.AddTransient<ISldDataApiClient<SLDDataApiConfiguration>>(serviceProvider => new SldDataApiClient(
             new AccessTokenApiClient<SLDDataApiConfiguration>(
                 serviceProvider.GetRequiredService<ILogger<AccessTokenApiClient<SLDDataApiConfiguration>>>(),

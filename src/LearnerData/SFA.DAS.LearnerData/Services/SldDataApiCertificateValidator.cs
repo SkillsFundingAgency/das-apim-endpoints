@@ -1,10 +1,11 @@
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Configuration;
 
 namespace SFA.DAS.LearnerData.Services;
 
-public class SldDataApiCertificateValidator(SLDDataApiConfiguration configuration)
+public class SldDataApiCertificateValidator(SLDDataApiConfiguration configuration, ILogger<SldDataApiCertificateValidator> logger)
 {
     private readonly HashSet<string> _trustedThumbprints = configuration.CertificateThumbprints
         .Select(Normalise)
@@ -23,9 +24,33 @@ public class SldDataApiCertificateValidator(SLDDataApiConfiguration configuratio
     {
         var isSldRequest = _sldHost != null && string.Equals(request.RequestUri?.Host, _sldHost, StringComparison.OrdinalIgnoreCase);
 
-        return isSldRequest
-            ? IsTrusted(certificate)
-            : sslPolicyErrors == SslPolicyErrors.None;
+        if (!isSldRequest)
+        {
+            return sslPolicyErrors == SslPolicyErrors.None;
+        }
+
+        var trusted = IsTrusted(certificate);
+
+        // Temporary diagnostics: only the first 5 characters of each thumbprint are logged
+        logger.LogInformation(
+            "SLD server certificate pinning for {Host}: {Result}. Presented thumbprint starts {PresentedPrefix}; {ConfiguredCount} configured thumbprint(s) start {ConfiguredPrefixes}. SslPolicyErrors {SslPolicyErrors}, subject {Subject}, issuer {Issuer}, expires {NotAfter:u}",
+            request.RequestUri?.Host,
+            trusted ? "trusted" : "REJECTED",
+            Prefix(certificate?.Thumbprint),
+            _trustedThumbprints.Count,
+            string.Join(", ", _trustedThumbprints.Select(Prefix)),
+            sslPolicyErrors,
+            certificate?.Subject,
+            certificate?.Issuer,
+            certificate?.NotAfter);
+
+        return trusted;
+    }
+
+    private static string Prefix(string? thumbprint)
+    {
+        var normalised = Normalise(thumbprint);
+        return normalised.Length > 5 ? normalised[..5] : normalised;
     }
 
     // Keep hex digits only, so spaces, colons and the hidden characters Windows adds when copying from the certificate dialog are ignored
