@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -135,16 +134,5 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandler(
         {
             ValidationErrors = validationResponse.Body.ValidationErrors ?? []
         };
-    }
-
-    public static DateTime? GetStartDate(string date, string format = "yyyy-MM-dd")
-    {
-        if (!string.IsNullOrWhiteSpace(date) &&
-            DateTime.TryParseExact(date, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime outDateTime))
-        {
-            return new DateTime(outDateTime.Year, outDateTime.Month, 1);
-        }
-
-        return null;
     }
 }
