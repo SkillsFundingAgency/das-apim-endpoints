@@ -53,7 +53,8 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
                     CalendarPeriodMonth = g.Key.Month,
                     CalendarPeriodYear = g.Key.Year,
                     CalendarMonthName = new DateTime(g.Key.Year, g.Key.Month, 1).ToString("MMMM"),
-                    LevyIn = g.Where(t => t.TransactionType == TransactionItemType.Declaration).Sum(t => t.Amount)
+                    LevyIn = g.Where(t => t.TransactionType == TransactionItemType.Declaration).Sum(t => t.Amount),
+                    ExpiredLevy = g.Where(t => t.TransactionType is TransactionItemType.ExpiredFund or TransactionItemType.ShortExpiredFund).Sum(t => t.Amount)
                 })
                 .OrderBy(x => x.CalendarPeriodYear)
                 .ThenBy(x => x.CalendarPeriodMonth)
@@ -78,7 +79,8 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
                 CalendarPeriodMonth = pointInTime.Month,
                 CalendarPeriodYear = pointInTime.Year,
                 CalendarMonthName = pointInTime.ToString("MMMM"),
-                LevyIn = levyData?.LevyIn ?? 0m
+                LevyIn = levyData?.LevyIn ?? 0m,
+                ExpiredLevy = levyData?.ExpiredLevy ?? 0m
             });
 
             pointInTime = pointInTime.AddMonths(1);
