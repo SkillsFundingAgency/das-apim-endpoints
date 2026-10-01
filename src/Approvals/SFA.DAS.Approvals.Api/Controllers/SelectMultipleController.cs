@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -21,8 +21,9 @@ public class SelectMultipleController(ILogger<SelectMultipleController> logger, 
             {
                 ProviderId = request.ProviderId,
                 AccountLegalEntityId = request.AccountLegalEntityId,
+                AgreementId = request.AgreementId,
                 LearnerIds = request.LearnerIds,
-
+                UserInfo = request.UserInfo,
             });
 
         return Ok(result);
