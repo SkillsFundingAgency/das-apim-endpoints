@@ -18,50 +18,63 @@ public class RemoveProviderRestrictedApprenticeshipCommandHandler(IRoatpCourseMa
 
         providerAllowedCourseResponse.EnsureSuccessStatusCode();
 
-        if (providerAllowedCourseResponse.StatusCode == HttpStatusCode.NoContent)
+        switch (providerAllowedCourseResponse)
         {
-            var model = new AddProviderAllowedCourseModel()
-            {
-                UserId = command.UserId,
-                UserDisplayName = command.UserDisplayName,
-                LastDateStarts = null,
-                IsStartRestricted = false,
-            };
+            case { StatusCode: HttpStatusCode.NoContent }:
+                await CreateProviderAllowedCourse(command);
+                return;
 
-            var apiRequest = new AddProviderAllowedCourseRequest(command.Ukprn, command.LarsCode, model);
+            case { StatusCode: HttpStatusCode.OK, Body.IsCourseRestricted: true }:
+                await PatchProviderAllowedCourse(command);
+                return;
 
-            var response = await _courseManagementApiClient.PostWithResponseCode<Unit>(apiRequest);
-
-            response.EnsureSuccessStatusCode();
+            case { StatusCode: HttpStatusCode.OK, Body.IsCourseRestricted: false }:
+                await DeleteProviderAllowedCourse(command);
+                return;
         }
+    }
 
-        if (providerAllowedCourseResponse.StatusCode == HttpStatusCode.OK)
+    private async Task CreateProviderAllowedCourse(RemoveProviderRestrictedApprenticeshipCommand command)
+    {
+        var model = new AddProviderAllowedCourseModel
         {
-            if (providerAllowedCourseResponse.Body?.IsCourseRestricted == true)
-            {
-                var patchCommand = new PatchProviderAllowedCourseCommand()
-                {
-                    UserId = command.UserId,
-                    UserDisplayName = command.UserDisplayName,
-                    Ukprn = command.Ukprn,
-                    LarsCode = command.LarsCode,
-                    LastDateStarts = null
-                };
+            UserId = command.UserId,
+            UserDisplayName = command.UserDisplayName,
+            LastDateStarts = null,
+            IsStartRestricted = false
+        };
 
-                var apiRequest = new PatchProviderAllowedCourseRequest(patchCommand);
+        var request = new AddProviderAllowedCourseRequest(command.Ukprn, command.LarsCode, model);
 
-                var response = await _courseManagementApiClient.PatchWithResponseCode(apiRequest);
+        var response = await _courseManagementApiClient.PostWithResponseCode<Unit>(request);
 
-                response.EnsureSuccessStatusCode();
-            }
-            if (providerAllowedCourseResponse.Body?.IsCourseRestricted == false)
-            {
-                var apiRequest = new DeleteProviderAllowedCourseRequest(command.Ukprn, command.LarsCode, command.UserId, command.UserDisplayName);
+        response.EnsureSuccessStatusCode();
+    }
 
-                var response = await _courseManagementApiClient.DeleteWithResponseCode<Unit>(apiRequest);
+    private async Task PatchProviderAllowedCourse(RemoveProviderRestrictedApprenticeshipCommand command)
+    {
+        var patchCommand = new PatchProviderAllowedCourseCommand
+        {
+            UserId = command.UserId,
+            UserDisplayName = command.UserDisplayName,
+            Ukprn = command.Ukprn,
+            LarsCode = command.LarsCode,
+            LastDateStarts = null
+        };
 
-                response.EnsureSuccessStatusCode();
-            }
-        }
+        var request = new PatchProviderAllowedCourseRequest(patchCommand);
+
+        var response = await _courseManagementApiClient.PatchWithResponseCode(request);
+
+        response.EnsureSuccessStatusCode();
+    }
+
+    private async Task DeleteProviderAllowedCourse(RemoveProviderRestrictedApprenticeshipCommand command)
+    {
+        var request = new DeleteProviderAllowedCourseRequest(command.Ukprn, command.LarsCode, command.UserId, command.UserDisplayName);
+
+        var response = await _courseManagementApiClient.DeleteWithResponseCode<Unit>(request);
+
+        response.EnsureSuccessStatusCode();
     }
 }
