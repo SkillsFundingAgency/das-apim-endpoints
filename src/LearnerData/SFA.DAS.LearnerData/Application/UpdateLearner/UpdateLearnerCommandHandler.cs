@@ -87,13 +87,6 @@ public class UpdateLearnerCommandHandler(
                         releaseEarnings = true;
                     }
                 }
-                    var earningsLearningSupportResponse = await earningsApiClient.PutWithResponseCode<UpdateLearningSupportRequest, UpdateLearningSupportEarningsApiPutResponse>(earningsLearningSupportRequest);
-
-                    if (earningsLearningSupportResponse.Body.HasNewEarningsProfileVersionBeenGenerated)
-                    {
-                        releaseEarnings = true;
-                    }
-                }
 
                 logger.LogInformation("Earnings updated for learning {LearningKey}", learningApiPutResponse.LearningKey);
 

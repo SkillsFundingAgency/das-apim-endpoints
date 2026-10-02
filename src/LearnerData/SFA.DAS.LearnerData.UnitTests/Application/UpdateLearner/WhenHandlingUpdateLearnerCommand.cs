@@ -222,16 +222,17 @@ public class WhenHandlingUpdateLearnerCommand
         _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data))
             .ReturnsAsync(updateOnProgPutRequest);
 
-        _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
-            .Returns(Task.CompletedTask);
+        _earningsApiClient.Setup(x => x.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateOnProgrammeEarningsApiPutResponse>(new UpdateOnProgrammeEarningsApiPutResponse { HasNewEarningsProfileVersionBeenGenerated = true }, HttpStatusCode.OK, ""));
 
         _earningsApiClient.Setup(x => x.Post(It.IsAny<ReleaseEarningsApiPostRequest>()))
+            .Returns(Task.CompletedTask);
 
         // Act
         await _sut.Handle(command, CancellationToken.None);
 
         //Assert
-        _earningsApiClient.Verify(x => x.PutWithResponseCode<UpdateLearningSupportRequest, UpdateLearningSupportEarningsApiPutResponse>(
+        _earningsApiClient.Verify(x => x.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(
                 It.Is<UpdateOnProgrammeApiPutRequest>(r => r == updateOnProgPutRequest)),
             Times.Once);
 
@@ -262,8 +263,8 @@ public class WhenHandlingUpdateLearnerCommand
         _updateEarningsEnglishAndMathsRequestBuilder.Setup(x => x.Build(command, updateLearningApiResponse, apiPutRequest))
             .Returns(englishAndMathsApiPutRequest);
 
-        _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateEnglishAndMathsApiPutRequest>()))
-            .Returns(Task.CompletedTask);
+        _earningsApiClient.Setup(x => x.PutWithResponseCode<UpdateEnglishAndMathsRequest, UpdateEnglishAndMathsEarningsApiPutResponse>(It.IsAny<UpdateEnglishAndMathsApiPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateEnglishAndMathsEarningsApiPutResponse>(new UpdateEnglishAndMathsEarningsApiPutResponse { HasNewEarningsProfileVersionBeenGenerated = true }, HttpStatusCode.OK, ""));
 
         _earningsApiClient.Setup(x => x.Post(It.IsAny<ReleaseEarningsApiPostRequest>()))
             .Returns(Task.CompletedTask);
@@ -272,7 +273,7 @@ public class WhenHandlingUpdateLearnerCommand
         await _sut.Handle(command, CancellationToken.None);
 
         //Assert
-        _earningsApiClient.Verify(x => x.Put(
+        _earningsApiClient.Verify(x => x.PutWithResponseCode<UpdateEnglishAndMathsRequest, UpdateEnglishAndMathsEarningsApiPutResponse>(
                 It.Is<UpdateEnglishAndMathsApiPutRequest>(r => r == englishAndMathsApiPutRequest)),
             Times.Once);
 
