@@ -72,6 +72,8 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
         [
             new TransactionLine { TransactionDate = now.AddYears(-1), Amount = 200m, TransactionType = TransactionItemType.Declaration },
             new TransactionLine { TransactionDate = now, Amount = 500m, TransactionType = TransactionItemType.Declaration },
+            new TransactionLine { TransactionDate = now, Amount = 500m, TransactionType = TransactionItemType.ShortExpiredFund },
+            new TransactionLine { TransactionDate = now, Amount = 100m, TransactionType = TransactionItemType.ExpiredFund },
         ]);
         SetupLastSubmissionDateResponse(mockFinanceApiClient, accountId, new GetLevyLastSubmissionDateResponse { LastSubmissionDate = lastSubmissionDate });
 
@@ -80,6 +82,7 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
 
         // Assert
         result.Projections[0].LevyIn.Should().Be(500m);
+        result.Projections[0].ExpiredLevy.Should().Be(600m);
     }
     
     [Test, MoqAutoData]
@@ -136,6 +139,8 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
             new TransactionLine { TransactionDate = now, Amount = 1m, TransactionType = TransactionItemType.Declaration },
             new TransactionLine { TransactionDate = now, Amount = 1m, TransactionType = TransactionItemType.Payment },
             new TransactionLine { TransactionDate = now, Amount = 1m, TransactionType = TransactionItemType.Transfer },
+            new TransactionLine { TransactionDate = now, Amount = 1m, TransactionType = TransactionItemType.ExpiredFund },
+            new TransactionLine { TransactionDate = now, Amount = 1m, TransactionType = TransactionItemType.ShortExpiredFund },
         ]);
         SetupLastSubmissionDateResponse(mockFinanceApiClient, accountId, new GetLevyLastSubmissionDateResponse { LastSubmissionDate = lastSubmissionDate });
 
@@ -144,6 +149,7 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
 
         // Assert
         result.Projections[0].LevyIn.Should().Be(1m);
+        result.Projections[0].ExpiredLevy.Should().Be(2m);
     }
     
     [Test, MoqAutoData]

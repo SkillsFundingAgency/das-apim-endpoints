@@ -6,4 +6,5 @@ public sealed record MonthlyBreakdown
     public int CalendarPeriodYear { get; init; } = 0;
     public string CalendarMonthName { get; init; }
     public decimal LevyIn { get; init; } = 0;
+    public decimal ExpiredLevy { get; init; } = 0;
 }
