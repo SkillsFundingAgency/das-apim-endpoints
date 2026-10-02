@@ -33,16 +33,16 @@ public class LearningSupportServiceTests
         var sut = new LearningSupportService();
 
         // Act
-        var actual = sut.GetCombinedLearningSupport(testData.OnProgrammes,
+        var actual = sut.GetLearningSupport(testData.OnProgrammes,
             testData.OnProgrammeEndDate,
             testData.OnProgrammeBreaksInLearning,
             testData.EnglishAndMathsCourses,
             testData.EnglishAndMathsRequestedLearningSupportByLearnAimRef);
 
         // Assert
-        actual.Count.Should().Be(2);
-        actual.First().Should().BeEquivalentTo(lsf1);
-        actual.Skip(1).First().Should().BeEquivalentTo(lsf2);
+        actual.OnProgramme.Count.Should().Be(2);
+        actual.OnProgramme.First().Should().BeEquivalentTo(lsf1);
+        actual.OnProgramme.Skip(1).First().Should().BeEquivalentTo(lsf2);
     }
 
     [Test]
@@ -61,7 +61,7 @@ public class LearningSupportServiceTests
         var sut = new LearningSupportService();
 
         // Act
-        var actual = sut.GetCombinedLearningSupport(
+        var actual = sut.GetLearningSupport(
             testData.OnProgrammes,
             testData.OnProgrammeEndDate,
             testData.OnProgrammeBreaksInLearning,
@@ -75,7 +75,7 @@ public class LearningSupportServiceTests
             EndDate = testData.FirstOnProgramme.PauseDate.Value
         };
 
-        actual.Should().ContainSingle().Which.Should().BeEquivalentTo(expected);
+        actual.OnProgramme.Should().ContainSingle().Which.Should().BeEquivalentTo(expected);
     }
 
     [Test]
@@ -94,7 +94,7 @@ public class LearningSupportServiceTests
         var sut = new LearningSupportService();
 
         // Act
-        var actual = sut.GetCombinedLearningSupport(
+        var actual = sut.GetLearningSupport(
             testData.OnProgrammes,
             testData.OnProgrammeEndDate,
             testData.OnProgrammeBreaksInLearning,
@@ -108,7 +108,7 @@ public class LearningSupportServiceTests
             EndDate = testData.LatestOnProgramme.ExpectedEndDate
         };
 
-        actual.Should().ContainSingle().Which.Should().BeEquivalentTo(expected);
+        actual.OnProgramme.Should().ContainSingle().Which.Should().BeEquivalentTo(expected);
     }
 
     [Test]
@@ -127,7 +127,7 @@ public class LearningSupportServiceTests
         var sut = new LearningSupportService();
 
         // Act
-        var actual = sut.GetCombinedLearningSupport(
+        var actual = sut.GetLearningSupport(
             testData.OnProgrammes,
             testData.OnProgrammeEndDate,
             testData.OnProgrammeBreaksInLearning,
@@ -141,7 +141,7 @@ public class LearningSupportServiceTests
             new LearningSupport { StartDate = testData.LatestOnProgramme.StartDate, EndDate = testData.LatestOnProgramme.ExpectedEndDate }
         };
 
-        actual.Should().BeEquivalentTo(expected, opts => opts.WithoutStrictOrdering());
+        actual.OnProgramme.Should().BeEquivalentTo(expected, opts => opts.WithoutStrictOrdering());
     }
 
     [Test]
@@ -163,7 +163,7 @@ public class LearningSupportServiceTests
         var sut = new LearningSupportService();
 
         // Act
-        var actual = sut.GetCombinedLearningSupport(
+        var actual = sut.GetLearningSupport(
             testData.OnProgrammes,
             testData.OnProgrammeEndDate,
             testData.OnProgrammeBreaksInLearning,
@@ -177,7 +177,8 @@ public class LearningSupportServiceTests
             EndDate = pauseDate
         };
 
-        actual.Should().ContainSingle().Which.Should().BeEquivalentTo(expected);
+        actual.EnglishAndMaths.Should().ContainKey(testData.FirstMathsAndEnglishDetails.LearnAimRef);
+        actual.EnglishAndMaths[testData.FirstMathsAndEnglishDetails.LearnAimRef].Should().ContainSingle().Which.Should().BeEquivalentTo(expected);
     }
 
     [Test]
@@ -195,13 +196,13 @@ public class LearningSupportServiceTests
         var sut = new LearningSupportService();
 
         // Act
-        var actual = sut.GetCombinedLearningSupport(
+        var actual = sut.GetLearningSupport(
             testData.OnProgrammes,
             testData.OnProgrammeEndDate,
             testData.OnProgrammeBreaksInLearning,
             testData.EnglishAndMathsCourses,
             testData.EnglishAndMathsRequestedLearningSupportByLearnAimRef);
-        
+
         // Assert
         var expected = new List<LearningSupport>
         {
@@ -215,7 +216,8 @@ public class LearningSupportServiceTests
             }
         };
 
-        actual.Should().BeEquivalentTo(expected);
+        actual.EnglishAndMaths.Should().ContainKey(testData.FirstMathsAndEnglishDetails.LearnAimRef);
+        actual.EnglishAndMaths[testData.FirstMathsAndEnglishDetails.LearnAimRef].Should().BeEquivalentTo(expected);
     }
 
     private class TestData

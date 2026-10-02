@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.LearnerData.Shared;
 using System.Diagnostics;
 
 namespace SFA.DAS.LearnerData.Requests.EarningsInner;
@@ -22,6 +23,7 @@ public class UpdateOnProgrammeRequest
     public List<PriceItem> Prices { get; set; } = [];
     public List<PeriodInLearningItem> PeriodsInLearning { get; set; } = [];
     public Care Care { get; set; }
+    public List<LearningSupport> LearningSupport { get; set; } = [];
 }
 
 public class PriceItem

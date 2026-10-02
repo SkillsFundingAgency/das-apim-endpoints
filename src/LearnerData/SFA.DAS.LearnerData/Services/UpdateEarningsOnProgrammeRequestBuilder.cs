@@ -44,7 +44,7 @@ public class UpdateEarningsOnProgrammeRequestBuilder(ICourseService courseServic
         var payload = new UpdateOnProgrammeRequest
         {
             CompletionDate = requestBody.Learner.CompletionDate,
-            WithdrawalDate = requestBody.Delivery.WithdrawalDate,
+            WithdrawalDate = requestBody.OnProgramme.WithdrawalDate,
             PauseDate = requestBody.OnProgramme.PauseDate,
             AchievementDate = requestBody.OnProgramme.AchievementDate,
             ApprenticeshipEpisodeKey = learningApiPutResponse.LearningEpisodeKey,
@@ -66,7 +66,8 @@ public class UpdateEarningsOnProgrammeRequestBuilder(ICourseService courseServic
                 HasEHCP = requestBody.Learner.Care.HasEHCP,
                 IsCareLeaver = requestBody.Learner.Care.IsCareLeaver,
                 CareLeaverEmployerConsentGiven = requestBody.Learner.Care.CareLeaverEmployerConsentGiven
-            }
+            },
+            LearningSupport = requestBody.OnProgramme.LearningSupport
         };
 
         return new UpdateOnProgrammeApiPutRequest(learningKey, payload);
