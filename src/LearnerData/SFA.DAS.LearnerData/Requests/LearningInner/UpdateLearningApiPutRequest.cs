@@ -36,6 +36,7 @@ namespace SFA.DAS.LearnerData.Requests.LearningInner
         public DateTime DateOfBirth { get; set; }
         public long Uln { get; set; }
         public CareDetails Care { get; set; }
+        public string? LearnerRef { get; set; }
     }
 
     public class OnProgrammeDetails
