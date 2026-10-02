@@ -34,10 +34,13 @@ namespace SFA.DAS.Campaign.Models
                 }
             };
 
-            foreach (var contentItem in panelItem.Fields.Content.Content)
+            if (panelItem.Fields.Content?.Content != null)
             {
-                contentItem.ProcessListNodeTypes(panelContent.MainContent.Items);
-                contentItem.ProcessContentNodeTypes(panelContent.MainContent.Items);
+                foreach (var contentItem in panelItem.Fields.Content.Content)
+                {
+                    contentItem.ProcessListNodeTypes(panelContent.MainContent.Items);
+                    contentItem.ProcessContentNodeTypes(panelContent.MainContent.Items);
+                }
             }
 
             if (panelItem.Fields.Image != null && !string.IsNullOrWhiteSpace(panelItem.Fields.Image.Sys.Id))
