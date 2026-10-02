@@ -196,7 +196,6 @@ public class WhenHandlingCreateDraftShortCourseCommand
                     e.PlannedOTJTrainingHours == 0 &&
                     e.AgreementId == _onProg.AgreementId &&
                     e.ConsumerReference == _shortCourseRequest.ConsumerReference &&
-                    e.StandardCode == 0 &&
                     e.LarsCode == _resolvedOnProg.CourseCode &&
                     e.CorrelationId != Guid.Empty &&
                     e.LearningType == (LearningType)_resolvedOnProg.LearningType

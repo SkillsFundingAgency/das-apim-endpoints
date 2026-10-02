@@ -45,7 +45,6 @@ public class LearnerDataEventMapper : ILearnerDataEventMapper
             TrainingPrice = cost.TrainingPrice,
             AgreementId = onProgramme.AgreementId,
             IsFlexiJob = onProgramme.IsFlexiJob!.Value,
-            StandardCode = onProgramme.StandardCode,
             CorrelationId = correlationId,
             ReceivedDate = receivedDate,
             ConsumerReference = consumerReference,
