@@ -33,57 +33,65 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
         };
     }
 
-    private async Task<List<MonthlyBreakdown>> FetchHistoricDataAsync(DateTime now, long accountId)
+    private async Task<Dictionary<(int Year, int Month), MonthlyBreakdown>> FetchHistoricDataAsync(
+        DateTime now,
+        long accountId)
     {
         var startOfMonth = new DateTime(now.Year, now.Month, 1);
-        
-        // this gives use the last 12 months + any potential current month levy in
+
+        // Fetch the last 12 complete months + the current (potentially partial) month
         var startDate = startOfMonth.AddYears(-1);
-        var endDate = startOfMonth.AddMonths(1).AddSeconds(-1);
+        var endDate = startOfMonth.AddMonths(1).AddTicks(-1);
 
         var response = await financeApiClient.Get<List<TransactionLine>>(
             new GetAccountTransactionSummaryByDateRequest(accountId, startDate, endDate));
-        
-        return
-        [
-            .. response
-                .GroupBy(t => new { t.TransactionDate.Year, t.TransactionDate.Month })
-                .Select(g => new MonthlyBreakdown
+
+        return response
+            .GroupBy(t => (t.TransactionDate.Year, t.TransactionDate.Month))
+            .ToDictionary(
+                g => g.Key,
+                g => new MonthlyBreakdown
                 {
-                    CalendarPeriodMonth = g.Key.Month,
                     CalendarPeriodYear = g.Key.Year,
+                    CalendarPeriodMonth = g.Key.Month,
                     CalendarMonthName = new DateTime(g.Key.Year, g.Key.Month, 1).ToString("MMMM"),
-                    LevyIn = g.Where(t => t.TransactionType == TransactionItemType.Declaration).Sum(t => t.Amount),
-                    ExpiredLevy = g.Where(t => t.TransactionType is TransactionItemType.ExpiredFund or TransactionItemType.ShortExpiredFund).Sum(t => t.Amount)
-                })
-                .OrderBy(x => x.CalendarPeriodYear)
-                .ThenBy(x => x.CalendarPeriodMonth)
-        ];
+                    LevyIn = g
+                        .Where(t => t.TransactionType == TransactionItemType.Declaration)
+                        .Sum(t => t.Amount),
+                    ExpiredLevy = g
+                        .Where(t => t.TransactionType is TransactionItemType.ExpiredFund
+                            or TransactionItemType.ShortExpiredFund)
+                        .Sum(t => t.Amount)
+                });
     }
 
-    private static IReadOnlyList<MonthlyBreakdown> ProjectFromHistoricData(DateTime now, int months, List<MonthlyBreakdown> historicLevyIn)
+    private static IReadOnlyList<MonthlyBreakdown> ProjectFromHistoricData(
+        DateTime now,
+        int months,
+        Dictionary<(int Year, int Month), MonthlyBreakdown> historic)
     {
-        var pointInTime = now;
-        var projections = new List<MonthlyBreakdown>();
+        var projections = new List<MonthlyBreakdown>(months);
+
         for (var i = 0; i < months; i++)
         {
-            MonthlyBreakdown levyData = null;
-            if (pointInTime.Month == now.Month && pointInTime.Year == now.Year)
-            {
-                levyData = historicLevyIn.FirstOrDefault(x => x.CalendarPeriodMonth == pointInTime.Month && x.CalendarPeriodYear == pointInTime.Year);
-            }
+            var pointInTime = now.AddMonths(i);
+            var isCurrentMonth = pointInTime.Year == now.Year && pointInTime.Month == now.Month;
 
-            levyData ??= historicLevyIn.FirstOrDefault(x => x.CalendarPeriodMonth == pointInTime.Month && x.CalendarPeriodYear == pointInTime.Year - 1);
+            // For the current month use actual data if already declared;
+            // for all future months (and as a fallback for the current month) use the same month last year.
+            var levyData =
+                (isCurrentMonth && historic.TryGetValue((pointInTime.Year, pointInTime.Month), out var current))
+                    ? current
+                    : historic.GetValueOrDefault((pointInTime.Year - 1, pointInTime.Month));
+
             projections.Add(new MonthlyBreakdown
             {
-                CalendarPeriodMonth = pointInTime.Month,
                 CalendarPeriodYear = pointInTime.Year,
+                CalendarPeriodMonth = pointInTime.Month,
                 CalendarMonthName = pointInTime.ToString("MMMM"),
                 LevyIn = levyData?.LevyIn ?? 0m,
                 ExpiredLevy = levyData?.ExpiredLevy ?? 0m
             });
-
-            pointInTime = pointInTime.AddMonths(1);
         }
 
         return projections;
