@@ -2,7 +2,7 @@
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAction;
-using SFA.DAS.DigitalCertificates.InnerApi.Responses;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
 
 namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserAction
 {
@@ -22,8 +22,8 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserA
         }
 
         [Test, AutoData]
-        public void Then_Implicit_Operator_Maps_PostCreateUserActionResponse_Correctly(
-            PostCreateUserActionResponse response)
+        public void Then_Implicit_Operator_Maps_CreateUserActionResponse_Correctly(
+            CreateUserActionResponse response)
         {
             // Arrange & Act
             CreateUserActionResult result = response;

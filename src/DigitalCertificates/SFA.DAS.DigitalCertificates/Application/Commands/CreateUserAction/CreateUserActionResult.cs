@@ -1,4 +1,4 @@
-﻿using SFA.DAS.DigitalCertificates.InnerApi.Responses;
+﻿using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
 
 namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAction
 {
@@ -6,7 +6,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAction
     {
         public string ActionCode { get; set; }
 
-        public static implicit operator CreateUserActionResult(PostCreateUserActionResponse response)
+        public static implicit operator CreateUserActionResult(CreateUserActionResponse response)
         {
             return new CreateUserActionResult
             {

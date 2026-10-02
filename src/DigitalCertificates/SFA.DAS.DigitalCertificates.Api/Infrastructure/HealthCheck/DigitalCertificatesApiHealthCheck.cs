@@ -1,15 +1,17 @@
-﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Apim.Shared.Infrastructure.HealthCheck;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
 
-namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
+namespace SFA.DAS.DigitalCertificates.Api.Infrastructure.HealthCheck;
 
 public class DigitalCertificatesApiHealthCheck(
     IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration> client,
     ILogger<DigitalCertificatesApiHealthCheck> logger)
-    : ApiHealthCheck<DigitalCertificatesApiConfiguration>(HealthCheckDescription, HealthCheckResultDescription, client,
+    : ApiHealthCheck<DigitalCertificatesApiConfiguration>(
+        HealthCheckDescription,
+        HealthCheckResultDescription,
+        client,
         logger), IHealthCheck
 {
     public static readonly string HealthCheckDescription = "Digital Certificates API";

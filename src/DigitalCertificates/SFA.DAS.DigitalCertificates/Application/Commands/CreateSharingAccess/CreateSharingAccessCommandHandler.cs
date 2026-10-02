@@ -1,11 +1,8 @@
 ﻿using MediatR;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Extensions;
-using System.Net;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,9 +19,12 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingAccess
 
         public async Task<Unit> Handle(CreateSharingAccessCommand command, CancellationToken cancellationToken)
         {
-            var request = new PostCreateSharingAccessRequest(command);
+            var request = new PostSharingSharingaccessApiRequest(new CreateSharingAccessRequest
+            {
+                SharingId = command.SharingId
+            });
 
-            var response = await _digitalCertificatesApiClient.PostWithResponseCode<PostCreateSharingAccessRequestData, object>(request,false);
+            var response = await _digitalCertificatesApiClient.PostWithResponseCode<object>(request, false);
 
             response.EnsureSuccessStatusCode();
 

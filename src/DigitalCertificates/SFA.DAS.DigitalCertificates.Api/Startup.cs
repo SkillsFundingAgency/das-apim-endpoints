@@ -11,6 +11,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.DigitalCertificates.Api.AppStart;
+using SFA.DAS.DigitalCertificates.Api.Infrastructure.HealthCheck;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetUser;
 using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 using System;

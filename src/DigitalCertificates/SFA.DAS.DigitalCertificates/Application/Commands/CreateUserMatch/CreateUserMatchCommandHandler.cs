@@ -4,10 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
-using SFA.DAS.DigitalCertificates.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
+using SFA.DAS.DigitalCertificates.Extensions;
 
 namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateUserMatch
 {
@@ -22,27 +22,42 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateUserMatch
 
         public async Task<Unit> Handle(CreateUserMatchCommand command, CancellationToken cancellationToken)
         {
-            var request = new PostCreateUserMatchRequest((PostCreateUserMatchRequestData)command, command.UserId);
-
             var identityResponse = await _digitalCertificatesApiClient
-                .GetWithResponseCode<GetUserIdentityResponse>(new GetUserIdentityRequest(command.UserId));
+                .GetWithResponseCode<GetUserIdentityResponse>(new GetUsersByUserIdIdentityApiRequest(command.UserId));
 
             identityResponse.EnsureSuccessStatusCode();
+
             var identity = identityResponse.Body;
 
             var userMatchIdentity = command.UserIdentityId != null
-                ? identity.Identity.FirstOrDefault(p => p.UserIdentityId == command.UserIdentityId)
-                : identity.Identity.OrderByDescending(p => p.ValidSince).FirstOrDefault();
+                ? identity.Identity?.FirstOrDefault(p => p.UserIdentityId == command.UserIdentityId)
+                : identity.Identity?.OrderByDescending(p => p.ValidSince).FirstOrDefault();
 
             if (userMatchIdentity == null || identity.DateOfBirth == null)
             {
                 throw new InvalidOperationException("User identity details are required to submit a match attempt.");
             }
 
-            request.Data.FamilyName = userMatchIdentity.FamilyName;
-            request.Data.DateOfBirth = identity.DateOfBirth.Value;
+            var request = new PostUsersByUserIdMatchApiRequest(new CreateUserMatchRequest
+            {
+                Uln = command.Uln,
+                FamilyName = userMatchIdentity.FamilyName,
+                DateOfBirth = identity.DateOfBirth.Value,
+                CertificateType = command.CertificateType.ToCertificateType(),
+                CourseCode = command.CourseCode,
+                CourseName = command.CourseName,
+                CourseLevel = command.CourseLevel,
+                YearAwarded = command.YearAwarded,
+                ProviderName = command.ProviderName,
+                Ukprn = command.Ukprn,
+                IsMatched = command.IsMatched,
+                IsFailed = command.IsFailed
+            })
+            {
+                UserId = command.UserId
+            };
 
-            var response = await _digitalCertificatesApiClient.PostWithResponseCode<PostCreateUserMatchRequestData, object>(request, false);
+            var response = await _digitalCertificatesApiClient.PostWithResponseCode<object>(request, false);
 
             response.EnsureSuccessStatusCode();
 

@@ -7,15 +7,12 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Apim.Shared.Exceptions;
-using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingEmail;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
-using SFA.DAS.DigitalCertificates.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingEmail;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateSharingEmail
@@ -25,7 +22,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateShari
         [Test, MoqAutoData]
         public async Task Then_The_Sharing_Email_Is_Created_And_Email_Sent_Successfully(
             CreateSharingEmailCommand command,
-            PostCreateSharingEmailResponse apiResponseBody,
+            CreateSharingEmailResponse apiResponseBody,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
             [Frozen] Mock<INotificationService> mockNotificationService,
             CreateSharingEmailCommandHandler handler)
@@ -33,12 +30,12 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateShari
             // Arrange
             command.TemplateId = command.TemplateId ?? Guid.NewGuid().ToString();
 
-            var apiResponse = new ApiResponse<PostCreateSharingEmailResponse>(
+            var apiResponse = new ApiResponse<CreateSharingEmailResponse>(
                 apiResponseBody, HttpStatusCode.OK, string.Empty);
 
             mockDigitalCertificatesApiClient
-                .Setup(client => client.PostWithResponseCode<PostCreateSharingEmailRequestData, PostCreateSharingEmailResponse>(
-                    It.Is<PostCreateSharingEmailRequest>(r => r.Data.EmailAddress == command.EmailAddress), true))
+                .Setup(client => client.PostWithResponseCode<CreateSharingEmailResponse>(
+                    It.IsAny<PostSharingByIdEmailApiRequest>(), true))
                 .ReturnsAsync(apiResponse);
 
             // Act
@@ -49,34 +46,39 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateShari
             actual.EmailLinkCode.Should().Be(apiResponseBody.EmailLinkCode);
 
             mockDigitalCertificatesApiClient.Verify(client =>
-                client.PostWithResponseCode<PostCreateSharingEmailRequestData, PostCreateSharingEmailResponse>(
-                    It.Is<PostCreateSharingEmailRequest>(r => r.Data.EmailAddress == command.EmailAddress), true), Times.Once);
+                client.PostWithResponseCode<CreateSharingEmailResponse>(
+                    It.Is<PostSharingByIdEmailApiRequest>(r =>
+                        r.PostUrl == $"api/sharing/{command.SharingId}/email" &&
+                        ((CreateSharingEmailRequest)r.Data).EmailAddress == command.EmailAddress), true), Times.Once);
 
             mockNotificationService.Verify(n => n.Send(It.IsAny<Notifications.Messages.Commands.SendEmailCommand>()), Times.Once);
         }
 
         [Test, MoqAutoData]
-        public void Then_Exception_Is_Thrown_If_Api_Call_Fails(
+        public async Task Then_Exception_Is_Thrown_If_Api_Call_Fails(
             CreateSharingEmailCommand command,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
+            [Frozen] Mock<INotificationService> mockNotificationService,
             CreateSharingEmailCommandHandler handler)
         {
             // Arrange
             mockDigitalCertificatesApiClient
-                .Setup(client => client.PostWithResponseCode<PostCreateSharingEmailRequestData, PostCreateSharingEmailResponse>(
-                    It.IsAny<PostCreateSharingEmailRequest>(), true))
+                .Setup(client => client.PostWithResponseCode<CreateSharingEmailResponse>(
+                    It.IsAny<PostSharingByIdEmailApiRequest>(), true))
                 .ThrowsAsync(new ApiResponseException(HttpStatusCode.BadRequest, "Bad request"));
 
             // Act
             Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            act.Should().ThrowAsync<ApiResponseException>()
+            await act.Should().ThrowAsync<ApiResponseException>()
                 .Where(e => e.Status == HttpStatusCode.BadRequest);
 
             mockDigitalCertificatesApiClient.Verify(client =>
-                client.PostWithResponseCode<PostCreateSharingEmailRequestData, PostCreateSharingEmailResponse>(
-                    It.IsAny<PostCreateSharingEmailRequest>(), true), Times.Once);
+                client.PostWithResponseCode<CreateSharingEmailResponse>(
+                    It.IsAny<PostSharingByIdEmailApiRequest>(), true), Times.Once);
+
+            mockNotificationService.Verify(n => n.Send(It.IsAny<Notifications.Messages.Commands.SendEmailCommand>()), Times.Never);
         }
     }
 }

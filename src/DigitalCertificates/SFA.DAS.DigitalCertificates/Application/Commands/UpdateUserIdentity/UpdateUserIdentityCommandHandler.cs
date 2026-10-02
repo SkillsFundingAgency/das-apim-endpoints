@@ -1,12 +1,11 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
-using SFA.DAS.DigitalCertificates.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using static SFA.DAS.DigitalCertificates.InnerApi.Requests.PostUpdateUserIdentityRequest;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
 
 namespace SFA.DAS.DigitalCertificates.Application.Commands.UpdateUserIdentity
 {
@@ -21,14 +20,23 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.UpdateUserIdentity
 
         public async Task<Unit> Handle(UpdateUserIdentityCommand command, CancellationToken cancellationToken)
         {
-            var request = new PostUpdateUserIdentityRequest(new PostUpdateUserIdentityRequestData
+            var request = new PostUsersByUserIdIdentityApiRequest(new UpdateUserIdentityRequest
             {
-                Names = command.Names,
+                Names = command.Names?.Select(n => new NameRequest
+                {
+                    UserIdentityId = n.UserIdentityId,
+                    ValidSince = n.ValidSince,
+                    ValidUntil = n.ValidUntil,
+                    FamilyName = n.FamilyName,
+                    GivenNames = n.GivenNames
+                }).ToList(),
                 DateOfBirth = command.DateOfBirth
-            }, command.UserId);
+            })
+            {
+                UserId = command.UserId
+            };
 
-            var response = await _digitalCertificatesApiClient
-                .PostWithResponseCode<PostUpdateUserIdentityRequestData, PostUpdateUserIdentityResponse>(request);
+            var response = await _digitalCertificatesApiClient.PostWithResponseCode<object>(request, false);
 
             response.EnsureSuccessStatusCode();
 

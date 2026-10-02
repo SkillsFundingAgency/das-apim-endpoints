@@ -3,7 +3,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingEmail;
-using SFA.DAS.DigitalCertificates.InnerApi.Responses;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
 
 namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateSharingEmail
 {
@@ -28,8 +28,8 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateShari
         }
 
         [Test, AutoData]
-        public void Then_Implicit_Operator_Maps_PostCreateSharingEmailResponse_Correctly(
-            PostCreateSharingEmailResponse response)
+        public void Then_Implicit_Operator_Maps_CreateSharingEmailResponse_Correctly(
+            CreateSharingEmailResponse response)
         {
             // Arrange & Act
             CreateSharingEmailResult result = response;
