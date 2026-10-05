@@ -24,7 +24,7 @@ public class AddProviderRestrictedApprenticeshipCommandHandler(IRoatpCourseManag
 
         switch (providerAllowedCourseResponse, providerCourseResponse)
         {
-            case ({ StatusCode: HttpStatusCode.NoContent }, { StatusCode: not HttpStatusCode.OK }):
+            case ({ StatusCode: HttpStatusCode.NoContent }, { StatusCode: HttpStatusCode.BadRequest }):
                 await CreateProviderAllowedCourse(command, false);
                 return;
 
@@ -32,11 +32,11 @@ public class AddProviderRestrictedApprenticeshipCommandHandler(IRoatpCourseManag
                 await CreateProviderAllowedCourse(command, true);
                 return;
 
-            case ({ StatusCode: HttpStatusCode.OK, Body.IsCourseRestricted: false }, { StatusCode: not HttpStatusCode.OK }):
+            case ({ StatusCode: HttpStatusCode.OK, Body.IsCourseRestricted: false }, { StatusCode: HttpStatusCode.BadRequest }):
                 await PatchProviderAllowedCourse(command, false);
                 return;
 
-            case ({ StatusCode: HttpStatusCode.OK, Body.IsCourseRestricted: true }, { StatusCode: not HttpStatusCode.OK }):
+            case ({ StatusCode: HttpStatusCode.OK, Body.IsCourseRestricted: true }, { StatusCode: HttpStatusCode.BadRequest }):
                 await DeleteProviderAllowedCourse(command);
                 return;
 

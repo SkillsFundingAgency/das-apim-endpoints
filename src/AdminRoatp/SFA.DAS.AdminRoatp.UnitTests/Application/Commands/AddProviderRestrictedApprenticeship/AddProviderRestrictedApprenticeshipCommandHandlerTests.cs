@@ -30,7 +30,7 @@ public class AddProviderRestrictedApprenticeshipCommandHandlerTests
 
         apiClientMock
             .Setup(x => x.GetWithResponseCode<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>()))
-            .ReturnsAsync(new ApiResponse<GetProviderCourseResponse>(new GetProviderCourseResponse(), HttpStatusCode.NotFound, ""));
+            .ReturnsAsync(new ApiResponse<GetProviderCourseResponse>(new GetProviderCourseResponse(), HttpStatusCode.BadRequest, ""));
 
         apiClientMock
             .Setup(x => x.PostWithResponseCode<Unit>(It.IsAny<AddProviderAllowedCourseRequest>()))
@@ -102,7 +102,7 @@ public class AddProviderRestrictedApprenticeshipCommandHandlerTests
 
         apiClientMock
             .Setup(x => x.GetWithResponseCode<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>()))
-            .ReturnsAsync(new ApiResponse<GetProviderCourseResponse>(new GetProviderCourseResponse(), HttpStatusCode.NotFound, ""));
+            .ReturnsAsync(new ApiResponse<GetProviderCourseResponse>(new GetProviderCourseResponse(), HttpStatusCode.BadRequest, ""));
 
         apiClientMock
             .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchProviderAllowedCourseRequest>()))
@@ -135,7 +135,7 @@ public class AddProviderRestrictedApprenticeshipCommandHandlerTests
 
         apiClientMock
             .Setup(x => x.GetWithResponseCode<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>()))
-            .ReturnsAsync(new ApiResponse<GetProviderCourseResponse>(new GetProviderCourseResponse(), HttpStatusCode.NotFound, ""));
+            .ReturnsAsync(new ApiResponse<GetProviderCourseResponse>(new GetProviderCourseResponse(), HttpStatusCode.BadRequest, ""));
 
         apiClientMock
             .Setup(x => x.DeleteWithResponseCode<Unit>(It.IsAny<DeleteProviderAllowedCourseRequest>()))
@@ -216,7 +216,7 @@ public class AddProviderRestrictedApprenticeshipCommandHandlerTests
 
         apiClientMock
             .Setup(x => x.GetWithResponseCode<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>()))
-            .ReturnsAsync(new ApiResponse<GetProviderCourseResponse>(new GetProviderCourseResponse(), HttpStatusCode.NotFound, ""));
+            .ReturnsAsync(new ApiResponse<GetProviderCourseResponse>(new GetProviderCourseResponse(), HttpStatusCode.BadRequest, ""));
 
         apiClientMock
             .Setup(x => x.PostWithResponseCode<Unit>(It.IsAny<AddProviderAllowedCourseRequest>()))
@@ -270,7 +270,7 @@ public class AddProviderRestrictedApprenticeshipCommandHandlerTests
 
         apiClientMock
             .Setup(x => x.GetWithResponseCode<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>()))
-            .ReturnsAsync(new ApiResponse<GetProviderCourseResponse>(new GetProviderCourseResponse(), HttpStatusCode.NotFound, ""));
+            .ReturnsAsync(new ApiResponse<GetProviderCourseResponse>(new GetProviderCourseResponse(), HttpStatusCode.BadRequest, ""));
 
         apiClientMock
             .Setup(x => x.DeleteWithResponseCode<Unit>(It.IsAny<DeleteProviderAllowedCourseRequest>()))
