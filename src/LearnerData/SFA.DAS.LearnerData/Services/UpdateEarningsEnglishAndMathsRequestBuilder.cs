@@ -32,7 +32,7 @@ public class UpdateEarningsEnglishAndMathsRequestBuilder : IUpdateEarningsEnglis
             }).ToList()
         };
             
-        return new UpdateEnglishAndMathsApiPutRequest(command.LearningKey, body);
+        return new UpdateEnglishAndMathsApiPutRequest(learningApiPutResponse.LearningKey, body);
     }
 
     private List<PeriodInLearningItem> GetPeriodsInLearning(string learnAimRef, UpdateLearnerCommand command)

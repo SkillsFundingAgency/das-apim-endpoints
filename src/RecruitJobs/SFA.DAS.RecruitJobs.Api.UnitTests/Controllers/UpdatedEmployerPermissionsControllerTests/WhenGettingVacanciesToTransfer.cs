@@ -5,8 +5,8 @@ using System.Threading;
 using Microsoft.AspNetCore.Http.HttpResults;
 using SFA.DAS.RecruitJobs.Api.Controllers;
 using SFA.DAS.RecruitJobs.Api.Models.Requests;
-using SFA.DAS.RecruitJobs.GraphQL;
 using SFA.DAS.RecruitJobs.Handlers;
+using SFA.DAS.SharedOuterApi.Recruit.GraphQL;
 using StrawberryShake;
 
 namespace SFA.DAS.RecruitJobs.Api.UnitTests.Controllers.UpdatedEmployerPermissionsControllerTests;

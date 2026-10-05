@@ -7,6 +7,7 @@ namespace SFA.DAS.LearnerData.Requests;
 
 public class UpdateLearnerRequest
 {
+    public string? ConsumerReference { get; set; }
     public UpdateLearnerRequestDeliveryDetails Delivery { get; set; }
     public LearnerRequestDetails Learner { get; set; }
 }
@@ -21,6 +22,7 @@ public class LearnerRequestDetails
     public bool HasEhcp { get; set; }
     [JsonRequired]
     public long Uln { get; set; }
+    public string LearnerRef { get; set; }
 }
 
 public class UpdateLearnerRequestDeliveryDetails
@@ -46,6 +48,8 @@ public class OnProgrammeRequestDetails
     public int AimSequenceNumber { get; set; }
     public string LearnAimRef { get; set; }
     public DateTime? AchievementDate { get; set; }
+    public int PercentageOfTrainingLeft { get; set; }
+    public bool? IsFlexiJob { get; set; }
 }
 
 public class CostDetails

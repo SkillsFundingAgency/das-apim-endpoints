@@ -426,7 +426,6 @@ public class SubmitterContactDetails
     /// The contact's phone number.
     /// </summary>
     [JsonPropertyName("phone")]
-    [Required]
     public string Phone { get; set; }
 }
 

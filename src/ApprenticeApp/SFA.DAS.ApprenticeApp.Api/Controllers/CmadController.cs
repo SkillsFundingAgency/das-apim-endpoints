@@ -41,7 +41,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             var result = await _mediator.Send(
                 new GetRegistrationsByEmailQuery { Email = email });
 
-            return Ok(result.Registrations);
+            return Ok(result.Registration);
         }
 
         [HttpGet("/revisionsById")]

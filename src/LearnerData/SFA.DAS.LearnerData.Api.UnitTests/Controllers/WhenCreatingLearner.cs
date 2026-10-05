@@ -1,8 +1,6 @@
-﻿using System.Net;
+using System.Net;
 using AutoFixture.NUnit3;
 using FluentAssertions;
-using FluentValidation;
-using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -11,6 +9,7 @@ using SFA.DAS.LearnerData.Api.Controllers;
 using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses;
+using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
@@ -21,15 +20,11 @@ public class WhenCreatingLearner
     public async Task And_when_working_Then_Accepted_returned(
         CreateLearnerRequest request,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen]  Mock<IValidator<CreateLearnerRequest>> mockValidator,
         [Greedy] LearnersController sut)
     {
         long ukprn = 12345678;
 
         request.Learner.Uln = 1234567890;
-
-        mockValidator.Setup(x => x.ValidateAsync(It.IsAny<CreateLearnerRequest>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ValidationResult());
 
         var result = await sut.CreateLearningRecord(ukprn, request) as AcceptedResult;
 
@@ -40,7 +35,7 @@ public class WhenCreatingLearner
         mockMediator.Verify(
             x => x.Send(
                 It.Is<CreateLearnerCommand>(p =>
-                    p.Request == request && 
+                    p.Request == request &&
                     p.CorrelationId == response.CorrelationId), It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -48,21 +43,36 @@ public class WhenCreatingLearner
     public async Task And_when_not_working_Then_InternalError_returned(
         CreateLearnerRequest request,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<IValidator<CreateLearnerRequest>> mockValidator,
         [Greedy] LearnersController sut)
     {
         long ukprn = 12345678;
 
         request.Learner.Uln = 1234567890;
 
-        mockValidator.Setup(x => x.ValidateAsync(It.IsAny<CreateLearnerRequest>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ValidationResult());
-
         mockMediator.Setup(x => x.Send(It.IsAny<CreateLearnerCommand>(), It.IsAny<CancellationToken>())).ThrowsAsync(new Exception("test"));
 
         var result = await sut.CreateLearningRecord(ukprn, request) as StatusCodeResult;
 
         result.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+        mockMediator.Verify(x => x.Send(It.IsAny<CreateLearnerCommand>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task And_when_course_not_found_Then_UnprocessableEntity_returned(
+        CreateLearnerRequest request,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] LearnersController sut)
+    {
+        long ukprn = 12345678;
+
+        request.Learner.Uln = 1234567890;
+
+        mockMediator.Setup(x => x.Send(It.IsAny<CreateLearnerCommand>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new InvalidCourseException("Courses API could not find standard 123."));
+
+        var result = await sut.CreateLearningRecord(ukprn, request) as StatusCodeResult;
+
+        result.StatusCode.Should().Be((int)HttpStatusCode.UnprocessableEntity);
         mockMediator.Verify(x => x.Send(It.IsAny<CreateLearnerCommand>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }

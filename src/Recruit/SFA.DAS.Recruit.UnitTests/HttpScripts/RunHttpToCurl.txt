@@ -1,0 +1,1 @@
+// To convert to CURL and execute - for use on AzureDevops node ./HttpScripts/http-to-curl.js ./HttpScripts/CreateVacancy.http --env=DEV --out ./HttpScripts/generated.sh --exec

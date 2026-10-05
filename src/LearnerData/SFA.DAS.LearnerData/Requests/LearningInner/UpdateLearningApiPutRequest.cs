@@ -1,4 +1,5 @@
 using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Common.Domain.Types;
 using SFA.DAS.LearnerData.Shared;
 
 namespace SFA.DAS.LearnerData.Requests.LearningInner
@@ -9,15 +10,16 @@ namespace SFA.DAS.LearnerData.Requests.LearningInner
 
         public UpdateLearningRequestBody Data { get; set; }
 
-        public UpdateLearningApiPutRequest(Guid learningKey, UpdateLearningRequestBody data)
+        public UpdateLearningApiPutRequest(long ukprn, Guid learnerKey, UpdateLearningRequestBody data)
         {
-            PutUrl = learningKey.ToString();
+            PutUrl = $"{ukprn}/{learnerKey}";
             Data = data;
         }
     }
 
     public class UpdateLearningRequestBody
     {
+        public int AcademicYear { get; set; }
         public Delivery Delivery { get; set; }
         public LearningUpdateDetails Learner { get; set; }
         public List<MathsAndEnglishDetails> EnglishAndMathsCourses { get; set; }
@@ -69,6 +71,8 @@ namespace SFA.DAS.LearnerData.Requests.LearningInner
     public class Delivery
     {
         public DateTime? WithdrawalDate { get; set; }
+        public string TrainingCode { get; set; }
+        public LearningType? LearningType { get; set; } //todo for now this is nullable because we are not sending it/using it on the PUT, but it will be needed when we implement that
     }
 
     public class BreakInLearning

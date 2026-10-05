@@ -5,6 +5,6 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetRegistrationsByEmail
 {
     public class GetRegistrationsByEmailQueryResult
     {
-        public List<Registration> Registrations { get; set; }
+        public Registration Registration { get; set; }
     }
 }

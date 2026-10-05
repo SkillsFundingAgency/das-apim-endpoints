@@ -31,6 +31,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Requests
             requestData.ProviderName.Should().Be(command.ProviderName);
             requestData.Ukprn.Should().Be(command.Ukprn);
             requestData.IsMatched.Should().Be(command.IsMatched);
+            requestData.IsUlnMatched.Should().Be(command.IsUlnMatched);
             requestData.IsFailed.Should().Be(command.IsFailed);
         }
     }

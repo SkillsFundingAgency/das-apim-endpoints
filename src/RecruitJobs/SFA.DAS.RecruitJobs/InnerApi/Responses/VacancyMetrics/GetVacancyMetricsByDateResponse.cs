@@ -13,5 +13,6 @@ public sealed record GetVacancyMetricsByDateResponse
         public long SearchResultsCount { get; init; }
         public long ApplicationStartedCount { get; init; }
         public long ApplicationSubmittedCount { get; init; }
+        public long SavedCount { get; init; }
     }
 }

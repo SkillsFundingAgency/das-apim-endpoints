@@ -4,11 +4,11 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Recruit.Contracts.ApiRequests;
 using SFA.DAS.Recruit.Contracts.ApiResponses;
-using SFA.DAS.RecruitJobs.GraphQL;
 using StrawberryShake;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Recruit.GraphQL;
 using ClosureReason = SFA.DAS.Recruit.Contracts.ApiResponses.ClosureReason;
 using OwnerType = SFA.DAS.Recruit.Contracts.ApiResponses.OwnerType;
 using TransferInfo = SFA.DAS.Recruit.Contracts.ApiResponses.TransferInfo;
@@ -45,11 +45,12 @@ public class TransferProviderVacancyToLegalEntityHandler(
         VacancyReview? vacancyReview = null;
         switch (vacancyDetails.Status)
         {
-            case GraphQL.VacancyStatus.Draft:
-            case GraphQL.VacancyStatus.Referred:
-            case GraphQL.VacancyStatus.Closed:
+            case SharedOuterApi.Recruit.GraphQL.VacancyStatus.Draft:
+            case SharedOuterApi.Recruit.GraphQL.VacancyStatus.Referred:
+            case SharedOuterApi.Recruit.GraphQL.VacancyStatus.Closed:
+            case SharedOuterApi.Recruit.GraphQL.VacancyStatus.Archived:
                 break;
-            case GraphQL.VacancyStatus.Submitted:
+            case SharedOuterApi.Recruit.GraphQL.VacancyStatus.Submitted:
                 var vacancyReviews = await recruitApiClient.Get<List<VacancyReview>>(
                     new GetVacanciesByVacancyReferenceReviewsApiRequest(
                         vacancyDetails.VacancyReference.GetValueOrDefault().ToString(), null, null, null));
@@ -59,19 +60,19 @@ public class TransferProviderVacancyToLegalEntityHandler(
                     patchDocument.Replace(x => x.Status, VacancyStatus.Draft);
                 }
                 break;
-            case GraphQL.VacancyStatus.Live:
+            case SharedOuterApi.Recruit.GraphQL.VacancyStatus.Live:
                 patchDocument.Replace(x => x.Status, VacancyStatus.Closed);
                 patchDocument.Replace(x => x.ClosedDate, now);
                 patchDocument.Replace(x => x.ClosureReason, ClosureReason.TransferredByEmployer);
                 break;
-            case GraphQL.VacancyStatus.Approved:
+            case SharedOuterApi.Recruit.GraphQL.VacancyStatus.Approved:
                 patchDocument.Replace(x => x.ApprovedDate, null);
                 patchDocument.Replace(x => x.Status, VacancyStatus.Closed);
                 patchDocument.Replace(x => x.ClosedDate, now);
                 patchDocument.Replace(x => x.ClosureReason, ClosureReason.TransferredByEmployer);
                 break;
-            case GraphQL.VacancyStatus.Rejected:
-            case GraphQL.VacancyStatus.Review:
+            case SharedOuterApi.Recruit.GraphQL.VacancyStatus.Rejected:
+            case SharedOuterApi.Recruit.GraphQL.VacancyStatus.Review:
                 patchDocument.Replace(x => x.Status, VacancyStatus.Draft);
                 break;
             default:
@@ -100,7 +101,7 @@ public class TransferProviderVacancyToLegalEntityHandler(
         var patchResponse = await recruitApiClient.PatchWithResponseCode(patchRequest);
         patchResponse.EnsureSuccessStatusCode();
 
-        if (vacancyDetails.Status is GraphQL.VacancyStatus.Submitted)
+        if (vacancyDetails.Status is SharedOuterApi.Recruit.GraphQL.VacancyStatus.Submitted)
         {
             switch (vacancyReview)
             {
@@ -127,40 +128,54 @@ public class TransferProviderVacancyToLegalEntityHandler(
             }
         }
 
-        if (vacancyDetails.Status is GraphQL.VacancyStatus.Live or GraphQL.VacancyStatus.Closed)
+        if (vacancyDetails.Status is SharedOuterApi.Recruit.GraphQL.VacancyStatus.Live or SharedOuterApi.Recruit.GraphQL.VacancyStatus.Closed or SharedOuterApi.Recruit.GraphQL.VacancyStatus.Archived)
         {
             var request = new GetVacanciesByidByVacancyIdApplicationreviewsApiRequest(
                 vacancyId,
             [
-                ApplicationReviewStatus.EmployerInterviewing, 
+                ApplicationReviewStatus.EmployerInterviewing,
                 ApplicationReviewStatus.EmployerUnsuccessful,
+                ApplicationReviewStatus.InReview,
+                ApplicationReviewStatus.PendingShared,
+                ApplicationReviewStatus.PendingToMakeUnsuccessful,
                 ApplicationReviewStatus.Shared
             ]);
             var applicationReviews = await recruitApiClient.Get<List<GetApplicationReviewResponse>>(request);
             var applicationReviewTaskList = new List<Task>();
-            foreach (var applicationReview in applicationReviews)
+
+            const int batchSize = 10;
+            foreach (var applicationReviewBatch in applicationReviews.Chunk(batchSize))
             {
-                var applicationReviewPatchDocument = new JsonPatchDocument<ApplicationReview>();
-                applicationReviewPatchDocument.Replace(x => x.DateSharedWithEmployer, null);
-                applicationReviewPatchDocument.Replace(x => x.HasEverBeenEmployerInterviewing, false);
-                switch (applicationReview.Status)
+                foreach (var applicationReview in applicationReviewBatch)
                 {
-                    case ApplicationReviewStatus.EmployerInterviewing or ApplicationReviewStatus.Shared:
-                        applicationReviewPatchDocument.Replace(x => x.Status, ApplicationReviewStatus.New);
-                        break;
-                    case ApplicationReviewStatus.EmployerUnsuccessful:
-                        applicationReviewPatchDocument.Replace(x => x.Status, ApplicationReviewStatus.Unsuccessful);
-                        break;
+                    var applicationReviewPatchDocument = new JsonPatchDocument<ApplicationReview>();
+                    applicationReviewPatchDocument.Replace(x => x.DateSharedWithEmployer, null);
+                    applicationReviewPatchDocument.Replace(x => x.HasEverBeenEmployerInterviewing, false);
+                    switch (applicationReview.Status)
+                    {
+                        case ApplicationReviewStatus.EmployerInterviewing:
+                            applicationReviewPatchDocument.Replace(x => x.Status, ApplicationReviewStatus.Interviewing);
+                            break;
+                        case ApplicationReviewStatus.EmployerUnsuccessful
+                            or ApplicationReviewStatus.PendingToMakeUnsuccessful:
+                            applicationReviewPatchDocument.Replace(x => x.Status, ApplicationReviewStatus.InReview);
+                            break;
+                        case ApplicationReviewStatus.Shared
+                            or ApplicationReviewStatus.InReview
+                            or ApplicationReviewStatus.PendingShared:
+                            applicationReviewPatchDocument.Replace(x => x.Status, ApplicationReviewStatus.New);
+                            break;
+                    }
+                    var applicationReviewPatch = new PatchApplicationreviewsByApplicationIdApiRequest
+                    {
+                        ApplicationId = applicationReview.ApplicationId!.Value,
+                        Data = applicationReviewPatchDocument
+                    };
+                    applicationReviewTaskList.Add(recruitApiClient.PatchWithResponseCode(applicationReviewPatch));
                 }
-                var applicationReviewPatch = new PatchApplicationreviewsByApplicationIdApiRequest
-                {
-                    ApplicationId = applicationReview.ApplicationId!.Value,
-                    Data = applicationReviewPatchDocument
-                };
-                applicationReviewTaskList.Add(recruitApiClient.PatchWithResponseCode(applicationReviewPatch));
+
+                await Task.WhenAll(applicationReviewTaskList);    
             }
-            
-            await Task.WhenAll(applicationReviewTaskList);
         }
     }
 }

@@ -4,11 +4,11 @@ using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.Recruit.Contracts.ApiRequests;
 using SFA.DAS.RecruitJobs.Api.Controllers;
-using SFA.DAS.RecruitJobs.GraphQL;
 using StrawberryShake;
 using System.Net;
 using System.Threading;
-using VacancyStatus = SFA.DAS.RecruitJobs.GraphQL.VacancyStatus;
+using SFA.DAS.SharedOuterApi.Recruit.GraphQL;
+using VacancyStatus = SFA.DAS.SharedOuterApi.Recruit.GraphQL.VacancyStatus;
 
 namespace SFA.DAS.RecruitJobs.Api.UnitTests.Controllers.VacancyControllerTests;
 

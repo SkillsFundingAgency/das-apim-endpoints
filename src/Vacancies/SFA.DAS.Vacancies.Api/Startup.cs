@@ -145,6 +145,8 @@ public static class Startup
         }
 
         app.UseRouting();
+        app.UseMiddleware<SecurityHeadersMiddleware>();
+        
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
