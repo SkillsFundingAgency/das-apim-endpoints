@@ -1,23 +1,22 @@
+using System.Net;
 using AutoFixture;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Common.Domain.Types;
 using NServiceBus;
-using SFA.DAS.LearnerData.Application.CreateLearner;
-using SFA.DAS.LearnerData.Events;
-using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.LearnerData.Services;
-using SFA.DAS.LearnerData.Services.ShortCourses;
-using SFA.DAS.LearnerData.Requests.LearningInner;
-using SFA.DAS.LearnerData.Requests.EarningsInner;
-using SFA.DAS.LearnerData.Responses.LearningInner;
-using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.Common.Domain.Types;
+using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Configuration;
+using SFA.DAS.LearnerData.Events;
+using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.LearnerData.Services;
+using SFA.DAS.LearnerData.Services.ShortCourses;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
-using System.Net;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.CreateLearner;
 
@@ -36,11 +35,11 @@ public class WhenCreatingLearners
     private Mock<ICourseService> _mockCourseService;
     private CreateLearnerCommandHandler _sut;
 
-
     public WhenCreatingLearners()
     {
         _fixture = new Fixture();
     }
+
 #pragma warning restore CS8618 // Non-nullable field, instantiated in SetUp method
 
     [SetUp]
@@ -93,7 +92,6 @@ public class WhenCreatingLearners
             .ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.OK, string.Empty));
     }
 
-
     [Test]
     public async Task Then_call_is_successful()
     {
@@ -135,17 +133,18 @@ public class WhenCreatingLearners
             LastName = request.Learner.LastName,
             Email = request.Learner.Email,
             DoB = request.Learner.Dob,
-            StartDate = request.Delivery.OnProgramme.First().StartDate,
-            PlannedEndDate = request.Delivery.OnProgramme.First().ExpectedEndDate,
-            PercentageLearningToBeDelivered = request.Delivery.OnProgramme.First().PercentageOfTrainingLeft,
-            EpaoPrice = request.Delivery.OnProgramme.First().Costs.First().EpaoPrice,
-            TrainingPrice = request.Delivery.OnProgramme.First().Costs.First().TrainingPrice,
-            AgreementId = request.Delivery.OnProgramme.First().AgreementId,
-            IsFlexiJob = request.Delivery.OnProgramme.First().IsFlexiJob!.Value,
+            StartDate = expectedOnProgramme.StartDate,
+            PlannedEndDate = expectedOnProgramme.ExpectedEndDate,
+            PercentageLearningToBeDelivered = expectedOnProgramme.PercentageOfTrainingLeft,
+            EpaoPrice = expectedOnProgramme.Costs.First().EpaoPrice,
+            TrainingPrice = expectedOnProgramme.Costs.First().TrainingPrice,
+            AgreementId = expectedOnProgramme.AgreementId,
+            IsFlexiJob = expectedOnProgramme.IsFlexiJob!.Value,
             CorrelationId = command.CorrelationId,
             ReceivedDate = command.ReceivedOn,
             ConsumerReference = request.ConsumerReference,
-            LearningType = LearningType.Apprenticeship
+            LearningType = LearningType.Apprenticeship,
+            LarsCode = expectedOnProgramme.StandardCode.ToString(),
         });
     }
 

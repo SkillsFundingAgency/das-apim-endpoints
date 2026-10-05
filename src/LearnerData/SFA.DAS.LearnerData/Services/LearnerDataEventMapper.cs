@@ -48,7 +48,8 @@ public class LearnerDataEventMapper : ILearnerDataEventMapper
             CorrelationId = correlationId,
             ReceivedDate = receivedDate,
             ConsumerReference = consumerReference,
-            LearningType = learningType
+            LearningType = learningType,
+            LarsCode = onProgramme.StandardCode.ToString(),
         };
     }
 }
