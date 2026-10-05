@@ -60,50 +60,31 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
                         .Where(t => t.TransactionType is TransactionItemType.ExpiredFund
                             or TransactionItemType.ShortExpiredFund)
                         .Sum(t => t.Amount),
-                    CommittedLearnerCosts = 0,
+                    CommittedLearnerCosts = 0, // will be populated in future stories.
                     CommittedTransferCosts = 0 // will be populated in future stories.
                 });
     }
 
-
-    private static IReadOnlyList<MonthlyBreakdown> ProjectFromHistoricData(DateTime now,
+    /// <summary>
+    /// Projects future levy data based on historical information.
+    /// </summary>
+    private static IReadOnlyList<MonthlyBreakdown> ProjectFromHistoricData(
+        DateTime now,
         int months,
         Dictionary<(int Year, int Month), MonthlyBreakdown> historic)
     {
         var projections = new List<MonthlyBreakdown>(months);
-
-        // Seed: use current month's actual data if already declared,
-        // otherwise fall back to the same month last year.
-        var currentMonthData = historic.GetValueOrDefault((now.Year, now.Month))
-                            ?? historic.GetValueOrDefault((now.Year - 1, now.Month));
-        var runningClosingLevy = (currentMonthData?.LevyIn ?? 0m)
-                               - (currentMonthData?.LevyOut ?? 0m);
+        var runningClosingLevy = 0m;
 
         for (var i = 0; i < months; i++)
         {
             var pointInTime = now.AddMonths(i);
-
-            if (i == 0)
-            {
-                projections.Add(new MonthlyBreakdown
-                {
-                    CalendarPeriodYear = pointInTime.Year,
-                    CalendarPeriodMonth = pointInTime.Month,
-                    CalendarMonthName = pointInTime.ToString("MMMM"),
-                    LevyIn = currentMonthData?.LevyIn ?? 0m,
-                    ExpiredLevy = currentMonthData?.ExpiredLevy ?? 0m,
-                    ClosingLevy = runningClosingLevy,
-                });
-
-                continue;
-            }
-
-            // Forecast months: use same month from last year as the projection basis.
-            var levyData = historic.GetValueOrDefault((pointInTime.Year - 1, pointInTime.Month));
+            var levyData = ResolveLevyData(historic, pointInTime, isCurrentMonth: i == 0);
 
             var levyIn = levyData?.LevyIn ?? 0m;
-            var levyOut = levyData?.LevyOut ?? 0m; // ExpiredLevy + CommittedLearnerCosts + CommittedTransferCosts
+            var levyOut = levyData?.LevyOut ?? 0m;
 
+            // Current month seeds the balance; forecast months roll forward from the previous closing.
             runningClosingLevy = Math.Max(0m, runningClosingLevy + levyIn - levyOut);
 
             projections.Add(new MonthlyBreakdown
@@ -114,9 +95,27 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
                 LevyIn = levyIn,
                 ExpiredLevy = levyData?.ExpiredLevy ?? 0m,
                 ClosingLevy = runningClosingLevy,
+                CommittedLearnerCosts = levyData?.CommittedLearnerCosts ?? 0m, // will be populated in future stories.
+                CommittedTransferCosts = levyData?.CommittedTransferCosts ?? 0m // will be populated in future stories.
             });
         }
 
         return projections;
+    }
+
+    /// <summary>
+    /// Current month uses actual data if already declared, otherwise falls back
+    /// to the same month last year. Forecast months always use the same month last year.
+    /// </summary>
+    private static MonthlyBreakdown? ResolveLevyData(Dictionary<(int Year, int Month), MonthlyBreakdown> historic,
+        DateTime pointInTime,
+        bool isCurrentMonth)
+    {
+        if (isCurrentMonth && historic.TryGetValue((pointInTime.Year, pointInTime.Month), out var current))
+        {
+            return current;
+        }
+
+        return historic.GetValueOrDefault((pointInTime.Year - 1, pointInTime.Month));
     }
 }
