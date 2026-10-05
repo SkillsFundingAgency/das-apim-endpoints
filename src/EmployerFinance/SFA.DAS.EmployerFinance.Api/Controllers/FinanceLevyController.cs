@@ -33,7 +33,9 @@ public class FinanceLevyController(IMediator mediator, ILogger<FinanceLevyContro
 
     [HttpGet]
     [Route("projections")]
-    public async Task<IActionResult> GetLevyProjections([FromRoute, Required] long accountId, [FromQuery] int months = 12)
+    public async Task<IActionResult> GetLevyProjections(
+        [FromRoute, Required] long accountId,
+        [FromQuery] int months = 6)
     {
         try
         {
