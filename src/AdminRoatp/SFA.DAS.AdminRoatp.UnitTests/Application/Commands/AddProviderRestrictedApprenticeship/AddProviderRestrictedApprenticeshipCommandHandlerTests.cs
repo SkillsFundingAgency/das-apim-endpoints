@@ -282,4 +282,26 @@ public class AddProviderRestrictedApprenticeshipCommandHandlerTests
         // Assert
         await action.Should().ThrowAsync<ApiResponseException>();
     }
+
+    [Test, MoqAutoData]
+    public async Task WhenGetProviderCourseReturnsError_ThenShouldThrowApiResponseException(
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
+        [Greedy] AddProviderRestrictedApprenticeshipCommandHandler sut,
+        AddProviderRestrictedApprenticeshipCommand command)
+    {
+        //Arrange
+        apiClientMock
+            .Setup(x => x.GetWithResponseCode<GetProviderAllowedCourseDetailsResponse>(It.IsAny<GetProviderAllowedCourseDetailsRequest>()))
+            .ReturnsAsync(new ApiResponse<GetProviderAllowedCourseDetailsResponse>(new GetProviderAllowedCourseDetailsResponse(), HttpStatusCode.OK, ""));
+
+        apiClientMock
+            .Setup(x => x.GetWithResponseCode<GetProviderCourseResponse>(It.IsAny<GetProviderCourseRequest>()))
+            .ReturnsAsync(new ApiResponse<GetProviderCourseResponse>(new GetProviderCourseResponse(), HttpStatusCode.InternalServerError, ""));
+
+        // Act
+        Func<Task> action = () => sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        await action.Should().ThrowAsync<ApiResponseException>();
+    }
 }

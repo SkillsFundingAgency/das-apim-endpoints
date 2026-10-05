@@ -44,6 +44,8 @@ public class AddProviderRestrictedApprenticeshipCommandHandler(IRoatpCourseManag
                 await PatchProviderAllowedCourse(command, true);
                 return;
         }
+
+        providerCourseResponse.EnsureSuccessStatusCode();
     }
 
     private async Task CreateProviderAllowedCourse(AddProviderRestrictedApprenticeshipCommand command, bool providerCourseExists)
