@@ -137,6 +137,7 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             
             //Assert
             actual.ParentPage.Title.Should().Be(source.Includes.Entry.FirstOrDefault()?.Fields.Title);
+            actual.ParentPage.ShortPageTitle.Should().Be(source.Includes.Entry.FirstOrDefault()?.Fields.ShortPageTitle);
             actual.ParentPage.MetaDescription.Should().Be(source.Includes.Entry.FirstOrDefault()?.Fields.MetaDescription);
             actual.ParentPage.Slug.Should().Be(source.Includes.Entry.FirstOrDefault()?.Fields.Slug);
             actual.ParentPage.HubType.Should().Be(source.Includes.Entry.FirstOrDefault()?.Fields.HubType);
@@ -160,6 +161,21 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             actual.ParentPage.Title.Should().Be(source.Includes.Entry.FirstOrDefault()?.Fields.Title);
             actual.ParentPage.Slug.Should().Be(source.Includes.Entry.FirstOrDefault()?.Fields.Slug);
             actual.ParentPage.HubType.Should().Be(source.Includes.Entry.FirstOrDefault()?.Fields.HubType);
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_The_Parent_Page_Short_Page_Title_Is_Null_When_Not_Set(CmsContent source, string parentId, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            source.Items.FirstOrDefault().Fields.LandingPage.Sys.Id = parentId;
+            source.Includes.Entry.FirstOrDefault().Sys.Id = parentId;
+            source.Includes.Entry.FirstOrDefault().Fields.ShortPageTitle = null;
+
+            //Act
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.ParentPage.ShortPageTitle.Should().BeNull();
         }
 
         [Test, RecursiveMoqAutoData]

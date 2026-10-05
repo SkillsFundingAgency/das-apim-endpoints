@@ -28,7 +28,7 @@ public class LearnerDataEventMapper : ILearnerDataEventMapper
         DateTime receivedDate,
         string? consumerReference)
     {
-        var cost = onProgramme.Costs.GetCostsOrDefault(onProgramme.StartDate).First();
+        var cost = onProgramme.Costs.GetCostsOrDefault(onProgramme.StartDate).OrderBy(c => c.FromDate).First();
 
         return new LearnerDataEvent
         {
