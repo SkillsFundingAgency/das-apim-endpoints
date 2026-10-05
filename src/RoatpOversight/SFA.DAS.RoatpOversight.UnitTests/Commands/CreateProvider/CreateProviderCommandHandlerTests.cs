@@ -89,7 +89,7 @@ public class CreateProviderCommandHandlerTests
     }
 
     [Test, MoqAutoData]
-    public async Task Handler_WhenAddCourseTypesIsNotSuccessfull_ThenThrowsException(
+    public async Task Handler_WhenAddCourseTypesIsNotSuccessful_ThenThrowsException(
         [Frozen] Mock<IRoatpV2ApiClient> apiClientMock,
         CreateProviderCommandHandler sut,
         CreateProviderCommand command,
