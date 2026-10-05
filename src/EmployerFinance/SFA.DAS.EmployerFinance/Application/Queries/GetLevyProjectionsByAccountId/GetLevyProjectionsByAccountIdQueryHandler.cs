@@ -33,13 +33,11 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
         };
     }
 
-    private async Task<Dictionary<(int Year, int Month), MonthlyBreakdown>> FetchHistoricDataAsync(
-        DateTime now,
+    private async Task<Dictionary<(int Year, int Month), MonthlyBreakdown>> FetchHistoricDataAsync(DateTime now,
         long accountId)
     {
         var startOfMonth = new DateTime(now.Year, now.Month, 1);
 
-        // Fetch the last 12 complete months + the current (potentially partial) month
         var startDate = startOfMonth.AddYears(-1);
         var endDate = startOfMonth.AddMonths(1).AddTicks(-1);
 
@@ -61,36 +59,61 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
                     ExpiredLevy = g
                         .Where(t => t.TransactionType is TransactionItemType.ExpiredFund
                             or TransactionItemType.ShortExpiredFund)
-                        .Sum(t => t.Amount)
+                        .Sum(t => t.Amount),
+                    CommittedLearnerCosts = 0,
+                    CommittedTransferCosts = 0 // will be populated in future stories.
                 });
     }
 
-    private static IReadOnlyList<MonthlyBreakdown> ProjectFromHistoricData(
-        DateTime now,
+
+    private static IReadOnlyList<MonthlyBreakdown> ProjectFromHistoricData(DateTime now,
         int months,
         Dictionary<(int Year, int Month), MonthlyBreakdown> historic)
     {
         var projections = new List<MonthlyBreakdown>(months);
 
+        // Seed: use current month's actual data if already declared,
+        // otherwise fall back to the same month last year.
+        var currentMonthData = historic.GetValueOrDefault((now.Year, now.Month))
+                            ?? historic.GetValueOrDefault((now.Year - 1, now.Month));
+        var runningClosingLevy = (currentMonthData?.LevyIn ?? 0m)
+                               - (currentMonthData?.LevyOut ?? 0m);
+
         for (var i = 0; i < months; i++)
         {
             var pointInTime = now.AddMonths(i);
-            var isCurrentMonth = pointInTime.Year == now.Year && pointInTime.Month == now.Month;
 
-            // For the current month use actual data if already declared;
-            // for all future months (and as a fallback for the current month) use the same month last year.
-            var levyData =
-                (isCurrentMonth && historic.TryGetValue((pointInTime.Year, pointInTime.Month), out var current))
-                    ? current
-                    : historic.GetValueOrDefault((pointInTime.Year - 1, pointInTime.Month));
+            if (i == 0)
+            {
+                projections.Add(new MonthlyBreakdown
+                {
+                    CalendarPeriodYear = pointInTime.Year,
+                    CalendarPeriodMonth = pointInTime.Month,
+                    CalendarMonthName = pointInTime.ToString("MMMM"),
+                    LevyIn = currentMonthData?.LevyIn ?? 0m,
+                    ExpiredLevy = currentMonthData?.ExpiredLevy ?? 0m,
+                    ClosingLevy = runningClosingLevy,
+                });
+
+                continue;
+            }
+
+            // Forecast months: use same month from last year as the projection basis.
+            var levyData = historic.GetValueOrDefault((pointInTime.Year - 1, pointInTime.Month));
+
+            var levyIn = levyData?.LevyIn ?? 0m;
+            var levyOut = levyData?.LevyOut ?? 0m; // ExpiredLevy + CommittedLearnerCosts + CommittedTransferCosts
+
+            runningClosingLevy = Math.Max(0m, runningClosingLevy + levyIn - levyOut);
 
             projections.Add(new MonthlyBreakdown
             {
                 CalendarPeriodYear = pointInTime.Year,
                 CalendarPeriodMonth = pointInTime.Month,
                 CalendarMonthName = pointInTime.ToString("MMMM"),
-                LevyIn = levyData?.LevyIn ?? 0m,
-                ExpiredLevy = levyData?.ExpiredLevy ?? 0m
+                LevyIn = levyIn,
+                ExpiredLevy = levyData?.ExpiredLevy ?? 0m,
+                ClosingLevy = runningClosingLevy,
             });
         }
 
