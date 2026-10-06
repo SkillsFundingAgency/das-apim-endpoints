@@ -46,7 +46,8 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                 CorrelationId = correlationId,
                 ReceivedDate = receivedDate,
                 ConsumerReference = consumerReference,
-                LearningType = learningType
+                LearningType = learningType,
+                LarsCode = onProgramme.StandardCode.ToString(),
             });
         }
 
