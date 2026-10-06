@@ -7,7 +7,7 @@ public sealed record MonthlyBreakdown
     public string CalendarMonthName { get; init; }
     public decimal LevyIn { get; init; } = 0;
     public decimal LevyOut => ExpiredLevy + CommittedLearnerCosts + CommittedTransferCosts;
-    public decimal ClosingLevy { get; init; } = 0;
+    public decimal ClosingLevyBalance { get; init; } = 0;
     public decimal ExpiredLevy { get; init; } = 0;
     public decimal CommittedLearnerCosts { get; init; } = 0;
     public decimal CommittedTransferCosts { get; init; } = 0;

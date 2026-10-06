@@ -74,7 +74,7 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
         Dictionary<(int Year, int Month), MonthlyBreakdown> historic)
     {
         var projections = new List<MonthlyBreakdown>(months);
-        var runningClosingLevy = 0m;
+        var runningClosingLevyBalance = 0m;
 
         for (var i = 0; i < months; i++)
         {
@@ -85,7 +85,7 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
             var levyOut = levyData?.LevyOut ?? 0m;
 
             // Current month seeds the balance; forecast months roll forward from the previous closing.
-            runningClosingLevy = Math.Max(0m, runningClosingLevy + levyIn - levyOut);
+            runningClosingLevyBalance = Math.Max(0m, runningClosingLevyBalance + levyIn - levyOut);
 
             projections.Add(new MonthlyBreakdown
             {
@@ -94,7 +94,7 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
                 CalendarMonthName = pointInTime.ToString("MMMM"),
                 LevyIn = levyIn,
                 ExpiredLevy = levyData?.ExpiredLevy ?? 0m,
-                ClosingLevy = runningClosingLevy,
+                ClosingLevyBalance = runningClosingLevyBalance,
                 CommittedLearnerCosts = levyData?.CommittedLearnerCosts ?? 0m, // will be populated in future stories.
                 CommittedTransferCosts = levyData?.CommittedTransferCosts ?? 0m // will be populated in future stories.
             });
