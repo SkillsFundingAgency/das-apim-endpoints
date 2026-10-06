@@ -30,11 +30,13 @@ public class FundingProjectionApiClient(IInternalApiClient<FundingProjectionApiC
         return client.GetWithResponseCode<TResponse>(request);
     }
 
+    [Obsolete("Obsolete")]
     public Task<TResponse> Post<TResponse>(IPostApiRequest request)
     {
         return client.Post<TResponse>(request);
     }
 
+    [Obsolete("Obsolete")]
     public Task Post<TData>(IPostApiRequest<TData> request)
     {
         return client.Post(request);

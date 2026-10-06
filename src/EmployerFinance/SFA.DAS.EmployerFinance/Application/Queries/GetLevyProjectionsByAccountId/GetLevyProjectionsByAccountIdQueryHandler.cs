@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿#nullable enable
+using MediatR;
 using SFA.DAS.EmployerFinance.InnerApi.Requests.Finance;
 using SFA.DAS.EmployerFinance.Models.Enums;
 using SFA.DAS.EmployerFinance.Models.Projections;
@@ -36,7 +37,7 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
     private async Task<Dictionary<(int Year, int Month), MonthlyBreakdown>> FetchHistoricDataAsync(DateTime now,
         long accountId)
     {
-        var startOfMonth = new DateTime(now.Year, now.Month, 1);
+        var startOfMonth = new DateTime(now.Year, now.Month, 1, 0,0,0, DateTimeKind.Utc);
 
         var startDate = startOfMonth.AddYears(-1);
         var endDate = startOfMonth.AddMonths(1).AddTicks(-1);
@@ -52,7 +53,7 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
                 {
                     CalendarPeriodYear = g.Key.Year,
                     CalendarPeriodMonth = g.Key.Month,
-                    CalendarMonthName = new DateTime(g.Key.Year, g.Key.Month, 1).ToString("MMMM"),
+                    CalendarMonthName = new DateTime(g.Key.Year, g.Key.Month, 1, 0, 0, 0, DateTimeKind.Utc).ToString("MMMM"),
                     LevyIn = g
                         .Where(t => t.TransactionType == TransactionItemType.Declaration)
                         .Sum(t => t.Amount),

@@ -14,4 +14,4 @@ app.Run();
 
 
 [ExcludeFromCodeCoverage]
-public partial class Program;
+internal static partial class Program;
