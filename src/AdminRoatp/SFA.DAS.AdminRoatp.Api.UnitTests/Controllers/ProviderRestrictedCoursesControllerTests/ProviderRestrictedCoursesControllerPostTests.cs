@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.AdminRoatp.Api.Controllers;
+using SFA.DAS.AdminRoatp.Application.Commands.AddProviderRestrictedApprenticeship;
 using SFA.DAS.AdminRoatp.Application.Commands.RemoveProviderRestrictedApprenticeship;
 using SFA.DAS.AdminRoatp.Application.Commands.UpdateProviderRestrictedApprenticeship;
 using SFA.DAS.AdminRoatp.InnerApi.Models;
@@ -103,6 +104,53 @@ public class ProviderRestrictedCoursesControllerPostTests
                 c.LarsCode == larsCode &&
                 c.UserId == request.UserId &&
                 c.UserDisplayName == request.UserDisplayName), It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenAddProviderRestrictedApprenticeshipIsInvoked_ThenReturnsNoContent(
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] ProviderRestrictedCoursesController sut,
+        AddProviderRestrictedApprenticeshipModel request,
+        int ukprn,
+        string larsCode)
+    {
+        // Arrange
+        mediatorMock
+            .Setup(x => x.Send(It.IsAny<AddProviderRestrictedApprenticeshipCommand>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await sut.AddProviderRestrictedApprenticeship(ukprn, larsCode, request, CancellationToken.None);
+
+        // Assert
+        result.Should().BeOfType<NoContentResult>();
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenAddProviderRestrictedApprenticeshipIsInvoked_ThenMediatorIsCalled(
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] ProviderRestrictedCoursesController sut,
+        AddProviderRestrictedApprenticeshipModel request,
+        int ukprn,
+        string larsCode)
+    {
+        // Arrange
+        mediatorMock
+            .Setup(x => x.Send(It.IsAny<AddProviderRestrictedApprenticeshipCommand>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await sut.AddProviderRestrictedApprenticeship(ukprn, larsCode, request, CancellationToken.None);
+
+        // Assert
+        mediatorMock.Verify(x => x.Send(
+            It.Is<AddProviderRestrictedApprenticeshipCommand>(c =>
+                c.Ukprn == ukprn &&
+                c.LarsCode == larsCode &&
+                c.UserId == request.UserId &&
+                c.UserDisplayName == request.UserDisplayName &&
+                c.LastDateStarts == request.LastDateStarts), It.IsAny<CancellationToken>()),
             Times.Once);
     }
 }
