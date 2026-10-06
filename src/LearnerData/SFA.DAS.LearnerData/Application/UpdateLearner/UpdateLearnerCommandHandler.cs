@@ -23,7 +23,6 @@ public class UpdateLearnerCommandHandler(
     IUpdateLearningPutRequestBuilder updateLearningPutRequestBuilder,
     IUpdateEarningsOnProgrammeRequestBuilder updateEarningsOnProgrammeRequestBuilder,
     IUpdateEarningsEnglishAndMathsRequestBuilder updateEarningsEnglishAndMathsRequestBuilder,
-    IUpdateEarningsLearningSupportRequestBuilder updateEarningsLearningSupportRequestBuilder,
     ILearnerDataCacheService learnerDataCacheService,
     IMessageSession messageSession,
     IApprovedApprenticeshipExistsChecker approvedApprenticeshipExistsChecker,
@@ -83,20 +82,7 @@ public class UpdateLearnerCommandHandler(
                     logger.LogInformation("Updating Earnings with English and Maths changes for learning {LearningKey}", learningApiPutResponse.LearningKey);
                     var englishAndMathsRequest = updateEarningsEnglishAndMathsRequestBuilder.Build(command, learningApiPutResponse, request);
                     var englishAndMathsResponse = await earningsApiClient.PutWithResponseCode<UpdateEnglishAndMathsRequest, UpdateEnglishAndMathsEarningsApiPutResponse>(englishAndMathsRequest);
-
                     if (englishAndMathsResponse.Body.HasNewEarningsProfileVersionBeenGenerated)
-                    {
-                        releaseEarnings = true;
-                    }
-                }
-
-                if (learningApiPutResponse.Changes.HasLearningSupportUpdate())
-                {
-                    logger.LogInformation("Updating Earnings with Learning Support changes for learning {LearningKey}", learningApiPutResponse.LearningKey);
-                    var earningsLearningSupportRequest = updateEarningsLearningSupportRequestBuilder.Build(learningApiPutResponse, request);
-                    var earningsLearningSupportResponse = await earningsApiClient.PutWithResponseCode<UpdateLearningSupportRequest, UpdateLearningSupportEarningsApiPutResponse>(earningsLearningSupportRequest);
-
-                    if (earningsLearningSupportResponse.Body.HasNewEarningsProfileVersionBeenGenerated)
                     {
                         releaseEarnings = true;
                     }

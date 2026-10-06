@@ -24,11 +24,18 @@ Scenario: MathsAndEnglish updated
 	Then a english-and-maths update request is sent to the earnings domain
 	And sld data is stored to the cache
 
-Scenario: LearningSupport updated
+Scenario: OnProgramme LearningSupport updated
 	Given there is a learner
-	And the LearningSupport passed is different to the value in the learners domain
+	And the OnprogrammeLearningSupport passed is different to the value in the learners domain
 	When the learner is updated
-	Then a learning-support update request is sent to the earnings domain
+	Then a on-programme update request is sent to the earnings domain
+	And sld data is stored to the cache
+
+Scenario: EnglishAndMaths LearningSupport updated
+	Given there is a learner
+	And the EnglishAndMathsLearningSupport passed is different to the value in the learners domain
+	When the learner is updated
+	Then a english-and-maths update request is sent to the earnings domain
 	And sld data is stored to the cache
 
 Scenario: Prices updated

@@ -65,20 +65,28 @@ public class UpdateLearningRequestBodyBuilder(
             latestOnProgramme.PauseDate ?? DateTime.MaxValue
         }.Min();
 
-        var learningSupport = learningSupportService.GetCombinedLearningSupport(
+        var (onProgrammeLearningSupport, englishAndMathsLearningSupportByCourse) = learningSupportService.GetLearningSupport(
             allMatchingOnProgrammes,
             onProgrammeEndDate,
             onProgrammeDetails.BreaksInLearning,
             englishAndMathsCourses,
             englishAndMathsLearningSupport);
 
+        onProgrammeDetails.LearningSupport = onProgrammeLearningSupport ?? new List<LearningSupport>();
+        onProgrammeDetails.WithdrawalDate = latestOnProgramme.WithdrawalDate;
+        onProgrammeDetails.TrainingCode = firstOnProgramme.StandardCode.ToString();
+
+        foreach (var course in englishAndMathsCourses)
+        {
+            course.LearningSupport = (englishAndMathsLearningSupportByCourse ?? new())
+                .GetValueOrDefault(course.LearnAimRef, new List<LearningSupport>());
+        }
+
         return new UpdateLearningRequestBody
         {
             AcademicYear = academicYear,
             Delivery = new Delivery
             {
-                WithdrawalDate = latestOnProgramme.WithdrawalDate,
-                TrainingCode = firstOnProgramme.StandardCode.ToString(),
                 LearningType = learningType
             },
             Learner = new LearningUpdateDetails
@@ -98,8 +106,7 @@ public class UpdateLearningRequestBodyBuilder(
                 }
             },
             OnProgramme = onProgrammeDetails,
-            EnglishAndMathsCourses = englishAndMathsCourses,
-            LearningSupport = learningSupport
+            EnglishAndMathsCourses = englishAndMathsCourses
         };
     }
 
