@@ -69,6 +69,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
                         r.Data.ProviderName == command.ProviderName &&
                         r.Data.Ukprn == command.Ukprn &&
                         r.Data.IsMatched == command.IsMatched &&
+                        r.Data.IsUlnMatched == command.IsUlnMatched &&
                         r.Data.IsFailed == command.IsFailed &&
                         r.PostUrl == $"api/users/{command.UserId}/match"), false))
                 .ReturnsAsync(apiResponse);
@@ -99,6 +100,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
                         r.Data.ProviderName == command.ProviderName &&
                         r.Data.Ukprn == command.Ukprn &&
                         r.Data.IsMatched == command.IsMatched &&
+                        r.Data.IsUlnMatched == command.IsUlnMatched &&
                         r.Data.IsFailed == command.IsFailed &&
                         r.PostUrl == $"api/users/{command.UserId}/match"), false),
                 Times.Once);
