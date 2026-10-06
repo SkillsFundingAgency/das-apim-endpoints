@@ -33,13 +33,11 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
         };
     }
 
-    private async Task<Dictionary<(int Year, int Month), MonthlyBreakdown>> FetchHistoricDataAsync(
-        DateTime now,
+    private async Task<Dictionary<(int Year, int Month), MonthlyBreakdown>> FetchHistoricDataAsync(DateTime now,
         long accountId)
     {
         var startOfMonth = new DateTime(now.Year, now.Month, 1);
 
-        // Fetch the last 12 complete months + the current (potentially partial) month
         var startDate = startOfMonth.AddYears(-1);
         var endDate = startOfMonth.AddMonths(1).AddTicks(-1);
 
@@ -61,39 +59,63 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
                     ExpiredLevy = g
                         .Where(t => t.TransactionType is TransactionItemType.ExpiredFund
                             or TransactionItemType.ShortExpiredFund)
-                        .Sum(t => t.Amount)
+                        .Sum(t => t.Amount),
+                    CommittedLearnerCosts = 0, // will be populated in future stories.
+                    CommittedTransferCosts = 0 // will be populated in future stories.
                 });
     }
 
+    /// <summary>
+    /// Projects future levy data based on historical information.
+    /// </summary>
     private static IReadOnlyList<MonthlyBreakdown> ProjectFromHistoricData(
         DateTime now,
         int months,
         Dictionary<(int Year, int Month), MonthlyBreakdown> historic)
     {
         var projections = new List<MonthlyBreakdown>(months);
+        var runningClosingLevyBalance = 0m;
 
         for (var i = 0; i < months; i++)
         {
             var pointInTime = now.AddMonths(i);
-            var isCurrentMonth = pointInTime.Year == now.Year && pointInTime.Month == now.Month;
+            var levyData = ResolveLevyData(historic, pointInTime, isCurrentMonth: i == 0);
 
-            // For the current month use actual data if already declared;
-            // for all future months (and as a fallback for the current month) use the same month last year.
-            var levyData =
-                (isCurrentMonth && historic.TryGetValue((pointInTime.Year, pointInTime.Month), out var current))
-                    ? current
-                    : historic.GetValueOrDefault((pointInTime.Year - 1, pointInTime.Month));
+            var levyIn = levyData?.LevyIn ?? 0m;
+            var levyOut = levyData?.LevyOut ?? 0m;
+
+            // Current month seeds the balance; forecast months roll forward from the previous closing.
+            runningClosingLevyBalance = Math.Max(0m, runningClosingLevyBalance + levyIn - levyOut);
 
             projections.Add(new MonthlyBreakdown
             {
                 CalendarPeriodYear = pointInTime.Year,
                 CalendarPeriodMonth = pointInTime.Month,
                 CalendarMonthName = pointInTime.ToString("MMMM"),
-                LevyIn = levyData?.LevyIn ?? 0m,
-                ExpiredLevy = levyData?.ExpiredLevy ?? 0m
+                LevyIn = levyIn,
+                ExpiredLevy = levyData?.ExpiredLevy ?? 0m,
+                ClosingLevyBalance = runningClosingLevyBalance,
+                CommittedLearnerCosts = levyData?.CommittedLearnerCosts ?? 0m, // will be populated in future stories.
+                CommittedTransferCosts = levyData?.CommittedTransferCosts ?? 0m // will be populated in future stories.
             });
         }
 
         return projections;
+    }
+
+    /// <summary>
+    /// Current month uses actual data if already declared, otherwise falls back
+    /// to the same month last year. Forecast months always use the same month last year.
+    /// </summary>
+    private static MonthlyBreakdown? ResolveLevyData(Dictionary<(int Year, int Month), MonthlyBreakdown> historic,
+        DateTime pointInTime,
+        bool isCurrentMonth)
+    {
+        if (isCurrentMonth && historic.TryGetValue((pointInTime.Year, pointInTime.Month), out var current))
+        {
+            return current;
+        }
+
+        return historic.GetValueOrDefault((pointInTime.Year - 1, pointInTime.Month));
     }
 }
