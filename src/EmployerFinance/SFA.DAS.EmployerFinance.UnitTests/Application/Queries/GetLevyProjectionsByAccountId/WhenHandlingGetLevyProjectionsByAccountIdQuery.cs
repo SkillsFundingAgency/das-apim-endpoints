@@ -35,6 +35,16 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
             .ReturnsAsync(response);
     }
 
+    private static void SetupGetLevySummary(Mock<IFinanceApiClient<FinanceApiConfiguration>> mock,
+        long accountId,
+        GetLevySummaryByAccountIdResponse response)
+    {
+        mock.Setup(c => c.Get<GetLevySummaryByAccountIdResponse>(
+                It.Is<GetLevySummaryByAccountIdRequest>(r =>
+                    r.AccountId == accountId)))
+            .ReturnsAsync(response);
+    }
+
     [Test, MoqAutoData]
     public async Task Then_The_Default_Number_Of_Months_Of_Projections_Are_Returned_With_Empty_Values_When_No_Previous_Transactions_Are_Available(
         long accountId,
@@ -47,6 +57,8 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
         var query = new GetLevyProjectionsByAccountIdQuery(accountId);
         SetupTransactionsResponse(mockFinanceApiClient, accountId, []);
         SetupLastSubmissionDateResponse(mockFinanceApiClient, accountId, new GetLevyLastSubmissionDateResponse { LastSubmissionDate = lastSubmissionDate });
+        SetupGetLevySummary(mockFinanceApiClient, accountId, new GetLevySummaryByAccountIdResponse { CurrentLevyFunds = 0m });
+
 
         // Act
         var result = await handler.Handle(query, CancellationToken.None);
@@ -76,6 +88,7 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
             new TransactionLine { TransactionDate = now, Amount = 100m, TransactionType = TransactionItemType.ExpiredFund },
         ]);
         SetupLastSubmissionDateResponse(mockFinanceApiClient, accountId, new GetLevyLastSubmissionDateResponse { LastSubmissionDate = lastSubmissionDate });
+        SetupGetLevySummary(mockFinanceApiClient, accountId, new GetLevySummaryByAccountIdResponse { CurrentLevyFunds = 0m });
 
         // Act
         var result = await handler.Handle(query, CancellationToken.None);
@@ -111,6 +124,7 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
             new TransactionLine { TransactionDate = now.AddMonths(-1), Amount = 1m, TransactionType = TransactionItemType.Declaration },
         ]);
         SetupLastSubmissionDateResponse(mockFinanceApiClient, accountId, new GetLevyLastSubmissionDateResponse { LastSubmissionDate = lastSubmissionDate });
+        SetupGetLevySummary(mockFinanceApiClient, accountId, new GetLevySummaryByAccountIdResponse { CurrentLevyFunds = 0m });
 
         // Act
         var result = await handler.Handle(query, CancellationToken.None);
@@ -143,6 +157,7 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
             new TransactionLine { TransactionDate = now, Amount = 1m, TransactionType = TransactionItemType.ShortExpiredFund },
         ]);
         SetupLastSubmissionDateResponse(mockFinanceApiClient, accountId, new GetLevyLastSubmissionDateResponse { LastSubmissionDate = lastSubmissionDate });
+        SetupGetLevySummary(mockFinanceApiClient, accountId, new GetLevySummaryByAccountIdResponse { CurrentLevyFunds = 0m });
 
         // Act
         var result = await handler.Handle(query, CancellationToken.None);
@@ -169,6 +184,7 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
             new TransactionLine { TransactionDate = now, Amount = 1m, TransactionType = TransactionItemType.Declaration },
         ]);
         SetupLastSubmissionDateResponse(mockFinanceApiClient, accountId, new GetLevyLastSubmissionDateResponse { LastSubmissionDate = lastSubmissionDate });
+        SetupGetLevySummary(mockFinanceApiClient, accountId, new GetLevySummaryByAccountIdResponse { CurrentLevyFunds = 0m });
 
         // Act
         var result = await handler.Handle(query, CancellationToken.None);
@@ -189,6 +205,7 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
         var query = new GetLevyProjectionsByAccountIdQuery(accountId);
         SetupTransactionsResponse(mockFinanceApiClient, accountId, []);
         SetupLastSubmissionDateResponse(mockFinanceApiClient, accountId, new GetLevyLastSubmissionDateResponse { LastSubmissionDate = lastSubmissionDate });
+        SetupGetLevySummary(mockFinanceApiClient, accountId, new GetLevySummaryByAccountIdResponse { CurrentLevyFunds = 0m });
 
         // Act
         var result = await handler.Handle(query, CancellationToken.None);
@@ -214,6 +231,7 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
         var query = new GetLevyProjectionsByAccountIdQuery(accountId, 17);
         SetupTransactionsResponse(mockFinanceApiClient, accountId, []);
         SetupLastSubmissionDateResponse(mockFinanceApiClient, accountId, new GetLevyLastSubmissionDateResponse { LastSubmissionDate = lastSubmissionDate });
+        SetupGetLevySummary(mockFinanceApiClient, accountId, new GetLevySummaryByAccountIdResponse { CurrentLevyFunds = 0m });
 
         // Act
         var result = await handler.Handle(query, CancellationToken.None);
@@ -234,6 +252,7 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
         var query = new GetLevyProjectionsByAccountIdQuery(accountId);
         SetupTransactionsResponse(mockFinanceApiClient, accountId, []);
         SetupLastSubmissionDateResponse(mockFinanceApiClient, accountId, new GetLevyLastSubmissionDateResponse { LastSubmissionDate = lastSubmissionDate });
+        SetupGetLevySummary(mockFinanceApiClient, accountId, new GetLevySummaryByAccountIdResponse { CurrentLevyFunds = 0m });
         // Act
         var result = await handler.Handle(query, CancellationToken.None);
         // Assert

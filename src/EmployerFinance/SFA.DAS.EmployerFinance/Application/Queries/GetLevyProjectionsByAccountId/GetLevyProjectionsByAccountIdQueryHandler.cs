@@ -24,12 +24,14 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
         var historicDataTask = FetchHistoricDataAsync(now, request.AccountId);
         var lastSubmissionTask = financeApiClient.Get<GetLevyLastSubmissionDateResponse>(
             new GetLevyLastSubmissionDateRequest(request.AccountId));
+        var levySummaryTask = financeApiClient.Get<GetLevySummaryByAccountIdResponse>(
+            new GetLevySummaryByAccountIdRequest(request.AccountId));
 
-        await Task.WhenAll(historicDataTask, lastSubmissionTask);
+        await Task.WhenAll(historicDataTask, lastSubmissionTask, levySummaryTask);
 
         return new GetLevyProjectionsByAccountIdQueryResult
         {
-            Projections = ProjectFromHistoricData(now, request.Months, historicDataTask.Result),
+            Projections = ProjectFromHistoricData(now, request.Months, historicDataTask.Result, levySummaryTask.Result),
             LatestLevyDeclarationInDate = lastSubmissionTask.Result.LastSubmissionDate
         };
     }
@@ -72,10 +74,11 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
     private static IReadOnlyList<MonthlyBreakdown> ProjectFromHistoricData(
         DateTime now,
         int months,
-        Dictionary<(int Year, int Month), MonthlyBreakdown> historic)
+        Dictionary<(int Year, int Month), MonthlyBreakdown> historic,
+        GetLevySummaryByAccountIdResponse levySummary)
     {
         var projections = new List<MonthlyBreakdown>(months);
-        var runningClosingLevyBalance = 0m;
+        var runningClosingLevyBalance = levySummary.CurrentLevyFunds;
 
         for (var i = 0; i < months; i++)
         {
@@ -85,8 +88,12 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
             var levyIn = levyData?.LevyIn ?? 0m;
             var levyOut = levyData?.LevyOut ?? 0m;
 
-            // Current month seeds the balance; forecast months roll forward from the previous closing.
-            runningClosingLevyBalance = Math.Max(0m, runningClosingLevyBalance + levyIn - levyOut);
+            // Current month uses the actual live balance as-is.
+            // Forecast months roll forward by applying levy in/out to the previous closing balance.
+            if (i > 0)
+            {
+                runningClosingLevyBalance = Math.Max(0m, runningClosingLevyBalance + levyIn - levyOut);
+            }
 
             projections.Add(new MonthlyBreakdown
             {
