@@ -11,6 +11,5 @@ namespace SFA.DAS.DigitalCertificates.Configuration
         public int MaxMasks { get; set; } = 5;
         public int StandardMaskCount { get; set; } = 3;
         public double LocationsApiMinMatch { get; set; }
-        public PrivateBetaConfiguration PrivateBetaConfiguration { get; set; } = new();
     }
 }
