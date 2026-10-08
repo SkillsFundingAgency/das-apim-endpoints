@@ -22,6 +22,7 @@ public static class AddApiServicesExtension
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<ILearningApiClient<LearningApiConfiguration>, LearningApiClient>();
         services.AddTransient<IEarningsApiClient<EarningsApiConfiguration>, EarningsApiClient>();
+        services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
         services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
         services.AddTransient<ILearningSupportService, LearningSupportService>();
         services.AddTransient<IBreaksInLearningService, BreaksInLearningService>();

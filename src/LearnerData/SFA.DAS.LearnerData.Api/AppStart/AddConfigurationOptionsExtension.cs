@@ -13,6 +13,7 @@ public static class AddConfigurationOptionsExtension
         services.AddConfigurationOptions<AzureActiveDirectoryConfiguration>(configuration, "AzureAd");
         services.AddConfigurationOptions<LearningApiConfiguration>(configuration);
         services.AddConfigurationOptions<EarningsApiConfiguration>(configuration);
+        services.AddConfigurationOptions<CommitmentsV2ApiConfiguration>(configuration);
         services.AddConfigurationOptions<CollectionCalendarApiConfiguration>(configuration);
         services.AddConfigurationOptions<CoursesApiConfiguration>(configuration);
         services.AddConfigurationOptions<ProviderRelationshipsApiConfiguration>(configuration);
