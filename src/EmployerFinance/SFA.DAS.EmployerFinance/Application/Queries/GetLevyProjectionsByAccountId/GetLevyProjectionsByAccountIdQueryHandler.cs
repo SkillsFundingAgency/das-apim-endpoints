@@ -90,10 +90,7 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
 
             // Current month uses the actual live balance as-is.
             // Forecast months roll forward by applying levy in/out to the previous closing balance.
-            if (i > 0)
-            {
-                runningClosingLevyBalance = Math.Max(0m, runningClosingLevyBalance + levyIn - levyOut);
-            }
+            runningClosingLevyBalance = CalculateClosingBalance(runningClosingLevyBalance, levyIn, levyOut, isCurrentMonth: i == 0);
 
             projections.Add(new MonthlyBreakdown
             {
@@ -109,6 +106,17 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
         }
 
         return projections;
+    }
+
+    /// <summary>
+    /// Current month adds levy in to the live balance (levy out already reflected in CurrentLevyFunds).
+    /// Forecast months apply levy in/out to the previous closing balance, floored at zero.
+    /// </summary>
+    private static decimal CalculateClosingBalance(decimal currentBalance, decimal levyIn, decimal levyOut, bool isCurrentMonth)
+    {
+        return isCurrentMonth
+            ? currentBalance + levyIn
+            : Math.Max(0m, currentBalance + levyIn - levyOut);
     }
 
     /// <summary>
