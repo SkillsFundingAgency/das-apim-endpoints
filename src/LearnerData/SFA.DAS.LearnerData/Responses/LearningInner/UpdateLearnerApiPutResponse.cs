@@ -1,3 +1,5 @@
+using SFA.DAS.Common.Domain.Types;
+
 namespace SFA.DAS.LearnerData.Responses.LearningInner;
 
 public class UpdateLearnerApiPutResponse : BaseLearnerApiPutResponse;
@@ -14,6 +16,7 @@ public abstract class BaseLearnerApiPutResponse
     public Guid LearningEpisodeKey { get; set; }
     public long ApprovalsApprenticeshipId { get; set; }
     public bool IsApproved { get; set; }
+    public LearningType LearningType { get; set; }
     public List<EpisodePrice> Prices { get; set; } = [];
 
     public class EpisodePrice
