@@ -63,7 +63,6 @@ public class UpdateLearnerCommandHandler(
             else
             {
                 var releaseEarnings = false;
-
                 //Update Earnings
                 if (learningApiPutResponse.Changes.HasOnProgrammeUpdate())
                 {
