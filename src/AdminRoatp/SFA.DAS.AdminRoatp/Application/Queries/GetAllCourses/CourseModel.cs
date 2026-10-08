@@ -10,4 +10,5 @@ public class CourseModel
     public LearningType LearningType { get; set; }
     public string Title { get; set; } = string.Empty;
     public int Level { get; set; }
+    public DateTime? LastDateStarts { get; set; }
 }
