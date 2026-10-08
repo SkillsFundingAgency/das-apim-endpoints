@@ -44,6 +44,7 @@ public abstract class BaseLearnerApiPutResponse
         AchievementDateChanged = 15,
 		Reinstated = 16,
         NewApprenticeshipLearner = 17,
-        EnglishAndMathsLearningSupport = 18
+        EnglishAndMathsLearningSupport = 18,
+        StartDate = 19
     }
 }
