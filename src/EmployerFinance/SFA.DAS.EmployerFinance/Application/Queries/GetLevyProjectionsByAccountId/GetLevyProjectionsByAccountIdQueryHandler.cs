@@ -39,7 +39,7 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
     private async Task<Dictionary<(int Year, int Month), MonthlyBreakdown>> FetchHistoricDataAsync(DateTime now,
         long accountId)
     {
-        var startOfMonth = new DateTime(now.Year, now.Month, 1, 0,0,0, DateTimeKind.Utc);
+        var startOfMonth = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
 
         var startDate = startOfMonth.AddYears(-1);
         var endDate = startOfMonth.AddMonths(1).AddTicks(-1);
@@ -116,7 +116,7 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
     {
         return isCurrentMonth
             ? currentBalance + levyIn
-            : Math.Max(0m, currentBalance + levyIn - levyOut);
+            : currentBalance + levyIn - levyOut;
     }
 
     /// <summary>
