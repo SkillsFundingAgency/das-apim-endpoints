@@ -30,8 +30,8 @@ public class SelectMultipleController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
-    [Route("AddDrafts")]
-    public async Task<IActionResult> AddDraftapprenticeships(SelectMultipleAddDraftApprenticeshipsRequest request)
+    [Route("AddDraftApprenticeships")]
+    public async Task<IActionResult> AddDraftApprenticeships(SelectMultipleAddDraftApprenticeshipsRequest request)
     {
         var result = await mediator.Send(
             new SelectMultipleAddDraftApprenticeshipsCommand
@@ -40,7 +40,8 @@ public class SelectMultipleController(IMediator mediator) : ControllerBase
                 UserInfo = request.UserInfo,
                 AccountLegalEntityId = request.AccountLegalEntityId,
                 AgreementId = request.AgreementId,
-                AccountId = request.AccountId
+                AccountId = request.AccountId,
+                LearnerIds = request.LearnerIds
             });
 
         return Ok(result);

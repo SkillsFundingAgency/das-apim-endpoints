@@ -27,17 +27,24 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
 {
     public async Task<SelectMultipleAddDraftApprenticeshipsResult> Handle(SelectMultipleAddDraftApprenticeshipsCommand command, CancellationToken cancellationToken)
     {
+        var learnerIds = command.LearnerIds?.Distinct().ToList() ?? [];
+
+        if (learnerIds.Count == 0)
+        {
+            throw new ArgumentException("LearnerIds must not be empty", nameof(command.LearnerIds));
+        }
+
         await Validate(command, cancellationToken);
-        var cohort = await CreateCohort(command);
-        var learnerDetails = await GetLearnerDetails(command);
+        var learnerDetails = await GetLearnerDetails(command, learnerIds);
         ApiResponse<BulkCreateReservationsWithNonLevyResult> reservationResult = await GetReservations(command, learnerDetails);
+        var cohort = await CreateCohort(command);
         var bulkUploadAddDraftApprenticeships = FormatDataToBulkUpload(command, learnerDetails, cohort);
         MergeReservationWithDraftApprenticeships(bulkUploadAddDraftApprenticeships, reservationResult);
 
         var dataToSend = new BulkUploadAddDraftApprenticeshipsRequest
         {
             BulkUploadDraftApprenticeships = await courseTypesToCsvService.MapAndAddCourseTypeData(bulkUploadAddDraftApprenticeships),
-            ProviderId = command.ProviderId,            
+            ProviderId = command.ProviderId,
             UserInfo = command.UserInfo
         };
 
@@ -46,9 +53,9 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
 
         result.EnsureSuccessStatusCode();
 
-        return new GetBulkUploadAddDraftApprenticeshipsResult
+        return new SelectMultipleAddDraftApprenticeshipsResult
         {
-            BulkUploadAddDraftApprenticeshipsResponse = result.Body.BulkUploadAddDraftApprenticeshipsResponse.Select(x => (BulkUploadAddDraftApprenticeshipsResult)x)
+            CohortReference = cohort.CohortReference
         };
     }
 
@@ -93,15 +100,8 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
         }).ToList();
     }
 
-    private async Task<List<LearnerDataRecord>> GetLearnerDetails(SelectMultipleAddDraftApprenticeshipsCommand command)
+    private async Task<List<LearnerDataRecord>> GetLearnerDetails(SelectMultipleAddDraftApprenticeshipsCommand command, List<long> learnerIds)
     {
-        var learnerIds = command.LearnerIds?.Distinct().ToList() ?? [];
-
-        if (learnerIds.Count == 0)
-        {
-            throw new ArgumentException("LearnerIds must not be empty", nameof(command.LearnerIds));
-        }
-
         var learnerDataResponse = await learnerDataClient.PostWithResponseCode<List<LearnerDataRecord>>(
            new PostGetLearnersForProviderByIdsRequest(
                command.ProviderId, new GetLearnersForProviderByIdsRequest
@@ -125,14 +125,14 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
 
     private async Task Validate(SelectMultipleAddDraftApprenticeshipsCommand command, CancellationToken cancellationToken)
     {
-        var validateCmd = new ValidateSelectMultipleLearnerRecordsQuery
+        var validateQuery = new ValidateSelectMultipleLearnerRecordsQuery
         {
             LearnerIds = command.LearnerIds,
             ProviderId = command.ProviderId,
             UserInfo = command.UserInfo
         };
 
-        await mediator.Send(validateCmd, cancellationToken);
+        await mediator.Send(validateQuery, cancellationToken);
     }
 
     private void MergeReservationWithDraftApprenticeships(IEnumerable<BulkUploadAddDraftApprenticeshipRequest> bulkUploadAddDraftApprenticeshipRequests, ApiResponse<BulkCreateReservationsWithNonLevyResult> reservationResult)
@@ -153,7 +153,8 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
                 RowNumber = index + 1,
                 Id = Guid.NewGuid(),
                 StartDate = learner.StartDate,
-                ULN = learner.Uln.ToString()
+                ULN = learner.Uln.ToString(),
+                UserId = parsedUserId
             };
         }).ToList();
 
