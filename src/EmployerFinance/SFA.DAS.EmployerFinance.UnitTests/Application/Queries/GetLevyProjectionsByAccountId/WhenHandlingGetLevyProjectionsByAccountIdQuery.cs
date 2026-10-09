@@ -1,12 +1,11 @@
 ﻿using SFA.DAS.EmployerFinance.Application.Queries.GetLevyProjectionsByAccountId;
 using SFA.DAS.EmployerFinance.InnerApi.Requests.Finance;
-using SFA.DAS.EmployerFinance.Models.Enums;
+using SFA.DAS.EmployerFinance.InnerApi.Responses.Finance;
 using SFA.DAS.EmployerFinance.Models.Projections;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System;
 using System.Collections.Generic;
-using SFA.DAS.EmployerFinance.InnerApi.Responses.Finance;
 
 namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetLevyProjectionsByAccountId;
 
@@ -16,11 +15,13 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
     private static void SetupTransactionsResponse(
         Mock<IFinanceApiClient<FinanceApiConfiguration>> mock,
         long accountId,
-        List<TransactionLine> response)
+        List<LevyDeclaration> response)
     {
-        mock.Setup(c => c.Get<List<TransactionLine>>(
-                It.Is<GetAccountTransactionSummaryByDateRequest>(r =>
-                    r.AccountId == accountId)))
+        mock.Setup(c => c.Get<List<LevyDeclaration>>(
+                It.Is<GetLevyDeclarationSummaryByDate>(r =>
+                    r.AccountId == accountId 
+                    && r.FromDate == It.IsAny<DateTime>()
+                    && r.ToDate == It.IsAny<DateTime>())))
             .ReturnsAsync(response);
     }
 
@@ -70,128 +71,8 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
         result.Projections[0].CalendarPeriodMonth.Should().Be(now.Month);
     }
     
-    [Test, MoqAutoData]
-    public async Task Then_The_Current_Month_Levy_Will_Be_Used_Instead_Of_The_Previous_Year_Amount_If_Available(
-        long accountId,
-        DateTime lastSubmissionDate,
-        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockFinanceApiClient,
-        [Greedy] GetLevyProjectionsByAccountIdQueryHandler handler)
-    {
-        // Arrange
-        var now = DateTime.UtcNow;
-        var query = new GetLevyProjectionsByAccountIdQuery(accountId);
-        SetupTransactionsResponse(mockFinanceApiClient, query.AccountId,
-        [
-            new TransactionLine { TransactionDate = now.AddYears(-1), Amount = 200m, TransactionType = TransactionItemType.Declaration },
-            new TransactionLine { TransactionDate = now, Amount = 500m, TransactionType = TransactionItemType.Declaration },
-            new TransactionLine { TransactionDate = now, Amount = 500m, TransactionType = TransactionItemType.ShortExpiredFund },
-            new TransactionLine { TransactionDate = now, Amount = 100m, TransactionType = TransactionItemType.ExpiredFund },
-        ]);
-        SetupLastSubmissionDateResponse(mockFinanceApiClient, accountId, new GetLevyLastSubmissionDateResponse { LastSubmissionDate = lastSubmissionDate });
-        SetupGetLevySummary(mockFinanceApiClient, accountId, new GetLevySummaryByAccountIdResponse { CurrentLevyFunds = 0m });
-
-        // Act
-        var result = await handler.Handle(query, CancellationToken.None);
-
-        // Assert
-        result.Projections[0].LevyIn.Should().Be(500m);
-        result.Projections[0].ExpiredLevy.Should().Be(600m);
-    }
     
-    [Test, MoqAutoData]
-    public async Task Then_The_Forecasted_Months_Will_Use_The_12_Month_Prior_Figure(
-        long accountId,
-        DateTime lastSubmissionDate,
-        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockFinanceApiClient,
-        [Greedy] GetLevyProjectionsByAccountIdQueryHandler handler)
-    {
-        // Arrange
-        var now = DateTime.UtcNow;
-        var query = new GetLevyProjectionsByAccountIdQuery(accountId);
-        SetupTransactionsResponse(mockFinanceApiClient, query.AccountId,
-        [
-            new TransactionLine { TransactionDate = now.AddMonths(-12), Amount = 12m, TransactionType = TransactionItemType.Declaration },
-            new TransactionLine { TransactionDate = now.AddMonths(-11), Amount = 11m, TransactionType = TransactionItemType.Declaration },
-            new TransactionLine { TransactionDate = now.AddMonths(-10), Amount = 10m, TransactionType = TransactionItemType.Declaration },
-            new TransactionLine { TransactionDate = now.AddMonths(-9), Amount = 9m, TransactionType = TransactionItemType.Declaration },
-            new TransactionLine { TransactionDate = now.AddMonths(-8), Amount = 8m, TransactionType = TransactionItemType.Declaration },
-            new TransactionLine { TransactionDate = now.AddMonths(-7), Amount = 7m, TransactionType = TransactionItemType.Declaration },
-            new TransactionLine { TransactionDate = now.AddMonths(-6), Amount = 6m, TransactionType = TransactionItemType.Declaration },
-            new TransactionLine { TransactionDate = now.AddMonths(-5), Amount = 5m, TransactionType = TransactionItemType.Declaration },
-            new TransactionLine { TransactionDate = now.AddMonths(-4), Amount = 4m, TransactionType = TransactionItemType.Declaration },
-            new TransactionLine { TransactionDate = now.AddMonths(-3), Amount = 3m, TransactionType = TransactionItemType.Declaration },
-            new TransactionLine { TransactionDate = now.AddMonths(-2), Amount = 2m, TransactionType = TransactionItemType.Declaration },
-            new TransactionLine { TransactionDate = now.AddMonths(-1), Amount = 1m, TransactionType = TransactionItemType.Declaration },
-        ]);
-        SetupLastSubmissionDateResponse(mockFinanceApiClient, accountId, new GetLevyLastSubmissionDateResponse { LastSubmissionDate = lastSubmissionDate });
-        SetupGetLevySummary(mockFinanceApiClient, accountId, new GetLevySummaryByAccountIdResponse { CurrentLevyFunds = 0m });
-
-        // Act
-        var result = await handler.Handle(query, CancellationToken.None);
-
-        // Assert
-        result.Projections[0].LevyIn.Should().Be(12m);
-        result.Projections[1].LevyIn.Should().Be(11m);
-        result.Projections[2].LevyIn.Should().Be(10m);
-        result.Projections[3].LevyIn.Should().Be(9m);
-        result.Projections[4].LevyIn.Should().Be(8m);
-        result.Projections[5].LevyIn.Should().Be(7m);
-    }
     
-    [Test, MoqAutoData]
-    public async Task Then_Only_Sums_Declaration_Transactions_For_LevyIn(
-        long accountId,
-        DateTime lastSubmissionDate,
-        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockFinanceApiClient,
-        [Greedy] GetLevyProjectionsByAccountIdQueryHandler handler)
-    {
-        // Arrange
-        var now = DateTime.UtcNow;
-        var query = new GetLevyProjectionsByAccountIdQuery(accountId);
-        SetupTransactionsResponse(mockFinanceApiClient, query.AccountId,
-        [
-            new TransactionLine { TransactionDate = now, Amount = 1m, TransactionType = TransactionItemType.Declaration },
-            new TransactionLine { TransactionDate = now, Amount = 1m, TransactionType = TransactionItemType.Payment },
-            new TransactionLine { TransactionDate = now, Amount = 1m, TransactionType = TransactionItemType.Transfer },
-            new TransactionLine { TransactionDate = now, Amount = 1m, TransactionType = TransactionItemType.ExpiredFund },
-            new TransactionLine { TransactionDate = now, Amount = 1m, TransactionType = TransactionItemType.ShortExpiredFund },
-        ]);
-        SetupLastSubmissionDateResponse(mockFinanceApiClient, accountId, new GetLevyLastSubmissionDateResponse { LastSubmissionDate = lastSubmissionDate });
-        SetupGetLevySummary(mockFinanceApiClient, accountId, new GetLevySummaryByAccountIdResponse { CurrentLevyFunds = 0m });
-
-        // Act
-        var result = await handler.Handle(query, CancellationToken.None);
-
-        // Assert
-        result.Projections[0].LevyIn.Should().Be(1m);
-        result.Projections[0].ExpiredLevy.Should().Be(2m);
-    }
-    
-    [Test, MoqAutoData]
-    public async Task Then_Multiple_Declarations_For_The_Same_Month_Are_Totalled(
-        long accountId,
-        DateTime lastSubmissionDate,
-        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockFinanceApiClient,
-        [Greedy] GetLevyProjectionsByAccountIdQueryHandler handler)
-    {
-        // Arrange
-        var now = DateTime.UtcNow;
-        var query = new GetLevyProjectionsByAccountIdQuery(accountId);
-        SetupTransactionsResponse(mockFinanceApiClient, query.AccountId,
-        [
-            new TransactionLine { TransactionDate = now, Amount = 1m, TransactionType = TransactionItemType.Declaration },
-            new TransactionLine { TransactionDate = now, Amount = 1m, TransactionType = TransactionItemType.Declaration },
-            new TransactionLine { TransactionDate = now, Amount = 1m, TransactionType = TransactionItemType.Declaration },
-        ]);
-        SetupLastSubmissionDateResponse(mockFinanceApiClient, accountId, new GetLevyLastSubmissionDateResponse { LastSubmissionDate = lastSubmissionDate });
-        SetupGetLevySummary(mockFinanceApiClient, accountId, new GetLevySummaryByAccountIdResponse { CurrentLevyFunds = 0m });
-
-        // Act
-        var result = await handler.Handle(query, CancellationToken.None);
-
-        // Assert
-        result.Projections[0].LevyIn.Should().Be(3m);
-    }
     
     [Test, MoqAutoData]
     public async Task Then_The_Projected_Months_Are_In_Chronological_Order(

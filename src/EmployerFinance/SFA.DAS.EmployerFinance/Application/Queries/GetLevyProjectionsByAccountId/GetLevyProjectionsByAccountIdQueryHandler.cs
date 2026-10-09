@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using MediatR;
 using SFA.DAS.EmployerFinance.InnerApi.Requests.Finance;
-using SFA.DAS.EmployerFinance.Models.Enums;
+using SFA.DAS.EmployerFinance.InnerApi.Responses.Finance;
 using SFA.DAS.EmployerFinance.Models.Projections;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.EmployerFinance.InnerApi.Responses.Finance;
 
 namespace SFA.DAS.EmployerFinance.Application.Queries.GetLevyProjectionsByAccountId;
 
@@ -32,39 +31,34 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
         return new GetLevyProjectionsByAccountIdQueryResult
         {
             Projections = ProjectFromHistoricData(now, request.Months, historicDataTask.Result, levySummaryTask.Result),
-            LatestLevyDeclarationInDate = lastSubmissionTask.Result.LastSubmissionDate
+            LatestLevyDeclarationInDate = lastSubmissionTask.Result.LastSubmissionDate ?? DateTime.MinValue
         };
     }
 
-    private async Task<Dictionary<(int Year, int Month), MonthlyBreakdown>> FetchHistoricDataAsync(DateTime now,
+    private async Task<Dictionary<(int Year, int Month), MonthlyBreakdown>> FetchHistoricDataAsync(
+        DateTime now,
         long accountId)
     {
         var startOfMonth = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
-
         var startDate = startOfMonth.AddYears(-1);
         var endDate = startOfMonth.AddMonths(1).AddTicks(-1);
 
-        var response = await financeApiClient.Get<List<TransactionLine>>(
-            new GetAccountTransactionSummaryByDateRequest(accountId, startDate, endDate));
+        var response = await financeApiClient.Get<List<LevyDeclaration>>(new GetLevyDeclarationSummaryByDate(accountId, startDate, endDate));
 
         return response
-            .GroupBy(t => (t.TransactionDate.Year, t.TransactionDate.Month))
+            .Where(t => t.PayrollDate() != null)
+            .GroupBy(t => t.PayrollDate())
             .ToDictionary(
-                g => g.Key,
+                g => (g.Key.Value.Year, g.Key.Value.Month),
                 g => new MonthlyBreakdown
                 {
-                    CalendarPeriodYear = g.Key.Year,
-                    CalendarPeriodMonth = g.Key.Month,
-                    CalendarMonthName = new DateTime(g.Key.Year, g.Key.Month, 1, 0, 0, 0, DateTimeKind.Utc).ToString("MMMM"),
-                    LevyIn = g
-                        .Where(t => t.TransactionType == TransactionItemType.Declaration)
-                        .Sum(t => t.Amount),
-                    ExpiredLevy = g
-                        .Where(t => t.TransactionType is TransactionItemType.ExpiredFund
-                            or TransactionItemType.ShortExpiredFund)
-                        .Sum(t => t.Amount),
-                    CommittedLearnerCosts = 0, // will be populated in future stories.
-                    CommittedTransferCosts = 0 // will be populated in future stories.
+                    CalendarPeriodYear = g.Key.Value.Year,
+                    CalendarPeriodMonth = g.Key.Value.Month,
+                    CalendarMonthName = g.Key.Value.ToString("MMMM"),
+                    LevyIn = g.Sum(t => t.TotalAmount - t.TopUp),
+                    ExpiredLevy = 0m,             // will be populated in future stories.
+                    CommittedLearnerCosts = 0,    // will be populated in future stories.
+                    CommittedTransferCosts = 0    // will be populated in future stories.
                 });
     }
 
