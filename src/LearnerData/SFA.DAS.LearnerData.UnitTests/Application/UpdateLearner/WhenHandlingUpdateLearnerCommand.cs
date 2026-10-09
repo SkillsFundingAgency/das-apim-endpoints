@@ -15,6 +15,7 @@ using SFA.DAS.Apim.Shared.Models;
 using System.Net;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.LearnerData.Configuration;
+using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner;
@@ -198,7 +199,9 @@ public class WhenHandlingUpdateLearnerCommand
         _earningsApiClient.Verify(x => x.Post(
                 It.Is<ReleaseEarningsApiPostRequest>(r =>
                     r.Data.LearnerKey == command.LearnerKey &&
-                    r.Data.LearnerRef == command.UpdateLearnerRequest.Learner.LearnerRef)),
+                    r.Data.LearnerRef == command.UpdateLearnerRequest.Learner.LearnerRef &&
+                    r.Data.ReleaseType == ReleaseType.OnProgramme &&
+                    r.Data.EnglishAndMathsCourseKeys.Count == 0)),
             Times.Once);
 
         _earningsApiClient.VerifyNoOtherCalls();
@@ -239,7 +242,9 @@ public class WhenHandlingUpdateLearnerCommand
         _earningsApiClient.Verify(x => x.Post(
                 It.Is<ReleaseEarningsApiPostRequest>(r =>
                     r.Data.LearnerKey == command.LearnerKey &&
-                    r.Data.LearnerRef == command.UpdateLearnerRequest.Learner.LearnerRef)),
+                    r.Data.LearnerRef == command.UpdateLearnerRequest.Learner.LearnerRef &&
+                    r.Data.ReleaseType == ReleaseType.OnProgramme &&
+                    r.Data.EnglishAndMathsCourseKeys.Count == 0)),
             Times.Once);
 
         _earningsApiClient.VerifyNoOtherCalls();
@@ -252,6 +257,7 @@ public class WhenHandlingUpdateLearnerCommand
         var command = _fixture.Create<UpdateLearnerCommand>();
 
         var englishAndMathsApiPutRequest = _fixture.Create<UpdateEnglishAndMathsApiPutRequest>();
+        var englishAndMathsResponse = _fixture.Create<UpdateEnglishAndMathsEarningsApiPutResponse>();
 
         var updateLearningApiResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
         updateLearningApiResponse.Changes.Clear();
@@ -264,7 +270,7 @@ public class WhenHandlingUpdateLearnerCommand
             .Returns(englishAndMathsApiPutRequest);
 
         _earningsApiClient.Setup(x => x.PutWithResponseCode<UpdateEnglishAndMathsRequest, UpdateEnglishAndMathsEarningsApiPutResponse>(It.IsAny<UpdateEnglishAndMathsApiPutRequest>()))
-            .ReturnsAsync(new ApiResponse<UpdateEnglishAndMathsEarningsApiPutResponse>(new UpdateEnglishAndMathsEarningsApiPutResponse { HasNewEarningsProfileVersionBeenGenerated = true }, HttpStatusCode.OK, ""));
+            .ReturnsAsync(new ApiResponse<UpdateEnglishAndMathsEarningsApiPutResponse>(englishAndMathsResponse, HttpStatusCode.OK, ""));
 
         _earningsApiClient.Setup(x => x.Post(It.IsAny<ReleaseEarningsApiPostRequest>()))
             .Returns(Task.CompletedTask);
@@ -280,7 +286,9 @@ public class WhenHandlingUpdateLearnerCommand
         _earningsApiClient.Verify(x => x.Post(
                 It.Is<ReleaseEarningsApiPostRequest>(r =>
                     r.Data.LearnerKey == command.LearnerKey &&
-                    r.Data.LearnerRef == command.UpdateLearnerRequest.Learner.LearnerRef)),
+                    r.Data.LearnerRef == command.UpdateLearnerRequest.Learner.LearnerRef &&
+                    r.Data.ReleaseType == ReleaseType.FunctionalSkill &&
+                    r.Data.EnglishAndMathsCourseKeys.SequenceEqual(englishAndMathsResponse.GetUpdatedCourseKeys()))),
             Times.Once);
 
         _earningsApiClient.Verify(x => x.Post(
@@ -296,6 +304,7 @@ public class WhenHandlingUpdateLearnerCommand
         var command = _fixture.Create<UpdateLearnerCommand>();
 
         var englishAndMathsApiPutRequest = _fixture.Create<UpdateEnglishAndMathsApiPutRequest>();
+        var englishAndMathsResponse = _fixture.Create<UpdateEnglishAndMathsEarningsApiPutResponse>();
 
         var updateLearningApiResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
         updateLearningApiResponse.Changes.Clear();
@@ -308,7 +317,7 @@ public class WhenHandlingUpdateLearnerCommand
             .Returns(englishAndMathsApiPutRequest);
 
         _earningsApiClient.Setup(x => x.PutWithResponseCode<UpdateEnglishAndMathsRequest, UpdateEnglishAndMathsEarningsApiPutResponse>(It.IsAny<UpdateEnglishAndMathsApiPutRequest>()))
-            .ReturnsAsync(new ApiResponse<UpdateEnglishAndMathsEarningsApiPutResponse>(new UpdateEnglishAndMathsEarningsApiPutResponse { HasNewEarningsProfileVersionBeenGenerated = true }, HttpStatusCode.OK, ""));
+            .ReturnsAsync(new ApiResponse<UpdateEnglishAndMathsEarningsApiPutResponse>(englishAndMathsResponse, HttpStatusCode.OK, ""));
 
         _earningsApiClient.Setup(x => x.Post(It.IsAny<ReleaseEarningsApiPostRequest>()))
             .Returns(Task.CompletedTask);
@@ -324,13 +333,127 @@ public class WhenHandlingUpdateLearnerCommand
         _earningsApiClient.Verify(x => x.Post(
                 It.Is<ReleaseEarningsApiPostRequest>(r =>
                     r.Data.LearnerKey == command.LearnerKey &&
-                    r.Data.LearnerRef == command.UpdateLearnerRequest.Learner.LearnerRef)),
+                    r.Data.LearnerRef == command.UpdateLearnerRequest.Learner.LearnerRef &&
+                    r.Data.ReleaseType == ReleaseType.FunctionalSkill &&
+                    r.Data.EnglishAndMathsCourseKeys.SequenceEqual(englishAndMathsResponse.GetUpdatedCourseKeys()))),
             Times.Once);
 
         _earningsApiClient.Verify(x => x.Post(
                 It.IsAny<ReleaseEarningsApiPostRequest>()), Times.Once);
 
         _earningsApiClient.VerifyNoOtherCalls();
+    }
+
+    [Test]
+    public async Task Then_Earnings_Are_Not_Released_When_No_EnglishAndMaths_Courses_Have_Changed()
+    {
+        // Arrange
+        var command = _fixture.Create<UpdateLearnerCommand>();
+
+        var englishAndMathsApiPutRequest = _fixture.Create<UpdateEnglishAndMathsApiPutRequest>();
+
+        var updateLearningApiResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
+        updateLearningApiResponse.Changes.Clear();
+        updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMaths);
+
+        MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
+        var apiPutRequest = MockLearningPutRequestBuilder(command);
+
+        _updateEarningsEnglishAndMathsRequestBuilder.Setup(x => x.Build(command, updateLearningApiResponse, apiPutRequest))
+            .Returns(englishAndMathsApiPutRequest);
+
+        _earningsApiClient.Setup(x => x.PutWithResponseCode<UpdateEnglishAndMathsRequest, UpdateEnglishAndMathsEarningsApiPutResponse>(It.IsAny<UpdateEnglishAndMathsApiPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateEnglishAndMathsEarningsApiPutResponse>(new UpdateEnglishAndMathsEarningsApiPutResponse(), HttpStatusCode.OK, ""));
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        //Assert
+        _earningsApiClient.Verify(x => x.PutWithResponseCode<UpdateEnglishAndMathsRequest, UpdateEnglishAndMathsEarningsApiPutResponse>(
+                It.Is<UpdateEnglishAndMathsApiPutRequest>(r => r == englishAndMathsApiPutRequest)),
+            Times.Once);
+
+        _earningsApiClient.Verify(x => x.Post(It.IsAny<ReleaseEarningsApiPostRequest>()), Times.Never);
+
+        _earningsApiClient.VerifyNoOtherCalls();
+    }
+
+    [Test]
+    public async Task Then_All_Earnings_Are_Released_With_OnProgramme_And_EnglishAndMaths_Updates()
+    {
+        // Arrange
+        var command = _fixture.Create<UpdateLearnerCommand>();
+
+        var updateOnProgPutRequest = _fixture.Create<UpdateOnProgrammeApiPutRequest>();
+        var englishAndMathsApiPutRequest = _fixture.Create<UpdateEnglishAndMathsApiPutRequest>();
+        var englishAndMathsResponse = _fixture.Create<UpdateEnglishAndMathsEarningsApiPutResponse>();
+
+        var updateLearningApiResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
+        updateLearningApiResponse.Changes.Clear();
+        updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate);
+        updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMaths);
+
+        MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
+        var apiPutRequest = MockLearningPutRequestBuilder(command);
+
+        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data))
+            .ReturnsAsync(updateOnProgPutRequest);
+
+        _updateEarningsEnglishAndMathsRequestBuilder.Setup(x => x.Build(command, updateLearningApiResponse, apiPutRequest))
+            .Returns(englishAndMathsApiPutRequest);
+
+        _earningsApiClient.Setup(x => x.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateOnProgrammeEarningsApiPutResponse>(new UpdateOnProgrammeEarningsApiPutResponse { HasNewEarningsProfileVersionBeenGenerated = true }, HttpStatusCode.OK, ""));
+
+        _earningsApiClient.Setup(x => x.PutWithResponseCode<UpdateEnglishAndMathsRequest, UpdateEnglishAndMathsEarningsApiPutResponse>(It.IsAny<UpdateEnglishAndMathsApiPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateEnglishAndMathsEarningsApiPutResponse>(englishAndMathsResponse, HttpStatusCode.OK, ""));
+
+        _earningsApiClient.Setup(x => x.Post(It.IsAny<ReleaseEarningsApiPostRequest>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        //Assert
+        _earningsApiClient.Verify(x => x.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(
+                It.Is<UpdateOnProgrammeApiPutRequest>(r => r == updateOnProgPutRequest)),
+            Times.Once);
+
+        _earningsApiClient.Verify(x => x.PutWithResponseCode<UpdateEnglishAndMathsRequest, UpdateEnglishAndMathsEarningsApiPutResponse>(
+                It.Is<UpdateEnglishAndMathsApiPutRequest>(r => r == englishAndMathsApiPutRequest)),
+            Times.Once);
+
+        _earningsApiClient.Verify(x => x.Post(
+                It.Is<ReleaseEarningsApiPostRequest>(r =>
+                    r.Data.ReleaseType == ReleaseType.All &&
+                    r.Data.EnglishAndMathsCourseKeys.SequenceEqual(englishAndMathsResponse.GetUpdatedCourseKeys()))),
+            Times.Once);
+
+        _earningsApiClient.VerifyNoOtherCalls();
+    }
+
+    [Test]
+    public void Then_Updated_EnglishAndMaths_Course_Keys_Are_Combined_Without_Duplicates()
+    {
+        // Arrange
+        var createdKey = Guid.NewGuid();
+        var changedKey = Guid.NewGuid();
+        var removedKey = Guid.NewGuid();
+        var reinstatedKey = Guid.NewGuid();
+
+        var response = new UpdateEnglishAndMathsEarningsApiPutResponse
+        {
+            CreatedCourseKeys = [createdKey],
+            ChangedCourseKeys = [changedKey, createdKey],
+            RemovedCourseKeys = [removedKey],
+            ReinstatedCourseKeys = [reinstatedKey]
+        };
+
+        // Act
+        var result = response.GetUpdatedCourseKeys();
+
+        // Assert
+        result.Should().BeEquivalentTo(new[] { createdKey, changedKey, removedKey, reinstatedKey });
     }
 
     [Test]
