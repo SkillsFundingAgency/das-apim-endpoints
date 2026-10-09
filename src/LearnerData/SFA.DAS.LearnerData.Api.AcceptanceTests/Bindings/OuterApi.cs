@@ -39,6 +39,7 @@ public class OuterApi
                 {"LearningApiConfiguration:BearerTokenSigningKey", "local_test_outer_api_client_bearer_token_signing_key"},
                 {"CollectionCalendarApiConfiguration:url", _context?.CollectionCalendarApi?.BaseAddress + "/"},
                 {"CoursesApiConfiguration:url", _context?.CoursesApi?.BaseAddress + "/"},
+                {"CommitmentsV2ApiConfiguration:url", _context?.CommitmentsApi?.BaseAddress + "/"},
                 {"AzureAD:tenant", ""},
                 {"AzureAD:identifier", ""},
                 {"PaymentsConfiguration:PaymentsEndpoint", "stub"},

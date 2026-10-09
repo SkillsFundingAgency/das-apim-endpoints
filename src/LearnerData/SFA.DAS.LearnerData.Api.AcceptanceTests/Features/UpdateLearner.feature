@@ -122,3 +122,34 @@ Scenario: Missing LearnerRef is passed through to the learning domain as empty, 
 	And the learner has a LearnerRef of ""
 	When the learner is updated
 	Then the LearnerRef sent to the learning domain is ""
+
+Scenario: Start date change that Approvals auto-approves
+	Given there is a learner
+	And the StartDate passed is different to the value in the learners domain
+	And Learning reports that the change needs further approval
+	And Approvals auto-approves the change
+	When the learner is updated
+	Then Approvals is asked about the start date change
+	And further approval needed is cleared in the learning domain
+	And a on-programme update request is sent to the earnings domain
+	And sld data is stored to the cache
+
+Scenario: Start date change that Approvals does not auto-approve
+	Given there is a learner
+	And the StartDate passed is different to the value in the learners domain
+	And Learning reports that the change needs further approval
+	And Approvals asks for employer approval of the change
+	When the learner is updated
+	Then Approvals is asked about the start date change
+	And further approval needed is not cleared in the learning domain
+	And no update request is sent to the earnings domain
+	And sld data is stored to the cache
+
+Scenario: Change that does not need further approval does not ask Approvals
+	Given there is a learner
+	And the Prices passed is different to the value in the learners domain
+	And the funding band maximum for that learner is set
+	When the learner is updated
+	Then Approvals is not asked about the change
+	And further approval needed is not cleared in the learning domain
+	And a on-programme update request is sent to the earnings domain

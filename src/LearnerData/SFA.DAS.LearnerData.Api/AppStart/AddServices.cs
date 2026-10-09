@@ -50,5 +50,7 @@ public static class AddApiServicesExtension
         services.AddTransient<IGetProviderRelationshipService, GetProviderRelationshipService>();
         services.AddTransient<ILearnerDataEventMapper, LearnerDataEventMapper>();
         services.AddTransient<IApprovedApprenticeshipExistsChecker, ApprovedApprenticeshipExistsChecker>();
+        services.AddTransient<IApprovalsRequestBuilder, ApprovalsRequestBuilder>();
+        services.AddTransient<IApprovalsService, ApprovalsService>();
     }
 }
