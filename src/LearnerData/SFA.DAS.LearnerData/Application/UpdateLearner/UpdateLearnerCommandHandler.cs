@@ -23,6 +23,7 @@ public class UpdateLearnerCommandHandler(
     IUpdateLearningPutRequestBuilder updateLearningPutRequestBuilder,
     IUpdateEarningsOnProgrammeRequestBuilder updateEarningsOnProgrammeRequestBuilder,
     IUpdateEarningsEnglishAndMathsRequestBuilder updateEarningsEnglishAndMathsRequestBuilder,
+    IApprovalsService approvalsService,
     ILearnerDataCacheService learnerDataCacheService,
     IMessageSession messageSession,
     IApprovedApprenticeshipExistsChecker approvedApprenticeshipExistsChecker,
@@ -60,8 +61,18 @@ public class UpdateLearnerCommandHandler(
             {
                 logger.LogInformation("No changes requiring earnings update for learner {LearnerKey}", command.LearnerKey);
             }
+            else if (learningApiPutResponse.NeedsFurtherApproval
+                     && !await approvalsService.RequestApproval(command.Ukprn, command.UpdateLearnerRequest.Learner.Uln, learningApiPutResponse))
+            {
+                logger.LogInformation("Changes for learning {LearningKey} were not auto-approved by Approvals, so Earnings has not been updated", learningApiPutResponse.LearningKey);
+            }
             else
             {
+                if (learningApiPutResponse.NeedsFurtherApproval)
+                {
+                    await ClearFurtherApprovalNeeded(learningApiPutResponse);
+                }
+
                 var releaseEarnings = false;
                 //Update Earnings
                 if (learningApiPutResponse.Changes.HasOnProgrammeUpdate())
@@ -106,6 +117,32 @@ public class UpdateLearnerCommandHandler(
         }
 
         await PublishLearnerDataEventsForUnapprovedApprenticeships(command);
+    }
+
+    /// <summary>
+    /// Learning flags the episode as FurtherApprovalNeeded when an update needs further approval. Now that Approvals has
+    /// auto-approved the change, clear it. A failure is logged and swallowed: Approvals has approved, so Earnings must
+    /// still be updated, and throwing would also skip the LearnerDataEvent publishing that follows.
+    /// </summary>
+    private async Task ClearFurtherApprovalNeeded(BaseLearnerApiPutResponse learningApiPutResponse)
+    {
+        try
+        {
+            var response = await learningApiClient.PostWithResponseCode<object>(
+                new ClearFurtherApprovalNeededApiPostRequest(learningApiPutResponse.LearningKey, learningApiPutResponse.LearningEpisodeKey, learningApiPutResponse.LearningType),
+                false);
+
+            if (!response.StatusCode.IsSuccessStatusCode())
+            {
+                logger.LogError("Change was auto-approved for learning {LearningKey}, episode {EpisodeKey}, but clearing FurtherApprovalNeeded failed with status {StatusCode}. The flag is still set",
+                    learningApiPutResponse.LearningKey, learningApiPutResponse.LearningEpisodeKey, response.StatusCode);
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Change was auto-approved for learning {LearningKey}, episode {EpisodeKey}, but clearing FurtherApprovalNeeded failed. The flag is still set",
+                learningApiPutResponse.LearningKey, learningApiPutResponse.LearningEpisodeKey);
+        }
     }
 
     private async Task PublishLearnerDataEventsForUnapprovedApprenticeships(UpdateLearnerCommand command)

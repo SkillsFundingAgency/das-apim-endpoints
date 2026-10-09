@@ -15,8 +15,9 @@ namespace SFA.DAS.LearnerData.Services;
 public interface IApprovalsService
 {
     /// <summary>
-    /// Requests approval from Approvals for changes that require it.
-    /// Returns true when the update may proceed: either nothing needed asking, or every change was auto-approved.
+    /// Asks Approvals about the changes in the response. The caller decides whether an ask is needed (Learning signals it
+    /// with NeedsFurtherApproval); this always asks.
+    /// Returns true only when every change was auto-approved.
     /// Returns false when anything else came back (pending, rejected, unrecognised, or no verdicts at all).
     /// Pending and rejected are deliberately not distinguished: both are simply a lack of approval.
     /// Throws if Approvals could not be reached or returned an error.
@@ -76,12 +77,6 @@ public class ApprovalsService : IApprovalsService
 
     public async Task<bool> RequestApproval(long ukprn, long uln, BaseLearnerApiPutResponse learningApiPutResponse)
     {
-        if (!learningApiPutResponse.IsApproved
-            || !learningApiPutResponse.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate))
-        {
-            return true;
-        }
-
         var request = _requestBuilder.Build(ukprn, uln, learningApiPutResponse);
         LogRequest(request.Data);
 

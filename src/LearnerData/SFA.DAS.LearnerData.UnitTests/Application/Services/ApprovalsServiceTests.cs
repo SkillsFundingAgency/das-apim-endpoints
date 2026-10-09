@@ -30,28 +30,17 @@ public class ApprovalsServiceTests
         _sut = new ApprovalsService(_client.Object, new ApprovalsRequestBuilder(), _logger, TimeSpan.Zero);
     }
 
-    // ---- when an ask is needed -------------------------------------------------------------
+    // ---- the caller decides whether an ask is needed ----------------------------------------
 
     [Test]
-    public async Task Should_Not_Call_Approvals_When_StartDate_Has_Not_Changed()
-    {
-        var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.Prices);
-
-        var mayProceed = await _sut.RequestApproval(10001234, 9999999999, response);
-
-        mayProceed.Should().BeTrue();
-        VerifyCalls(Times.Never());
-    }
-
-    [Test]
-    public async Task Should_Not_Call_Approvals_When_Episode_Is_Not_Approved()
+    public async Task Should_Always_Ask_Approvals_Because_The_Caller_Decides_Whether_An_Ask_Is_Needed()
     {
         var response = ResponseWith(isApproved: false, BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
+        SetupResponses(Reply(HttpStatusCode.Created, Verdicts(("StartDate", "autoApproved"))));
 
-        var mayProceed = await _sut.RequestApproval(10001234, 9999999999, response);
+        await _sut.RequestApproval(10001234, 9999999999, response);
 
-        mayProceed.Should().BeTrue();
-        VerifyCalls(Times.Never());
+        VerifyCalls(Times.Once());
     }
 
     [Test]
