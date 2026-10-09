@@ -16,7 +16,7 @@ public interface IApprovalsService
 {
     /// <summary>
     /// Asks Approvals about the changes in the response. The caller decides whether an ask is needed (Learning signals it
-    /// with NeedsFurtherApproval); this always asks.
+    /// with ChangesNeedingApproval); this always asks.
     /// Returns true only when every change was auto-approved.
     /// Returns false when anything else came back (pending, rejected, unrecognised, or no verdicts at all).
     /// Pending and rejected are deliberately not distinguished: both are simply a lack of approval.

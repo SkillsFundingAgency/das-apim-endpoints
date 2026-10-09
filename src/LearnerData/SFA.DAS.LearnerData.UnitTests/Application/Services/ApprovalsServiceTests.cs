@@ -249,6 +249,7 @@ public class ApprovalsServiceTests
         IsApproved = isApproved,
         LearningType = LearningType.Apprenticeship,
         Changes = [.. changes],
+        ChangesNeedingApproval = [.. changes],
         Prices =
         [
             new BaseLearnerApiPutResponse.EpisodePrice

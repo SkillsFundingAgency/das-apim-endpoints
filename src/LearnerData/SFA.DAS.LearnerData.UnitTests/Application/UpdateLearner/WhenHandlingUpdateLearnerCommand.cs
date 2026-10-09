@@ -630,7 +630,7 @@ public class WhenHandlingUpdateLearnerCommand
         var command = _fixture.Create<UpdateLearnerCommand>();
 
         var learningResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
-        learningResponse.NeedsFurtherApproval = needsFurtherApproval;
+        learningResponse.ChangesNeedingApproval = needsFurtherApproval ? [UpdateLearnerApiPutResponse.LearningUpdateChanges.StartDate] : [];
         learningResponse.Changes.Clear();
         learningResponse.Changes.AddRange(changes ??
         [

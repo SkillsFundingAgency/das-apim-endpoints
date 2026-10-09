@@ -327,7 +327,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         response.LearningEpisodeKey = Guid.NewGuid();
         response.ApprovalsApprenticeshipId = 12345;
         response.IsApproved = true;
-        response.NeedsFurtherApproval = true;
+        response.ChangesNeedingApproval = [UpdateLearnerApiPutResponse.LearningUpdateChanges.StartDate];
         response.LearningType = LearningType.Apprenticeship;
         response.Prices =
         [

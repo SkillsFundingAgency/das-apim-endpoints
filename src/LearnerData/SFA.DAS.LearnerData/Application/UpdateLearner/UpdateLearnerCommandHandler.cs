@@ -57,18 +57,20 @@ public class UpdateLearnerCommandHandler(
             logger.LogInformation("Learner with key {LearnerKey} updated successfully. Changes: {@Changes}",
                 command.LearnerKey, string.Join(", ", learningApiPutResponse));
 
+            var needsFurtherApproval = learningApiPutResponse.ChangesNeedingApproval.Count > 0;
+
             if (learningApiPutResponse.Changes.Count == 0 || learningApiPutResponse.Changes.HasPersonalDetailsOnly())
             {
                 logger.LogInformation("No changes requiring earnings update for learner {LearnerKey}", command.LearnerKey);
             }
-            else if (learningApiPutResponse.NeedsFurtherApproval
+            else if (needsFurtherApproval
                      && !await approvalsService.RequestApproval(command.Ukprn, command.UpdateLearnerRequest.Learner.Uln, learningApiPutResponse))
             {
                 logger.LogInformation("Changes for learning {LearningKey} were not auto-approved by Approvals, so Earnings has not been updated", learningApiPutResponse.LearningKey);
             }
             else
             {
-                if (learningApiPutResponse.NeedsFurtherApproval)
+                if (needsFurtherApproval)
                 {
                     await ClearFurtherApprovalNeeded(learningApiPutResponse);
                 }

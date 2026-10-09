@@ -22,8 +22,8 @@ public class ApprovalsRequestBuilder : IApprovalsRequestBuilder
             Uln = uln.ToString(CultureInfo.InvariantCulture)
         };
 
-        var startDateChanged = learningApiPutResponse.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
-        var pricesChanged = learningApiPutResponse.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.Prices);
+        var startDateChanged = learningApiPutResponse.ChangesNeedingApproval.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
+        var pricesChanged = learningApiPutResponse.ChangesNeedingApproval.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.Prices);
 
         // The full price structure is sent whenever prices, or the start date that is derived from them, changed
         if (startDateChanged || pricesChanged)
@@ -38,7 +38,7 @@ public class ApprovalsRequestBuilder : IApprovalsRequestBuilder
                 ChangeType = ApprovalsChangeTypes.StartDate,
                 Data = new ApprovalsChangeData
                 {
-                    // Old is deliberately not sent: Approvals holds the approved record (see approvals-integration.md)
+                    // Old is deliberately not sent: Approvals holds the approved record, and learning does not
                     Old = null,
                     New = learningApiPutResponse.Prices.Min(x => x.StartDate).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
                 }

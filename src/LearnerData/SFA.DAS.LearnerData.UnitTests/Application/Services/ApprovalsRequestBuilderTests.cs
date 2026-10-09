@@ -31,6 +31,7 @@ public class ApprovalsRequestBuilderTests
                 BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate,
                 BaseLearnerApiPutResponse.LearningUpdateChanges.Prices
             ],
+            ChangesNeedingApproval = [BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate],
             Prices =
             [
                 new BaseLearnerApiPutResponse.EpisodePrice
@@ -106,6 +107,21 @@ public class ApprovalsRequestBuilderTests
         result.Data.NewPrices.Should().BeEmpty();
     }
 
+    [Test]
+    public void Build_Should_Not_Send_A_Field_Change_For_A_Change_That_Does_Not_Need_Approval()
+    {
+        // Arrange
+        var response = ResponseWith(BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
+        response.ChangesNeedingApproval = [];
+
+        // Act
+        var result = _sut.Build(10001234, 9999999999, response);
+
+        // Assert
+        result.Data.Changes.Should().BeEmpty();
+        result.Data.NewPrices.Should().BeEmpty();
+    }
+
     private static UpdateLearnerApiPutResponse ResponseWith(params BaseLearnerApiPutResponse.LearningUpdateChanges[] changes) => new()
     {
         LearningKey = Guid.NewGuid(),
@@ -113,6 +129,7 @@ public class ApprovalsRequestBuilderTests
         IsApproved = true,
         LearningType = LearningType.Apprenticeship,
         Changes = [.. changes],
+        ChangesNeedingApproval = [.. changes],
         Prices =
         [
             new BaseLearnerApiPutResponse.EpisodePrice

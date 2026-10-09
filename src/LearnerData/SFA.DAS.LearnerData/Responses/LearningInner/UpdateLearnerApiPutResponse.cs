@@ -16,7 +16,7 @@ public abstract class BaseLearnerApiPutResponse
     public Guid LearningEpisodeKey { get; set; }
     public long ApprovalsApprenticeshipId { get; set; }
     public bool IsApproved { get; set; }
-    public bool NeedsFurtherApproval { get; set; }
+    public List<LearningUpdateChanges> ChangesNeedingApproval { get; set; } = [];
     public LearningType LearningType { get; set; }
     public List<EpisodePrice> Prices { get; set; } = [];
 
