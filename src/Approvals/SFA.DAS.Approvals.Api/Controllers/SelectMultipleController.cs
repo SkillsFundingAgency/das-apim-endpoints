@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Approvals.Api.Models;
+using SFA.DAS.Approvals.Application.SelectMultiple.Commands;
 using SFA.DAS.Approvals.Application.SelectMultiple.Queries;
 
 namespace SFA.DAS.Approvals.Api.Controllers;
@@ -23,6 +24,24 @@ public class SelectMultipleController(IMediator mediator) : ControllerBase
                 AgreementId = request.AgreementId,
                 LearnerIds = request.LearnerIds,
                 UserInfo = request.UserInfo,
+            });
+
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [Route("AddDraftApprenticeships")]
+    public async Task<IActionResult> AddDraftApprenticeships(SelectMultipleAddDraftApprenticeshipsRequest request)
+    {
+        var result = await mediator.Send(
+            new SelectMultipleAddDraftApprenticeshipsCommand
+            {
+                ProviderId = request.ProviderId,
+                UserInfo = request.UserInfo,
+                AccountLegalEntityId = request.AccountLegalEntityId,
+                AgreementId = request.AgreementId,
+                AccountId = request.AccountId,
+                LearnerIds = request.LearnerIds
             });
 
         return Ok(result);
