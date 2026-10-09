@@ -27,6 +27,6 @@ internal class WhenHandlingGetLastLevyDeclarationDateQuery
 
         // Assert
         result.Should().NotBeNull();
-        result.LatestLevyDeclarationInDate.Should().BeCloseTo(response.LastSubmissionDate, TimeSpan.FromSeconds(1));
+        result.LatestLevyDeclarationInDate.Should().BeCloseTo((DateTime)response.LastSubmissionDate!, TimeSpan.FromSeconds(1));
     }
 }

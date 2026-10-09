@@ -1,7 +1,8 @@
 ﻿#nullable enable
 using MediatR;
 using SFA.DAS.EmployerFinance.InnerApi.Requests.Finance;
-using SFA.DAS.EmployerFinance.Models.Enums;
+using SFA.DAS.EmployerFinance.InnerApi.Responses;
+using SFA.DAS.EmployerFinance.InnerApi.Responses.Finance;
 using SFA.DAS.EmployerFinance.Models.Projections;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
@@ -10,8 +11,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.EmployerFinance.InnerApi.Responses;
-using SFA.DAS.EmployerFinance.InnerApi.Responses.Finance;
 
 namespace SFA.DAS.EmployerFinance.Application.Queries.GetLevyProjectionsByAccountId;
 
@@ -23,23 +22,22 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
     public async Task<GetLevyProjectionsByAccountIdQueryResult> Handle(GetLevyProjectionsByAccountIdQuery request, CancellationToken cancellationToken)
     {
         var now = DateTime.UtcNow.Date;
-        
-        var lastSubmissionTask = financeApiClient.Get<GetLevyLastSubmissionDateResponse>(new GetLevyLastSubmissionDateRequest(request.AccountId));
-        var levySummaryTask = financeApiClient.Get<GetLevySummaryByAccountIdResponse>(new GetLevySummaryByAccountIdRequest(request.AccountId));
-        
-        var historicTransactionLines = await FetchHistoricTransactionLinesDataAsync(now, request.AccountId);
-        var levyIn = historicTransactionLines
-            .Where(x => x.TransactionType == TransactionItemType.Declaration)
-            .GroupBy(x => new DateOnly(x.TransactionDate.Year, x.TransactionDate.Month, 1))
-            .Select(x => new LevyInMonthSummary(x.Key, x.Sum(t => t.Amount)))
-            .ToList();
 
-        var data = new PostEmployerFundingProjectionRequestData
-        {
-            Months = request.Months,
-            HistoricLevyIn = levyIn
-        };
-        var projectionTask = projectionApiClient.PostWithResponseCode<EstimatesTimeline>(new PostEmployerFundingProjectionRequest(request.AccountId, data));
+        var lastSubmissionTask = financeApiClient.Get<GetLevyLastSubmissionDateResponse>(
+            new GetLevyLastSubmissionDateRequest(request.AccountId));
+
+        var levySummaryTask = financeApiClient.Get<GetLevySummaryByAccountIdResponse>(
+            new GetLevySummaryByAccountIdRequest(request.AccountId));
+
+        var declarations = await FetchHistoricTransactionLinesDataAsync(now, request.AccountId);
+
+        var projectionTask = projectionApiClient.PostWithResponseCode<EstimatesTimeline>(
+            new PostEmployerFundingProjectionRequest(request.AccountId, new PostEmployerFundingProjectionRequestData
+            {
+                Months = request.Months,
+                HistoricLevyIn = BuildLevyInSummary(declarations)
+            }));
+
         await Task.WhenAll(lastSubmissionTask, levySummaryTask, projectionTask);
 
         return new GetLevyProjectionsByAccountIdQueryResult
@@ -47,15 +45,25 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
             AccountId = request.AccountId,
             Summary = levySummaryTask.Result,
             Projections = projectionTask.Result.Body.Projections,
-            LatestLevyDeclarationInDate = lastSubmissionTask.Result.LastSubmissionDate
+            LatestLevyDeclarationInDate = lastSubmissionTask.Result.LastSubmissionDate ?? DateTime.MinValue
         };
     }
-    
-    private async Task<List<TransactionLine>> FetchHistoricTransactionLinesDataAsync(DateTime now, long accountId)
+
+    private static List<LevyInMonthSummary> BuildLevyInSummary(List<LevyDeclaration> declarations) =>
+    [
+        .. declarations
+            .Where(t => t.PayrollDate() != null)
+            .GroupBy(t => t.PayrollDate()!.Value)
+            .Select(g => new LevyInMonthSummary(
+                new DateOnly(g.Key.Year, g.Key.Month, 1),
+                g.Sum(t => t.TotalAmount - t.TopUp)))
+    ];
+
+    private async Task<List<LevyDeclaration>> FetchHistoricTransactionLinesDataAsync(DateTime now, long accountId)
     {
         var startOfMonth = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
         var startDate = startOfMonth.AddYears(-1);
         var endDate = startOfMonth.AddMonths(1).AddTicks(-1);
-        return await financeApiClient.Get<List<TransactionLine>>(new GetAccountTransactionSummaryByDateRequest(accountId, startDate, endDate));
+        return await financeApiClient.Get<List<LevyDeclaration>>(new GetLevyDeclarationSummaryByDate(accountId, startDate, endDate));
     }
 }
