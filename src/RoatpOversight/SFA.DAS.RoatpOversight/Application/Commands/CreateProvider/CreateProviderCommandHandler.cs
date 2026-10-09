@@ -3,6 +3,8 @@ using System.Web;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpOversight.Infrastructure;
+using SFA.DAS.RoatpOversight.InnerApi.Models;
+using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
 namespace SFA.DAS.RoatpOversight.Application.Commands.CreateProvider;
 
@@ -36,6 +38,15 @@ public class CreateProviderCommandHandler : IRequestHandler<CreateProviderComman
                 throw new InvalidOperationException(
                     $"Create provider for ukprn: {command.Ukprn} did not come back with successful response, statusCode: {response.StatusCode}");
             }
+
+            var addCourseTypesCommand = new AddCourseTypesModel()
+            {
+                CourseTypes = [CourseType.Apprenticeship],
+                UserId = command.UserId,
+                UserDisplayName = command.UserDisplayName
+            };
+            var addCourseTypesResponse = await _apiClient.AddCourseTypes(command.Ukprn, addCourseTypesCommand, cancellationToken);
+            addCourseTypesResponse.EnsureSuccessStatusCode();
         }
 
         return Unit.Value;
