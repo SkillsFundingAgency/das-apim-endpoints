@@ -20,7 +20,7 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
     {
         var now = DateTime.UtcNow.Date;
 
-        var historicDataTask = FetchHistoricDataAsync(now, request.AccountId);
+        var historicDataTask = FetchHistoricDataAsync(now, request.AccountId, request.Months);
         var lastSubmissionTask = financeApiClient.Get<GetLevyLastSubmissionDateResponse>(
             new GetLevyLastSubmissionDateRequest(request.AccountId));
         var levySummaryTask = financeApiClient.Get<GetLevySummaryByAccountIdResponse>(
@@ -37,13 +37,20 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
 
     private async Task<Dictionary<(int Year, int Month), MonthlyBreakdown>> FetchHistoricDataAsync(
         DateTime now,
-        long accountId)
+        long accountId,
+        int months)
     {
         var startOfMonth = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
         var startDate = startOfMonth.AddYears(-1);
         var endDate = startOfMonth.AddMonths(1).AddTicks(-1);
 
-        var response = await financeApiClient.Get<List<LevyDeclaration>>(new GetLevyDeclarationSummaryByDate(accountId, startDate, endDate));
+        var response = await financeApiClient.Get<List<LevyDeclaration>>(
+                new GetLevyDeclarationSummaryByDate(accountId, startDate, endDate));
+
+        if (response.Count == 0)
+        {
+            return BuildEmptyMonthlyBreakdowns(startDate, months);
+        }
 
         return response
             .Where(t => t.PayrollDate() != null)
@@ -56,9 +63,30 @@ public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<Finance
                     CalendarPeriodMonth = g.Key.Value.Month,
                     CalendarMonthName = g.Key.Value.ToString("MMMM"),
                     LevyIn = g.Sum(t => t.TotalAmount - t.TopUp),
-                    ExpiredLevy = 0m,             // will be populated in future stories.
-                    CommittedLearnerCosts = 0,    // will be populated in future stories.
-                    CommittedTransferCosts = 0    // will be populated in future stories.
+                    ExpiredLevy = 0m,
+                    CommittedLearnerCosts = 0,
+                    CommittedTransferCosts = 0
+                });
+    }
+
+    private static Dictionary<(int Year, int Month), MonthlyBreakdown> BuildEmptyMonthlyBreakdowns(
+        DateTime startDate,
+        int months)
+    {
+        return Enumerable
+            .Range(0, months)
+            .Select(startDate.AddMonths)
+            .ToDictionary(
+                d => (d.Year, d.Month),
+                d => new MonthlyBreakdown
+                {
+                    CalendarPeriodYear = d.Year,
+                    CalendarPeriodMonth = d.Month,
+                    CalendarMonthName = d.ToString("MMMM"),
+                    LevyIn = 0m,
+                    ExpiredLevy = 0m,
+                    CommittedLearnerCosts = 0,
+                    CommittedTransferCosts = 0
                 });
     }
 
