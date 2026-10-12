@@ -85,6 +85,7 @@ public class GetManageApprenticeshipDetailsResponse
         public bool HasUnacknowledgedInvalidIlrChanges { get; set; }
         public bool HasUnacknowledgedDeclinedChanges { get; set; }
         public Guid? PendingApprovalRequestId { get; set; }
+        public bool HasAutoApprovedRequests { get; set; }
     }
 
     public class PriceEpisode
