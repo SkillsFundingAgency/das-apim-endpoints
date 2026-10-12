@@ -129,10 +129,17 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
         {
             LearnerIds = command.LearnerIds,
             ProviderId = command.ProviderId,
+            AccountLegalEntityId = command.AccountLegalEntityId,
+            AgreementId = command.AgreementId,
             UserInfo = command.UserInfo
         };
 
-        await mediator.Send(validateQuery, cancellationToken);
+        var result = await mediator.Send(validateQuery, cancellationToken);
+        
+        if (result.ValidationErrors.Any())
+        {
+            throw new InvalidOperationException($"Validation Failed for AddDraftApprenticeshipsCommand");
+        }
     }
 
     private void MergeReservationWithDraftApprenticeships(IEnumerable<BulkUploadAddDraftApprenticeshipRequest> bulkUploadAddDraftApprenticeshipRequests, ApiResponse<BulkCreateReservationsWithNonLevyResult> reservationResult)
