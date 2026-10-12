@@ -52,7 +52,8 @@ public class ApprovalsService : IApprovalsService
     {
     }
 
-    public ApprovalsService(
+    // Internal so that dependency injection only ever sees the constructor above; tests use this one to retry without waiting
+    internal ApprovalsService(
         ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsApiClient,
         IApprovalsRequestBuilder requestBuilder,
         ILogger<ApprovalsService> logger,

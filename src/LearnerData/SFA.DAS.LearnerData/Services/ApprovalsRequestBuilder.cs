@@ -42,8 +42,7 @@ public class ApprovalsRequestBuilder : IApprovalsRequestBuilder
                 ChangeType = ApprovalsChangeTypes.StartDate,
                 Data = new ApprovalsChangeData
                 {
-                    // Old is Learning's last-held value, which can be an unapproved one after a pending or rejected
-                    // change. Approvals keeps the first Old of a pending request, so this is accepted.
+                    // Old is Learning's last-held value, which can be stale and not useful.
                     Old = ToWireValue(startDateChange.Old),
                     New = ToWireValue(startDateChange.New)
                 }

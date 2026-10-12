@@ -27,4 +27,8 @@
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="SFA.DAS.LearnerData.UnitTests" />
+  </ItemGroup>
+
 </Project>
