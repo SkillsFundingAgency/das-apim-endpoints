@@ -16,6 +16,7 @@ using SFA.DAS.Apim.Shared.Models;
 using System.Net;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.LearnerData.Configuration;
+using SFA.DAS.LearnerData.Responses.CommitmentsInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner;
@@ -83,10 +84,10 @@ public class WhenHandlingUpdateLearnerCommand
 
         _approvalsService
             .Setup(x => x.RequestApproval(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<BaseLearnerApiPutResponse>()))
-            .ReturnsAsync(true);
+            .ReturnsAsync(new ApprovalsOutcome(true, new ApprovalsResponse()));
 
         _approvedLearningUpdatedEventBuilder
-            .Setup(x => x.Build(It.IsAny<BaseLearnerApiPutResponse>()))
+            .Setup(x => x.Build(It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<ApprovalsResponse>()))
             .Returns(_fixture.Create<ApprovedLearningUpdatedEvent>());
 
         _learningApiClient
@@ -530,7 +531,7 @@ public class WhenHandlingUpdateLearnerCommand
         var (command, learningResponse) = ArrangeStartDateChange();
         _approvalsService
             .Setup(x => x.RequestApproval(command.Ukprn, command.UpdateLearnerRequest.Learner.Uln, learningResponse))
-            .ReturnsAsync(false);
+            .ReturnsAsync(new ApprovalsOutcome(false, new ApprovalsResponse()));
 
         // Act
         await _sut.Handle(command, CancellationToken.None);
@@ -590,7 +591,14 @@ public class WhenHandlingUpdateLearnerCommand
         var evt = _fixture.Create<ApprovedLearningUpdatedEvent>();
         var calls = new List<string>();
 
-        _approvedLearningUpdatedEventBuilder.Setup(x => x.Build(learningResponse)).Returns(evt);
+        var approvalsResponse = new ApprovalsResponse
+        {
+            Changes = [new ApprovalsChangeResult { ChangeType = "StartDate", ApprovalStatus = "autoApproved" }]
+        };
+        _approvalsService
+            .Setup(x => x.RequestApproval(command.Ukprn, command.UpdateLearnerRequest.Learner.Uln, learningResponse))
+            .ReturnsAsync(new ApprovalsOutcome(true, approvalsResponse));
+        _approvedLearningUpdatedEventBuilder.Setup(x => x.Build(learningResponse, approvalsResponse)).Returns(evt);
         _learningApiClient
             .Setup(x => x.PostWithResponseCode<object>(It.IsAny<ClearFurtherApprovalNeededApiPostRequest>(), false))
             .Callback(() => calls.Add("clear"))
@@ -665,7 +673,7 @@ public class WhenHandlingUpdateLearnerCommand
         var (command, _) = ArrangeStartDateChange();
         _approvalsService
             .Setup(x => x.RequestApproval(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<BaseLearnerApiPutResponse>()))
-            .ReturnsAsync(false);
+            .ReturnsAsync(new ApprovalsOutcome(false, new ApprovalsResponse()));
 
         // Act
         await _sut.Handle(command, CancellationToken.None);

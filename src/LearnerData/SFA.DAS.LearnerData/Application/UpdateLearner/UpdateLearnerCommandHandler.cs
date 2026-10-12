@@ -59,21 +59,22 @@ public class UpdateLearnerCommandHandler(
                 command.LearnerKey, string.Join(", ", learningApiPutResponse));
 
             var needsFurtherApproval = learningApiPutResponse.ChangeDetails.Any(x => x.RequiresApproval);
+            ApprovalsOutcome? approval = null;
 
             if (learningApiPutResponse.Changes.Count == 0 || learningApiPutResponse.Changes.HasPersonalDetailsOnly())
             {
                 logger.LogInformation("No changes requiring earnings update for learner {LearnerKey}", command.LearnerKey);
             }
             else if (needsFurtherApproval
-                     && !await approvalsService.RequestApproval(command.Ukprn, command.UpdateLearnerRequest.Learner.Uln, learningApiPutResponse))
+                     && !(approval = await approvalsService.RequestApproval(command.Ukprn, command.UpdateLearnerRequest.Learner.Uln, learningApiPutResponse)).AllAutoApproved)
             {
                 logger.LogInformation("Changes for learning {LearningKey} were not auto-approved by Approvals, so Earnings has not been updated", learningApiPutResponse.LearningKey);
             }
             else
             {
-                if (needsFurtherApproval && await ClearFurtherApprovalNeeded(learningApiPutResponse))
+                if (approval != null && await ClearFurtherApprovalNeeded(learningApiPutResponse))
                 {
-                    await messageSession.Publish(approvedLearningUpdatedEventBuilder.Build(learningApiPutResponse));
+                    await messageSession.Publish(approvedLearningUpdatedEventBuilder.Build(learningApiPutResponse, approval.Response));
                 }
 
                 var releaseEarnings = false;

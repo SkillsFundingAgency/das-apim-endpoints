@@ -32,6 +32,8 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     private const string LearnerRefKey = "LearnerRefKey";
     private const string NeedsFurtherApprovalKey = "NeedsFurtherApprovalKey";
     private const string ApprovalsVerdictKey = "ApprovalsVerdictKey";
+    private const string ApprovalsEchoedOld = "2026-08-31";
+    private const string ApprovalsEchoedNew = "2026-09-14";
 
     [Given(@"there is a learner")]
     public void GivenThereIsALearner()
@@ -139,8 +141,8 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         evt.ApprenticeshipId.Should().Be(response.ApprovalsApprenticeshipId);
         var change = evt.Changes.Should().ContainSingle().Subject;
         change.ChangeType.Should().Be("StartDate");
-        change.Data.Old.Should().Be("2026-09-01");
-        change.Data.New.Should().Be("2026-09-15");
+        change.Data.Old.Should().Be(ApprovalsEchoedOld);
+        change.Data.New.Should().Be(ApprovalsEchoedNew);
     }
 
     [Then(@"no ApprovedLearningUpdatedEvent is published")]
@@ -394,7 +396,9 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
                 .WithStatusCode(HttpStatusCode.OK)
                 .WithBodyAsJson(new
                 {
-                    changes = new[] { new { changeType = "StartDate", approvalStatus = verdict } },
+                    // Shaped as the commitments stub responds. The old/new values deliberately differ from the ones
+                    // Learning reported, so a test can tell that the event echoes Approvals and not Learning.
+                    changes = new[] { new { changeType = "StartDate", approvalStatus = verdict, data = new { old = ApprovalsEchoedOld, @new = ApprovalsEchoedNew } } },
                     prices = Array.Empty<object>()
                 }));
     }

@@ -1,4 +1,4 @@
-using System.Text.Json.Nodes;
+using SFA.DAS.LearnerData.Responses.CommitmentsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.Learning.Types;
 
@@ -6,38 +6,33 @@ namespace SFA.DAS.LearnerData.Services;
 
 public interface IApprovedLearningUpdatedEventBuilder
 {
-    ApprovedLearningUpdatedEvent Build(BaseLearnerApiPutResponse learningApiPutResponse);
+    ApprovedLearningUpdatedEvent Build(BaseLearnerApiPutResponse learningApiPutResponse, ApprovalsResponse approvalsResponse);
 }
 
+/// <summary>
+/// The event is an echo of what Approvals responded with: every change it returned is passed back, with its old and
+/// new values, under the change type name Approvals used. Only the identity of the learning comes from our own response.
+/// </summary>
 public class ApprovedLearningUpdatedEventBuilder : IApprovedLearningUpdatedEventBuilder
 {
-    private const string StartDate = nameof(ApprovedLearningUpdatedChangeType.StartDate);
-
-    public ApprovedLearningUpdatedEvent Build(BaseLearnerApiPutResponse learningApiPutResponse)
+    public ApprovedLearningUpdatedEvent Build(BaseLearnerApiPutResponse learningApiPutResponse, ApprovalsResponse approvalsResponse)
     {
         return new ApprovedLearningUpdatedEvent
         {
             LearningKey = learningApiPutResponse.LearningKey,
             ApprenticeshipId = learningApiPutResponse.ApprovalsApprenticeshipId,
-            LearningType = learningApiPutResponse.LearningType.ToString().ToLowerInvariant(),
-            Changes = learningApiPutResponse.ChangeDetails
-                .Where(x => x.RequiresApproval && x.ChangeType == BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate)
+            LearningType = learningApiPutResponse.LearningType.ToString(),
+            Changes = approvalsResponse.Changes
                 .Select(x => new ApprenticeshipFieldChange
                 {
-                    ChangeType = StartDate,
+                    ChangeType = x.ChangeType,
                     Data = new ApprenticeshipData
                     {
-                        Old = ToWireValue(x.Old),
-                        New = ToWireValue(x.New)
+                        Old = x.Data?.Old ?? string.Empty,
+                        New = x.Data?.New ?? string.Empty
                     }
                 })
                 .ToList()
         };
     }
-
-    // Scalars (dates are already yyyy-MM-dd strings) go to Approvals as strings
-    private static string ToWireValue(JsonNode? value) =>
-        value is JsonValue jsonValue && jsonValue.TryGetValue<string>(out var text)
-            ? text
-            : value?.ToJsonString() ?? string.Empty;
 }

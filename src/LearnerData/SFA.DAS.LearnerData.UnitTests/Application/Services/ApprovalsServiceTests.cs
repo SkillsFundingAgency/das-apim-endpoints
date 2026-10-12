@@ -59,6 +59,31 @@ public class ApprovalsServiceTests
                 && r.Data.ApprenticeshipId == 65472475)), Times.Once);
     }
 
+    [Test]
+    public async Task Should_Return_The_Changes_And_Prices_Approvals_Responded_With()
+    {
+        var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
+        var approvalsResponse = new ApprovalsResponse
+        {
+            Changes =
+            [
+                new ApprovalsChangeResult
+                {
+                    ChangeType = "StartDate",
+                    ApprovalStatus = "autoApproved",
+                    Data = new ApprovalsChangeData { Old = "2026-09-01", New = "2026-09-15" }
+                }
+            ],
+            Prices = [new ApprovalsPrice { TrainingPrice = "15000.00", AssessmentPrice = "2000.00", EffectiveFrom = new DateTime(2026, 9, 15) }]
+        };
+        SetupResponses(Reply(HttpStatusCode.Created, approvalsResponse));
+
+        var outcome = await _sut.RequestApproval(10001234, 9999999999, response);
+
+        outcome.AllAutoApproved.Should().BeTrue();
+        outcome.Response.Should().BeSameAs(approvalsResponse);
+    }
+
     // ---- verdicts --------------------------------------------------------------------------
 
     [TestCase("autoApproved")]
@@ -69,7 +94,7 @@ public class ApprovalsServiceTests
         var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate, BaseLearnerApiPutResponse.LearningUpdateChanges.Prices);
         SetupResponses(Reply(HttpStatusCode.Created, Verdicts(("StartDate", status), ("Prices", status))));
 
-        var mayProceed = await _sut.RequestApproval(10001234, 9999999999, response);
+        var mayProceed = (await _sut.RequestApproval(10001234, 9999999999, response)).AllAutoApproved;
 
         mayProceed.Should().BeTrue();
     }
@@ -84,7 +109,7 @@ public class ApprovalsServiceTests
         var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate, BaseLearnerApiPutResponse.LearningUpdateChanges.Prices);
         SetupResponses(Reply(HttpStatusCode.Created, Verdicts(("StartDate", "autoApproved"), ("Prices", otherStatus))));
 
-        var mayProceed = await _sut.RequestApproval(10001234, 9999999999, response);
+        var mayProceed = (await _sut.RequestApproval(10001234, 9999999999, response)).AllAutoApproved;
 
         mayProceed.Should().BeFalse();
     }
@@ -95,7 +120,7 @@ public class ApprovalsServiceTests
         var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
         SetupResponses(Reply(HttpStatusCode.Created, Verdicts()));
 
-        var mayProceed = await _sut.RequestApproval(10001234, 9999999999, response);
+        var mayProceed = (await _sut.RequestApproval(10001234, 9999999999, response)).AllAutoApproved;
 
         mayProceed.Should().BeFalse();
     }
@@ -115,7 +140,7 @@ public class ApprovalsServiceTests
             Reply(transient, null, "upstream unavailable"),
             Reply(HttpStatusCode.Created, Verdicts(("StartDate", "autoApproved"))));
 
-        var mayProceed = await _sut.RequestApproval(10001234, 9999999999, response);
+        var mayProceed = (await _sut.RequestApproval(10001234, 9999999999, response)).AllAutoApproved;
 
         mayProceed.Should().BeTrue();
         VerifyCalls(Times.Exactly(2));
@@ -129,7 +154,7 @@ public class ApprovalsServiceTests
             .ThrowsAsync(new HttpRequestException("connection reset"))
             .ReturnsAsync(Reply(HttpStatusCode.Created, Verdicts(("StartDate", "autoApproved"))));
 
-        var mayProceed = await _sut.RequestApproval(10001234, 9999999999, response);
+        var mayProceed = (await _sut.RequestApproval(10001234, 9999999999, response)).AllAutoApproved;
 
         mayProceed.Should().BeTrue();
         VerifyCalls(Times.Exactly(2));
@@ -143,7 +168,7 @@ public class ApprovalsServiceTests
             .ThrowsAsync(new TaskCanceledException("timed out"))
             .ReturnsAsync(Reply(HttpStatusCode.Created, Verdicts(("StartDate", "autoApproved"))));
 
-        var mayProceed = await _sut.RequestApproval(10001234, 9999999999, response);
+        var mayProceed = (await _sut.RequestApproval(10001234, 9999999999, response)).AllAutoApproved;
 
         mayProceed.Should().BeTrue();
         VerifyCalls(Times.Exactly(2));

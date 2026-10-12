@@ -17,13 +17,18 @@ public interface IApprovalsService
     /// <summary>
     /// Asks Approvals about the changes in the response. The caller decides whether an ask is needed (Learning signals it
     /// by flagging a change in ChangeDetails with RequiresApproval); this always asks.
-    /// Returns true only when every change was auto-approved.
-    /// Returns false when anything else came back (pending, rejected, unrecognised, or no verdicts at all).
+    /// <see cref="ApprovalsOutcome.AllAutoApproved"/> is true only when every change was auto-approved, and false when
+    /// anything else came back (pending, rejected, unrecognised, or no verdicts at all).
     /// Pending and rejected are deliberately not distinguished: both are simply a lack of approval.
+    /// The response is returned as well so that the caller can echo it back as an event.
     /// Throws if Approvals could not be reached or returned an error.
     /// </summary>
-    Task<bool> RequestApproval(long ukprn, long uln, BaseLearnerApiPutResponse learningApiPutResponse);
+    Task<ApprovalsOutcome> RequestApproval(long ukprn, long uln, BaseLearnerApiPutResponse learningApiPutResponse);
 }
+
+/// <param name="AllAutoApproved">Whether every change in the response was auto-approved.</param>
+/// <param name="Response">What Approvals responded with, unmodified.</param>
+public record ApprovalsOutcome(bool AllAutoApproved, ApprovalsResponse Response);
 
 /// <summary>
 /// Asks Approvals whether a change detected on approved learning needs employer approval.
@@ -75,7 +80,7 @@ public class ApprovalsService : IApprovalsService
                 });
     }
 
-    public async Task<bool> RequestApproval(long ukprn, long uln, BaseLearnerApiPutResponse learningApiPutResponse)
+    public async Task<ApprovalsOutcome> RequestApproval(long ukprn, long uln, BaseLearnerApiPutResponse learningApiPutResponse)
     {
         var request = _requestBuilder.Build(ukprn, uln, learningApiPutResponse);
         LogRequest(request.Data);
@@ -107,7 +112,7 @@ public class ApprovalsService : IApprovalsService
         var allAutoApproved = AreAllAutoApproved(apiResponse.Body);
         LogOutcome(request.Data, apiResponse.Body, allAutoApproved);
 
-        return allAutoApproved;
+        return new ApprovalsOutcome(allAutoApproved, apiResponse.Body ?? new ApprovalsResponse());
     }
 
     private static bool AreAllAutoApproved(ApprovalsResponse? response)

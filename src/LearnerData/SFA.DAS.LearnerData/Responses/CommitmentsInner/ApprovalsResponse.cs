@@ -13,4 +13,5 @@ public class ApprovalsChangeResult
     public string ChangeType { get; set; } = string.Empty;
     public string ApprovalStatus { get; set; } = string.Empty;
     public string? Reason { get; set; }
+    public ApprovalsChangeData? Data { get; set; }
 }

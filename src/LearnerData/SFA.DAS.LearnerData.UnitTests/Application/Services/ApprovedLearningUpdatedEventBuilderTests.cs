@@ -1,5 +1,6 @@
-using System.Text.Json.Nodes;
 using SFA.DAS.Common.Domain.Types;
+using SFA.DAS.LearnerData.Requests.CommitmentsInner;
+using SFA.DAS.LearnerData.Responses.CommitmentsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
 
@@ -17,33 +18,46 @@ public class ApprovedLearningUpdatedEventBuilderTests
     }
 
     [Test]
-    public void Build_Should_Map_StartDate_Change_With_Old_And_New()
+    public void Build_Should_Identify_The_Learning_From_Our_Own_Response()
     {
         // Arrange
-        var response = new UpdateLearnerApiPutResponse
+        var learning = new UpdateLearnerApiPutResponse
         {
             LearningKey = Guid.NewGuid(),
             ApprovalsApprenticeshipId = 65472475,
-            LearningType = LearningType.FoundationApprenticeship,
-            ChangeDetails =
+            LearningType = LearningType.FoundationApprenticeship
+        };
+
+        // Act
+        var result = _sut.Build(learning, new ApprovalsResponse());
+
+        // Assert
+        result.LearningKey.Should().Be(learning.LearningKey);
+        result.ApprenticeshipId.Should().Be(65472475);
+        result.LearningType.Should().Be("FoundationApprenticeship");
+    }
+
+    [Test]
+    public void Build_Should_Echo_Each_Change_Approvals_Responded_With()
+    {
+        // Arrange
+        var approvals = new ApprovalsResponse
+        {
+            Changes =
             [
-                new BaseLearnerApiPutResponse.ChangeDetail
+                new ApprovalsChangeResult
                 {
-                    ChangeType = BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate,
-                    Old = JsonValue.Create("2026-09-01"),
-                    New = JsonValue.Create("2026-09-15"),
-                    RequiresApproval = true
+                    ChangeType = "StartDate",
+                    ApprovalStatus = "autoApproved",
+                    Data = new ApprovalsChangeData { Old = "2026-09-01", New = "2026-09-15" }
                 }
             ]
         };
 
         // Act
-        var result = _sut.Build(response);
+        var result = _sut.Build(new UpdateLearnerApiPutResponse(), approvals);
 
         // Assert
-        result.LearningKey.Should().Be(response.LearningKey);
-        result.ApprenticeshipId.Should().Be(65472475);
-        result.LearningType.Should().Be("foundationapprenticeship");
         result.Changes.Should().ContainSingle();
         result.Changes[0].ChangeType.Should().Be("StartDate");
         result.Changes[0].Data.Old.Should().Be("2026-09-01");
@@ -51,54 +65,45 @@ public class ApprovedLearningUpdatedEventBuilderTests
     }
 
     [Test]
-    public void Build_Should_Not_Include_Changes_That_Did_Not_Require_Approval()
+    public void Build_Should_Echo_Every_Change_Approvals_Sent_Not_Only_Those_We_Asked_About()
     {
         // Arrange
-        var response = new UpdateLearnerApiPutResponse
+        var approvals = new ApprovalsResponse
         {
-            ChangeDetails =
+            Changes =
             [
-                new BaseLearnerApiPutResponse.ChangeDetail
-                {
-                    ChangeType = BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate,
-                    Old = JsonValue.Create("2026-09-01"),
-                    New = JsonValue.Create("2026-09-15"),
-                    RequiresApproval = false
-                }
+                new ApprovalsChangeResult { ChangeType = "StartDate", ApprovalStatus = "autoApproved", Data = new ApprovalsChangeData { Old = "a", New = "b" } },
+                new ApprovalsChangeResult { ChangeType = "Firstname", ApprovalStatus = "autoApproved", Data = new ApprovalsChangeData { Old = "c", New = "d" } }
             ]
         };
 
         // Act
-        var result = _sut.Build(response);
+        var result = _sut.Build(new UpdateLearnerApiPutResponse(), approvals);
 
         // Assert
-        result.Changes.Should().BeEmpty();
+        result.Changes.Select(x => x.ChangeType).Should().Equal("StartDate", "Firstname");
     }
 
     [Test]
-    public void Build_Should_Send_Empty_Strings_When_Old_Or_New_Is_Missing()
+    public void Build_Should_Send_Empty_Strings_When_Old_New_Or_Data_Is_Missing()
     {
         // Arrange
-        var response = new UpdateLearnerApiPutResponse
+        var approvals = new ApprovalsResponse
         {
-            ChangeDetails =
+            Changes =
             [
-                new BaseLearnerApiPutResponse.ChangeDetail
-                {
-                    ChangeType = BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate,
-                    Old = null,
-                    New = JsonValue.Create("2026-09-15"),
-                    RequiresApproval = true
-                }
+                new ApprovalsChangeResult { ChangeType = "StartDate", ApprovalStatus = "autoApproved", Data = new ApprovalsChangeData { Old = null, New = "2026-09-15" } },
+                new ApprovalsChangeResult { ChangeType = "Firstname", ApprovalStatus = "autoApproved", Data = null }
             ]
         };
 
         // Act
-        var result = _sut.Build(response);
+        var result = _sut.Build(new UpdateLearnerApiPutResponse(), approvals);
 
         // Assert
-        result.Changes.Should().ContainSingle();
         result.Changes[0].Data.Old.Should().BeEmpty();
         result.Changes[0].Data.New.Should().Be("2026-09-15");
+        result.Changes[1].Data.Old.Should().BeEmpty();
+        result.Changes[1].Data.New.Should().BeEmpty();
     }
 }
