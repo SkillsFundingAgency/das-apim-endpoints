@@ -27,6 +27,14 @@ public abstract class BaseLearnerApiPutResponse
     public Guid LearningEpisodeKey { get; set; }
     public long ApprovalsApprenticeshipId { get; set; }
     public bool IsApproved { get; set; }
+
+    /// <summary>
+    /// The persisted marker on the episode after the update: true while any change is still awaiting approval, whether
+    /// it was raised by this update or an earlier one. Distinct from <see cref="ChangeDetail.RequiresApproval"/>, which
+    /// only describes the changes made by this update.
+    /// </summary>
+    public bool FurtherApprovalNeeded { get; set; }
+
     public LearningType LearningType { get; set; }
     public List<EpisodePrice> Prices { get; set; } = [];
 

@@ -48,6 +48,8 @@ public class WhenHandlingUpdateLearnerCommand
     {
         _fixture = new Fixture();
         _fixture.Customize(new JsonNodeCustomization());
+        // Otherwise a random true would stop Earnings being updated in tests that are not about further approval
+        _fixture.Customize<UpdateLearnerApiPutResponse>(x => x.With(r => r.FurtherApprovalNeeded, false));
         _learningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _earningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
         _updateLearningPutRequestBuilder = new Mock<IUpdateLearningPutRequestBuilder>();
@@ -617,6 +619,33 @@ public class WhenHandlingUpdateLearnerCommand
     }
 
     [Test]
+    public async Task Then_Earnings_Is_Still_Updated_And_The_Failure_Logged_If_Publishing_ApprovedLearningUpdatedEvent_Throws()
+    {
+        // Arrange
+        var (command, learningResponse) = ArrangeStartDateChange();
+        _messageSession
+            .Setup(x => x.Publish(It.IsAny<ApprovedLearningUpdatedEvent>(), It.IsAny<PublishOptions>()))
+            .ThrowsAsync(new InvalidOperationException("service bus is down"));
+
+        // Act
+        Func<Task> act = async () => await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        await act.Should().NotThrowAsync();
+        _earningsApiClient.Verify(x => x.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Once);
+
+        // The log must identify the learning well enough for the event to be republished by hand
+        _logger.Verify(x => x.Log(
+            LogLevel.Error,
+            It.IsAny<EventId>(),
+            It.Is<It.IsAnyType>((state, _) =>
+                state.ToString()!.Contains(learningResponse.LearningKey.ToString()) &&
+                state.ToString()!.Contains(learningResponse.ApprovalsApprenticeshipId.ToString())),
+            It.IsAny<InvalidOperationException>(),
+            It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
+    }
+
+    [Test]
     public async Task Then_Approvals_Is_Not_Asked_And_Earnings_Is_Updated_If_Learning_Says_Further_Approval_Is_Not_Needed()
     {
         // Arrange
@@ -629,6 +658,25 @@ public class WhenHandlingUpdateLearnerCommand
         _approvalsService.VerifyNoOtherCalls();
         _learningApiClient.Verify(x => x.PostWithResponseCode<object>(It.IsAny<ClearFurtherApprovalNeededApiPostRequest>(), It.IsAny<bool>()), Times.Never);
         _earningsApiClient.Verify(x => x.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Once);
+    }
+
+    [Test]
+    public async Task Then_Earnings_Is_Not_Updated_If_An_Earlier_Change_Is_Still_Awaiting_Approval()
+    {
+        // Arrange: this update is a withdrawal that needs no approval, but the episode is still flagged from an earlier one
+        var (command, learningResponse) = ArrangeStartDateChange(
+            needsFurtherApproval: false,
+            changes: [UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal]);
+        learningResponse.ChangeDetails.Single().ChangeType = UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal;
+        learningResponse.FurtherApprovalNeeded = true;
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _earningsApiClient.VerifyNoOtherCalls();
+        _approvalsService.VerifyNoOtherCalls();
+        _learningApiClient.Verify(x => x.PostWithResponseCode<object>(It.IsAny<ClearFurtherApprovalNeededApiPostRequest>(), It.IsAny<bool>()), Times.Never);
     }
 
     [Test]
@@ -742,6 +790,8 @@ public class WhenHandlingUpdateLearnerCommand
                 RequiresApproval = needsFurtherApproval
             }
         ];
+        // Learning sets the persisted flag when it reports a change that requires approval
+        learningResponse.FurtherApprovalNeeded = needsFurtherApproval;
         learningResponse.Changes.Clear();
         learningResponse.Changes.AddRange(changes ??
         [
