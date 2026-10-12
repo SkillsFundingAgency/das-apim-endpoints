@@ -21,6 +21,8 @@ namespace SFA.DAS.Approvals.Enums
         [Description("Changes declined")]
         ChangesDeclined = 6,
         [Description("ILR changes pending")]
-        IlrChangesPending = 7
+        IlrChangesPending = 7,
+        [Description("View changes")]
+        ViewChanges = 8
     }
 }
