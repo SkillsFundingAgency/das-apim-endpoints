@@ -2,6 +2,7 @@ using AutoFixture;
 using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.Common.Domain.Types;
+using SFA.DAS.Learning.Types;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
@@ -125,6 +126,27 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
 
         // The old value comes from Learning's change detail, and appears nowhere else in the body
         entry.RequestMessage.Body.Should().Contain("2026-09-01");
+    }
+
+    [Then(@"an ApprovedLearningUpdatedEvent is published for the start date change")]
+    public void ThenAnApprovedLearningUpdatedEventIsPublishedForTheStartDateChange()
+    {
+        var response = scenarioContext.Get<UpdateLearnerApiPutResponse>();
+
+        var evt = StubMessageSession.PublishedMessages.OfType<ApprovedLearningUpdatedEvent>().Should().ContainSingle().Subject;
+
+        evt.LearningKey.Should().Be(response.LearningKey);
+        evt.ApprenticeshipId.Should().Be(response.ApprovalsApprenticeshipId);
+        var change = evt.Changes.Should().ContainSingle().Subject;
+        change.ChangeType.Should().Be("StartDate");
+        change.Data.Old.Should().Be("2026-09-01");
+        change.Data.New.Should().Be("2026-09-15");
+    }
+
+    [Then(@"no ApprovedLearningUpdatedEvent is published")]
+    public void ThenNoApprovedLearningUpdatedEventIsPublished()
+    {
+        StubMessageSession.PublishedMessages.Should().NotContain(m => m is ApprovedLearningUpdatedEvent);
     }
 
     [Then(@"Approvals is not asked about the change")]

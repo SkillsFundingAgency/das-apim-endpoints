@@ -131,6 +131,7 @@ Scenario: Start date change that Approvals auto-approves
 	When the learner is updated
 	Then Approvals is asked about the start date change
 	And further approval needed is cleared in the learning domain
+	And an ApprovedLearningUpdatedEvent is published for the start date change
 	And a on-programme update request is sent to the earnings domain
 	And sld data is stored to the cache
 
@@ -142,6 +143,7 @@ Scenario: Start date change that Approvals does not auto-approve
 	When the learner is updated
 	Then Approvals is asked about the start date change
 	And further approval needed is not cleared in the learning domain
+	And no ApprovedLearningUpdatedEvent is published
 	And no update request is sent to the earnings domain
 	And sld data is stored to the cache
 
@@ -152,4 +154,5 @@ Scenario: Change that does not need further approval does not ask Approvals
 	When the learner is updated
 	Then Approvals is not asked about the change
 	And further approval needed is not cleared in the learning domain
+	And no ApprovedLearningUpdatedEvent is published
 	And a on-programme update request is sent to the earnings domain

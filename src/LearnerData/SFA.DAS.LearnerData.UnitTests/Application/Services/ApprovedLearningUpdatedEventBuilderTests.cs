@@ -74,4 +74,31 @@ public class ApprovedLearningUpdatedEventBuilderTests
         // Assert
         result.Changes.Should().BeEmpty();
     }
+
+    [Test]
+    public void Build_Should_Send_Empty_Strings_When_Old_Or_New_Is_Missing()
+    {
+        // Arrange
+        var response = new UpdateLearnerApiPutResponse
+        {
+            ChangeDetails =
+            [
+                new BaseLearnerApiPutResponse.ChangeDetail
+                {
+                    ChangeType = BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate,
+                    Old = null,
+                    New = JsonValue.Create("2026-09-15"),
+                    RequiresApproval = true
+                }
+            ]
+        };
+
+        // Act
+        var result = _sut.Build(response);
+
+        // Assert
+        result.Changes.Should().ContainSingle();
+        result.Changes[0].Data.Old.Should().BeEmpty();
+        result.Changes[0].Data.New.Should().Be("2026-09-15");
+    }
 }
