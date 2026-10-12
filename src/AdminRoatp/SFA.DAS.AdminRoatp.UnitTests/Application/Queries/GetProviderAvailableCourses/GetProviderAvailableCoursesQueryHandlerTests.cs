@@ -50,8 +50,7 @@ public class GetProviderAvailableCoursesQueryHandlerTests
                     Title: "TestTitle1",
                     Level: 1,
                     LastDateStarts: null,
-                    IsStartRestricted: false,
-                    IsActive: false
+                    IsClosedToNewStarts: false
                 )
             });
 

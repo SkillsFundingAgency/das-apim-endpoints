@@ -33,7 +33,7 @@ public class GetAllRestrictedCoursesQueryHandlerTests
     }
 
     [Test, MoqAutoData]
-    public async Task WhenHandlingRequestAndApiReturnsEmptyResponse_ThenReturnsEmptySet(
+    public async Task WhenHandlingRequest_AndApiReturnsEmptyResponse_ThenReturnsEmptySet(
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
         GetAllRestrictedCoursesQuery query,
         GetAllRestrictedCoursesQueryHandler sut)
@@ -50,7 +50,7 @@ public class GetAllRestrictedCoursesQueryHandlerTests
     }
 
     [Test, MoqAutoData]
-    public void WhenHandlingRequestAndApiReturnsInvalidResponseCode_ThenThrowsApiResponseException(
+    public void WhenHandlingRequest_AndApiReturnsInvalidResponseCode_ThenThrowsApiResponseException(
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
         GetAllRestrictedCoursesQuery query,
         GetAllRestrictedCoursesQueryHandler sut)

@@ -12,7 +12,7 @@ public class GetUserResponse
     public required string Name { get; set; }
     public required string Email { get; set; }
     public DateTime CreatedDate { get; set; }
-    public DateTime LastSignedInDate { get; set; }
+    public DateTime? LastSignedInDate { get; set; }
     public IList<long> EmployerAccountIds { get; set; } = new List<long>();
     public long? Ukprn { get; set; }
     public DateTime? TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn { get; set; }
