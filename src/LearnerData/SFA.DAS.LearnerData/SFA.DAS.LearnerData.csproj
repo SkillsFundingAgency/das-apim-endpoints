@@ -19,6 +19,7 @@
     <PackageReference Include="Polly" Version="8.5.2" />
     <PackageReference Include="StackExchange.Redis" Version="2.7.27" />
     <PackageReference Include="SFA.DAS.AcademicYearService" Version="17.1.147" />
+    <PackageReference Include="SFA.DAS.Learning.Types" Version="8.15.81-prerelease-36" />
     <PackageReference Include="SFA.DAS.Payments.EarningEvents.Messages.External" Version="2.0.8-prerelease-9" />
   </ItemGroup>
 

@@ -45,5 +45,6 @@ public class AddServicesTests
     public void ThenTheApprovalsRequestBuilderCanBeResolved()
     {
         _provider.GetRequiredService<IApprovalsRequestBuilder>().Should().BeOfType<ApprovalsRequestBuilder>();
+        _provider.GetRequiredService<IApprovedLearningUpdatedEventBuilder>().Should().BeOfType<ApprovedLearningUpdatedEventBuilder>();
     }
 }

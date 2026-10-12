@@ -9,6 +9,7 @@ using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
+using SFA.DAS.Learning.Types;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using SFA.DAS.Apim.Shared.Models;
@@ -30,6 +31,7 @@ public class WhenHandlingUpdateLearnerCommand
     private Mock<IUpdateEarningsOnProgrammeRequestBuilder> _updateEarningsOnProgrammeRequestBuilder;
     private Mock<IUpdateEarningsEnglishAndMathsRequestBuilder> _updateEarningsEnglishAndMathsRequestBuilder;
     private Mock<IApprovalsService> _approvalsService;
+    private Mock<IApprovedLearningUpdatedEventBuilder> _approvedLearningUpdatedEventBuilder;
     private Mock<ILearnerDataCacheService> _distributedCache;
     private Mock<ILogger<UpdateLearnerCommandHandler>> _logger;
     private Mock<IMessageSession> _messageSession;
@@ -51,6 +53,7 @@ public class WhenHandlingUpdateLearnerCommand
         _updateEarningsOnProgrammeRequestBuilder = new Mock<IUpdateEarningsOnProgrammeRequestBuilder>();
         _updateEarningsEnglishAndMathsRequestBuilder = new Mock<IUpdateEarningsEnglishAndMathsRequestBuilder>();
         _approvalsService = new Mock<IApprovalsService>();
+        _approvedLearningUpdatedEventBuilder = new Mock<IApprovedLearningUpdatedEventBuilder>();
         _distributedCache = new Mock<ILearnerDataCacheService>();
         _logger = new Mock<ILogger<UpdateLearnerCommandHandler>>();
         _messageSession = new Mock<IMessageSession>();
@@ -66,6 +69,7 @@ public class WhenHandlingUpdateLearnerCommand
             _updateEarningsOnProgrammeRequestBuilder.Object,
             _updateEarningsEnglishAndMathsRequestBuilder.Object,
             _approvalsService.Object,
+            _approvedLearningUpdatedEventBuilder.Object,
             _distributedCache.Object,
             _messageSession.Object,
             _approvedApprenticeshipExistsChecker.Object,
@@ -80,6 +84,10 @@ public class WhenHandlingUpdateLearnerCommand
         _approvalsService
             .Setup(x => x.RequestApproval(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<BaseLearnerApiPutResponse>()))
             .ReturnsAsync(true);
+
+        _approvedLearningUpdatedEventBuilder
+            .Setup(x => x.Build(It.IsAny<BaseLearnerApiPutResponse>()))
+            .Returns(_fixture.Create<ApprovedLearningUpdatedEvent>());
 
         _learningApiClient
             .Setup(x => x.PostWithResponseCode<object>(It.IsAny<ClearFurtherApprovalNeededApiPostRequest>(), false))
@@ -575,6 +583,32 @@ public class WhenHandlingUpdateLearnerCommand
     }
 
     [Test]
+    public async Task Then_ApprovedLearningUpdatedEvent_Is_Published_After_FurtherApprovalNeeded_Is_Cleared()
+    {
+        // Arrange
+        var (command, learningResponse) = ArrangeStartDateChange();
+        var evt = _fixture.Create<ApprovedLearningUpdatedEvent>();
+        var calls = new List<string>();
+
+        _approvedLearningUpdatedEventBuilder.Setup(x => x.Build(learningResponse)).Returns(evt);
+        _learningApiClient
+            .Setup(x => x.PostWithResponseCode<object>(It.IsAny<ClearFurtherApprovalNeededApiPostRequest>(), false))
+            .Callback(() => calls.Add("clear"))
+            .ReturnsAsync(new ApiResponse<object>(null!, HttpStatusCode.NoContent, string.Empty));
+        _messageSession
+            .Setup(x => x.Publish(evt, It.IsAny<PublishOptions>()))
+            .Callback(() => calls.Add("publish"))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _messageSession.Verify(x => x.Publish(evt, It.IsAny<PublishOptions>()), Times.Once);
+        calls.Should().Equal("clear", "publish");
+    }
+
+    [Test]
     public async Task Then_Approvals_Is_Not_Asked_And_Earnings_Is_Updated_If_Learning_Says_Further_Approval_Is_Not_Needed()
     {
         // Arrange
@@ -622,6 +656,67 @@ public class WhenHandlingUpdateLearnerCommand
         // Assert
         _earningsApiClient.Verify(x => x.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Once);
         VerifyErrorLogged(learningResponse);
+    }
+
+    [Test]
+    public async Task Then_ApprovedLearningUpdatedEvent_Is_Not_Published_If_Approval_Is_Not_Granted()
+    {
+        // Arrange
+        var (command, _) = ArrangeStartDateChange();
+        _approvalsService
+            .Setup(x => x.RequestApproval(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<BaseLearnerApiPutResponse>()))
+            .ReturnsAsync(false);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _messageSession.Verify(x => x.Publish(It.IsAny<ApprovedLearningUpdatedEvent>(), It.IsAny<PublishOptions>()), Times.Never);
+    }
+
+    [Test]
+    public async Task Then_ApprovedLearningUpdatedEvent_Is_Not_Published_If_Learning_Says_Further_Approval_Is_Not_Needed()
+    {
+        // Arrange
+        var (command, _) = ArrangeStartDateChange(needsFurtherApproval: false);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _messageSession.Verify(x => x.Publish(It.IsAny<ApprovedLearningUpdatedEvent>(), It.IsAny<PublishOptions>()), Times.Never);
+    }
+
+    [Test]
+    public async Task Then_ApprovedLearningUpdatedEvent_Is_Not_Published_If_Clearing_FurtherApprovalNeeded_Throws()
+    {
+        // Arrange
+        var (command, _) = ArrangeStartDateChange();
+        _learningApiClient
+            .Setup(x => x.PostWithResponseCode<object>(It.IsAny<ClearFurtherApprovalNeededApiPostRequest>(), false))
+            .ThrowsAsync(new HttpRequestException("learning is down"));
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _messageSession.Verify(x => x.Publish(It.IsAny<ApprovedLearningUpdatedEvent>(), It.IsAny<PublishOptions>()), Times.Never);
+    }
+
+    [Test]
+    public async Task Then_ApprovedLearningUpdatedEvent_Is_Not_Published_If_Clearing_FurtherApprovalNeeded_Returns_An_Error_Status()
+    {
+        // Arrange
+        var (command, _) = ArrangeStartDateChange();
+        _learningApiClient
+            .Setup(x => x.PostWithResponseCode<object>(It.IsAny<ClearFurtherApprovalNeededApiPostRequest>(), false))
+            .ReturnsAsync(new ApiResponse<object>(null!, HttpStatusCode.NotFound, "not found"));
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _messageSession.Verify(x => x.Publish(It.IsAny<ApprovedLearningUpdatedEvent>(), It.IsAny<PublishOptions>()), Times.Never);
     }
 
     private (UpdateLearnerCommand Command, UpdateLearnerApiPutResponse LearningResponse) ArrangeStartDateChange(

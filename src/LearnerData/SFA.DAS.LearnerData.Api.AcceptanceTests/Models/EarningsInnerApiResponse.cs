@@ -5,6 +5,8 @@ using SFA.DAS.LearnerData.Responses.LearningInner;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 
+using Learning = SFA.DAS.LearnerData.Responses.LearningInner.Learning;
+
 public class InnerApiResponses
 {
     public List<GetPagedLearnersFromLearningInner> PagedLearningsInnerApiResponse { get; set; } = new();

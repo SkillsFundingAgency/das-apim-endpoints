@@ -8,6 +8,8 @@ using static SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers.GetFm36Q
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36;
 
+using Learning = SFA.DAS.LearnerData.Responses.LearningInner.Learning;
+
 public class WhenHandlingGetFm36Query
 {
 #pragma warning disable CS8618 // initialised in setup

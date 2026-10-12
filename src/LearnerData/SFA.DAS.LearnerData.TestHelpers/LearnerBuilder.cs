@@ -9,6 +9,8 @@ using LearningInnerEpisodePrice = SFA.DAS.LearnerData.Responses.LearningInner.Ep
 
 namespace SFA.DAS.LearnerData.TestHelpers;
 
+using Learning = SFA.DAS.LearnerData.Responses.LearningInner.Learning;
+
 public static class LearnerBuilder
 {
     // Concrete implementation to allow usage of the builder methods.

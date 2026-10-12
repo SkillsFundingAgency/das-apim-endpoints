@@ -24,6 +24,7 @@ public class UpdateLearnerCommandHandler(
     IUpdateEarningsOnProgrammeRequestBuilder updateEarningsOnProgrammeRequestBuilder,
     IUpdateEarningsEnglishAndMathsRequestBuilder updateEarningsEnglishAndMathsRequestBuilder,
     IApprovalsService approvalsService,
+    IApprovedLearningUpdatedEventBuilder approvedLearningUpdatedEventBuilder,
     ILearnerDataCacheService learnerDataCacheService,
     IMessageSession messageSession,
     IApprovedApprenticeshipExistsChecker approvedApprenticeshipExistsChecker,
@@ -70,9 +71,9 @@ public class UpdateLearnerCommandHandler(
             }
             else
             {
-                if (needsFurtherApproval)
+                if (needsFurtherApproval && await ClearFurtherApprovalNeeded(learningApiPutResponse))
                 {
-                    await ClearFurtherApprovalNeeded(learningApiPutResponse);
+                    await messageSession.Publish(approvedLearningUpdatedEventBuilder.Build(learningApiPutResponse));
                 }
 
                 var releaseEarnings = false;
@@ -125,8 +126,9 @@ public class UpdateLearnerCommandHandler(
     /// Learning flags the episode as FurtherApprovalNeeded when an update needs further approval. Now that Approvals has
     /// auto-approved the change, clear it. A failure is logged and swallowed: Approvals has approved, so Earnings must
     /// still be updated, and throwing would also skip the LearnerDataEvent publishing that follows.
+    /// Returns whether the flag was cleared.
     /// </summary>
-    private async Task ClearFurtherApprovalNeeded(BaseLearnerApiPutResponse learningApiPutResponse)
+    private async Task<bool> ClearFurtherApprovalNeeded(BaseLearnerApiPutResponse learningApiPutResponse)
     {
         try
         {
@@ -138,12 +140,16 @@ public class UpdateLearnerCommandHandler(
             {
                 logger.LogError("Change was auto-approved for learning {LearningKey}, episode {EpisodeKey}, but clearing FurtherApprovalNeeded failed with status {StatusCode}. The flag is still set",
                     learningApiPutResponse.LearningKey, learningApiPutResponse.LearningEpisodeKey, response.StatusCode);
+                return false;
             }
+
+            return true;
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Change was auto-approved for learning {LearningKey}, episode {EpisodeKey}, but clearing FurtherApprovalNeeded failed. The flag is still set",
                 learningApiPutResponse.LearningKey, learningApiPutResponse.LearningEpisodeKey);
+            return false;
         }
     }
 
