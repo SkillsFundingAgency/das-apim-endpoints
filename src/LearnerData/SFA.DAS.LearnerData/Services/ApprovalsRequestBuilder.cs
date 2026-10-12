@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text.Json.Nodes;
 using SFA.DAS.LearnerData.Requests.CommitmentsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 
@@ -22,31 +23,41 @@ public class ApprovalsRequestBuilder : IApprovalsRequestBuilder
             Uln = uln.ToString(CultureInfo.InvariantCulture)
         };
 
-        var startDateChanged = learningApiPutResponse.ChangesNeedingApproval.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
-        var pricesChanged = learningApiPutResponse.ChangesNeedingApproval.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.Prices);
+        var changesNeedingApproval = learningApiPutResponse.ChangeDetails.Where(x => x.RequiresApproval).ToList();
 
-        // The full price structure is sent whenever prices, or the start date that is derived from them, changed
-        if (startDateChanged || pricesChanged)
+        var startDateChange = changesNeedingApproval.FirstOrDefault(x => x.ChangeType == BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
+        var pricesChanged = changesNeedingApproval.Any(x => x.ChangeType == BaseLearnerApiPutResponse.LearningUpdateChanges.Prices);
+
+        // The full price structure is sent whenever prices, or the start date that is derived from them, changed.
+        // Prices are signalled to Approvals by this structure alone, never as an item in Changes.
+        if (startDateChange != null || pricesChanged)
         {
             body.NewPrices = learningApiPutResponse.Prices.Select(ToApprovalsPrice).ToList();
         }
 
-        if (startDateChanged)
+        if (startDateChange != null)
         {
             body.Changes.Add(new ApprovalsFieldChange
             {
                 ChangeType = ApprovalsChangeTypes.StartDate,
                 Data = new ApprovalsChangeData
                 {
-                    // Old is deliberately not sent: Approvals holds the approved record, and learning does not
-                    Old = null,
-                    New = learningApiPutResponse.Prices.Min(x => x.StartDate).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
+                    // Old is Learning's last-held value, which can be an unapproved one after a pending or rejected
+                    // change. Approvals keeps the first Old of a pending request, so this is accepted.
+                    Old = ToWireValue(startDateChange.Old),
+                    New = ToWireValue(startDateChange.New)
                 }
             });
         }
 
         return new PutApprovalsApiRequest(learningApiPutResponse.LearningKey, body);
     }
+
+    // Scalars (dates are already yyyy-MM-dd strings) go to Approvals as strings
+    private static string? ToWireValue(JsonNode? value) =>
+        value is JsonValue jsonValue && jsonValue.TryGetValue<string>(out var text)
+            ? text
+            : value?.ToJsonString();
 
     private static ApprovalsPrice ToApprovalsPrice(BaseLearnerApiPutResponse.EpisodePrice price) => new()
     {

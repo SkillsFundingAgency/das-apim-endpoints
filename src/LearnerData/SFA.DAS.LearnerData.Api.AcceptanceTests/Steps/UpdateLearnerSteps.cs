@@ -122,6 +122,9 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
             .ContainSingle(x => x.RequestMessage.Method == "PUT" && x.RequestMessage.Url.Contains($"/approvals/{learningKey}")).Subject;
 
         entry.RequestMessage.Body.Should().Contain("StartDate");
+
+        // The old value comes from Learning's change detail, and appears nowhere else in the body
+        entry.RequestMessage.Body.Should().Contain("2026-09-01");
     }
 
     [Then(@"Approvals is not asked about the change")]
@@ -300,7 +303,9 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         .RespondWith(
             Response.Create()
             .WithStatusCode(HttpStatusCode.OK)
-            .WithBodyAsJson(response)
+            .WithHeader("Content-Type", "application/json")
+            // System.Text.Json, not WithBodyAsJson (Newtonsoft): the response holds JsonNode values in its change details
+            .WithBody(System.Text.Json.JsonSerializer.Serialize(response))
         );
 
         var approvalCheckStatusCode = scenarioContext.TryGetValue(ApprovalCheckStatusCodeKey, out HttpStatusCode explicitStatusCode)
@@ -327,7 +332,16 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         response.LearningEpisodeKey = Guid.NewGuid();
         response.ApprovalsApprenticeshipId = 12345;
         response.IsApproved = true;
-        response.ChangesNeedingApproval = [UpdateLearnerApiPutResponse.LearningUpdateChanges.StartDate];
+        response.ChangeDetails =
+        [
+            new UpdateLearnerApiPutResponse.ChangeDetail
+            {
+                ChangeType = UpdateLearnerApiPutResponse.LearningUpdateChanges.StartDate,
+                Old = System.Text.Json.Nodes.JsonValue.Create("2026-09-01"),
+                New = System.Text.Json.Nodes.JsonValue.Create("2026-09-15"),
+                RequiresApproval = true
+            }
+        ];
         response.LearningType = LearningType.Apprenticeship;
         response.Prices =
         [

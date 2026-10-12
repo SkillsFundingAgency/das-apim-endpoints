@@ -57,7 +57,7 @@ public class UpdateLearnerCommandHandler(
             logger.LogInformation("Learner with key {LearnerKey} updated successfully. Changes: {@Changes}",
                 command.LearnerKey, string.Join(", ", learningApiPutResponse));
 
-            var needsFurtherApproval = learningApiPutResponse.ChangesNeedingApproval.Count > 0;
+            var needsFurtherApproval = learningApiPutResponse.ChangeDetails.Any(x => x.RequiresApproval);
 
             if (learningApiPutResponse.Changes.Count == 0 || learningApiPutResponse.Changes.HasPersonalDetailsOnly())
             {

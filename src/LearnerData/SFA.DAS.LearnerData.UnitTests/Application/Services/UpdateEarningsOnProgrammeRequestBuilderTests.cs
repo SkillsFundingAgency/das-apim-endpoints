@@ -14,7 +14,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 [TestFixture]
 public class UpdateEarningsOnProgrammeRequestBuilderTests
 {
-    private readonly Fixture _fixture = new();
+    private readonly IFixture _fixture = new Fixture().Customize(new JsonNodeCustomization());
     private Mock<ICourseService> _courseService;
     private UpdateEarningsOnProgrammeRequestBuilder _sut;
 

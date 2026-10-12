@@ -1,3 +1,4 @@
+using System.Text.Json.Nodes;
 using SFA.DAS.Common.Domain.Types;
 using SFA.DAS.LearnerData.Requests.CommitmentsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
@@ -31,7 +32,20 @@ public class ApprovalsRequestBuilderTests
                 BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate,
                 BaseLearnerApiPutResponse.LearningUpdateChanges.Prices
             ],
-            ChangesNeedingApproval = [BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate],
+            ChangeDetails =
+            [
+                new BaseLearnerApiPutResponse.ChangeDetail
+                {
+                    ChangeType = BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate,
+                    Old = JsonValue.Create("2026-09-01"),
+                    New = JsonValue.Create("2026-09-15"),
+                    RequiresApproval = true
+                },
+                new BaseLearnerApiPutResponse.ChangeDetail
+                {
+                    ChangeType = BaseLearnerApiPutResponse.LearningUpdateChanges.Prices
+                }
+            ],
             Prices =
             [
                 new BaseLearnerApiPutResponse.EpisodePrice
@@ -69,7 +83,7 @@ public class ApprovalsRequestBuilderTests
         body.Changes.Should().ContainSingle();
         var change = body.Changes.Single();
         change.ChangeType.Should().Be("StartDate");
-        change.Data.Old.Should().BeNull();
+        change.Data.Old.Should().Be("2026-09-01");
         change.Data.New.Should().Be("2026-09-15");
 
         body.NewPrices.Should().BeEquivalentTo(
@@ -112,7 +126,7 @@ public class ApprovalsRequestBuilderTests
     {
         // Arrange
         var response = ResponseWith(BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
-        response.ChangesNeedingApproval = [];
+        response.ChangeDetails.ForEach(x => x.RequiresApproval = false);
 
         // Act
         var result = _sut.Build(10001234, 9999999999, response);
@@ -129,7 +143,9 @@ public class ApprovalsRequestBuilderTests
         IsApproved = true,
         LearningType = LearningType.Apprenticeship,
         Changes = [.. changes],
-        ChangesNeedingApproval = [.. changes],
+        ChangeDetails = changes
+            .Select(x => new BaseLearnerApiPutResponse.ChangeDetail { ChangeType = x, RequiresApproval = true })
+            .ToList(),
         Prices =
         [
             new BaseLearnerApiPutResponse.EpisodePrice

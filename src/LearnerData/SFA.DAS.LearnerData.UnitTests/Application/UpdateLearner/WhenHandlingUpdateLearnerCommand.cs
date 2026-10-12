@@ -44,6 +44,7 @@ public class WhenHandlingUpdateLearnerCommand
     public void Setup()
     {
         _fixture = new Fixture();
+        _fixture.Customize(new JsonNodeCustomization());
         _learningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _earningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
         _updateLearningPutRequestBuilder = new Mock<IUpdateLearningPutRequestBuilder>();
@@ -630,7 +631,14 @@ public class WhenHandlingUpdateLearnerCommand
         var command = _fixture.Create<UpdateLearnerCommand>();
 
         var learningResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
-        learningResponse.ChangesNeedingApproval = needsFurtherApproval ? [UpdateLearnerApiPutResponse.LearningUpdateChanges.StartDate] : [];
+        learningResponse.ChangeDetails =
+        [
+            new UpdateLearnerApiPutResponse.ChangeDetail
+            {
+                ChangeType = UpdateLearnerApiPutResponse.LearningUpdateChanges.StartDate,
+                RequiresApproval = needsFurtherApproval
+            }
+        ];
         learningResponse.Changes.Clear();
         learningResponse.Changes.AddRange(changes ??
         [

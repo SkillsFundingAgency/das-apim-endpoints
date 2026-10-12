@@ -1,4 +1,5 @@
 using System.Net;
+using System.Text.Json.Nodes;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Interfaces;
@@ -249,7 +250,16 @@ public class ApprovalsServiceTests
         IsApproved = isApproved,
         LearningType = LearningType.Apprenticeship,
         Changes = [.. changes],
-        ChangesNeedingApproval = [.. changes],
+        ChangeDetails = changes
+            .Select(x => new BaseLearnerApiPutResponse.ChangeDetail
+            {
+                ChangeType = x,
+                // Learning supplies the old and new start date; no other change type is mapped to a field change yet
+                Old = x == BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate ? JsonValue.Create("2026-09-01") : null,
+                New = x == BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate ? JsonValue.Create("2026-09-15") : null,
+                RequiresApproval = true
+            })
+            .ToList(),
         Prices =
         [
             new BaseLearnerApiPutResponse.EpisodePrice
