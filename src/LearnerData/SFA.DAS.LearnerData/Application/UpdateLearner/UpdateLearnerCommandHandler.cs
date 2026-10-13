@@ -165,10 +165,17 @@ public class UpdateLearnerCommandHandler(
 
     /// <summary>
     /// Echoes the approved changes back as an ApprovedLearningUpdatedEvent.
-    /// Failures are logged so that Earnings is still updated
+    /// Failures are logged and swallowed so that Earnings is still updated
     /// </summary>
     private async Task PublishApprovedLearningUpdatedEvent(BaseLearnerApiPutResponse learningApiPutResponse, ApprovalsResponse approvalsResponse)
     {
+        // Nb, this event belongs to Learning: it describes a change to approved learning. It is published here, by agreed
+        // design, because only the outer API holds the Approvals response at this point. A change approved later by the
+        // employer never passes through this handler, so it will need publishing from elsewhere.
+        // The event itself is also dishonest: it reads as Learning reporting what changed, but its changes and their old and
+        // new values are copied from Approvals' response and sent straight back to Approvals. It is defined as an event, but is a
+        // command in disguise, since it is really an instruction to Approvals to apply the change it has just auto-approved.
+
         try
         {
             await messageSession.Publish(approvedLearningUpdatedEventBuilder.Build(learningApiPutResponse, approvalsResponse));

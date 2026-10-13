@@ -165,7 +165,7 @@ public class ApprovalsServiceTests
     public async Task Should_Throw_When_Transient_Failures_Are_Exhausted()
     {
         var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
-        SetupResponses(Reply(HttpStatusCode.ServiceUnavailable, null, "approvals is down"));
+        SetupResponses(Enumerable.Repeat(Reply(HttpStatusCode.ServiceUnavailable, null, "service unavailable"), MaxAttempts).ToArray());
 
         var act = () => _sut.RequestApproval(10001234, 9999999999, response);
 
@@ -178,7 +178,7 @@ public class ApprovalsServiceTests
     public async Task Should_Not_Retry_A_Permanent_Failure()
     {
         var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
-        SetupResponses(Reply(HttpStatusCode.BadRequest, null, "ChangeType must be TNP1 or PlannedEndDate"));
+        SetupResponses(Reply(HttpStatusCode.BadRequest, null, "bad request"));
 
         var act = () => _sut.RequestApproval(10001234, 9999999999, response);
 
@@ -191,10 +191,13 @@ public class ApprovalsServiceTests
 
     private void SetupResponses(params ApiResponse<ApprovalsResponse>[] responses)
     {
-        // responses are returned in order, and the last one repeats for any further calls
-        var call = 0;
-        _client.Setup(x => x.PutWithResponseCode<ApprovalsRequestBody, ApprovalsResponse>(It.IsAny<IPutApiRequest<ApprovalsRequestBody>>()))
-            .ReturnsAsync(() => responses[Math.Min(call++, responses.Length - 1)]);
+        // responses are returned in order, one per call
+        var sequence = _client.SetupSequence(x => x.PutWithResponseCode<ApprovalsRequestBody, ApprovalsResponse>(It.IsAny<IPutApiRequest<ApprovalsRequestBody>>()));
+
+        foreach (var response in responses)
+        {
+            sequence = sequence.ReturnsAsync(response);
+        }
     }
 
     private void VerifyCalls(Times times) =>

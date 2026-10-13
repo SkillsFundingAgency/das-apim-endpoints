@@ -15,6 +15,7 @@ public abstract class BaseLearnerApiPutResponse
     /// <summary>
     /// The change types that were made. This is read from the wire as-is (not derived from <see cref="ChangeDetails"/>),
     /// so it is still populated when talking to a Learning API that does not yet return the details.
+    /// This field has been retained in order to reduce the blast-radius of moving everything across to ChangeDetails[]
     /// </summary>
     public List<LearningUpdateChanges> Changes { get; set; } = [];
 
