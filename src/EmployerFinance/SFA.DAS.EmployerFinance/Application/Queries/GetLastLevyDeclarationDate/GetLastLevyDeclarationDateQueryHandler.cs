@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System;
+using MediatR;
 using SFA.DAS.EmployerFinance.InnerApi.Requests.Finance;
 using SFA.DAS.EmployerFinance.InnerApi.Responses.Finance;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
@@ -16,6 +17,8 @@ public class GetLastLevyDeclarationDateQueryHandler(IFinanceApiClient<FinanceApi
         var response = await financeApiClient.Get<GetLevyLastSubmissionDateResponse>(
             new GetLevyLastSubmissionDateRequest(request.AccountId));
 
-        return new GetLastLevyDeclarationDateQueryResult(response.LastSubmissionDate);
+        return response?.LastSubmissionDate is null
+            ? new GetLastLevyDeclarationDateQueryResult(DateTime.MinValue) // return DateTime.MinValue if no submission date is found so that the calling code can handle it appropriately
+            : new GetLastLevyDeclarationDateQueryResult(response.LastSubmissionDate);
     }
 }
