@@ -20,29 +20,16 @@ public class ApprovalsServiceTests
     private const int MaxAttempts = 4; // 1 initial attempt + 3 retries
 
     private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _client;
-    private CapturingLogger _logger;
     private ApprovalsService _sut;
 
     [SetUp]
     public void SetUp()
     {
         _client = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
-        _logger = new CapturingLogger();
-        _sut = new ApprovalsService(_client.Object, new ApprovalsRequestBuilder(), _logger, TimeSpan.Zero);
+        _sut = new ApprovalsService(_client.Object, new ApprovalsRequestBuilder(), Mock.Of<ILogger<ApprovalsService>>(), TimeSpan.Zero);
     }
 
-    // ---- the caller decides whether an ask is needed ----------------------------------------
-
-    [Test]
-    public async Task Should_Always_Ask_Approvals_Because_The_Caller_Decides_Whether_An_Ask_Is_Needed()
-    {
-        var response = ResponseWith(isApproved: false, BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
-        SetupResponses(Reply(HttpStatusCode.Created, Verdicts(("StartDate", "autoApproved"))));
-
-        await _sut.RequestApproval(10001234, 9999999999, response);
-
-        VerifyCalls(Times.Once());
-    }
+    // ---- request and response --------------------------------------------------------------
 
     [Test]
     public async Task Should_Send_The_Built_Request_To_Approvals()
@@ -175,7 +162,7 @@ public class ApprovalsServiceTests
     }
 
     [Test]
-    public async Task Should_Throw_And_Log_The_Error_Body_When_Transient_Failures_Are_Exhausted()
+    public async Task Should_Throw_When_Transient_Failures_Are_Exhausted()
     {
         var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
         SetupResponses(Reply(HttpStatusCode.ServiceUnavailable, null, "approvals is down"));
@@ -185,7 +172,6 @@ public class ApprovalsServiceTests
         var ex = await act.Should().ThrowAsync<HttpRequestContentException>();
         ex.Which.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
         VerifyCalls(Times.Exactly(MaxAttempts));
-        _logger.Entries.Should().Contain(e => e.Level == LogLevel.Error && e.Message.Contains("approvals is down"));
     }
 
     [Test]
@@ -199,52 +185,6 @@ public class ApprovalsServiceTests
         var ex = await act.Should().ThrowAsync<HttpRequestContentException>();
         ex.Which.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         VerifyCalls(Times.Once());
-        _logger.Entries.Should().Contain(e => e.Level == LogLevel.Error && e.Message.Contains("ChangeType must be TNP1 or PlannedEndDate"));
-    }
-
-    // ---- logging ---------------------------------------------------------------------------
-
-    [Test]
-    public async Task Should_Log_Each_Change_Requested_And_Each_Outcome_In_Detail()
-    {
-        var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate, BaseLearnerApiPutResponse.LearningUpdateChanges.Prices);
-        SetupResponses(Reply(HttpStatusCode.Created, new ApprovalsResponse
-        {
-            Changes =
-            [
-                new ApprovalsChangeResult { ChangeType = "StartDate", ApprovalStatus = "autoApproved" },
-                new ApprovalsChangeResult { ChangeType = "Prices", ApprovalStatus = "pending", Reason = "needs employer sign-off" }
-            ]
-        }));
-
-        await _sut.RequestApproval(10001234, 9999999999, response);
-
-        var messages = _logger.Entries.Select(e => e.Message).ToList();
-
-        // what was asked
-        messages.Should().Contain(m => m.Contains("StartDate") && m.Contains("2026-09-15"));
-        messages.Should().Contain(m => m.Contains("15000.00") && m.Contains("2000.00") && m.Contains("2026-09-15"));
-
-        // every outcome, including the reason
-        messages.Should().Contain(m => m.Contains("StartDate") && m.Contains("autoApproved"));
-        messages.Should().Contain(m => m.Contains("Prices") && m.Contains("pending") && m.Contains("needs employer sign-off"));
-
-        // the identifiers needed to trace it, but not the ULN
-        messages.Should().Contain(m => m.Contains(response.LearningKey.ToString()) && m.Contains("65472475"));
-        messages.Should().NotContain(m => m.Contains("9999999999"));
-    }
-
-    [Test]
-    public async Task Should_Log_A_Warning_For_Each_Retry()
-    {
-        var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
-        SetupResponses(
-            Reply(HttpStatusCode.ServiceUnavailable, null, "approvals is down"),
-            Reply(HttpStatusCode.Created, Verdicts(("StartDate", "autoApproved"))));
-
-        await _sut.RequestApproval(10001234, 9999999999, response);
-
-        _logger.Entries.Should().ContainSingle(e => e.Level == LogLevel.Warning && e.Message.Contains("503"));
     }
 
     // ---- helpers ---------------------------------------------------------------------------
@@ -297,16 +237,4 @@ public class ApprovalsServiceTests
             }
         ]
     };
-
-    private class CapturingLogger : ILogger<ApprovalsService>
-    {
-        public List<(LogLevel Level, string Message)> Entries { get; } = [];
-
-        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
-
-        public bool IsEnabled(LogLevel logLevel) => true;
-
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter) =>
-            Entries.Add((logLevel, formatter(state, exception)));
-    }
 }

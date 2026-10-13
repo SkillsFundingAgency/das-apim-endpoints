@@ -131,8 +131,8 @@ public class ApprovalsService : IApprovalsService
 
         foreach (var change in body.Changes)
         {
-            _logger.LogInformation("Approvals request for learning {LearningKey} (apprenticeship {ApprenticeshipId}) - change {ChangeType}: old '{Old}' new '{New}'",
-                body.LearningKey, body.ApprenticeshipId, change.ChangeType, change.Data.Old, change.Data.New);
+            _logger.LogInformation("Approvals request for learning {LearningKey} (apprenticeship {ApprenticeshipId}) - change {ChangeType}",
+                body.LearningKey, body.ApprenticeshipId, change.ChangeType);
         }
 
         foreach (var price in body.NewPrices)

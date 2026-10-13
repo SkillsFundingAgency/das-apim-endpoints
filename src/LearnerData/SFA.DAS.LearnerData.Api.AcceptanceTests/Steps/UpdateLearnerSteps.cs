@@ -396,8 +396,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
                 .WithStatusCode(HttpStatusCode.OK)
                 .WithBodyAsJson(new
                 {
-                    // Shaped as the commitments stub responds. The old/new values deliberately differ from the ones
-                    // Learning reported, so a test can tell that the event echoes Approvals and not Learning.
+                    // Old/New values deliberately differ from the ones mock-Learning reports, so a test can tell that the event echoes Approvals and not Learning.
                     changes = new[] { new { changeType = "StartDate", approvalStatus = verdict, data = new { old = ApprovalsEchoedOld, @new = ApprovalsEchoedNew } } },
                     prices = Array.Empty<object>()
                 }));
