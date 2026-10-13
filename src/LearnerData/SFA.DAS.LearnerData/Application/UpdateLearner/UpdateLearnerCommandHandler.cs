@@ -74,7 +74,6 @@ public class UpdateLearnerCommandHandler(
             else if (approval == null && learningApiPutResponse.FurtherApprovalNeeded)
             {
                 // Nothing in this update needed approval, but the episode is still flagged from an earlier one.
-                // Updating Earnings now would carry the unapproved change with it, so every change waits.
                 logger.LogWarning("Learning {LearningKey}, episode {EpisodeKey} is still awaiting further approval of an earlier change, so Earnings has not been updated with changes: {Changes}",
                     learningApiPutResponse.LearningKey, learningApiPutResponse.LearningEpisodeKey, string.Join(", ", learningApiPutResponse.Changes));
             }
