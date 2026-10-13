@@ -46,14 +46,14 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
         _logger.LogInformation("Handling GetAllEarningsQuery for provider {ukprn}", request.Ukprn);
 
         var currentAcademicYear = await GetCurrentAcademicYear(request);
-        var (learnings, totalLearners) = await GetLearnings(request);
+
+        var (earnings, totalLearners) = await GetEarnings(request);
+
+        var learnings = await GetLearnings(request, earnings);
 
         var sldLearners = await _distributedCache.GetLearners<UpdateLearnerRequest>(request.Ukprn, learnings.Select(x => x.Uln), cancellationToken);
 
-        var earnings = await GetRelatedEarnings(request, learnings);
-        
         var joinedLearnerData = JoinDataSources(learnings, earnings, sldLearners, currentAcademicYear);
-        
 
         var fm36Learners = TransformToFm36Learners(joinedLearnerData, currentAcademicYear, request.CollectionPeriod);
 
@@ -72,93 +72,78 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
         return currentAcademicYear;
     }
 
-    private async Task<(List<Learning>, int)> GetLearnings(GetFm36Query request)
+    private async Task<(List<Apprenticeship>, int)> GetEarnings(GetFm36Query request)
     {
-        List<Learning>? learners = null;
-        int totalItems = 0;
+        var earningsRequest = request.IsPaged
+            ? new PostGetFm36DataRequest(request.Ukprn, request.CollectionYear, request.CollectionPeriod, request.Page, request.PageSize)
+            : new PostGetFm36DataRequest(request.Ukprn, request.CollectionYear, request.CollectionPeriod);
 
-        var innerRequest = new GetLearningsRequest { 
-            Ukprn = request.Ukprn, 
-            CollectionYear = request.CollectionYear, 
-            CollectionPeriod = request.CollectionPeriod 
-        };
-
-        if(request.IsPaged)
-        {
-            innerRequest.Page = request.Page;
-            innerRequest.PageSize = request.PageSize;
-            var pagedlearners = await _learningApiClient.Get<GetPagedLearnersFromLearningInner>(innerRequest);
-            if(pagedlearners != null)
-            {
-                learners = pagedlearners.Items;
-                totalItems = pagedlearners.TotalItems;
-            }
-
-        }
-        else
-        {
-            learners = await _learningApiClient.Get<List<Learning>>(innerRequest);
-            totalItems = learners != null ? learners.Count : 0;
-        }
-
-        
-        if (learners == null || !learners.Any())
-        {
-            learners = new List<Learning>();
-            if(request.IsPaged)
-                _logger.LogWarning("No learning data returned for {ukprn} from Learnings Paged Inner {pageNumber} {pageSize}", request.Ukprn, request.Page, request.PageSize);
-            else
-                _logger.LogWarning("No learning data returned for {ukprn} from Learnings Inner", request.Ukprn);
-        }
-
-        return (learners!, totalItems);
-    }
-
-    private async Task<List<Apprenticeship>> GetRelatedEarnings(GetFm36Query request, List<Learning> learnings)
-    {
-        var learningKeys = request.IsPaged ? learnings.Select(x => x.Key).ToList() : new List<Guid>(); // only send keys if paged
-        var earningsRequest = new PostGetFm36DataRequest(request.Ukprn, request.CollectionYear, request.CollectionPeriod, learningKeys);
         var result = await _earningsApiClient.PostWithResponseCode<GetFm36DataResponse>(earningsRequest);
 
         if (!result.StatusCode.IsSuccessStatusCode() || result.Body == null)
         {
             _logger.LogWarning("No earnings data returned for {ukprn} from Earnings Inner", request.Ukprn);
-            return new List<Apprenticeship>();
+            return (new List<Apprenticeship>(), 0);
         }
 
-        return result.Body.Apprenticeships ?? [];
+        var apprenticeships = result.Body.Apprenticeships ?? [];
+
+        if (!apprenticeships.Any())
+        {
+            _logger.LogWarning("No earnings data returned for {ukprn} from Earnings Inner {pageNumber} {pageSize}", request.Ukprn, request.Page, request.PageSize);
+        }
+
+        return (apprenticeships, result.Body.TotalItems);
+    }
+
+    private async Task<List<Learning>> GetLearnings(GetFm36Query request, List<Apprenticeship> earnings)
+    {
+        if (!earnings.Any())
+        {
+            return new List<Learning>();
+        }
+
+        var learningKeys = earnings.Select(x => x.Key).ToList();
+        var result = await _learningApiClient.PostWithResponseCode<List<Learning>>(new PostGetLearningsRequest(request.Ukprn, learningKeys));
+
+        if (!result.StatusCode.IsSuccessStatusCode() || result.Body == null)
+        {
+            _logger.LogWarning("No learning data returned for {ukprn} from Learnings Inner for {keyCount} learning keys", request.Ukprn, learningKeys.Count);
+            return new List<Learning>();
+        }
+
+        return result.Body;
     }
 
     private List<JoinedLearnerData> JoinDataSources(List<Learning> learnings, List<Apprenticeship> earnings, List<UpdateLearnerRequest> sldData, GetAcademicYearsResponse currentAcademicYear)
     {
         var joinedApprenticeships = new List<JoinedLearnerData>();
 
-        foreach (var learning in learnings)
+        foreach (var earning in earnings)
         {
-            // Find matching entries in earningsData
-            var matchingEarnings = earnings.FirstOrDefault(e => e.Key == learning.Key);
-            var matchingSld = sldData.FirstOrDefault(s => s.Learner.Uln.ToString() == learning.Uln);
+            var matchingLearning = learnings.FirstOrDefault(l => l.Key == earning.Key);
 
-            if(matchingSld == null)
+            if (matchingLearning == null)
             {
-                _logger.LogWarning($"No matching SLD data found for learning with key: {learning.Key}");
+                _logger.LogWarning($"No matching learning data found for earnings with key: {earning.Key}");
+                throw new InvalidOperationException($"Learning data missing for earnings key: {earning.Key}");
+            }
+
+            var matchingSld = sldData.FirstOrDefault(s => s.Learner.Uln.ToString() == matchingLearning.Uln);
+
+            if (matchingSld == null)
+            {
+                _logger.LogWarning($"No matching SLD data found for learning with key: {matchingLearning.Key}");
                 continue;
             }
 
-            if(matchingEarnings == null)
-            {
-                _logger.LogWarning($"No matching earnings data found for learning with key: {learning.Key}");
-                throw new InvalidOperationException($"Earnings data missing for learning key: {learning.Key}");
-            }
+            _logger.LogInformation($"Processing learning with key: {matchingLearning.Key}");
 
-            _logger.LogInformation($"Processing learning with key: {learning.Key}");
-
-            joinedApprenticeships.Add(new JoinedLearnerData(learning, matchingEarnings, matchingSld, currentAcademicYear.GetShortAcademicYear()));
+            joinedApprenticeships.Add(new JoinedLearnerData(matchingLearning, earning, matchingSld, currentAcademicYear.GetShortAcademicYear()));
         }
 
         return joinedApprenticeships;
     }
-
 
     private List<FM36Learner> TransformToFm36Learners(
         List<JoinedLearnerData> joinedLearnerData,
