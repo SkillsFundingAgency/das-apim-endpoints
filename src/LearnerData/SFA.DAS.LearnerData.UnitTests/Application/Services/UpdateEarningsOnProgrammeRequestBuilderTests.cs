@@ -51,7 +51,7 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
         // Assert
         result.PutUrl.Should().Be($"learning/{response.LearningKey}/on-programme");
         result.Data.CompletionDate.Should().Be(putRequest.Data.Learner.CompletionDate);
-        result.Data.WithdrawalDate.Should().Be(putRequest.Data.Delivery.WithdrawalDate);
+        result.Data.WithdrawalDate.Should().Be(putRequest.Data.OnProgramme.WithdrawalDate);
         result.Data.PauseDate.Should().Be(putRequest.Data.OnProgramme.PauseDate);
         result.Data.AchievementDate.Should().Be(putRequest.Data.OnProgramme.AchievementDate);
         result.Data.ApprenticeshipEpisodeKey.Should().Be(response.LearningEpisodeKey);
