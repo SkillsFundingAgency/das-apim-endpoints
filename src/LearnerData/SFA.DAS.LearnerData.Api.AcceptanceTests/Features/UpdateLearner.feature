@@ -12,8 +12,9 @@ Scenario: No changes made
 Scenario: Completed date updated
 	Given there is a learner
 	And the CompletionDate passed is different to the value in the learners domain
-	When the learner is updated
+	When the learner is updated with new earnings profile version
 	Then a on-programme update request is sent to the earnings domain
+	And a release-earnings update request is sent to the earnings domain
 	And sld data is stored to the cache
 
 Scenario: MathsAndEnglish updated
@@ -23,11 +24,18 @@ Scenario: MathsAndEnglish updated
 	Then a english-and-maths update request is sent to the earnings domain
 	And sld data is stored to the cache
 
-Scenario: LearningSupport updated
+Scenario: OnProgramme LearningSupport updated
 	Given there is a learner
-	And the LearningSupport passed is different to the value in the learners domain
+	And the OnprogrammeLearningSupport passed is different to the value in the learners domain
 	When the learner is updated
-	Then a learning-support update request is sent to the earnings domain
+	Then a on-programme update request is sent to the earnings domain
+	And sld data is stored to the cache
+
+Scenario: EnglishAndMaths LearningSupport updated
+	Given there is a learner
+	And the EnglishAndMathsLearningSupport passed is different to the value in the learners domain
+	When the learner is updated
+	Then a english-and-maths update request is sent to the earnings domain
 	And sld data is stored to the cache
 
 Scenario: Prices updated
@@ -99,3 +107,18 @@ Scenario: New subsequent apprenticeship is sent to Approvals (via LearnerData)
 	And that apprenticeship is not yet approved
 	When the learner is updated
 	Then a LearnerDataEvent is published
+
+Scenario: LearnerRef is passed through to the learning domain
+	Given there is a learner
+	And the CompletionDate passed is different to the value in the learners domain
+	And the learner has a LearnerRef of "LR-12345"
+	When the learner is updated with new earnings profile version
+	Then the LearnerRef sent to the learning domain is "LR-12345"
+	And the release-earnings request sent to the earnings domain has the learner key and ref "LR-12345"
+
+Scenario: Missing LearnerRef is passed through to the learning domain as empty, not garbage
+	Given there is a learner
+	And the CompletionDate passed is different to the value in the learners domain
+	And the learner has a LearnerRef of ""
+	When the learner is updated
+	Then the LearnerRef sent to the learning domain is ""
