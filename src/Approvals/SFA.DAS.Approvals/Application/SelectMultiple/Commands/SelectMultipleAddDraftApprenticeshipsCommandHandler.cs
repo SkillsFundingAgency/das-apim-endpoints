@@ -22,7 +22,7 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
     IReservationApiClient<ReservationApiConfiguration> reservationApiClient,
     IInternalApiClient<LearnerDataInnerApiConfiguration> learnerDataClient,
     IMediator mediator,
-    IAddCourseTypeDataToCsvService courseTypesToCsvService = null)
+    IAddCourseTypeFromRulesService addCourseTypeFromRulesService = null)
     : IRequestHandler<SelectMultipleAddDraftApprenticeshipsCommand, SelectMultipleAddDraftApprenticeshipsResult>
 {
     public async Task<SelectMultipleAddDraftApprenticeshipsResult> Handle(SelectMultipleAddDraftApprenticeshipsCommand command, CancellationToken cancellationToken)
@@ -43,7 +43,7 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
 
         var dataToSend = new BulkUploadAddDraftApprenticeshipsRequest
         {
-            BulkUploadDraftApprenticeships = await courseTypesToCsvService.MapAndAddCourseTypeData(bulkUploadAddDraftApprenticeships),
+            BulkUploadDraftApprenticeships = await addCourseTypeFromRulesService.MapAndAddCourseTypeData(bulkUploadAddDraftApprenticeships),
             ProviderId = command.ProviderId,
             UserInfo = command.UserInfo
         };
