@@ -37,7 +37,7 @@ public class WhenSldDataApiServerCertificateIsPinned
         builder.WebHost.ConfigureKestrel(options =>
             options.Listen(IPAddress.Loopback, 0, listen => listen.UseHttps(_serverCertificate)));
         _sldServer = builder.Build();
-        _sldServer.MapGet("/api/lars/get-em-value/{learnAimRef}/{startDate}", () => Results.Json(123.45m));
+        _sldServer.MapGet("/api/v1.0/lars/get-em-value/{learnAimRef}/{startDate}", () => Results.Json(123.45m));
         await _sldServer.StartAsync();
 
         _port = new Uri(_sldServer.Urls.First()).Port;
