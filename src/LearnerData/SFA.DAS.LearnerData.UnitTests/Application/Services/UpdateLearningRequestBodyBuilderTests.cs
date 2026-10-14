@@ -33,7 +33,7 @@ public class UpdateLearningRequestBodyBuilderTests
         var actualRequestBody = sut.Build(command.Ukprn, command.UpdateLearnerRequest);
 
         // Assert
-        actualRequestBody.Delivery.WithdrawalDate.Should().Be(withdrawalDate);
+        actualRequestBody.OnProgramme.WithdrawalDate.Should().Be(withdrawalDate);
     }
 
     [Test]
@@ -212,9 +212,169 @@ public class UpdateLearningRequestBodyBuilderTests
         actualRequestBody.Learner.Care.HasEHCP.Should().BeTrue();
         actualRequestBody.Learner.Care.IsCareLeaver.Should().BeTrue();
         actualRequestBody.Learner.Care.CareLeaverEmployerConsentGiven.Should().BeTrue();
-        actualRequestBody.Delivery.TrainingCode.Should().Be("123");
+        actualRequestBody.OnProgramme.TrainingCode.Should().Be("123");
         actualRequestBody.AcademicYear.Should().Be(2526);
         actualRequestBody.Delivery.LearningType.Should().Be(LearningType.Apprenticeship);
+    }
+
+    [Test]
+    public void Build_Sets_LearnerRef_From_UpdateLearnerRequest()
+    {
+        // Arrange
+        var command = BreaksInLearningTestHelper.CreateLearnerWithBreaksInLearning(false);
+        command.UpdateLearnerRequest.Learner.LearnerRef = "LR-12345";
+
+        var sut = new UpdateLearningRequestBodyBuilder(
+            Mock.Of<ILearningSupportService>(),
+            Mock.Of<IBreaksInLearningService>(),
+            Mock.Of<ICostsService>());
+
+        // Act
+        var actualRequestBody = sut.Build(command.Ukprn, command.UpdateLearnerRequest);
+
+        // Assert
+        actualRequestBody.Learner.LearnerRef.Should().Be("LR-12345");
+    }
+
+    [TestCase(null)]
+    [TestCase("")]
+    public void Build_Does_Not_Throw_When_LearnerRef_Is_Null_Or_Empty_On_UpdateLearnerRequest(string? learnerRef)
+    {
+        // Arrange
+        var command = BreaksInLearningTestHelper.CreateLearnerWithBreaksInLearning(false);
+        command.UpdateLearnerRequest.Learner.LearnerRef = learnerRef!;
+
+        var sut = new UpdateLearningRequestBodyBuilder(
+            Mock.Of<ILearningSupportService>(),
+            Mock.Of<IBreaksInLearningService>(),
+            Mock.Of<ICostsService>());
+
+        // Act
+        Action act = () => sut.Build(command.Ukprn, command.UpdateLearnerRequest);
+
+        // Assert
+        act.Should().NotThrow();
+        var actualRequestBody = sut.Build(command.Ukprn, command.UpdateLearnerRequest);
+        actualRequestBody.Learner.LearnerRef.Should().Be(learnerRef);
+    }
+
+    [Test]
+    public void Build_WithCreateLearnerRequest_MapsLearnerRef()
+    {
+        // Arrange
+        var createRequest = new CreateLearnerRequest
+        {
+            Learner = new CreateLearnerRequest.LearnerDetails
+            {
+                Uln = 123456789,
+                FirstName = "John",
+                LastName = "Doe",
+                Email = "john.doe@test.com",
+                Dob = new DateTime(2000, 1, 1),
+                HasEhcp = true,
+                LearnerRef = "LR-98765"
+            },
+            Delivery = new CreateLearnerRequest.DeliveryDetails
+            {
+                OnProgramme = new List<CreateLearnerRequest.OnProgrammeDetails>
+                {
+                    new CreateLearnerRequest.OnProgrammeDetails
+                    {
+                        StartDate = new DateTime(2023, 9, 1),
+                        ExpectedEndDate = new DateTime(2025, 9, 1),
+                        StandardCode = 123,
+                        AgreementId = "AG-1",
+                        Costs = new List<CostDetails>
+                        {
+                            new CostDetails
+                            {
+                                FromDate = new DateTime(2023, 9, 1),
+                                TrainingPrice = 5000,
+                                EpaoPrice = 1000
+                            }
+                        },
+                        Care = new Care
+                        {
+                            Careleaver = true,
+                            EmployerConsent = true
+                        }
+                    }
+                },
+                EnglishAndMaths = new List<MathsAndEnglish>()
+            }
+        };
+
+        var sut = new UpdateLearningRequestBodyBuilder(
+            Mock.Of<ILearningSupportService>(),
+            Mock.Of<IBreaksInLearningService>(),
+            Mock.Of<ICostsService>());
+
+        // Act
+        var actualRequestBody = sut.Build(10005077, createRequest, 2526, LearningType.Apprenticeship);
+
+        // Assert
+        actualRequestBody.Learner.LearnerRef.Should().Be("LR-98765");
+    }
+
+    [TestCase(null)]
+    [TestCase("")]
+    public void Build_WithCreateLearnerRequest_Does_Not_Throw_When_LearnerRef_Is_Null_Or_Empty(string? learnerRef)
+    {
+        // Arrange
+        var createRequest = new CreateLearnerRequest
+        {
+            Learner = new CreateLearnerRequest.LearnerDetails
+            {
+                Uln = 123456789,
+                FirstName = "John",
+                LastName = "Doe",
+                Email = "john.doe@test.com",
+                Dob = new DateTime(2000, 1, 1),
+                HasEhcp = true,
+                LearnerRef = learnerRef!
+            },
+            Delivery = new CreateLearnerRequest.DeliveryDetails
+            {
+                OnProgramme = new List<CreateLearnerRequest.OnProgrammeDetails>
+                {
+                    new CreateLearnerRequest.OnProgrammeDetails
+                    {
+                        StartDate = new DateTime(2023, 9, 1),
+                        ExpectedEndDate = new DateTime(2025, 9, 1),
+                        StandardCode = 123,
+                        AgreementId = "AG-1",
+                        Costs = new List<CostDetails>
+                        {
+                            new CostDetails
+                            {
+                                FromDate = new DateTime(2023, 9, 1),
+                                TrainingPrice = 5000,
+                                EpaoPrice = 1000
+                            }
+                        },
+                        Care = new Care
+                        {
+                            Careleaver = true,
+                            EmployerConsent = true
+                        }
+                    }
+                },
+                EnglishAndMaths = new List<MathsAndEnglish>()
+            }
+        };
+
+        var sut = new UpdateLearningRequestBodyBuilder(
+            Mock.Of<ILearningSupportService>(),
+            Mock.Of<IBreaksInLearningService>(),
+            Mock.Of<ICostsService>());
+
+        // Act
+        Action act = () => sut.Build(10005077, createRequest, 2526, LearningType.Apprenticeship);
+
+        // Assert
+        act.Should().NotThrow();
+        var actualRequestBody = sut.Build(10005077, createRequest, 2526, LearningType.Apprenticeship);
+        actualRequestBody.Learner.LearnerRef.Should().Be(learnerRef);
     }
 
     [Test]
@@ -237,6 +397,6 @@ public class UpdateLearningRequestBodyBuilderTests
         var actualRequestBody = sut.Build(command.Ukprn, command.UpdateLearnerRequest);
 
         // Assert
-        actualRequestBody.Delivery.TrainingCode.Should().Be(firstOnProgramme.StandardCode.ToString());
+        actualRequestBody.OnProgramme.TrainingCode.Should().Be(firstOnProgramme.StandardCode.ToString());
     }
 }

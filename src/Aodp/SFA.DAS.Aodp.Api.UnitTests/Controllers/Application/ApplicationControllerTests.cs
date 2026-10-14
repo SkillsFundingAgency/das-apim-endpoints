@@ -436,6 +436,30 @@ public class ApplicationControllerTests
     }
 
     [Test]
+    public async Task RemoveAsync_ForwardsUserTypeOntoCommand()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        const string userType = "Qfau";
+        var response = _fixture.Create<EmptyResponse>();
+        BaseMediatrResponse<EmptyResponse> wrapper = new()
+        {
+            Value = response,
+            Success = true
+        };
+
+        _mediatorMock
+            .Setup(m => m.Send(It.IsAny<DeleteApplicationCommand>(), default))
+            .ReturnsAsync(wrapper);
+
+        // Act
+        await _controller.DeleteApplicationByIdAsync(id, userType);
+
+        // Assert
+        _mediatorMock.Verify(m => m.Send(It.Is<DeleteApplicationCommand>(c => c.ApplicationId == id && c.UserType == userType), default), Times.Once());
+    }
+
+    [Test]
     public async Task EditAsync_ReturnsOkResult()
     {
         // Arrange

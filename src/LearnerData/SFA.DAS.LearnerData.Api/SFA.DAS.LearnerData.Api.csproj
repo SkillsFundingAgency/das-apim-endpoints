@@ -18,6 +18,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Turns on ForceReconnect in Microsoft.Extensions.Caching.StackExchangeRedis (the option is internal; the library reads this switch). -->
+    <RuntimeHostConfigurationOption Include="Microsoft.AspNetCore.Caching.StackExchangeRedis.UseForceReconnect" Value="true" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
     <ProjectReference Include="..\SFA.DAS.LearnerData\SFA.DAS.LearnerData.csproj" />
   </ItemGroup>
