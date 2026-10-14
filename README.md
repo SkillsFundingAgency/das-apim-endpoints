@@ -923,3 +923,109 @@ Data: {
 * Start the api project ```SFA.DAS.ReferenceDataJobs.Api```
 
 Starting the API will then show the swagger definition with the available operations. 
+
+### Employer Feedback
+
+The Employer Feedback outer api relies on the following inner apis:
+
+* [das-employer-feedback-api](https://github.com/SkillsFundingAgency/das-employer-feedback-api)
+* [das-employer-accounts](https://github.com/SkillsFundingAgency/das-employer-accounts)
+* [das-commitments](https://github.com/SkillsFundingAgency/das-commitments)
+* [das-employer-profiles-api](https://github.com/SkillsFundingAgency/das-employer-profiles-api)
+* [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
+
+
+You are able to run the API by doing the following:
+
+
+* In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev.
+```
+ParitionKey: LOCAL
+RowKey: SFA.DAS.EmployerFeedback.OuterApi_1.0
+Data: {
+  "AzureAd": {
+        "tenant": "**********.onmicrosoft.com",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+  "AccountsInnerApi": {
+    "url": "https://localhost:5008/",
+    "identifier": "https://******.onmicrosoft.com/*****"
+  },
+  "CommitmentsV2ApiConfiguration": {
+    "url": "https://localhost:5011/",
+    "identifier": "https://******.onmicrosoft.com/*****"
+  },
+  "EmployerFeedbackApiConfiguration": {
+    "url": "https://localhost:6602/",
+    "identifier": "https://******.onmicrosoft.com/*****"
+  },
+  "EmployerProfilesApiConfiguration": {
+    "url": "https://localhost:5001/",
+    "identifier": "https://******.onmicrosoft.com/*****"
+  },
+  "RoatpV2ApiConfiguration": {
+    "url": "https://localhost:5111/",
+    "identifier": "https://******.onmicrosoft.com/*****"
+  },
+  "NServiceBusConfiguration": {
+        "NServiceBusConnectionString": "*********",
+        "NServiceBusLicense": "*********"
+    },
+  "EmployerFeedbackConfiguration": {
+    "ApimEndpointsRedisConnectionString": " ",
+    "AccountProvidersCourseStatusCompletionLag": 3,
+    "AccountProvidersCourseStatusStartLag": 60,
+    "AccountProvidersCourseStatusNewStartWindow": 2
+  }
+}
+```
+* Start the api project ```SFA.DAS.EmployerFeedback.Api```
+
+Starting the API will then show the swagger definition with the available operations. 
+
+### Employer Request Apprenticeship Training
+
+The Employer Request Apprenticeship Training outer api relies on the following inner apis:
+
+* [das-employer-accounts](https://github.com/SkillsFundingAgency/das-employer-accounts)
+* [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
+* [das-location-api](https://github.com/SkillsFundingAgency/das-location-api)
+* [das-employerprofiles-api](https://github.com/SkillsFundingAgency/das-employerprofiles-api)
+* [das-rat-api](https://github.com/SkillsFundingAgency/das-rat-api)
+* [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
+
+You are able to run the API by doing the following:
+
+* Get the latest configuration file from [das-employer-config repository](https://github.com/SkillsFundingAgency/das-employer-config/blob/master/das-apim-endpoints/SFA.DAS.EmployerRequestApprenticeTraining.OuterApi.json)
+* In your Azure Storage Account (or Azurite for local development), create a table called Configuration and add the following.
+```
+PartitionKey: LOCAL
+RowKey: SFA.DAS.EmployerRequestApprentriceshipTraining.OuterApi_1.0
+Data: the JSON for this service from the das-employer-config repository
+```
+
+* Start the api project ```SFA.DAS.EmployerRequestApprenticeTraining.Api```
+
+Starting the API will then show the swagger definition with the available operations. 
+
+### Provider Request Apprenticeship Training
+
+The Provider Request Apprenticeship Training outer api relies on the following inner apis:
+
+* [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
+* [das-rat-api](https://github.com/SkillsFundingAgency/das-rat-api)
+
+You are able to run the API by doing the following:
+
+* Get the latest configuration file from [das-employer-config repository](https://github.com/SkillsFundingAgency/das-employer-config/blob/master/das-apim-endpoints/SFA.DAS.ProviderRequestApprenticeTraining.OuterApi.json)
+* In your Azure Storage Account (or Azurite for local development), create a table called Configuration and add the following.
+```
+PartitionKey: LOCAL
+RowKey: SFA.DAS.ProviderRequestApprentriceshipTraining.OuterApi_1.0
+Data: the JSON for this service from the das-employer-config repository
+```
+
+* Start the api project ```SFA.DAS.ProviderRequestApprenticeTraining.Api```
+
+Starting the API will then show the swagger definition with the available operations. 
+

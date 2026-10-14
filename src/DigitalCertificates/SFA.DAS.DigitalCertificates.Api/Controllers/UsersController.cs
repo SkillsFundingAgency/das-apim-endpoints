@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.DigitalCertificates.Api.Attributes;
 using SFA.DAS.DigitalCertificates.Api.Models.Users;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAction;
@@ -82,7 +81,6 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
         }
 
         [HttpGet("{userId}/certificates")]
-        [PrivateBetaUlnWhitelist]
         public async Task<IActionResult> GetCertificates([FromRoute] Guid userId)
         {
             try
@@ -115,7 +113,6 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
         }
 
         [HttpGet("{userId}/match")]
-        [PrivateBetaUlnWhitelist]
         public async Task<IActionResult> GetCertificatesMatch([FromRoute] Guid userId)
         {
             try

@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.AdminRoatp.Application.Commands.AddProviderRestrictedApprenticeship;
+using SFA.DAS.AdminRoatp.Application.Commands.RemoveProviderRestrictedApprenticeship;
 using SFA.DAS.AdminRoatp.Application.Commands.UpdateProviderRestrictedApprenticeship;
 using SFA.DAS.AdminRoatp.Application.Queries.GetProviderNotRestrictedApprenticeships;
 using SFA.DAS.AdminRoatp.Application.Queries.GetProviderRestrictedApprenticeships;
@@ -42,6 +44,43 @@ public class ProviderRestrictedCoursesController(IMediator _mediator, ILogger<Pr
         _logger.LogInformation("Request to update provider restricted apprenticeship for UKPRN {Ukprn}", ukprn);
 
         UpdateProviderRestrictedApprenticeshipCommand command = new()
+        {
+            Ukprn = ukprn,
+            LarsCode = larsCode,
+            UserId = request.UserId,
+            UserDisplayName = request.UserDisplayName,
+            LastDateStarts = request.LastDateStarts
+        };
+
+        await _mediator.Send(command, cancellationToken);
+        return NoContent();
+    }
+
+    [HttpPost("restricted-apprenticeships/{larsCode}/remove")]
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
+    public async Task<IActionResult> RemoveProviderRestrictedApprenticeship([FromRoute] int ukprn, [FromRoute] string larsCode, [FromBody] RemoveProviderRestrictedApprenticeshipModel request, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("Request to remove provider restricted apprenticeship for UKPRN {Ukprn}", ukprn);
+
+        RemoveProviderRestrictedApprenticeshipCommand command = new()
+        {
+            Ukprn = ukprn,
+            LarsCode = larsCode,
+            UserId = request.UserId,
+            UserDisplayName = request.UserDisplayName
+        };
+
+        await _mediator.Send(command, cancellationToken);
+        return NoContent();
+    }
+
+    [HttpPost("restricted-apprenticeships/{larsCode}/add")]
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
+    public async Task<IActionResult> AddProviderRestrictedApprenticeship([FromRoute] int ukprn, [FromRoute] string larsCode, [FromBody] AddProviderRestrictedApprenticeshipModel request, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("Request to add provider restricted apprenticeship for UKPRN {Ukprn}", ukprn);
+
+        AddProviderRestrictedApprenticeshipCommand command = new()
         {
             Ukprn = ukprn,
             LarsCode = larsCode,
