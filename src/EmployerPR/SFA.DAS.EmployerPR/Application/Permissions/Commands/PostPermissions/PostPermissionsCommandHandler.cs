@@ -57,6 +57,7 @@ public class PostPermissionsCommandHandler(IProviderRelationshipsApiRestClient _
                 command.UserRef,
                 command.Ukprn!.Value,
                 command.AccountLegalEntityId,
+                command.Email,
                 cancellationToken
             );
 
