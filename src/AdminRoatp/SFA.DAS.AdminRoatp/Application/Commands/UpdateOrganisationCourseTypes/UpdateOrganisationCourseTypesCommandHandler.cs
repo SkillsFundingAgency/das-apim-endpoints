@@ -4,9 +4,12 @@ using SFA.DAS.AdminRoatp.InnerApi.Models;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Roatp;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.AdminRoatp.Application.Commands.UpdateOrganisationCourseTypes;
@@ -24,6 +27,10 @@ public class UpdateOrganisationCourseTypesCommandHandler(IRoatpServiceApiClient<
 
     private async Task UpdateRoatpCM(UpdateOrganisationCourseTypesCommand command)
     {
+        ApiResponse<OrganisationResponse> response = await _roatpV1ApiClient.GetWithResponseCode<OrganisationResponse>(new GetOrganisationRequest(command.Ukprn));
+        response.EnsureSuccessStatusCode();
+        if (response.Body.ProviderType != ProviderType.Main) return;
+
         var courseTypeNames = command.CourseTypeIds.Select(x => (CourseType)x).ToArray();
         var addCourseTypesCommand = new AddCourseTypesModel()
         {
