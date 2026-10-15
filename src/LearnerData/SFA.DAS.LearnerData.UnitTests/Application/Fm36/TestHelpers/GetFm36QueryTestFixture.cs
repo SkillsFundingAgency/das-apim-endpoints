@@ -20,6 +20,8 @@ using LearningEpisode = SFA.DAS.LearnerData.Responses.LearningInner.Episode;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 
+using Learning = SFA.DAS.LearnerData.Responses.LearningInner.Learning;
+
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 internal class GetFm36QueryTestFixture

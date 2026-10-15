@@ -3,6 +3,8 @@ using SFA.DAS.LearnerData.Responses.LearningInner.GetShortCourseLearnersForEarni
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 
+using Learning = SFA.DAS.LearnerData.Responses.LearningInner.GetShortCourseLearnersForEarningsResponse.Learning;
+
 internal class ShortCourseTestData
 {
     internal string Ukprn { get; set; }

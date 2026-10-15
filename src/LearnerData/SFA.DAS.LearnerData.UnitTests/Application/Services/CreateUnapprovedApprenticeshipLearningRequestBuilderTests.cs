@@ -11,7 +11,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 [TestFixture]
 public class CreateUnapprovedApprenticeshipLearningRequestBuilderTests
 {
-    private readonly Fixture _fixture = new();
+    private readonly IFixture _fixture = new Fixture().Customize(new JsonNodeCustomization());
     private Mock<ICourseService> _courseService = null!;
     private CreateUnapprovedApprenticeshipLearningRequestBuilder _sut = null!;
 

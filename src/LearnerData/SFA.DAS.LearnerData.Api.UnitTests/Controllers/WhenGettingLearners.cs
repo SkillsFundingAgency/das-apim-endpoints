@@ -13,6 +13,8 @@ using System.Net;
 
 namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
 
+using Learning = SFA.DAS.LearnerData.Application.GetLearners.Learning;
+
 public class WhenGettingLearners
 {
     [Test, MoqAutoData]

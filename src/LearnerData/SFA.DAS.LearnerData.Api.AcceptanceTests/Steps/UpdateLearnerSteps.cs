@@ -1,6 +1,8 @@
 using AutoFixture;
 using FluentAssertions;
 using Newtonsoft.Json;
+using SFA.DAS.Common.Domain.Types;
+using SFA.DAS.Learning.Types;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
@@ -28,6 +30,10 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     private const string SubsequentOnProgrammeKey = "SubsequentOnProgrammeKey";
     private const string ApprovalCheckStatusCodeKey = "ApprovalCheckStatusCodeKey";
     private const string LearnerRefKey = "LearnerRefKey";
+    private const string NeedsFurtherApprovalKey = "NeedsFurtherApprovalKey";
+    private const string ApprovalsVerdictKey = "ApprovalsVerdictKey";
+    private const string ApprovalsEchoedOld = "2026-08-31";
+    private const string ApprovalsEchoedNew = "2026-09-14";
 
     [Given(@"there is a learner")]
     public void GivenThereIsALearner()
@@ -90,6 +96,90 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     public void GivenTheLearnerHasALearnerRefOf(string learnerRef)
     {
         scenarioContext.Set(learnerRef, LearnerRefKey);
+    }
+
+    [Given(@"Learning reports that the change needs further approval")]
+    public void GivenLearningReportsThatTheChangeNeedsFurtherApproval()
+    {
+        scenarioContext.Set(true, NeedsFurtherApprovalKey);
+    }
+
+    [Given(@"Approvals auto-approves the change")]
+    public void GivenApprovalsAutoApprovesTheChange()
+    {
+        scenarioContext.Set("autoApproved", ApprovalsVerdictKey);
+    }
+
+    [Given(@"Approvals asks for employer approval of the change")]
+    public void GivenApprovalsAsksForEmployerApprovalOfTheChange()
+    {
+        scenarioContext.Set("EmployerApprovalRequested", ApprovalsVerdictKey);
+    }
+
+    [Then(@"Approvals is asked about the start date change")]
+    public void ThenApprovalsIsAskedAboutTheStartDateChange()
+    {
+        var learningKey = scenarioContext.Get<UpdateLearnerApiPutResponse>().LearningKey;
+
+        var entry = testContext.CommitmentsApi.MockServer.LogEntries.Should()
+            .ContainSingle(x => x.RequestMessage.Method == "PUT" && x.RequestMessage.Url.Contains($"/approvals/{learningKey}")).Subject;
+
+        entry.RequestMessage.Body.Should().Contain("StartDate");
+
+        // The old value comes from Learning's change detail, and appears nowhere else in the body
+        entry.RequestMessage.Body.Should().Contain("2026-09-01");
+    }
+
+    [Then(@"an ApprovedLearningUpdatedEvent is published for the start date change")]
+    public void ThenAnApprovedLearningUpdatedEventIsPublishedForTheStartDateChange()
+    {
+        var response = scenarioContext.Get<UpdateLearnerApiPutResponse>();
+
+        var evt = StubMessageSession.PublishedMessages.OfType<ApprovedLearningUpdatedEvent>().Should().ContainSingle().Subject;
+
+        evt.LearningKey.Should().Be(response.LearningKey);
+        evt.ApprenticeshipId.Should().Be(response.ApprovalsApprenticeshipId);
+        var change = evt.Changes.Should().ContainSingle().Subject;
+        change.ChangeType.Should().Be("StartDate");
+        change.Data.Old.Should().Be(ApprovalsEchoedOld);
+        change.Data.New.Should().Be(ApprovalsEchoedNew);
+    }
+
+    [Then(@"no ApprovedLearningUpdatedEvent is published")]
+    public void ThenNoApprovedLearningUpdatedEventIsPublished()
+    {
+        StubMessageSession.PublishedMessages.Should().NotContain(m => m is ApprovedLearningUpdatedEvent);
+    }
+
+    [Then(@"Approvals is not asked about the change")]
+    public void ThenApprovalsIsNotAskedAboutTheChange()
+    {
+        testContext.CommitmentsApi.MockServer.LogEntries.Should().BeEmpty();
+    }
+
+    [Then(@"further approval needed is cleared in the learning domain")]
+    public void ThenFurtherApprovalNeededIsClearedInTheLearningDomain()
+    {
+        var response = scenarioContext.Get<UpdateLearnerApiPutResponse>();
+
+        var entry = testContext.ApprenticeshipsApi.MockServer.LogEntries.Should()
+            .ContainSingle(x => x.RequestMessage.Method == "POST" && x.RequestMessage.Url.Contains("clear-further-approval-needed")).Subject;
+
+        entry.RequestMessage.Url.Should().Contain($"/learning/{response.LearningKey}/episodes/{response.LearningEpisodeKey}/clear-further-approval-needed");
+        entry.RequestMessage.Url.Should().Contain("learningType=Apprenticeship");
+    }
+
+    [Then(@"further approval needed is not cleared in the learning domain")]
+    public void ThenFurtherApprovalNeededIsNotClearedInTheLearningDomain()
+    {
+        testContext.ApprenticeshipsApi.MockServer.LogEntries
+            .Should().NotContain(x => x.RequestMessage.Url.Contains("clear-further-approval-needed"));
+    }
+
+    [Then(@"no update request is sent to the earnings domain")]
+    public void ThenNoUpdateRequestIsSentToTheEarningsDomain()
+    {
+        testContext.EarningsApi.MockServer.LogEntries.Should().BeEmpty();
     }
 
     [Then(@"a LearnerDataEvent is published")]
@@ -223,6 +313,11 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
             response.Changes.AddRange(changes);
         }
 
+        if (scenarioContext.TryGetValue(NeedsFurtherApprovalKey, out bool needsFurtherApproval) && needsFurtherApproval)
+        {
+            ConfigureApprovalFlow(response);
+        }
+
         testContext.ApprenticeshipsApi.MockServer
         .Given(
             Request
@@ -232,7 +327,9 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         .RespondWith(
             Response.Create()
             .WithStatusCode(HttpStatusCode.OK)
-            .WithBodyAsJson(response)
+            .WithHeader("Content-Type", "application/json")
+            // System.Text.Json, not WithBodyAsJson (Newtonsoft): the response holds JsonNode values in its change details
+            .WithBody(System.Text.Json.JsonSerializer.Serialize(response))
         );
 
         var approvalCheckStatusCode = scenarioContext.TryGetValue(ApprovalCheckStatusCodeKey, out HttpStatusCode explicitStatusCode)
@@ -251,6 +348,58 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         );
 
         scenarioContext.Set(response);
+    }
+
+    private void ConfigureApprovalFlow(UpdateLearnerApiPutResponse response)
+    {
+        response.LearningKey = Guid.NewGuid();
+        response.LearningEpisodeKey = Guid.NewGuid();
+        response.ApprovalsApprenticeshipId = 12345;
+        response.IsApproved = true;
+        response.ChangeDetails =
+        [
+            new UpdateLearnerApiPutResponse.ChangeDetail
+            {
+                ChangeType = UpdateLearnerApiPutResponse.LearningUpdateChanges.StartDate,
+                Old = System.Text.Json.Nodes.JsonValue.Create("2026-09-01"),
+                New = System.Text.Json.Nodes.JsonValue.Create("2026-09-15"),
+                RequiresApproval = true
+            }
+        ];
+        response.LearningType = LearningType.Apprenticeship;
+        response.Prices =
+        [
+            new UpdateLearnerApiPutResponse.EpisodePrice
+            {
+                Key = Guid.NewGuid(),
+                StartDate = new DateTime(2026, 9, 15),
+                EndDate = new DateTime(2027, 9, 14),
+                TrainingPrice = 9000m,
+                EndPointAssessmentPrice = 1000m,
+                TotalPrice = 10000m
+            }
+        ];
+
+        testContext.ApprenticeshipsApi.MockServer
+            .Given(Request.Create()
+                .WithPath($"/learning/{response.LearningKey}/episodes/{response.LearningEpisodeKey}/clear-further-approval-needed")
+                .UsingPost())
+            .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.NoContent));
+
+        var verdict = scenarioContext.Get<string>(ApprovalsVerdictKey);
+
+        testContext.CommitmentsApi.MockServer
+            .Given(Request.Create()
+                .WithPath($"/approvals/{response.LearningKey}")
+                .UsingPut())
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithBodyAsJson(new
+                {
+                    // Old/New values deliberately differ from the ones mock-Learning reports, so a test can tell that the event echoes Approvals and not Learning.
+                    changes = new[] { new { changeType = "StartDate", approvalStatus = verdict, data = new { old = ApprovalsEchoedOld, @new = ApprovalsEchoedNew } } },
+                    prices = Array.Empty<object>()
+                }));
     }
 
     private void ConfigureEarningsInnerApiToRespondOkToEverything(bool hasNewEarningsProfileVersionBeenGenerated = false)
