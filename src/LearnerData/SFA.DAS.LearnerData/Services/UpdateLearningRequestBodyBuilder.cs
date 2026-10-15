@@ -55,8 +55,7 @@ public class UpdateLearningRequestBodyBuilder(
 
         var costs = costsService.GetCosts(allMatchingOnProgrammes);
         var onProgrammeDetails = BuildOnProgrammeDetails(firstOnProgramme, latestOnProgramme, allMatchingOnProgrammes, costs);
-        var englishAndMathsCourses = BuildEnglishAndMathsDetails(englishAndMaths ?? new List<MathsAndEnglish>());
-        await SetEnglishAndMathsAmounts(englishAndMathsCourses);
+        var englishAndMathsCourses = await BuildEnglishAndMathsDetails(englishAndMaths ?? new List<MathsAndEnglish>());
 
         //Determine the effective end date of the latest OnProgramme
         var onProgrammeEndDate = new[]
@@ -150,17 +149,19 @@ public class UpdateLearningRequestBodyBuilder(
         };
     }
 
-    private List<MathsAndEnglishDetails> BuildEnglishAndMathsDetails(List<MathsAndEnglish> mathsAndEnglish)
+    private async Task<List<MathsAndEnglishDetails>> BuildEnglishAndMathsDetails(List<MathsAndEnglish> mathsAndEnglish)
     {
         var groupedCourses = mathsAndEnglish.GroupBy(c => c.LearnAimRef);
+        var englishAndMathsCourses = new List<MathsAndEnglishDetails>();
 
-        return groupedCourses.Select(g =>
+        foreach (var g in groupedCourses)
         {
             if(g.Count() == 1)
             {
                 var course = g.First();
-                return new MathsAndEnglishDetails
+                englishAndMathsCourses.Add(new MathsAndEnglishDetails
                 {
+                    Amount = await englishAndMathsValueService.GetValue(course.LearnAimRef, course.StartDate),
                     CompletionDate = course.CompletionDate,
                     LearnAimRef = course.LearnAimRef,
                     Course = course.Course,
@@ -170,7 +171,7 @@ public class UpdateLearningRequestBodyBuilder(
                     WithdrawalDate = course.WithdrawalDate,
                     PauseDate = course.PauseDate,
                     BreaksInLearning = new List<BreakInLearning>()
-                };
+                });
             }
             else
             {
@@ -179,8 +180,9 @@ public class UpdateLearningRequestBodyBuilder(
                 var firstCourse = orderedCourses.First();
                 var latestCourse = orderedCourses.Last();
 
-                return new MathsAndEnglishDetails
+                englishAndMathsCourses.Add(new MathsAndEnglishDetails
                 {
+                    Amount = await englishAndMathsValueService.GetValue(firstCourse.LearnAimRef, firstCourse.StartDate),
                     CompletionDate = latestCourse.CompletionDate,
                     LearnAimRef = latestCourse.LearnAimRef,
                     Course = latestCourse.Course,
@@ -190,20 +192,11 @@ public class UpdateLearningRequestBodyBuilder(
                     WithdrawalDate = latestCourse.WithdrawalDate,
                     PauseDate = latestCourse.PauseDate,
                     BreaksInLearning = breaksInLearning
-                };
+                });
             }
-        }).ToList();
-    }
-
-    // SLD doesn't send the value of an English and Maths course, so it is looked up from SLD's reference data instead.
-    // This happens before anything is sent to Learning so that, if the value can't be found, nothing in the submission is processed.
-    // StartDate is the course's first start date, which is the one its value depends on even after a break in learning.
-    private async Task SetEnglishAndMathsAmounts(List<MathsAndEnglishDetails> englishAndMathsCourses)
-    {
-        foreach (var course in englishAndMathsCourses)
-        {
-            course.Amount = await englishAndMathsValueService.GetValue(course.LearnAimRef, course.StartDate);
         }
+
+        return englishAndMathsCourses;
     }
 
     private static decimal? ResolveCombinedFundingAdjustmentPercentage(decimal? priorLearningAdjustment, decimal? otherFundingAdjustment)
