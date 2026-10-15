@@ -18,4 +18,8 @@
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="InnerApi\Requests\CourseManagement\" />
+  </ItemGroup>
+
 </Project>
