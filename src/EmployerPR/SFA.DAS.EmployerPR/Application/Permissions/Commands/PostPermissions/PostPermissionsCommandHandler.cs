@@ -9,7 +9,7 @@ using SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships;
 
 namespace SFA.DAS.EmployerPR.Application.Permissions.Commands.PostPermissions;
 
-public class PostPermissionsCommandHandler(IProviderRelationshipsApiRestClient _providerRelationshipsApiRestClient) : IRequestHandler<PostPermissionsCommand, Unit>
+public class PostPermissionsCommandHandler(IProviderRelationshipsApiRestClient providerRelationshipsApiRestClient) : IRequestHandler<PostPermissionsCommand, Unit>
 {
     private const int PERMITS_APPROVAL = 1;
     private const int PERMITS_RECRUITNENT = 1;
@@ -18,13 +18,13 @@ public class PostPermissionsCommandHandler(IProviderRelationshipsApiRestClient _
     public async Task<Unit> Handle(PostPermissionsCommand command, CancellationToken cancellationToken)
     {
         Response<GetPermissionsResponse> permissionsResponse =
-            await _providerRelationshipsApiRestClient.GetPermissions(
+            await providerRelationshipsApiRestClient.GetPermissions(
                 command.Ukprn,
                 command.AccountLegalEntityId,
                 cancellationToken
         );
 
-        List<Operation> existingOperations = [];
+        List<Operation> existingOperations;
 
         switch (permissionsResponse.ResponseMessage.StatusCode)
         {
@@ -53,7 +53,7 @@ public class PostPermissionsCommandHandler(IProviderRelationshipsApiRestClient _
 
         if (command.Operations.Count == 0)
         {
-            await _providerRelationshipsApiRestClient.RemovePermissions(
+            await providerRelationshipsApiRestClient.RemovePermissions(
                 command.UserRef,
                 command.Ukprn!.Value,
                 command.AccountLegalEntityId,
@@ -65,7 +65,7 @@ public class PostPermissionsCommandHandler(IProviderRelationshipsApiRestClient _
         }
         else
         {
-            await _providerRelationshipsApiRestClient.PostPermissions(
+            await providerRelationshipsApiRestClient.PostPermissions(
                 command,
                 cancellationToken
             );
@@ -108,7 +108,7 @@ public class PostPermissionsCommandHandler(IProviderRelationshipsApiRestClient _
             CreatedBy = command.UserRef.ToString()
         };
 
-        await _providerRelationshipsApiRestClient.PostNotifications(
+        await providerRelationshipsApiRestClient.PostNotifications(
             new PostNotificationsRequest([notification]),
             cancellationToken
         );
