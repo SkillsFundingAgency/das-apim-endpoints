@@ -7,19 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Queries\**" />
-    <EmbeddedResource Remove="Queries\**" />
-    <None Remove="Queries\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\" />
-    <Folder Include="InnerApi\Requests\" />
-    <Folder Include="InnerApi\Responses\" />
+    <Folder Include="Queries\" />
   </ItemGroup>
 
 </Project>
