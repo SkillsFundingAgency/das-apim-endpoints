@@ -365,13 +365,13 @@ public class UpdateLearningRequestBodyBuilderTests
     }
 
     [Test]
-    public async Task Build_Sets_EnglishAndMaths_Amount_To_The_Value_From_Sld_Not_The_Inbound_Amount()
+    public async Task Build_Sets_EnglishAndMaths_Amount_To_The_Value_From_Sld()
     {
         // Arrange
         var command = BreaksInLearningTestHelper.CreateLearnerWithBreaksInLearning(false);
         command.UpdateLearnerRequest.Delivery.EnglishAndMaths =
         [
-            EnglishAndMathsCourse("60342287", new DateTime(2025, 9, 1), inboundAmount: 999m)
+            EnglishAndMathsCourse("60342287", new DateTime(2025, 9, 1))
         ];
 
         var englishAndMathsValueService = new Mock<IEnglishAndMathsValueService>();
@@ -440,7 +440,7 @@ public class UpdateLearningRequestBodyBuilderTests
     {
         // Arrange
         var createRequest = CreateLearnerRequestWithEnglishAndMaths(
-            EnglishAndMathsCourse("60342287", new DateTime(2025, 9, 1), inboundAmount: 999m));
+            EnglishAndMathsCourse("60342287", new DateTime(2025, 9, 1)));
 
         var englishAndMathsValueService = new Mock<IEnglishAndMathsValueService>();
         englishAndMathsValueService.Setup(x => x.GetValue("60342287", new DateTime(2025, 9, 1))).ReturnsAsync(1234.56m);
@@ -487,13 +487,12 @@ public class UpdateLearningRequestBodyBuilderTests
             englishAndMathsValueService);
     }
 
-    private static MathsAndEnglish EnglishAndMathsCourse(string learnAimRef, DateTime startDate, decimal inboundAmount = 0)
+    private static MathsAndEnglish EnglishAndMathsCourse(string learnAimRef, DateTime startDate)
     {
         return new MathsAndEnglish
         {
             LearnAimRef = learnAimRef,
             Course = "Maths",
-            Amount = inboundAmount,
             StartDate = startDate,
             EndDate = startDate.AddYears(1),
             LearningSupport = []

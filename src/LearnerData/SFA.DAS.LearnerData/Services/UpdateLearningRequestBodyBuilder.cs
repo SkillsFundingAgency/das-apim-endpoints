@@ -161,7 +161,6 @@ public class UpdateLearningRequestBodyBuilder(
                 var course = g.First();
                 return new MathsAndEnglishDetails
                 {
-                    Amount = course.Amount,
                     CompletionDate = course.CompletionDate,
                     LearnAimRef = course.LearnAimRef,
                     Course = course.Course,
@@ -182,7 +181,6 @@ public class UpdateLearningRequestBodyBuilder(
 
                 return new MathsAndEnglishDetails
                 {
-                    Amount = latestCourse.Amount,
                     CompletionDate = latestCourse.CompletionDate,
                     LearnAimRef = latestCourse.LearnAimRef,
                     Course = latestCourse.Course,
