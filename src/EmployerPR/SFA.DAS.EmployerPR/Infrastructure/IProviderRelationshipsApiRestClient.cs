@@ -31,7 +31,7 @@ public interface IProviderRelationshipsApiRestClient
     Task PostNotifications([Body] PostNotificationsRequest command, CancellationToken cancellationToken);
 
     [Delete("permissions")]
-    Task RemovePermissions([Query] Guid userRef, [Query] long ukprn, [Query] long accountLegalEntityId, CancellationToken cancellationToken);
+    Task RemovePermissions([Query] Guid userRef, [Query] long ukprn, [Query] long accountLegalEntityId, [Query] string? email, CancellationToken cancellationToken);
 
     [Get("requests/{requestId}")]
     [AllowAnyStatusCode]
