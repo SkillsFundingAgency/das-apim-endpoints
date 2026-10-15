@@ -528,7 +528,7 @@ public class WhenHandlingUpdateLearnerCommand
     {
         var fixture = new Fixture();
         var apiPutRequest = fixture.Create<UpdateLearningApiPutRequest>();
-        _updateLearningPutRequestBuilder.Setup(x => x.Build(command.Ukprn, command.UpdateLearnerRequest, command.LearnerKey)).Returns(apiPutRequest);
+        _updateLearningPutRequestBuilder.Setup(x => x.Build(command.Ukprn, command.UpdateLearnerRequest, command.LearnerKey)).ReturnsAsync(apiPutRequest);
         return apiPutRequest;
     }
 }

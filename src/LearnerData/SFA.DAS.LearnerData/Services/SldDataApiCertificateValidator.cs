@@ -29,28 +29,15 @@ public class SldDataApiCertificateValidator(SLDDataApiConfiguration configuratio
             return sslPolicyErrors == SslPolicyErrors.None;
         }
 
-        var trusted = IsTrusted(certificate);
+        if (!IsTrusted(certificate))
+        {
+            logger.LogWarning(
+                "SLD server certificate for {Host} does not match any configured thumbprint (subject {Subject}, expires {NotAfter:u}). Has SLD changed its certificate?",
+                request.RequestUri?.Host, certificate?.Subject, certificate?.NotAfter);
+            return false;
+        }
 
-        // Temporary diagnostics: only the first 5 characters of each thumbprint are logged
-        logger.LogInformation(
-            "SLD server certificate pinning for {Host}: {Result}. Presented thumbprint starts {PresentedPrefix}; {ConfiguredCount} configured thumbprint(s) start {ConfiguredPrefixes}. SslPolicyErrors {SslPolicyErrors}, subject {Subject}, issuer {Issuer}, expires {NotAfter:u}",
-            request.RequestUri?.Host,
-            trusted ? "trusted" : "REJECTED",
-            Prefix(certificate?.Thumbprint),
-            _trustedThumbprints.Count,
-            string.Join(", ", _trustedThumbprints.Select(Prefix)),
-            sslPolicyErrors,
-            certificate?.Subject,
-            certificate?.Issuer,
-            certificate?.NotAfter);
-
-        return trusted;
-    }
-
-    private static string Prefix(string? thumbprint)
-    {
-        var normalised = Normalise(thumbprint);
-        return normalised.Length > 5 ? normalised[..5] : normalised;
+        return true;
     }
 
     // Keep hex digits only, so spaces, colons and the hidden characters Windows adds when copying from the certificate dialog are ignored

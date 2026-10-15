@@ -66,4 +66,20 @@ public class WhenRegisteringSldDataApiServices
 
         client.Should().NotBeNull();
     }
+
+    [Test]
+    public void Then_the_english_and_maths_value_service_can_be_resolved()
+    {
+        var service = _provider.GetService<IEnglishAndMathsValueService>();
+
+        service.Should().BeOfType<EnglishAndMathsValueService>();
+    }
+
+    [Test]
+    public void Then_the_learning_request_body_builder_can_be_resolved_with_the_english_and_maths_value_service()
+    {
+        var builder = _provider.GetService<IUpdateLearningRequestBodyBuilder>();
+
+        builder.Should().NotBeNull();
+    }
 }

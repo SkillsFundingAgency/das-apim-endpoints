@@ -28,13 +28,11 @@ public static class AddApiServicesExtension
         services.TryAddSingleton(TimeProvider.System);
         services.AddTransient(typeof(IAccessTokenApiClient<>), typeof(AccessTokenApiClient<>));
         services.AddSingleton<SldDataApiCertificateValidator>();
-        services.AddTransient<SldDataApiLoggingHandler>();
         services.AddHttpClient(SldDataApiHttpClientFactory.ClientName)
             .ConfigurePrimaryHttpMessageHandler(serviceProvider => new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = serviceProvider.GetRequiredService<SldDataApiCertificateValidator>().IsServerCertificateValid
-            })
-            .AddHttpMessageHandler<SldDataApiLoggingHandler>();
+            });
         services.AddTransient<ISldDataApiClient<SLDDataApiConfiguration>>(serviceProvider => new SldDataApiClient(
             new AccessTokenApiClient<SLDDataApiConfiguration>(
                 serviceProvider.GetRequiredService<ILogger<AccessTokenApiClient<SLDDataApiConfiguration>>>(),
@@ -46,6 +44,7 @@ public static class AddApiServicesExtension
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
         services.AddTransient<ICourseService, CourseService>();
         services.AddTransient<IUpdateLearningRequestBodyBuilder, UpdateLearningRequestBodyBuilder>();
+        services.AddTransient<IEnglishAndMathsValueService, EnglishAndMathsValueService>();
         services.AddTransient<ICreateDraftLearningApiPostRequestBuilder, CreateDraftLearningApiPostRequestBuilder>();
         services.AddTransient<IUpdateLearningPutRequestBuilder, UpdateLearningPutRequestBuilder>();
         services.AddTransient<ICreateUnapprovedApprenticeshipLearningRequestBuilder, CreateUnapprovedApprenticeshipLearningRequestBuilder>();

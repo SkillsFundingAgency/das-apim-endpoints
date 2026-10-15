@@ -15,7 +15,7 @@ public static class LearnerBuilder
     // we can use this because the data being generated is for fm36 tests only.
     // these concrete class have their own tests to validate their behaviour.
     private static UpdateLearningPutRequestBuilder _updateLearningPutRequestBuilder = 
-        new UpdateLearningPutRequestBuilder(new UpdateLearningRequestBodyBuilder(new LearningSupportService(), new BreaksInLearningService(), new CostsService()));
+        new UpdateLearningPutRequestBuilder(new UpdateLearningRequestBodyBuilder(new LearningSupportService(), new BreaksInLearningService(), new CostsService(), new UnusedEnglishAndMathsValueService()));
 
     internal static Learning BuildLearningInnerApiResponse(TestLearner testLearner)
     {
@@ -25,7 +25,8 @@ public static class LearnerBuilder
         var firstOnProg = sldDelivery.OnProgramme.OrderBy(x => x.StartDate).First();
         var latestOnProg = sldDelivery.OnProgramme.OrderByDescending(x => x.StartDate).First();
 
-        var updateLearningRequest = _updateLearningPutRequestBuilder.Build(testLearner.Ukprn, testLearner.UpdateLearnerRequest, testLearner.LearningKey);
+        // Safe to block: the only async work is UnusedEnglishAndMathsValueService, which completes synchronously
+        var updateLearningRequest = _updateLearningPutRequestBuilder.Build(testLearner.Ukprn, testLearner.UpdateLearnerRequest, testLearner.LearningKey).GetAwaiter().GetResult();
 
         return new Learning
         {
@@ -205,5 +206,12 @@ public static class LearnerBuilder
         }
 
         return instalments;
+    }
+
+    // The fm36 test data takes English and Maths amounts straight from the test learner, not from the built Learning request,
+    // so no value needs looking up
+    private sealed class UnusedEnglishAndMathsValueService : IEnglishAndMathsValueService
+    {
+        public Task<decimal> GetValue(string learnAimRef, DateTime startDate) => Task.FromResult(0m);
     }
 }

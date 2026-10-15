@@ -9,17 +9,18 @@ namespace SFA.DAS.LearnerData.Services;
 
 public interface IUpdateLearningRequestBodyBuilder
 {
-    UpdateLearningRequestBody Build(long ukprn, UpdateLearnerRequest updateLearnerRequest);
-    UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest, int academicYear, LearningType learningType);
+    Task<UpdateLearningRequestBody> Build(long ukprn, UpdateLearnerRequest updateLearnerRequest);
+    Task<UpdateLearningRequestBody> Build(long ukprn, CreateLearnerRequest createLearnerRequest, int academicYear, LearningType learningType);
 }
 
 public class UpdateLearningRequestBodyBuilder(
     ILearningSupportService learningSupportService,
     IBreaksInLearningService breaksInLearningService,
-    ICostsService costsService)
+    ICostsService costsService,
+    IEnglishAndMathsValueService englishAndMathsValueService)
     : IUpdateLearningRequestBodyBuilder
 {
-    public UpdateLearningRequestBody Build(long ukprn, UpdateLearnerRequest updateLearnerRequest)
+    public Task<UpdateLearningRequestBody> Build(long ukprn, UpdateLearnerRequest updateLearnerRequest)
     {
         return BuildInternal(
             ukprn,
@@ -30,7 +31,7 @@ public class UpdateLearningRequestBodyBuilder(
             academicYear: 0);
     }
 
-    public UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest, int academicYear, LearningType learningType)
+    public Task<UpdateLearningRequestBody> Build(long ukprn, CreateLearnerRequest createLearnerRequest, int academicYear, LearningType learningType)
     {
         return BuildInternal(
             ukprn,
@@ -42,7 +43,7 @@ public class UpdateLearningRequestBodyBuilder(
             learningType);
     }
 
-    private UpdateLearningRequestBody BuildInternal(long ukprn,
+    private async Task<UpdateLearningRequestBody> BuildInternal(long ukprn,
         LearnerRequestDetails learner,
         List<MathsAndEnglish> englishAndMaths,
         List<OnProgrammeRequestDetails> onProgramme,
@@ -55,6 +56,7 @@ public class UpdateLearningRequestBodyBuilder(
         var costs = costsService.GetCosts(allMatchingOnProgrammes);
         var onProgrammeDetails = BuildOnProgrammeDetails(firstOnProgramme, latestOnProgramme, allMatchingOnProgrammes, costs);
         var englishAndMathsCourses = BuildEnglishAndMathsDetails(englishAndMaths ?? new List<MathsAndEnglish>());
+        await SetEnglishAndMathsAmounts(englishAndMathsCourses);
 
         //Determine the effective end date of the latest OnProgramme
         var onProgrammeEndDate = new[]
@@ -193,6 +195,17 @@ public class UpdateLearningRequestBodyBuilder(
                 };
             }
         }).ToList();
+    }
+
+    // SLD doesn't send the value of an English and Maths course, so it is looked up from SLD's reference data instead.
+    // This happens before anything is sent to Learning so that, if the value can't be found, nothing in the submission is processed.
+    // StartDate is the course's first start date, which is the one its value depends on even after a break in learning.
+    private async Task SetEnglishAndMathsAmounts(List<MathsAndEnglishDetails> englishAndMathsCourses)
+    {
+        foreach (var course in englishAndMathsCourses)
+        {
+            course.Amount = await englishAndMathsValueService.GetValue(course.LearnAimRef, course.StartDate);
+        }
     }
 
     private static decimal? ResolveCombinedFundingAdjustmentPercentage(decimal? priorLearningAdjustment, decimal? otherFundingAdjustment)
