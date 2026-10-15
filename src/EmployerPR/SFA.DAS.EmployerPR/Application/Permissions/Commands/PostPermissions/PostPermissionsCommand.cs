@@ -12,5 +12,5 @@ public class PostPermissionsCommand : IRequest<Unit>
     public required long AccountLegalEntityId { get; set; }
 
     public required List<Operation> Operations { get; set; } = [];
-    public string Email { get; set; }
+    public string? Email { get; set; }
 }
