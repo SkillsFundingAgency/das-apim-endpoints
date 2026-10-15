@@ -27,7 +27,8 @@ public class GetAllCoursesQueryHandler(IRoatpCourseManagementApiClient<RoatpV2Ap
                     CourseType = standard.CourseType,
                     LearningType = standard.LearningType,
                     Title = standard.Title,
-                    Level = standard.Level
+                    Level = standard.Level,
+                    LastDateStarts = standard.LastDateStarts
                 })
                 .ToList()
         };

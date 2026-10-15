@@ -83,6 +83,7 @@ public abstract class BaseLearnerApiPutResponse
 		Reinstated = 16,
         NewApprenticeshipLearner = 17,
         EnglishAndMathsLearningSupport = 18,
-        StartDate = 19
+        WithdrawalReasonChanged = 19,
+		StartDate = 20
     }
 }
