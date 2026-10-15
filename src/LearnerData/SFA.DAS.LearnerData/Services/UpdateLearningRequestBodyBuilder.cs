@@ -9,17 +9,18 @@ namespace SFA.DAS.LearnerData.Services;
 
 public interface IUpdateLearningRequestBodyBuilder
 {
-    UpdateLearningRequestBody Build(long ukprn, UpdateLearnerRequest updateLearnerRequest);
-    UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest, int academicYear, LearningType learningType);
+    Task<UpdateLearningRequestBody> Build(long ukprn, UpdateLearnerRequest updateLearnerRequest);
+    Task<UpdateLearningRequestBody> Build(long ukprn, CreateLearnerRequest createLearnerRequest, int academicYear, LearningType learningType);
 }
 
 public class UpdateLearningRequestBodyBuilder(
     ILearningSupportService learningSupportService,
     IBreaksInLearningService breaksInLearningService,
-    ICostsService costsService)
+    ICostsService costsService,
+    IEnglishAndMathsValueService englishAndMathsValueService)
     : IUpdateLearningRequestBodyBuilder
 {
-    public UpdateLearningRequestBody Build(long ukprn, UpdateLearnerRequest updateLearnerRequest)
+    public Task<UpdateLearningRequestBody> Build(long ukprn, UpdateLearnerRequest updateLearnerRequest)
     {
         return BuildInternal(
             ukprn,
@@ -30,7 +31,7 @@ public class UpdateLearningRequestBodyBuilder(
             academicYear: 0);
     }
 
-    public UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest, int academicYear, LearningType learningType)
+    public Task<UpdateLearningRequestBody> Build(long ukprn, CreateLearnerRequest createLearnerRequest, int academicYear, LearningType learningType)
     {
         return BuildInternal(
             ukprn,
@@ -42,7 +43,7 @@ public class UpdateLearningRequestBodyBuilder(
             learningType);
     }
 
-    private UpdateLearningRequestBody BuildInternal(long ukprn,
+    private async Task<UpdateLearningRequestBody> BuildInternal(long ukprn,
         LearnerRequestDetails learner,
         List<MathsAndEnglish> englishAndMaths,
         List<OnProgrammeRequestDetails> onProgramme,
@@ -54,7 +55,7 @@ public class UpdateLearningRequestBodyBuilder(
 
         var costs = costsService.GetCosts(allMatchingOnProgrammes);
         var onProgrammeDetails = BuildOnProgrammeDetails(firstOnProgramme, latestOnProgramme, allMatchingOnProgrammes, costs);
-        var englishAndMathsCourses = BuildEnglishAndMathsDetails(englishAndMaths ?? new List<MathsAndEnglish>());
+        var englishAndMathsCourses = await BuildEnglishAndMathsDetails(englishAndMaths ?? new List<MathsAndEnglish>());
 
         //Determine the effective end date of the latest OnProgramme
         var onProgrammeEndDate = new[]
@@ -148,18 +149,19 @@ public class UpdateLearningRequestBodyBuilder(
         };
     }
 
-    private List<MathsAndEnglishDetails> BuildEnglishAndMathsDetails(List<MathsAndEnglish> mathsAndEnglish)
+    private async Task<List<MathsAndEnglishDetails>> BuildEnglishAndMathsDetails(List<MathsAndEnglish> mathsAndEnglish)
     {
         var groupedCourses = mathsAndEnglish.GroupBy(c => c.LearnAimRef);
+        var englishAndMathsCourses = new List<MathsAndEnglishDetails>();
 
-        return groupedCourses.Select(g =>
+        foreach (var g in groupedCourses)
         {
             if(g.Count() == 1)
             {
                 var course = g.First();
-                return new MathsAndEnglishDetails
+                englishAndMathsCourses.Add(new MathsAndEnglishDetails
                 {
-                    Amount = course.Amount,
+                    Amount = await englishAndMathsValueService.GetValue(course.LearnAimRef, course.StartDate),
                     CompletionDate = course.CompletionDate,
                     LearnAimRef = course.LearnAimRef,
                     Course = course.Course,
@@ -169,7 +171,7 @@ public class UpdateLearningRequestBodyBuilder(
                     WithdrawalDate = course.WithdrawalDate,
                     PauseDate = course.PauseDate,
                     BreaksInLearning = new List<BreakInLearning>()
-                };
+                });
             }
             else
             {
@@ -178,9 +180,9 @@ public class UpdateLearningRequestBodyBuilder(
                 var firstCourse = orderedCourses.First();
                 var latestCourse = orderedCourses.Last();
 
-                return new MathsAndEnglishDetails
+                englishAndMathsCourses.Add(new MathsAndEnglishDetails
                 {
-                    Amount = latestCourse.Amount,
+                    Amount = await englishAndMathsValueService.GetValue(firstCourse.LearnAimRef, firstCourse.StartDate),
                     CompletionDate = latestCourse.CompletionDate,
                     LearnAimRef = latestCourse.LearnAimRef,
                     Course = latestCourse.Course,
@@ -190,9 +192,11 @@ public class UpdateLearningRequestBodyBuilder(
                     WithdrawalDate = latestCourse.WithdrawalDate,
                     PauseDate = latestCourse.PauseDate,
                     BreaksInLearning = breaksInLearning
-                };
+                });
             }
-        }).ToList();
+        }
+
+        return englishAndMathsCourses;
     }
 
     private static decimal? ResolveCombinedFundingAdjustmentPercentage(decimal? priorLearningAdjustment, decimal? otherFundingAdjustment)
