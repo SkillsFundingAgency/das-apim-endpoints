@@ -13,5 +13,6 @@ public sealed record PostEmployerFundingProjectionRequest(long AccountId, PostEm
 public class PostEmployerFundingProjectionRequestData
 {
     public int Months { get; set; } = 6;
+    public required decimal CurrentLevyFunds { get; set; } = 0m;
     public List<LevyInMonthSummary> HistoricLevyIn { get; set; } = [];
 }

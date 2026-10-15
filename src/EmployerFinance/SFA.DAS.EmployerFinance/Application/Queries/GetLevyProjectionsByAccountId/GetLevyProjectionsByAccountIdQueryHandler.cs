@@ -26,7 +26,7 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
         var lastSubmissionTask = financeApiClient.Get<GetLevyLastSubmissionDateResponse>(
             new GetLevyLastSubmissionDateRequest(request.AccountId));
 
-        var levySummaryTask = financeApiClient.Get<GetLevySummaryByAccountIdResponse>(
+        var levySummaryTask = await financeApiClient.Get<GetLevySummaryByAccountIdResponse>(
             new GetLevySummaryByAccountIdRequest(request.AccountId));
 
         var declarations = await FetchHistoricTransactionLinesDataAsync(now, request.AccountId);
@@ -35,15 +35,16 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
             new PostEmployerFundingProjectionRequest(request.AccountId, new PostEmployerFundingProjectionRequestData
             {
                 Months = request.Months,
+                CurrentLevyFunds = levySummaryTask.CurrentLevyFunds,
                 HistoricLevyIn = BuildLevyInSummary(declarations)
             }));
 
-        await Task.WhenAll(lastSubmissionTask, levySummaryTask, projectionTask);
+        await Task.WhenAll(lastSubmissionTask, projectionTask);
 
         return new GetLevyProjectionsByAccountIdQueryResult
         {
             AccountId = request.AccountId,
-            Summary = levySummaryTask.Result,
+            Summary = levySummaryTask,
             Projections = projectionTask.Result.Body.Projections,
             LatestLevyDeclarationInDate = lastSubmissionTask.Result.LastSubmissionDate ?? DateTime.MinValue
         };
