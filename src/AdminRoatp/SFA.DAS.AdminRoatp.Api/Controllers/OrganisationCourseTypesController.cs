@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.AdminRoatp.Api.Models;
 using SFA.DAS.AdminRoatp.Application.Commands.UpdateOrganisationCourseTypes;
 
 namespace SFA.DAS.AdminRoatp.Api.Controllers;

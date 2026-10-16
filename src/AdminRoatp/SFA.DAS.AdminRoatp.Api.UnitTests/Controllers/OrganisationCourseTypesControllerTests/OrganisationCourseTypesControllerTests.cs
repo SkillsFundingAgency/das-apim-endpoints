@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.AdminRoatp.Api.Controllers;
+using SFA.DAS.AdminRoatp.Api.Models;
 using SFA.DAS.AdminRoatp.Application.Commands.UpdateOrganisationCourseTypes;
 using SFA.DAS.Testing.AutoFixture;
 
