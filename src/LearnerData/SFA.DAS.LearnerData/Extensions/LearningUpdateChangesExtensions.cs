@@ -17,19 +17,16 @@ public static class LearningUpdateChangesExtensions
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices)
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.DateOfBirthChanged)
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Care)
-               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.AchievementDateChanged);
+               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.AchievementDateChanged)
+               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.OnprogrammeLearningSupport);
     }
 
     public static bool HasEnglishAndMathsUpdate(this List<UpdateLearnerApiPutResponse.LearningUpdateChanges> changes)
     {
         return changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMaths)
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsWithdrawal)
-               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsBreaksInLearningUpdated);
-    }
-
-    public static bool HasLearningSupportUpdate(this List<UpdateLearnerApiPutResponse.LearningUpdateChanges> changes)
-    {
-        return changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport);
+               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsBreaksInLearningUpdated)
+               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsLearningSupport);
     }
 
     public static bool HasPersonalDetailsOnly(this List<UpdateLearnerApiPutResponse.LearningUpdateChanges> changes)

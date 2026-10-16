@@ -34,7 +34,8 @@ public class GetAllCoursesQueryHandlerTests
                     LearningType = Common.Domain.Types.LearningType.FoundationApprenticeship,
                     Title = "Example course",
                     Level = 2,
-                    ApprovalBody = "Not returned"
+                    ApprovalBody = "Not returned",
+                    LastDateStarts = new DateTime(2026, 9, 1)
                 }
             ]
         };
@@ -55,7 +56,8 @@ public class GetAllCoursesQueryHandlerTests
                     CourseType = CourseType.ShortCourse,
                     LearningType = Common.Domain.Types.LearningType.FoundationApprenticeship,
                     Title = "Example course",
-                    Level = 2
+                    Level = 2,
+                    LastDateStarts = new DateTime(2026, 9, 1)
                 }
             ]);
             apiClientMock.Verify(
