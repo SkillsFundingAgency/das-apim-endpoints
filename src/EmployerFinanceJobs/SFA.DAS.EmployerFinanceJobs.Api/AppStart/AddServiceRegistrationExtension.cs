@@ -21,5 +21,6 @@ public static class AddServiceRegistrationExtension
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IFundingProjectionApiClient<FundingProjectionApiConfiguration>, FundingProjectionApiClient>();
         services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
+        services.AddTransient<IFinanceApiClient<FinanceApiConfiguration>, FinanceApiClient>();
     }
 }

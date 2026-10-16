@@ -5,7 +5,7 @@ namespace SFA.DAS.EmployerFinanceJobs.InnerApi.Requests;
 
 public sealed record PostApprenticeshipPaymentSummaryRequest(long AccountId, long ApprenticeshipId, PostApprenticeshipPaymentSummaryRequestData Payload) : IPostApiRequest
 {
-    public string PostUrl => $"api/employers/{AccountId}/apprenticeship-payment-summary/{ApprenticeshipId}";
+    public string PostUrl => $"api/employer/{AccountId}/apprenticeship-payment-summary/{ApprenticeshipId}";
     public object Data { get; set; } = Payload;
 }
 

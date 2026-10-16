@@ -8,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using SFA.DAS.EmployerFinanceJobs.Commands.ImportLearnersByAccountId;
 
 namespace SFA.DAS.EmployerFinanceJobs.Api;
 
@@ -40,6 +41,7 @@ public static class Startup
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             PropertyNameCaseInsensitive = true,
         });
+        services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(ImportLearnersByAccountIdCommand).Assembly));
         services.AddServiceRegistration();
 
         services.Configure<RouteOptions>(options =>
