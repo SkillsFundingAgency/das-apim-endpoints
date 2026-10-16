@@ -89,5 +89,31 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers
 
         }
 
+        [Test]
+        public async Task Get_Response_BadRequest_Returns_400_With_Error_Body()
+        {
+            // Arrange
+            var request = _fixture.Create<GetApplicationFormByIdQuery>();
+            BaseMediatrResponse<GetApplicationFormByIdQueryResponse> wrapper = new()
+            {
+                Success = false,
+                ErrorCode = ErrorCodes.BadRequest,
+                ErrorMessage = "{\"errors\":{}}"
+            };
+
+            _mediatorMock
+                .Setup(m => m.Send(It.IsAny<GetApplicationFormByIdQuery>(), default))
+                .ReturnsAsync(wrapper);
+
+            // Act
+            var result = await _controller.SendRequestAsync(request);
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<ContentResult>());
+            var content = (ContentResult)result;
+            Assert.That(content.StatusCode, Is.EqualTo(400));
+            Assert.That(content.Content, Is.EqualTo("{\"errors\":{}}"));
+        }
+
     }
 }
