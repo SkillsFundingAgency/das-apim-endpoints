@@ -40,6 +40,7 @@ internal class WhenHandlingPostJobCommand
                 request.PostUrl == $"api/jobs/{command.Id}" &&
                 ((PostJobRequestData)request.Data).AccountId == command.Data.AccountId &&
                 ((PostJobRequestData)request.Data).JobName == command.Data.JobName &&
+                ((PostJobRequestData)request.Data).JobState == command.Data.JobState &&
                 ((PostJobRequestData)request.Data).LastSuccessfulImportDate == command.Data.LastSuccessfulImportDate &&
                 ((PostJobRequestData)request.Data).LastAttemptedDate == command.Data.LastAttemptedDate &&
                 ((PostJobRequestData)request.Data).LastAttemptSuccessful == command.Data.LastAttemptSuccessful &&

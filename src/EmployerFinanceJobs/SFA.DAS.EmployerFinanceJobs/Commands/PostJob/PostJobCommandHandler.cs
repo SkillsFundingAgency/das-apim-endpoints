@@ -18,6 +18,7 @@ public sealed class PostJobCommandHandler(
             {
                 AccountId = request.Data.AccountId,
                 JobName = request.Data.JobName,
+                JobState = request.Data.JobState,
                 LastSuccessfulImportDate = request.Data.LastSuccessfulImportDate,
                 LastAttemptedDate = request.Data.LastAttemptedDate,
                 LastAttemptSuccessful = request.Data.LastAttemptSuccessful,

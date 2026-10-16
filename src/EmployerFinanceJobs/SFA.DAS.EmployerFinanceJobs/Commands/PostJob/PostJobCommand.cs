@@ -7,6 +7,7 @@ public sealed record PostJobCommand(long Id, PostJobCommandData Data) : IRequest
 public sealed record PostJobCommandData(
     long AccountId,
     string JobName,
+    string JobState,
     DateTime LastSuccessfulImportDate,
     DateTime LastAttemptedDate,
     bool LastAttemptSuccessful,

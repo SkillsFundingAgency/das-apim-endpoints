@@ -12,6 +12,7 @@ public sealed record PostJobRequestData
 {
     public long AccountId { get; set; }
     public string JobName { get; set; } = string.Empty;
+    public string JobState { get; set; } = string.Empty;
     public DateTime LastSuccessfulImportDate { get; set; }
     public DateTime LastAttemptedDate { get; set; }
     public bool LastAttemptSuccessful { get; set; }

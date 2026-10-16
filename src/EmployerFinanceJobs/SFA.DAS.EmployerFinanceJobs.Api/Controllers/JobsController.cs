@@ -22,6 +22,7 @@ public class JobsController(IMediator mediator) : ControllerBase
             new PostJobCommandData(
                 request.AccountId,
                 request.JobName,
+                request.JobState,
                 request.LastSuccessfulImportDate,
                 request.LastAttemptedDate,
                 request.LastAttemptSuccessful,
