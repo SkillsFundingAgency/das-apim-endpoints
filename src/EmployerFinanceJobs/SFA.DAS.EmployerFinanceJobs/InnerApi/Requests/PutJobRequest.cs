@@ -2,13 +2,13 @@ using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.EmployerFinanceJobs.InnerApi.Requests;
 
-public sealed record PostJobRequest(long Id, PostJobRequestData Payload) : IPostApiRequest
+public sealed record PutJobRequest(Guid Id, PutJobRequestData Payload) : IPutApiRequest
 {
-    public string PostUrl => $"api/jobs/{Id}";
+    public string PutUrl => $"api/jobs/{Id}";
     public object Data { get; set; } = Payload;
 }
 
-public sealed record PostJobRequestData
+public sealed record PutJobRequestData
 {
     public long AccountId { get; set; }
     public string JobName { get; set; } = string.Empty;

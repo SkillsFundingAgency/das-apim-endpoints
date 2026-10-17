@@ -2,7 +2,7 @@ using MediatR;
 
 namespace SFA.DAS.EmployerFinanceJobs.Commands.PostJob;
 
-public sealed record PostJobCommand(long Id, PostJobCommandData Data) : IRequest<Unit>;
+public sealed record PostJobCommand(Guid Id, PostJobCommandData Data) : IRequest<Unit>;
 
 public sealed record PostJobCommandData(
     long AccountId,

@@ -14,7 +14,7 @@ internal class JobsControllerTests
 {
     [Test, MoqAutoData]
     public async Task PostJob_Sends_The_Route_Id_And_Body_To_The_Handler(
-        long id,
+        Guid id,
         PostJobRequest request,
         Mock<IMediator> mediator)
     {

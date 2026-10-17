@@ -13,8 +13,8 @@ public sealed class PostJobCommandHandler(
 {
     public async Task<Unit> Handle(PostJobCommand request, CancellationToken cancellationToken)
     {
-        var response = await fundingProjectionApiClient.PostWithResponseCode<NullResponse>(
-            new PostJobRequest(request.Id, new PostJobRequestData
+        var response = await fundingProjectionApiClient.PutWithResponseCode<NullResponse>(
+            new PutJobRequest(request.Id, new PutJobRequestData
             {
                 AccountId = request.Data.AccountId,
                 JobName = request.Data.JobName,

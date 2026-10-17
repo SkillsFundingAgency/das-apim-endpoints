@@ -9,12 +9,12 @@ namespace SFA.DAS.EmployerFinanceJobs.Api.Controllers;
 [ApiController]
 public class JobsController(IMediator mediator) : ControllerBase
 {
-    [HttpPost("{id:long}")]
+    [HttpPost("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IResult> PostJob(
-        long id,
+        Guid id,
         [FromBody] PostJobRequest request)
     {
         await mediator.Send(new PostJobCommand(
