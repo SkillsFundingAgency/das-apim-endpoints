@@ -1,143 +1,148 @@
-﻿using SFA.DAS.EmployerFinance.Application.Queries.GetLevyProjectionsByAccountId;
+﻿#nullable enable
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.EmployerFinance.Application.Queries.GetLevyProjectionsByAccountId;
 using SFA.DAS.EmployerFinance.InnerApi.Requests.Finance;
+using SFA.DAS.EmployerFinance.InnerApi.Responses;
 using SFA.DAS.EmployerFinance.InnerApi.Responses.Finance;
 using SFA.DAS.EmployerFinance.Models.Projections;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetLevyProjectionsByAccountId;
 
 [TestFixture]
 internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
 {
-    private static void SetupTransactionsResponse(
-        Mock<IFinanceApiClient<FinanceApiConfiguration>> mock,
-        long accountId,
-        List<LevyDeclaration> response)
-    {
-        mock.Setup(c => c.Get<List<LevyDeclaration>>(
-                It.Is<GetLevyDeclarationSummaryByDate>(r =>
-                    r.AccountId == accountId 
-                    && r.FromDate == It.IsAny<DateTime>()
-                    && r.ToDate == It.IsAny<DateTime>())))
-            .ReturnsAsync(response);
-    }
-
-    private static void SetupLastSubmissionDateResponse(
-        Mock<IFinanceApiClient<FinanceApiConfiguration>> mock,
-        long accountId,
-        GetLevyLastSubmissionDateResponse response)
-    {
-        mock.Setup(c => c.Get<GetLevyLastSubmissionDateResponse>(
-                It.Is<GetLevyLastSubmissionDateRequest>(r =>
-                    r.AccountId == accountId)))
-            .ReturnsAsync(response);
-    }
-
-    private static void SetupGetLevySummary(Mock<IFinanceApiClient<FinanceApiConfiguration>> mock,
-        long accountId,
-        GetLevySummaryByAccountIdResponse response)
-    {
-        mock.Setup(c => c.Get<GetLevySummaryByAccountIdResponse>(
-                It.Is<GetLevySummaryByAccountIdRequest>(r =>
-                    r.AccountId == accountId)))
-            .ReturnsAsync(response);
-    }
-
     [Test, MoqAutoData]
-    public async Task Then_The_Default_Number_Of_Months_Of_Projections_Are_Returned_With_Empty_Values_When_No_Previous_Transactions_Are_Available(
+    public async Task Then_The_Projection_Is_Returned(
         long accountId,
         DateTime lastSubmissionDate,
-        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockFinanceApiClient,
-        [Greedy] GetLevyProjectionsByAccountIdQueryHandler handler)
+        GetLevySummaryByAccountIdResponse levySummaryByAccountIdResponse,
+        EstimatesTimeline estimatesTimeline,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeApiClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> projectionApiClient,
+        [Greedy] GetLevyProjectionsByAccountIdQueryHandler sut)
     {
-        // Arrange
+        // arrange
         var now = DateTime.UtcNow;
-        var query = new GetLevyProjectionsByAccountIdQuery(accountId);
-        SetupTransactionsResponse(mockFinanceApiClient, accountId, []);
-        SetupLastSubmissionDateResponse(mockFinanceApiClient, accountId, new GetLevyLastSubmissionDateResponse { LastSubmissionDate = lastSubmissionDate });
-        SetupGetLevySummary(mockFinanceApiClient, accountId, new GetLevySummaryByAccountIdResponse { CurrentLevyFunds = 0m });
+        var request = new GetLevyProjectionsByAccountIdQuery(accountId);
 
+        // Convert now to HMRC payroll period
+        short payrollMonth = now.Month >= 4
+            ? (short)(now.Month - 3)
+            : (short)(now.Month + 9);
 
-        // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var startYear = now.Month >= 4 ? now.Year % 100 : (now.Year - 1) % 100;
+        var payrollYear = $"{startYear:D2}-{startYear + 1:D2}";
 
-        // Assert
-        result.Should().NotBeNull();
-        result.Projections.Should().HaveCount(query.Months);
-        result.Projections.Should().OnlyContain(p => p.LevyIn == 0);
-        result.Projections[0].CalendarPeriodMonth.Should().Be(now.Month);
-    }
-    
-    
-    
-    
-    [Test, MoqAutoData]
-    public async Task Then_The_Projected_Months_Are_In_Chronological_Order(
-        long accountId,
-        DateTime lastSubmissionDate,
-        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockFinanceApiClient,
-        [Greedy] GetLevyProjectionsByAccountIdQueryHandler handler)
-    {
-        // Arrange
-        var now = DateTime.UtcNow;
-        var query = new GetLevyProjectionsByAccountIdQuery(accountId);
-        SetupTransactionsResponse(mockFinanceApiClient, accountId, []);
-        SetupLastSubmissionDateResponse(mockFinanceApiClient, accountId, new GetLevyLastSubmissionDateResponse { LastSubmissionDate = lastSubmissionDate });
-        SetupGetLevySummary(mockFinanceApiClient, accountId, new GetLevySummaryByAccountIdResponse { CurrentLevyFunds = 0m });
+        GetLevyLastSubmissionDateRequest? capturedLastSubmissionDateRequest = null;
+        financeApiClient
+            .Setup(x => x.Get<GetLevyLastSubmissionDateResponse>(It.IsAny<GetLevyLastSubmissionDateRequest>()))
+            .Callback<IGetApiRequest>(r => capturedLastSubmissionDateRequest = r as GetLevyLastSubmissionDateRequest)
+            .ReturnsAsync(new GetLevyLastSubmissionDateResponse { LastSubmissionDate = lastSubmissionDate });
 
-        // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        GetLevySummaryByAccountIdRequest? capturedLevySummaryByAccountIdRequest = null;
+        financeApiClient
+            .Setup(x => x.Get<GetLevySummaryByAccountIdResponse>(It.IsAny<GetLevySummaryByAccountIdRequest>()))
+            .Callback<IGetApiRequest>(r => capturedLevySummaryByAccountIdRequest = r as GetLevySummaryByAccountIdRequest)
+            .ReturnsAsync(levySummaryByAccountIdResponse);
 
-        // Assert
-        result.Should().NotBeNull();
-        foreach (var projection in result.Projections)
-        {
-            projection.CalendarPeriodMonth.Should().Be(now.Month);
-            projection.CalendarPeriodYear.Should().Be(now.Year);
-            now = now.AddMonths(1);
-        }
-    }
+        GetLevyDeclarationSummaryByDate? capturedAccountTransactionSummaryByDateRequest = null;
+        financeApiClient
+            .Setup(x => x.Get<List<LevyDeclaration>>(It.IsAny<GetLevyDeclarationSummaryByDate>()))
+            .Callback<IGetApiRequest>(r => capturedAccountTransactionSummaryByDateRequest = r as GetLevyDeclarationSummaryByDate)
+            .ReturnsAsync([
+                new LevyDeclaration { PayrollMonth = payrollMonth, PayrollYear = payrollYear, TopUp = 500m, TotalAmount = 1000m },
+                new LevyDeclaration { PayrollMonth = payrollMonth, PayrollYear = payrollYear, TopUp = 0m, TotalAmount = 500m },
+                new LevyDeclaration { PayrollMonth = payrollMonth, PayrollYear = payrollYear, TopUp = 0m, TotalAmount = 100m },
+            ]);
+        
+        PostEmployerFundingProjectionRequest? capturedEmployerFundingProjectionRequest = null;
+        projectionApiClient
+            .Setup(x => x.PostWithResponseCode<EstimatesTimeline>(It.IsAny<PostEmployerFundingProjectionRequest>(), true))
+            .Callback<IPostApiRequest, bool>((r, _) => capturedEmployerFundingProjectionRequest = r as PostEmployerFundingProjectionRequest)
+            .ReturnsAsync(new ApiResponse<EstimatesTimeline>(estimatesTimeline, HttpStatusCode.OK, null!));
 
-    [Test, MoqAutoData]
-    public async Task Then_The_Number_Of_Requested_Months_Is_Returned(
-        long accountId,
-        DateTime lastSubmissionDate,
-        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockFinanceApiClient,
-        [Greedy] GetLevyProjectionsByAccountIdQueryHandler handler)
-    {
-        // Arrange
-        var query = new GetLevyProjectionsByAccountIdQuery(accountId, 17);
-        SetupTransactionsResponse(mockFinanceApiClient, accountId, []);
-        SetupLastSubmissionDateResponse(mockFinanceApiClient, accountId, new GetLevyLastSubmissionDateResponse { LastSubmissionDate = lastSubmissionDate });
-        SetupGetLevySummary(mockFinanceApiClient, accountId, new GetLevySummaryByAccountIdResponse { CurrentLevyFunds = 0m });
+        List<LevyInMonthSummary> expectedHistoricLevyIn = [new(new DateOnly(now.Year, now.Month, 1), 1100m)];
+        
+        // act
+        var result = await sut.Handle(request, CancellationToken.None);
 
-        // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        // assert
+        capturedLastSubmissionDateRequest.Should().NotBeNull();
+        capturedLastSubmissionDateRequest!.AccountId.Should().Be(request.AccountId);
+        
+        capturedLevySummaryByAccountIdRequest.Should().NotBeNull();
+        capturedLevySummaryByAccountIdRequest!.AccountId.Should().Be(request.AccountId);
+        
+        capturedAccountTransactionSummaryByDateRequest.Should().NotBeNull();
+        capturedAccountTransactionSummaryByDateRequest!.AccountId.Should().Be(request.AccountId);
+        
+        capturedEmployerFundingProjectionRequest.Should().NotBeNull();
+        capturedEmployerFundingProjectionRequest!.AccountId.Should().Be(request.AccountId);
+        capturedEmployerFundingProjectionRequest!.PostData.Months.Should().Be(6);
+        capturedEmployerFundingProjectionRequest!.PostData.HistoricLevyIn.Should().BeEquivalentTo(expectedHistoricLevyIn);
 
-        // Assert
-        result.Should().NotBeNull();
-        result.Projections.Should().HaveCount(query.Months);
-    }
-
-    [Test, MoqAutoData]
-    public async Task Then_The_Latest_Levy_Declaration_Date_Is_Returned(
-        long accountId,
-        DateTime lastSubmissionDate,
-        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockFinanceApiClient,
-        [Greedy] GetLevyProjectionsByAccountIdQueryHandler handler)
-    {
-        // Arrange
-        var query = new GetLevyProjectionsByAccountIdQuery(accountId);
-        SetupTransactionsResponse(mockFinanceApiClient, accountId, []);
-        SetupLastSubmissionDateResponse(mockFinanceApiClient, accountId, new GetLevyLastSubmissionDateResponse { LastSubmissionDate = lastSubmissionDate });
-        SetupGetLevySummary(mockFinanceApiClient, accountId, new GetLevySummaryByAccountIdResponse { CurrentLevyFunds = 0m });
-        // Act
-        var result = await handler.Handle(query, CancellationToken.None);
-        // Assert
-        result.Should().NotBeNull();
+        result.AccountId.Should().Be(request.AccountId);
+        result.Summary.Should().BeEquivalentTo(levySummaryByAccountIdResponse);
+        result.Projections.Should().BeEquivalentTo(estimatesTimeline.Projections);
         result.LatestLevyDeclarationInDate.Should().Be(lastSubmissionDate);
+    }
+    
+    [Test, MoqAutoData]
+    public async Task Then_The_Handler_Sums_The_Transactions_Before_Projection(
+        long accountId,
+        DateTime lastSubmissionDate,
+        GetLevySummaryByAccountIdResponse levySummaryByAccountIdResponse,
+        EstimatesTimeline estimatesTimeline,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeApiClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> projectionApiClient,
+        [Greedy] GetLevyProjectionsByAccountIdQueryHandler sut)
+    {
+        // arrange
+        var now = DateTime.UtcNow;
+        var request = new GetLevyProjectionsByAccountIdQuery(accountId);
+
+        // Convert now to HMRC payroll period
+        short payrollMonth = now.Month >= 4
+            ? (short)(now.Month - 3)
+            : (short)(now.Month + 9);
+
+        var startYear = now.Month >= 4 ? now.Year % 100 : (now.Year - 1) % 100;
+        var payrollYear = $"{startYear:D2}-{startYear + 1:D2}";
+
+        financeApiClient
+            .Setup(x => x.Get<GetLevyLastSubmissionDateResponse>(It.IsAny<GetLevyLastSubmissionDateRequest>()))
+            .ReturnsAsync(new GetLevyLastSubmissionDateResponse { LastSubmissionDate = lastSubmissionDate });
+
+        financeApiClient
+            .Setup(x => x.Get<GetLevySummaryByAccountIdResponse>(It.IsAny<GetLevySummaryByAccountIdRequest>()))
+            .ReturnsAsync(levySummaryByAccountIdResponse);
+        
+        financeApiClient
+            .Setup(x => x.Get<List<LevyDeclaration>>(It.IsAny<GetLevyDeclarationSummaryByDate>()))
+            .ReturnsAsync([
+                new LevyDeclaration { PayrollMonth = payrollMonth, PayrollYear = payrollYear, TopUp = 500m, TotalAmount = 1000m },
+                new LevyDeclaration { PayrollMonth = payrollMonth, PayrollYear = payrollYear, TopUp = 500m, TotalAmount = 1000m },
+            ]);
+        
+        PostEmployerFundingProjectionRequest? capturedEmployerFundingProjectionRequest = null;
+        projectionApiClient
+            .Setup(x => x.PostWithResponseCode<EstimatesTimeline>(It.IsAny<PostEmployerFundingProjectionRequest>(), true))
+            .Callback<IPostApiRequest, bool>((r, _) => capturedEmployerFundingProjectionRequest = r as PostEmployerFundingProjectionRequest)
+            .ReturnsAsync(new ApiResponse<EstimatesTimeline>(estimatesTimeline, HttpStatusCode.OK, null!));
+
+        List<LevyInMonthSummary> expectedHistoricLevyIn = [new(new DateOnly(now.Year, now.Month, 1), 1000m)];
+        
+        // act
+        await sut.Handle(request, CancellationToken.None);
+
+        // assert
+        capturedEmployerFundingProjectionRequest.Should().NotBeNull();
+        capturedEmployerFundingProjectionRequest!.PostData.HistoricLevyIn.Should().BeEquivalentTo(expectedHistoricLevyIn);
     }
 }

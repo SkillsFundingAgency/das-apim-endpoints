@@ -9,9 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Application\Queries\**" />
-    <EmbeddedResource Remove="Application\Queries\**" />
-    <None Remove="Application\Queries\**" />
+    <Compile Remove="Application\**" />
+    <Compile Remove="ControllerTests\**" />
+    <EmbeddedResource Remove="Application\**" />
+    <EmbeddedResource Remove="ControllerTests\**" />
+    <None Remove="Application\**" />
+    <None Remove="ControllerTests\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,12 +39,6 @@
 
   <ItemGroup>
     <Using Include="NUnit.Framework" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Application\Command\" />
-    <Folder Include="ControllerTests\" />
-    <Folder Include="InnerApi\Requests\" />
   </ItemGroup>
 
 </Project>

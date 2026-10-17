@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using MediatR;
 using SFA.DAS.EmployerFinance.InnerApi.Requests.Finance;
+using SFA.DAS.EmployerFinance.InnerApi.Responses;
 using SFA.DAS.EmployerFinance.InnerApi.Responses.Finance;
 using SFA.DAS.EmployerFinance.Models.Projections;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
@@ -13,147 +14,57 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerFinance.Application.Queries.GetLevyProjectionsByAccountId;
 
-public class GetLevyProjectionsByAccountIdQueryHandler(IFinanceApiClient<FinanceApiConfiguration> financeApiClient)
+public class GetLevyProjectionsByAccountIdQueryHandler(
+    IFinanceApiClient<FinanceApiConfiguration> financeApiClient,
+    IFundingProjectionApiClient<FundingProjectionApiConfiguration> projectionApiClient)
     : IRequestHandler<GetLevyProjectionsByAccountIdQuery, GetLevyProjectionsByAccountIdQueryResult>
 {
     public async Task<GetLevyProjectionsByAccountIdQueryResult> Handle(GetLevyProjectionsByAccountIdQuery request, CancellationToken cancellationToken)
     {
         var now = DateTime.UtcNow.Date;
 
-        var historicDataTask = FetchHistoricDataAsync(now, request.AccountId, request.Months);
         var lastSubmissionTask = financeApiClient.Get<GetLevyLastSubmissionDateResponse>(
             new GetLevyLastSubmissionDateRequest(request.AccountId));
-        var levySummaryTask = financeApiClient.Get<GetLevySummaryByAccountIdResponse>(
+
+        var levySummaryTask = await financeApiClient.Get<GetLevySummaryByAccountIdResponse>(
             new GetLevySummaryByAccountIdRequest(request.AccountId));
 
-        await Task.WhenAll(historicDataTask, lastSubmissionTask, levySummaryTask);
+        var declarations = await FetchHistoricTransactionLinesDataAsync(now, request.AccountId);
+
+        var projectionTask = projectionApiClient.PostWithResponseCode<EstimatesTimeline>(
+            new PostEmployerFundingProjectionRequest(request.AccountId, new PostEmployerFundingProjectionRequestData
+            {
+                Months = request.Months,
+                CurrentLevyFunds = levySummaryTask.CurrentLevyFunds,
+                HistoricLevyIn = BuildLevyInSummary(declarations)
+            }));
+
+        await Task.WhenAll(lastSubmissionTask, projectionTask);
 
         return new GetLevyProjectionsByAccountIdQueryResult
         {
-            Projections = ProjectFromHistoricData(now, request.Months, historicDataTask.Result, levySummaryTask.Result),
+            AccountId = request.AccountId,
+            Summary = levySummaryTask,
+            Projections = projectionTask.Result.Body.Projections,
             LatestLevyDeclarationInDate = lastSubmissionTask.Result.LastSubmissionDate ?? DateTime.MinValue
         };
     }
 
-    private async Task<Dictionary<(int Year, int Month), MonthlyBreakdown>> FetchHistoricDataAsync(
-        DateTime now,
-        long accountId,
-        int months)
+    private static List<LevyInMonthSummary> BuildLevyInSummary(List<LevyDeclaration> declarations) =>
+    [
+        .. declarations
+            .Where(t => t.PayrollDate() != null)
+            .GroupBy(t => t.PayrollDate()!.Value)
+            .Select(g => new LevyInMonthSummary(
+                new DateOnly(g.Key.Year, g.Key.Month, 1),
+                g.Sum(t => t.TotalAmount - t.TopUp)))
+    ];
+
+    private async Task<List<LevyDeclaration>> FetchHistoricTransactionLinesDataAsync(DateTime now, long accountId)
     {
         var startOfMonth = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
         var startDate = startOfMonth.AddYears(-1);
         var endDate = startOfMonth.AddMonths(1).AddTicks(-1);
-
-        var response = await financeApiClient.Get<List<LevyDeclaration>>(
-                new GetLevyDeclarationSummaryByDate(accountId, startDate, endDate));
-
-        if (response.Count == 0)
-        {
-            return BuildEmptyMonthlyBreakdowns(startDate, months);
-        }
-
-        return response
-            .Where(t => t.PayrollDate() != null)
-            .GroupBy(t => t.PayrollDate())
-            .ToDictionary(
-                g => (g.Key.Value.Year, g.Key.Value.Month),
-                g => new MonthlyBreakdown
-                {
-                    CalendarPeriodYear = g.Key.Value.Year,
-                    CalendarPeriodMonth = g.Key.Value.Month,
-                    CalendarMonthName = g.Key.Value.ToString("MMMM"),
-                    LevyIn = g.Sum(t => t.TotalAmount - t.TopUp),
-                    ExpiredLevy = 0m,
-                    CommittedLearnerCosts = 0,
-                    CommittedTransferCosts = 0
-                });
-    }
-
-    private static Dictionary<(int Year, int Month), MonthlyBreakdown> BuildEmptyMonthlyBreakdowns(
-        DateTime startDate,
-        int months)
-    {
-        return Enumerable
-            .Range(0, months)
-            .Select(startDate.AddMonths)
-            .ToDictionary(
-                d => (d.Year, d.Month),
-                d => new MonthlyBreakdown
-                {
-                    CalendarPeriodYear = d.Year,
-                    CalendarPeriodMonth = d.Month,
-                    CalendarMonthName = d.ToString("MMMM"),
-                    LevyIn = 0m,
-                    ExpiredLevy = 0m,
-                    CommittedLearnerCosts = 0,
-                    CommittedTransferCosts = 0
-                });
-    }
-
-    /// <summary>
-    /// Projects future levy data based on historical information.
-    /// </summary>
-    private static IReadOnlyList<MonthlyBreakdown> ProjectFromHistoricData(
-        DateTime now,
-        int months,
-        Dictionary<(int Year, int Month), MonthlyBreakdown> historic,
-        GetLevySummaryByAccountIdResponse levySummary)
-    {
-        var projections = new List<MonthlyBreakdown>(months);
-        var runningClosingLevyBalance = levySummary.CurrentLevyFunds;
-
-        for (var i = 0; i < months; i++)
-        {
-            var pointInTime = now.AddMonths(i);
-            var levyData = ResolveLevyData(historic, pointInTime, isCurrentMonth: i == 0);
-
-            var levyIn = levyData?.LevyIn ?? 0m;
-            var levyOut = levyData?.LevyOut ?? 0m;
-
-            // Current month uses the actual live balance as-is.
-            // Forecast months roll forward by applying levy in/out to the previous closing balance.
-            runningClosingLevyBalance = CalculateClosingBalance(runningClosingLevyBalance, levyIn, levyOut, isCurrentMonth: i == 0);
-
-            projections.Add(new MonthlyBreakdown
-            {
-                CalendarPeriodYear = pointInTime.Year,
-                CalendarPeriodMonth = pointInTime.Month,
-                CalendarMonthName = pointInTime.ToString("MMMM"),
-                LevyIn = levyIn,
-                ExpiredLevy = levyData?.ExpiredLevy ?? 0m,
-                ClosingLevyBalance = runningClosingLevyBalance,
-                CommittedLearnerCosts = levyData?.CommittedLearnerCosts ?? 0m, // will be populated in future stories.
-                CommittedTransferCosts = levyData?.CommittedTransferCosts ?? 0m // will be populated in future stories.
-            });
-        }
-
-        return projections;
-    }
-
-    /// <summary>
-    /// Current month adds levy in to the live balance (levy out already reflected in CurrentLevyFunds).
-    /// Forecast months apply levy in/out to the previous closing balance, floored at zero.
-    /// </summary>
-    private static decimal CalculateClosingBalance(decimal currentBalance, decimal levyIn, decimal levyOut, bool isCurrentMonth)
-    {
-        return isCurrentMonth
-            ? currentBalance + levyIn
-            : currentBalance + levyIn - levyOut;
-    }
-
-    /// <summary>
-    /// Current month uses actual data if already declared, otherwise falls back
-    /// to the same month last year. Forecast months always use the same month last year.
-    /// </summary>
-    private static MonthlyBreakdown? ResolveLevyData(Dictionary<(int Year, int Month), MonthlyBreakdown> historic,
-        DateTime pointInTime,
-        bool isCurrentMonth)
-    {
-        if (isCurrentMonth && historic.TryGetValue((pointInTime.Year, pointInTime.Month), out var current))
-        {
-            return current;
-        }
-
-        return historic.GetValueOrDefault((pointInTime.Year - 1, pointInTime.Month));
+        return await financeApiClient.Get<List<LevyDeclaration>>(new GetLevyDeclarationSummaryByDate(accountId, startDate, endDate));
     }
 }
