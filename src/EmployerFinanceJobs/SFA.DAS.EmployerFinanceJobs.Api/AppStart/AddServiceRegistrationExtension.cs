@@ -7,7 +7,6 @@ using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Services;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace SFA.DAS.EmployerFinanceJobs.Api.AppStart;
 
@@ -22,5 +21,6 @@ public static class AddServiceRegistrationExtension
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IFundingProjectionApiClient<FundingProjectionApiConfiguration>, FundingProjectionApiClient>();
         services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
+        services.AddTransient<IFinanceApiClient<FinanceApiConfiguration>, FinanceApiClient>();
     }
 }
