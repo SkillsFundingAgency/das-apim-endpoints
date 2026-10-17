@@ -85,23 +85,12 @@ public static class Startup
         }
 
         app.UseRouting();
-        // Add this BEFORE app.UseEndpoints(...)
-        var assembly = typeof(Program).Assembly;
-        try
-        {
-            assembly.GetTypes();
-        }
-        catch (ReflectionTypeLoadException ex)
-        {
-            foreach (var e in ex.LoaderExceptions)
-                Console.WriteLine(e?.Message);
-            throw; // stop here so you can read the output
-        }
+        
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllerRoute(
                 name: "default",
-                pattern: "api/{controller=Providers}/{action=index}/{id?}");
+                pattern: "api/{controller=Jobs}/{action=index}/{id?}");
         });
 
         app.UseSwagger();
