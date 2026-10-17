@@ -83,16 +83,16 @@ public class FundingProjectionApiClient(IInternalApiClient<FundingProjectionApiC
     }
     public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
     {
-        throw new NotImplementedException();
+        return client.PutWithResponseCode<TResponse>(request);
     }
 
     public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
     {
-        throw new NotImplementedException();
+        return client.PatchWithResponseCode<TData, TResponse>(request, includeResponse);
     }
 
     public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
     {
-        throw new NotImplementedException();
+        return client.PutWithResponseCode<TData, TResponse>(request);
     }
 }
