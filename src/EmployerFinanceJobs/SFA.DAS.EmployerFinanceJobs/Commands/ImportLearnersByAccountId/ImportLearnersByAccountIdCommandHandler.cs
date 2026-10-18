@@ -116,10 +116,10 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
     private async Task PostApprenticeshipPaymentSummary(
         long accountId,
         GetCommittedLearnersCostByAccountIdResponse.ApprenticeshipDetailsResponse apprenticeDetails,
-        GetApprenticeshipPaymentByAccountIdResponse apprenticeshipPayment,
+        GetApprenticeshipPaymentByAccountIdResponse? apprenticeshipPayment,
         bool isTransfer)
     {
-        if (apprenticeshipPayment.ApprenticeshipId <= 0) return;
+        var payment = apprenticeshipPayment is { ApprenticeshipId: > 0 } ? apprenticeshipPayment : null;
 
         var request = new PostApprenticeshipPaymentSummaryRequest(accountId, apprenticeDetails.Id, new PostApprenticeshipPaymentSummaryRequestData
         {
@@ -131,9 +131,9 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             TotalCost = apprenticeDetails.Cost ?? 0,
             TotalPaid = apprenticeDetails.TotalAgreedPrice ?? 0,
             Uln = long.Parse(apprenticeDetails.Uln),
-            LastPaymentAmount = apprenticeshipPayment.Amount,
-            LastPaymentDate = new DateOnly(apprenticeshipPayment.CollectionPeriodYear, apprenticeshipPayment.CollectionPeriodMonth, 1),
-            LastUpdatedDate = apprenticeshipPayment.LastUpdatedDate
+            LastPaymentAmount = payment?.Amount,
+            LastPaymentDate = payment is null ? null : GetCollectionPeriodDate(payment),
+            LastUpdatedDate = payment?.LastUpdatedDate
         });
 
         var result = await fundingProjectionApiClient.PostWithResponseCode<ApprenticeshipPaymentSummaryResponse>(request);
@@ -141,7 +141,19 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
         result.EnsureSuccessStatusCode();
     }
 
-    private async Task<GetApprenticeshipPaymentByAccountIdResponse> GetApprenticeshipPaymentByAccountId(long accountId, long apprenticeshipId)
+    private static DateOnly? GetCollectionPeriodDate(GetApprenticeshipPaymentByAccountIdResponse apprenticeshipPayment)
+    {
+        var year = apprenticeshipPayment.CollectionPeriodYear;
+        var month = apprenticeshipPayment.CollectionPeriodMonth;
+
+        if (year is < 1 or > 9999 || month is < 1 or > 12)
+            return null;
+
+        return new DateOnly(year, month, 1);
+    }
+
+    //TODO - might need to look at this as if it fails with a different error we will potentially load without the data
+    private async Task<GetApprenticeshipPaymentByAccountIdResponse?> GetApprenticeshipPaymentByAccountId(long accountId, long apprenticeshipId)
     {
         var request = new GetApprenticeshipPaymentByAccountIdRequest(accountId, apprenticeshipId);
         var result = await financeApiClient.Get<GetApprenticeshipPaymentByAccountIdResponse>(request);

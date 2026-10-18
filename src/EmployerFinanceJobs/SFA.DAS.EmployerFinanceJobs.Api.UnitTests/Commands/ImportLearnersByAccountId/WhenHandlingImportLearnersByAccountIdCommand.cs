@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using AutoFixture;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -76,6 +76,128 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
                 r.AccountId == command.AccountId &&
                 r.ApprenticeshipId == transfer.Id &&
                 ((PostApprenticeshipPaymentSummaryRequestData)r.Data).IsTransfer), true), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Maps_Payment_Details_When_A_Payment_Exists(
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var learner = CreateApprenticeship(1);
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupPayment(financeClient, learner.Id);
+        SetupSuccessfulPost(fundingProjectionClient);
+
+        // Act
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsSuccessful.Should().BeTrue();
+        fundingProjectionClient.Verify(c => c.PostWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
+            It.Is<PostApprenticeshipPaymentSummaryRequest>(r =>
+                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).LastPaymentAmount == 100 &&
+                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).LastPaymentDate == new DateOnly(2025, 1, 1) &&
+                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).LastUpdatedDate == new DateTime(2025, 1, 1)), true), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Posts_Summary_With_Null_Payment_Details_When_No_Payment_Exists(
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var learner = CreateApprenticeship(1);
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        financeClient
+            .Setup(c => c.Get<GetApprenticeshipPaymentByAccountIdResponse>(It.IsAny<GetApprenticeshipPaymentByAccountIdRequest>()))
+            .ReturnsAsync((GetApprenticeshipPaymentByAccountIdResponse)null!);
+        SetupSuccessfulPost(fundingProjectionClient);
+
+        // Act
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsSuccessful.Should().BeTrue();
+        result.TotalRecordsProcessed.Should().Be(1);
+        result.FailedRecordsCount.Should().Be(0);
+        VerifyPostedWithNullPaymentDetails(fundingProjectionClient, command.AccountId, learner);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Posts_Summary_With_Null_Payment_Details_When_Payment_Has_No_ApprenticeshipId(
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var learner = CreateApprenticeship(1);
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        financeClient
+            .Setup(c => c.Get<GetApprenticeshipPaymentByAccountIdResponse>(It.IsAny<GetApprenticeshipPaymentByAccountIdRequest>()))
+            .ReturnsAsync(new GetApprenticeshipPaymentByAccountIdResponse());
+        SetupSuccessfulPost(fundingProjectionClient);
+
+        // Act
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsSuccessful.Should().BeTrue();
+        result.FailedRecordsCount.Should().Be(0);
+        VerifyPostedWithNullPaymentDetails(fundingProjectionClient, command.AccountId, learner);
+    }
+
+    [Test]
+    [MoqInlineAutoData(0, 2025)]
+    [MoqInlineAutoData(13, 2025)]
+    [MoqInlineAutoData(1, 0)]
+    public async Task Then_Posts_Summary_With_Null_LastPaymentDate_When_Collection_Period_Is_Invalid(
+        int collectionPeriodMonth,
+        int collectionPeriodYear,
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var learner = CreateApprenticeship(1);
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        financeClient
+            .Setup(c => c.Get<GetApprenticeshipPaymentByAccountIdResponse>(It.IsAny<GetApprenticeshipPaymentByAccountIdRequest>()))
+            .ReturnsAsync(new GetApprenticeshipPaymentByAccountIdResponse
+            {
+                ApprenticeshipId = learner.Id,
+                CollectionPeriodMonth = collectionPeriodMonth,
+                CollectionPeriodYear = collectionPeriodYear,
+                Amount = 100,
+                LastUpdatedDate = new DateTime(2025, 1, 1)
+            });
+        SetupSuccessfulPost(fundingProjectionClient);
+
+        // Act
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsSuccessful.Should().BeTrue();
+        result.FailedRecordsCount.Should().Be(0);
+        fundingProjectionClient.Verify(c => c.PostWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
+            It.Is<PostApprenticeshipPaymentSummaryRequest>(r =>
+                r.ApprenticeshipId == learner.Id &&
+                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).LastPaymentDate == null &&
+                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).LastPaymentAmount == 100), true), Times.Once);
     }
 
     [Test, MoqAutoData]
@@ -167,6 +289,21 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
                 Amount = 100,
                 LastUpdatedDate = new DateTime(2025, 1, 1)
             });
+    }
+
+    private static void VerifyPostedWithNullPaymentDetails(
+        Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> client,
+        long accountId,
+        GetCommittedLearnersCostByAccountIdResponse.ApprenticeshipDetailsResponse apprenticeship)
+    {
+        client.Verify(c => c.PostWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
+            It.Is<PostApprenticeshipPaymentSummaryRequest>(r =>
+                r.AccountId == accountId &&
+                r.ApprenticeshipId == apprenticeship.Id &&
+                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).TotalCost == apprenticeship.Cost &&
+                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).LastPaymentAmount == null &&
+                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).LastPaymentDate == null &&
+                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).LastUpdatedDate == null), true), Times.Once);
     }
 
     private static void SetupSuccessfulPost(
