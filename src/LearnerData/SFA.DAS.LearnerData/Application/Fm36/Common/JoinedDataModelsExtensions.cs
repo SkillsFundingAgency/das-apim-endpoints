@@ -257,16 +257,7 @@ internal static class JoinedDataModelsExtensions
         ldv.LearnDelRedStartDate = EarningsFM36Constants.LearnDelRedStartDate;
         ldv.FirstIncentiveThresholdDate = GetIncentiveThresholdDate(joinedLearningDelivery, firstAdditionalPaymentDate);
 
-        if (joinedLearningDelivery is JoinedEnglishAndMathsLearningDelivery)
-        {
-            // English and Maths
-            ldv.LearnDelMathEng = true;
-        }
-        else
-        {
-            // On Programme
-            ldv.LearnDelMathEng = false;
-        }
+        ldv.LearnDelMathEng = joinedLearningDelivery is JoinedEnglishAndMathsLearningDelivery;
 
         return ldv;
     }
