@@ -192,6 +192,7 @@ public static class ApprenticeshipModelExtensions
             Amount = em.Amount,
             StartDate = em.StartDate,
             EndDate = em.EndDate,
+            WithdrawalDate = em.WithdrawalDate,
             AimSequenceNumber = em.AimSequenceNumber
         }).ToList();
     }
