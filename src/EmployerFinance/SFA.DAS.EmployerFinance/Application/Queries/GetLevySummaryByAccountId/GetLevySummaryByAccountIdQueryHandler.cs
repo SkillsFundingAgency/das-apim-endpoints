@@ -36,18 +36,7 @@ public class GetLevySummaryByAccountIdQueryHandler(
         var committedLearners = committedLearnersTask.Result;
 
         var apprenticeshipDetailsResponses = committedLearners.ToList();
-
-        var priceEpisodeTasks = apprenticeshipDetailsResponses
-            .Where(a => a.HasChangeHistory)
-            .Select(async a =>
-            {
-                var priceEpisode = await commitmentsV2ApiClient.Get<GetPriceEpisodeResponse>(
-                    new GetPriceEpisodeByApprenticeshipIdRequest(a.Id));
-                a.Cost = priceEpisode.PriceEpisodes.Sum(pe => pe.Cost);
-            });
-
-        await Task.WhenAll(priceEpisodeTasks);
-
+        
         var levySummary = levySummaryTask.Result;
         var committedTransferOut = committedTransferOutTask.Result;
 
@@ -57,8 +46,8 @@ public class GetLevySummaryByAccountIdQueryHandler(
             TotalLevyDeclaredLast12Months = levySummary.TotalLevyDeclaredLast12Months,
             TotalLevySpentLast12Months = levySummary.TotalLevySpentLast12Months,
             TotalLevyExpiredLast12Months = levySummary.TotalLevyExpiredLast12Months,
-            TotalCommittedLearnerCosts = Convert.ToDecimal(apprenticeshipDetailsResponses.Sum(a => a.Cost)),
-            TotalCommittedTransfersCosts = Convert.ToDecimal(committedTransferOut.Sum(a => a.Cost))
+            TotalCommittedLearnerCosts = Convert.ToDecimal(apprenticeshipDetailsResponses.Sum(a => a.TotalAgreedPrice)),
+            TotalCommittedTransfersCosts = Convert.ToDecimal(committedTransferOut.Sum(a => a.TotalAgreedPrice))
         };
     }
 

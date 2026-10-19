@@ -89,6 +89,8 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
 
         result.AccountId.Should().Be(request.AccountId);
         result.Summary.Should().BeEquivalentTo(levySummaryByAccountIdResponse);
+        result.Summary.TotalCommittedLearnerCosts.Should().Be(estimatesTimeline.TotalEstimatedCommitedCost);
+        result.Summary.TotalCommittedTransfersCosts.Should().Be(estimatesTimeline.TotalEstimatedCommitedTransferCost);
         result.Projections.Should().BeEquivalentTo(estimatesTimeline.Projections);
         result.LatestLevyDeclarationInDate.Should().Be(lastSubmissionDate);
     }

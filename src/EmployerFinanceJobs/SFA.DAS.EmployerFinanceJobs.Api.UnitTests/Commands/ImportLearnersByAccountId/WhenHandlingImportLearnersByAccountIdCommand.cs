@@ -3,6 +3,7 @@ using AutoFixture;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.EmployerFinanceJobs.Commands.ImportLearnersByAccountId;
 using SFA.DAS.EmployerFinanceJobs.Domain.Enums;
@@ -38,7 +39,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         result.FailedRecordsCount.Should().Be(0);
         result.LastSuccessfulImportDate.Should().NotBeNull();
         result.FailureReason.Should().BeNull();
-        financeClient.Verify(c => c.Get<GetApprenticeshipPaymentByAccountIdResponse>(It.IsAny<GetApprenticeshipPaymentByAccountIdRequest>()), Times.Never);
+        financeClient.Verify(c => c.Get<List<GetApprenticeshipPaymentByAccountIdResponse>>(It.IsAny<GetApprenticeshipPaymentByAccountIdRequest>()), Times.Never);
         fundingProjectionClient.Verify(c => c.PostWithResponseCode<ApprenticeshipPaymentSummaryResponse>(It.IsAny<PostApprenticeshipPaymentSummaryRequest>(), true), Times.Never);
     }
 
@@ -79,7 +80,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Maps_Payment_Details_When_A_Payment_Exists(
+    public async Task Then_Maps_Total_Paid_And_Last_Payment_From_All_Payments(
         ImportLearnersByAccountIdCommand command,
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
         [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
@@ -90,23 +91,57 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         var learner = CreateApprenticeship(1);
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
         SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
-        SetupPayment(financeClient, learner.Id);
-        SetupSuccessfulPost(fundingProjectionClient);
+        SetupPayments(financeClient, learner.Id,
+            CreatePayment(learner.Id, 2025, 1, 100, new DateTime(2025, 2, 1)),
+            CreatePayment(learner.Id, 2025, 3, 150, new DateTime(2025, 4, 1)),
+            // Late correction for an earlier period should not be treated as the last payment
+            CreatePayment(learner.Id, 2024, 12, 50, new DateTime(2025, 6, 1)));
+        var posted = CapturePostedSummaries(fundingProjectionClient);
 
         // Act
         var result = await handler.Handle(command, CancellationToken.None);
 
         // Assert
         result.IsSuccessful.Should().BeTrue();
-        fundingProjectionClient.Verify(c => c.PostWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
-            It.Is<PostApprenticeshipPaymentSummaryRequest>(r =>
-                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).LastPaymentAmount == 100 &&
-                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).LastPaymentDate == new DateOnly(2025, 1, 1) &&
-                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).LastUpdatedDate == new DateTime(2025, 1, 1)), true), Times.Once);
+        var data = posted.Should().ContainSingle().Subject;
+        data.TotalCost.Should().Be(learner.TotalAgreedPrice);
+        data.TotalPaid.Should().Be(300);
+        data.LastPaymentAmount.Should().Be(150);
+        data.LastPaymentDate.Should().Be(new DateOnly(2025, 3, 1));
+        data.LastUpdatedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Posts_Summary_With_Null_Payment_Details_When_No_Payment_Exists(
+    public async Task Then_Uses_The_Most_Recently_Updated_Payment_When_Collection_Periods_Match(
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var learner = CreateApprenticeship(1);
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupPayments(financeClient, learner.Id,
+            CreatePayment(learner.Id, 2025, 3, 150, new DateTime(2025, 4, 1)),
+            CreatePayment(learner.Id, 2025, 3, 175, new DateTime(2025, 4, 2)));
+        var posted = CapturePostedSummaries(fundingProjectionClient);
+
+        // Act
+        await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        var data = posted.Should().ContainSingle().Subject;
+        data.TotalPaid.Should().Be(325);
+        data.LastPaymentAmount.Should().Be(175);
+    }
+
+    [Test]
+    [MoqInlineAutoData(true)]
+    [MoqInlineAutoData(false)]
+    public async Task Then_Posts_Summary_With_No_Payment_Details_When_No_Payments_Exist(
+        bool financeReturnsNull,
         ImportLearnersByAccountIdCommand command,
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
         [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
@@ -118,9 +153,9 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
         SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
         financeClient
-            .Setup(c => c.Get<GetApprenticeshipPaymentByAccountIdResponse>(It.IsAny<GetApprenticeshipPaymentByAccountIdRequest>()))
-            .ReturnsAsync((GetApprenticeshipPaymentByAccountIdResponse)null!);
-        SetupSuccessfulPost(fundingProjectionClient);
+            .Setup(c => c.Get<List<GetApprenticeshipPaymentByAccountIdResponse>>(It.IsAny<GetApprenticeshipPaymentByAccountIdRequest>()))
+            .ReturnsAsync(financeReturnsNull ? null! : []);
+        var posted = CapturePostedSummaries(fundingProjectionClient);
 
         // Act
         var result = await handler.Handle(command, CancellationToken.None);
@@ -129,33 +164,12 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         result.IsSuccessful.Should().BeTrue();
         result.TotalRecordsProcessed.Should().Be(1);
         result.FailedRecordsCount.Should().Be(0);
-        VerifyPostedWithNullPaymentDetails(fundingProjectionClient, command.AccountId, learner);
-    }
-
-    [Test, MoqAutoData]
-    public async Task Then_Posts_Summary_With_Null_Payment_Details_When_Payment_Has_No_ApprenticeshipId(
-        ImportLearnersByAccountIdCommand command,
-        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
-        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
-        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
-        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
-    {
-        // Arrange
-        var learner = CreateApprenticeship(1);
-        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
-        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
-        financeClient
-            .Setup(c => c.Get<GetApprenticeshipPaymentByAccountIdResponse>(It.IsAny<GetApprenticeshipPaymentByAccountIdRequest>()))
-            .ReturnsAsync(new GetApprenticeshipPaymentByAccountIdResponse());
-        SetupSuccessfulPost(fundingProjectionClient);
-
-        // Act
-        var result = await handler.Handle(command, CancellationToken.None);
-
-        // Assert
-        result.IsSuccessful.Should().BeTrue();
-        result.FailedRecordsCount.Should().Be(0);
-        VerifyPostedWithNullPaymentDetails(fundingProjectionClient, command.AccountId, learner);
+        var data = posted.Should().ContainSingle().Subject;
+        data.TotalCost.Should().Be(learner.TotalAgreedPrice);
+        data.TotalPaid.Should().Be(0);
+        data.LastPaymentAmount.Should().BeNull();
+        data.LastPaymentDate.Should().BeNull();
+        data.LastUpdatedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
     }
 
     [Test]
@@ -175,17 +189,9 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         var learner = CreateApprenticeship(1);
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
         SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
-        financeClient
-            .Setup(c => c.Get<GetApprenticeshipPaymentByAccountIdResponse>(It.IsAny<GetApprenticeshipPaymentByAccountIdRequest>()))
-            .ReturnsAsync(new GetApprenticeshipPaymentByAccountIdResponse
-            {
-                ApprenticeshipId = learner.Id,
-                CollectionPeriodMonth = collectionPeriodMonth,
-                CollectionPeriodYear = collectionPeriodYear,
-                Amount = 100,
-                LastUpdatedDate = new DateTime(2025, 1, 1)
-            });
-        SetupSuccessfulPost(fundingProjectionClient);
+        SetupPayments(financeClient, learner.Id,
+            CreatePayment(learner.Id, collectionPeriodYear, collectionPeriodMonth, 100, new DateTime(2025, 1, 1)));
+        var posted = CapturePostedSummaries(fundingProjectionClient);
 
         // Act
         var result = await handler.Handle(command, CancellationToken.None);
@@ -193,11 +199,10 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         // Assert
         result.IsSuccessful.Should().BeTrue();
         result.FailedRecordsCount.Should().Be(0);
-        fundingProjectionClient.Verify(c => c.PostWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
-            It.Is<PostApprenticeshipPaymentSummaryRequest>(r =>
-                r.ApprenticeshipId == learner.Id &&
-                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).LastPaymentDate == null &&
-                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).LastPaymentAmount == 100), true), Times.Once);
+        var data = posted.Should().ContainSingle().Subject;
+        data.LastPaymentDate.Should().BeNull();
+        data.LastPaymentAmount.Should().Be(100);
+        data.TotalPaid.Should().Be(100);
     }
 
     [Test, MoqAutoData]
@@ -215,7 +220,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
         SetupPayment(financeClient, successfulApprenticeship.Id);
         financeClient
-            .Setup(c => c.Get<GetApprenticeshipPaymentByAccountIdResponse>(
+            .Setup(c => c.Get<List<GetApprenticeshipPaymentByAccountIdResponse>>(
                 It.Is<GetApprenticeshipPaymentByAccountIdRequest>(r => r.ApprenticeshipId == failedApprenticeship.Id)))
             .ThrowsAsync(new InvalidOperationException("Payment lookup failed"));
         SetupSuccessfulPost(fundingProjectionClient);
@@ -278,32 +283,48 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         Mock<IFinanceApiClient<FinanceApiConfiguration>> client,
         long apprenticeshipId)
     {
-        client
-            .Setup(c => c.Get<GetApprenticeshipPaymentByAccountIdResponse>(
-                It.Is<GetApprenticeshipPaymentByAccountIdRequest>(r => r.ApprenticeshipId == apprenticeshipId)))
-            .ReturnsAsync(new GetApprenticeshipPaymentByAccountIdResponse
-            {
-                ApprenticeshipId = apprenticeshipId,
-                CollectionPeriodMonth = 1,
-                CollectionPeriodYear = 2025,
-                Amount = 100,
-                LastUpdatedDate = new DateTime(2025, 1, 1)
-            });
+        SetupPayments(client, apprenticeshipId, CreatePayment(apprenticeshipId, 2025, 1, 100, new DateTime(2025, 1, 1)));
     }
 
-    private static void VerifyPostedWithNullPaymentDetails(
-        Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> client,
-        long accountId,
-        GetCommittedLearnersCostByAccountIdResponse.ApprenticeshipDetailsResponse apprenticeship)
+    private static void SetupPayments(
+        Mock<IFinanceApiClient<FinanceApiConfiguration>> client,
+        long apprenticeshipId,
+        params GetApprenticeshipPaymentByAccountIdResponse[] payments)
     {
-        client.Verify(c => c.PostWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
-            It.Is<PostApprenticeshipPaymentSummaryRequest>(r =>
-                r.AccountId == accountId &&
-                r.ApprenticeshipId == apprenticeship.Id &&
-                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).TotalCost == apprenticeship.TotalAgreedPrice &&
-                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).LastPaymentAmount == null &&
-                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).LastPaymentDate == null &&
-                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).LastUpdatedDate == null), true), Times.Once);
+        client
+            .Setup(c => c.Get<List<GetApprenticeshipPaymentByAccountIdResponse>>(
+                It.Is<GetApprenticeshipPaymentByAccountIdRequest>(r => r.ApprenticeshipId == apprenticeshipId)))
+            .ReturnsAsync(payments.ToList());
+    }
+
+    private static GetApprenticeshipPaymentByAccountIdResponse CreatePayment(
+        long apprenticeshipId,
+        int collectionPeriodYear,
+        int collectionPeriodMonth,
+        decimal amount,
+        DateTime lastUpdatedDate)
+    {
+        return new GetApprenticeshipPaymentByAccountIdResponse
+        {
+            ApprenticeshipId = apprenticeshipId,
+            CollectionPeriodYear = collectionPeriodYear,
+            CollectionPeriodMonth = collectionPeriodMonth,
+            Amount = amount,
+            LastUpdatedDate = lastUpdatedDate
+        };
+    }
+
+    private static List<PostApprenticeshipPaymentSummaryRequestData> CapturePostedSummaries(
+        Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> client)
+    {
+        var posted = new List<PostApprenticeshipPaymentSummaryRequestData>();
+        client
+            .Setup(c => c.PostWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
+                It.IsAny<PostApprenticeshipPaymentSummaryRequest>(), true))
+            .Callback<IPostApiRequest, bool>((r, _) => posted.Add((PostApprenticeshipPaymentSummaryRequestData)r.Data))
+            .ReturnsAsync(new ApiResponse<ApprenticeshipPaymentSummaryResponse>(
+                new ApprenticeshipPaymentSummaryResponse(), HttpStatusCode.OK, string.Empty));
+        return posted;
     }
 
     private static void SetupSuccessfulPost(

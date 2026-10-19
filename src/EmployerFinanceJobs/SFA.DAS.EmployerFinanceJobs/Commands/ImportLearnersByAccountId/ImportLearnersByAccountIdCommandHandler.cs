@@ -132,14 +132,18 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
     private async Task PostApprenticeshipPaymentSummary(
         long accountId,
         GetCommittedLearnersCostByAccountIdResponse.ApprenticeshipDetailsResponse apprenticeDetails,
-        List<GetApprenticeshipPaymentByAccountIdResponse>? apprenticeshipPayment,
+        List<GetApprenticeshipPaymentByAccountIdResponse>? apprenticeshipPayments,
         bool isTransfer)
     {
-        var payment = apprenticeshipPayment!.Any() ? apprenticeshipPayment : null;
+        // No payments yet is a future committed cost, so still post it with the payment fields left null
+        var payments = apprenticeshipPayments ?? [];
 
-        var lastPayment = payment.OrderByDescending(c => c.LastUpdatedDate)?.FirstOrDefault();
-        
-        
+        var lastPayment = payments
+            .OrderByDescending(p => p.CollectionPeriodYear)
+            .ThenByDescending(p => p.CollectionPeriodMonth)
+            .ThenByDescending(p => p.LastUpdatedDate)
+            .FirstOrDefault();
+
         var request = new PostApprenticeshipPaymentSummaryRequest(accountId, apprenticeDetails.Id, new PostApprenticeshipPaymentSummaryRequestData
         {
             Dob = DateOnly.FromDateTime(apprenticeDetails.DateOfBirth),
@@ -148,37 +152,16 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             IsTransfer = isTransfer,
             Status = apprenticeDetails.ApprenticeshipStatus,
             TotalCost = apprenticeDetails.TotalAgreedPrice ?? 0,
-            TotalPaid = CalculateTotalPaid(apprenticeDetails.StartDate, apprenticeDetails.EndDate,apprenticeDetails.TotalAgreedPrice, payment.Sum(c=>c.Amount)),
+            TotalPaid = payments.Sum(p => p.Amount),
             Uln = long.Parse(apprenticeDetails.Uln),
-            LastPaymentAmount = lastPayment.Amount,
+            LastPaymentAmount = lastPayment?.Amount,
             LastPaymentDate = lastPayment is null ? null : GetCollectionPeriodDate(lastPayment),
-            LastUpdatedDate = lastPayment.LastUpdatedDate
+            LastUpdatedDate = DateTime.UtcNow
         });
 
         var result = await fundingProjectionApiClient.PostWithResponseCode<ApprenticeshipPaymentSummaryResponse>(request);
-        
+
         result.EnsureSuccessStatusCode();
-    }
-
-    private static decimal CalculateTotalPaid(DateTime startDate, DateTime endDate, decimal? totalAgreedPrice, decimal? totalAlreadyPaid = null)
-    {
-        var today = DateTime.Today;
-        var totalCost =( totalAgreedPrice ?? 0) - totalAlreadyPaid ?? 0;
-        
-        var totalMonths = (endDate.Year - startDate.Year) * 12 + (endDate.Month - startDate.Month);
-
-        if (totalMonths <= 0) return 0;
-
-        var monthlyValue = totalCost / totalMonths;
-        var firstPaymentDate = startDate.AddMonths(1); // Assuming the first payment is made one month after the start date
-
-        if (today < firstPaymentDate) return 0;
-
-        var monthsPaid = (today.Year - firstPaymentDate.Year) * 12
-                         + (today.Month - firstPaymentDate.Month)
-                         + 1;
-
-        return monthlyValue * Math.Min(monthsPaid, totalMonths);
     }
 
     private static DateOnly? GetCollectionPeriodDate(GetApprenticeshipPaymentByAccountIdResponse apprenticeshipPayment)
@@ -191,7 +174,6 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
 
         return new DateOnly(year, month, 1);
     }
-    
 
     //TODO - might need to look at this as if it fails with a different error we will potentially load without the data
     private async Task<List<GetApprenticeshipPaymentByAccountIdResponse>?> GetApprenticeshipPaymentByAccountId(long accountId, long apprenticeshipId)

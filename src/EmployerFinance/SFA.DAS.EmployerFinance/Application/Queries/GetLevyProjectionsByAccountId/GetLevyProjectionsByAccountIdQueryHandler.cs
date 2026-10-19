@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using MediatR;
+using SFA.DAS.EmployerFinance.Application.Queries.GetLevySummaryByAccountId;
 using SFA.DAS.EmployerFinance.InnerApi.Requests.Finance;
 using SFA.DAS.EmployerFinance.InnerApi.Responses;
 using SFA.DAS.EmployerFinance.InnerApi.Responses.Finance;
@@ -41,11 +42,21 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
 
         await Task.WhenAll(lastSubmissionTask, projectionTask);
 
+        var projection = projectionTask.Result.Body;
+
         return new GetLevyProjectionsByAccountIdQueryResult
         {
             AccountId = request.AccountId,
-            Summary = levySummaryTask,
-            Projections = projectionTask.Result.Body.Projections,
+            Summary = new GetLevySummaryByAccountIdQueryResult
+            {
+                CurrentLevyFunds = levySummaryTask.CurrentLevyFunds,
+                TotalLevyDeclaredLast12Months = levySummaryTask.TotalLevyDeclaredLast12Months,
+                TotalLevySpentLast12Months = levySummaryTask.TotalLevySpentLast12Months,
+                TotalLevyExpiredLast12Months = levySummaryTask.TotalLevyExpiredLast12Months,
+                TotalCommittedLearnerCosts = projection.TotalEstimatedCommitedCost,
+                TotalCommittedTransfersCosts = projection.TotalEstimatedCommitedTransferCost
+            },
+            Projections = projection.Projections,
             LatestLevyDeclarationInDate = lastSubmissionTask.Result.LastSubmissionDate ?? DateTime.MinValue
         };
     }
