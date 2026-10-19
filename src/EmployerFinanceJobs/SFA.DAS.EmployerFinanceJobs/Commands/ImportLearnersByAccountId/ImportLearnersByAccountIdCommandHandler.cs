@@ -64,8 +64,8 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             {
                 try
                 {
-                    var payment = await GetApprenticeshipPaymentByAccountId(request.AccountId, item.a.Id);
-                    await PostApprenticeshipPaymentSummary(request.AccountId, item.a, payment, item.isTransfer);
+                    var payments = await GetApprenticeshipPaymentByAccountId(request.AccountId, item.a.Id);
+                    await PostApprenticeshipPaymentSummary(request.AccountId, item.a, payments, item.isTransfer);
                 }
                 catch (Exception ex)
                 {
@@ -132,11 +132,14 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
     private async Task PostApprenticeshipPaymentSummary(
         long accountId,
         GetCommittedLearnersCostByAccountIdResponse.ApprenticeshipDetailsResponse apprenticeDetails,
-        GetApprenticeshipPaymentByAccountIdResponse? apprenticeshipPayment,
+        List<GetApprenticeshipPaymentByAccountIdResponse>? apprenticeshipPayment,
         bool isTransfer)
     {
-        var payment = apprenticeshipPayment is { ApprenticeshipId: > 0 } ? apprenticeshipPayment : null;
+        var payment = apprenticeshipPayment!.Any() ? apprenticeshipPayment : null;
 
+        var lastPayment = payment.OrderByDescending(c => c.LastUpdatedDate)?.FirstOrDefault();
+        
+        
         var request = new PostApprenticeshipPaymentSummaryRequest(accountId, apprenticeDetails.Id, new PostApprenticeshipPaymentSummaryRequestData
         {
             Dob = DateOnly.FromDateTime(apprenticeDetails.DateOfBirth),
@@ -145,11 +148,11 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             IsTransfer = isTransfer,
             Status = apprenticeDetails.ApprenticeshipStatus,
             TotalCost = apprenticeDetails.TotalAgreedPrice ?? 0,
-            TotalPaid = CalculateTotalPaid(apprenticeDetails.StartDate, apprenticeDetails.EndDate, apprenticeDetails.TotalAgreedPrice),
+            TotalPaid = CalculateTotalPaid(apprenticeDetails.StartDate, apprenticeDetails.EndDate,apprenticeDetails.TotalAgreedPrice, payment.Sum(c=>c.Amount)),
             Uln = long.Parse(apprenticeDetails.Uln),
-            LastPaymentAmount = payment?.Amount,
-            LastPaymentDate = payment is null ? null : GetCollectionPeriodDate(payment),
-            LastUpdatedDate = payment?.LastUpdatedDate
+            LastPaymentAmount = lastPayment.Amount,
+            LastPaymentDate = lastPayment is null ? null : GetCollectionPeriodDate(lastPayment),
+            LastUpdatedDate = lastPayment.LastUpdatedDate
         });
 
         var result = await fundingProjectionApiClient.PostWithResponseCode<ApprenticeshipPaymentSummaryResponse>(request);
@@ -157,10 +160,11 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
         result.EnsureSuccessStatusCode();
     }
 
-    private static decimal CalculateTotalPaid(DateTime startDate, DateTime endDate, decimal? totalAgreedPrice)
+    private static decimal CalculateTotalPaid(DateTime startDate, DateTime endDate, decimal? totalAgreedPrice, decimal? totalAlreadyPaid = null)
     {
         var today = DateTime.Today;
-        var totalCost = totalAgreedPrice ?? 0;
+        var totalCost =( totalAgreedPrice ?? 0) - totalAlreadyPaid ?? 0;
+        
         var totalMonths = (endDate.Year - startDate.Year) * 12 + (endDate.Month - startDate.Month);
 
         if (totalMonths <= 0) return 0;
@@ -190,10 +194,10 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
     
 
     //TODO - might need to look at this as if it fails with a different error we will potentially load without the data
-    private async Task<GetApprenticeshipPaymentByAccountIdResponse?> GetApprenticeshipPaymentByAccountId(long accountId, long apprenticeshipId)
+    private async Task<List<GetApprenticeshipPaymentByAccountIdResponse>?> GetApprenticeshipPaymentByAccountId(long accountId, long apprenticeshipId)
     {
         var request = new GetApprenticeshipPaymentByAccountIdRequest(accountId, apprenticeshipId);
-        var result = await financeApiClient.Get<GetApprenticeshipPaymentByAccountIdResponse>(request);
+        var result = await financeApiClient.Get<List<GetApprenticeshipPaymentByAccountIdResponse>>(request);
         return result;
     }
 }
