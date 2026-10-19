@@ -42,6 +42,7 @@ public class OnProgrammeRequestDetails
     public List<CostDetails>? Costs { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
+    public short? WithdrawalReasonCode { get; set; }
     public DateTime? PauseDate { get; set; }
     public List<LearningSupport> LearningSupport { get; set; }
     public Care Care { get; set; }

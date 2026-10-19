@@ -151,6 +151,25 @@ public class WhenHandlingUpdateLearnerCommand
     }
 
     [Test]
+    public async Task Then_Earnings_Is_Not_Updated_If_Only_The_Withdrawal_Reason_Changed()
+    {
+        // Arrange
+        var command = _fixture.Create<UpdateLearnerCommand>();
+
+        var updateLearningApiResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
+        updateLearningApiResponse.Changes.Clear();
+        updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.WithdrawalReasonChanged);
+
+        MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _earningsApiClient.VerifyNoOtherCalls();
+    }
+
+    [Test]
     public async Task Then_Throws_Error_If_Learner_Update_Fails()
     {
         // Arrange

@@ -34,6 +34,25 @@ public class UpdateLearningRequestBodyBuilderTests
     }
 
     [Test]
+    public async Task Build_Sets_WithdrawalReasonCode_From_LatestOnProgramme()
+    {
+        var fixture = new Fixture();
+
+        // Arrange
+        var command = BreaksInLearningTestHelper.CreateLearnerWithBreaksInLearning(false);
+        var withdrawalReasonCode = fixture.Create<short>();
+        command.UpdateLearnerRequest.Delivery.OnProgramme.Last().WithdrawalReasonCode = withdrawalReasonCode;
+
+        var sut = CreateSut(Mock.Of<IEnglishAndMathsValueService>());
+
+        // Act
+        var actualRequestBody = await sut.Build(command.Ukprn, command.UpdateLearnerRequest);
+
+        // Assert
+        actualRequestBody.OnProgramme.WithdrawalReasonCode.Should().Be(withdrawalReasonCode);
+    }
+
+    [Test]
     public async Task Build_Sets_CompletionDate_From_LatestOnProgramme()
     {
         var fixture = new Fixture();

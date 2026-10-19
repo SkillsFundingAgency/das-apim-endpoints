@@ -75,6 +75,7 @@ public class UpdateLearningRequestBodyBuilder(
 
         onProgrammeDetails.LearningSupport = onProgrammeLearningSupport ?? new List<LearningSupport>();
         onProgrammeDetails.WithdrawalDate = latestOnProgramme.WithdrawalDate;
+        onProgrammeDetails.WithdrawalReasonCode = latestOnProgramme.WithdrawalReasonCode;
         onProgrammeDetails.TrainingCode = firstOnProgramme.StandardCode.ToString();
 
         foreach (var course in englishAndMathsCourses)
