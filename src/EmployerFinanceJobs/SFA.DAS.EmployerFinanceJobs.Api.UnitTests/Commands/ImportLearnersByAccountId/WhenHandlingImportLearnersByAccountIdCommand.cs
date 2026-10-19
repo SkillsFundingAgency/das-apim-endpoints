@@ -106,6 +106,42 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
     }
 
     [Test, MoqAutoData]
+    public async Task Then_Uses_Price_Episodes_To_Calculate_Total_Cost_When_Apprenticeship_Has_Change_History(
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var learner = CreateApprenticeship(1);
+        learner.HasChangeHistory = true;
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupPayment(financeClient, learner.Id);
+        SetupSuccessfulPost(fundingProjectionClient);
+        commitmentsClient
+            .Setup(c => c.Get<GetPriceEpisodesResponse>(
+                It.Is<GetPriceEpisodesRequest>(r => r.ApprenticeshipId == learner.Id)))
+            .ReturnsAsync(new GetPriceEpisodesResponse
+            {
+                PriceEpisodes =
+                [
+                    new GetPriceEpisodesResponse.PriceEpisode { Cost = 800 },
+                    new GetPriceEpisodesResponse.PriceEpisode { Cost = 500 }
+                ]
+            });
+
+        // Act
+        await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        fundingProjectionClient.Verify(c => c.PostWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
+            It.Is<PostApprenticeshipPaymentSummaryRequest>(r =>
+                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).TotalCost == 1300), true), Times.Once);
+    }
+
+    [Test, MoqAutoData]
     public async Task Then_Posts_Summary_With_Null_Payment_Details_When_No_Payment_Exists(
         ImportLearnersByAccountIdCommand command,
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
@@ -300,7 +336,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
             It.Is<PostApprenticeshipPaymentSummaryRequest>(r =>
                 r.AccountId == accountId &&
                 r.ApprenticeshipId == apprenticeship.Id &&
-                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).TotalCost == apprenticeship.Cost &&
+                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).TotalCost == apprenticeship.TotalAgreedPrice &&
                 ((PostApprenticeshipPaymentSummaryRequestData)r.Data).LastPaymentAmount == null &&
                 ((PostApprenticeshipPaymentSummaryRequestData)r.Data).LastPaymentDate == null &&
                 ((PostApprenticeshipPaymentSummaryRequestData)r.Data).LastUpdatedDate == null), true), Times.Once);

@@ -1,11 +1,12 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.EmployerFinanceJobs.Domain.Enums;
 using SFA.DAS.EmployerFinanceJobs.InnerApi.Requests;
 using SFA.DAS.EmployerFinanceJobs.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Collections.Concurrent;
-using SFA.DAS.Apim.Shared.Extensions;
 
 namespace SFA.DAS.EmployerFinanceJobs.Commands.ImportLearnersByAccountId;
 
@@ -17,6 +18,16 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
 {
     private const int PageItemCount = 100;
     private const int MaxDegreeOfParallelism = 5;
+
+    private static readonly ApprenticeshipStatus[] ActiveStatuses =
+    [
+        ApprenticeshipStatus.Live,
+        ApprenticeshipStatus.Completed,
+        ApprenticeshipStatus.Paused,
+        ApprenticeshipStatus.Stopped,
+        ApprenticeshipStatus.WaitingToStart,
+        // ApprenticeshipStatus.Unknown --Ignored as this is not a valid status for an apprenticeship and will be filtered out by the API
+    ];
 
     public async Task<ImportLearnersByAccountIdResult> Handle(ImportLearnersByAccountIdCommand request, CancellationToken cancellationToken)
     {
@@ -92,7 +103,11 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
         CancellationToken cancellationToken)
     {
         var firstPage = await commitmentsV2ApiClient.Get<GetCommittedLearnersCostByAccountIdResponse>(
-            new GetCommittedLearnersCostByAccountIdRequest(accountId, PageNumber: 1, PageItemCount, transferSenderId));
+            new GetCommittedLearnersCostByAccountIdRequest(accountId, PageNumber: 1, PageItemCount, transferSenderId,
+                [.. ActiveStatuses]));
+
+        if (firstPage?.Apprenticeships == null || !firstPage.Apprenticeships.Any())
+            return [];
 
         if (firstPage.TotalApprenticeshipsFound <= PageItemCount)
             return firstPage.Apprenticeships;
@@ -106,7 +121,8 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             async (page, _) =>
             {
                 var response = await commitmentsV2ApiClient.Get<GetCommittedLearnersCostByAccountIdResponse>(
-                    new GetCommittedLearnersCostByAccountIdRequest(accountId, PageNumber: page, PageItemCount, transferSenderId));
+                    new GetCommittedLearnersCostByAccountIdRequest(accountId, PageNumber: page, PageItemCount, transferSenderId,
+                        [.. ActiveStatuses]));
                 remainingPages.Add(response);
             });
 
@@ -120,6 +136,13 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
         bool isTransfer)
     {
         var payment = apprenticeshipPayment is { ApprenticeshipId: > 0 } ? apprenticeshipPayment : null;
+        var totalCost = apprenticeDetails.TotalAgreedPrice ?? 0;
+
+        if (apprenticeDetails.HasChangeHistory)
+        {
+            var priceEpisodes = await GetPriceEpisodes(apprenticeDetails.Id);
+            totalCost = priceEpisodes.PriceEpisodes.Sum(priceEpisode => priceEpisode.Cost);
+        }
 
         var request = new PostApprenticeshipPaymentSummaryRequest(accountId, apprenticeDetails.Id, new PostApprenticeshipPaymentSummaryRequestData
         {
@@ -128,8 +151,8 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             EndDate = DateOnly.FromDateTime(apprenticeDetails.EndDate),
             IsTransfer = isTransfer,
             Status = apprenticeDetails.ApprenticeshipStatus,
-            TotalCost = apprenticeDetails.Cost ?? 0,
-            TotalPaid = apprenticeDetails.TotalAgreedPrice ?? 0,
+            TotalCost = totalCost,
+            TotalPaid = CalculateTotalPaid(apprenticeDetails.StartDate, apprenticeDetails.EndDate, apprenticeDetails.TotalAgreedPrice),
             Uln = long.Parse(apprenticeDetails.Uln),
             LastPaymentAmount = payment?.Amount,
             LastPaymentDate = payment is null ? null : GetCollectionPeriodDate(payment),
@@ -141,6 +164,26 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
         result.EnsureSuccessStatusCode();
     }
 
+    private static decimal CalculateTotalPaid(DateTime startDate, DateTime endDate, decimal? totalAgreedPrice)
+    {
+        var today = DateTime.Today;
+        var totalCost = totalAgreedPrice ?? 0;
+        var totalMonths = (endDate.Year - startDate.Year) * 12 + (endDate.Month - startDate.Month);
+
+        if (totalMonths <= 0) return 0;
+
+        var monthlyValue = totalCost / totalMonths;
+        var firstPaymentDate = startDate.AddMonths(1); // Assuming the first payment is made one month after the start date
+
+        if (today < firstPaymentDate) return 0;
+
+        var monthsPaid = (today.Year - firstPaymentDate.Year) * 12
+                         + (today.Month - firstPaymentDate.Month)
+                         + 1;
+
+        return monthlyValue * Math.Min(monthsPaid, totalMonths);
+    }
+
     private static DateOnly? GetCollectionPeriodDate(GetApprenticeshipPaymentByAccountIdResponse apprenticeshipPayment)
     {
         var year = apprenticeshipPayment.CollectionPeriodYear;
@@ -150,6 +193,13 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             return null;
 
         return new DateOnly(year, month, 1);
+    }
+
+    private async Task<GetPriceEpisodesResponse> GetPriceEpisodes(long apprenticeshipId)
+    {
+        var request = new GetPriceEpisodesRequest(apprenticeshipId);
+        var result = await commitmentsV2ApiClient.Get<GetPriceEpisodesResponse>(request);
+        return result;
     }
 
     //TODO - might need to look at this as if it fails with a different error we will potentially load without the data

@@ -1,4 +1,5 @@
 using FluentAssertions;
+using SFA.DAS.EmployerFinanceJobs.Domain.Enums;
 using SFA.DAS.EmployerFinanceJobs.InnerApi.Requests;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -60,5 +61,27 @@ internal class WhenBuildingTheGetCommittedLearnersCostByAccountIdRequest
         // Assert
         request.GetUrl.Should().Be(
             $"api/apprenticeships?accountId={accountId}&pageNumber={pageNumber}&pageItemCount={pageItemCount}");
+    }
+
+    [Test, MoqAutoData]
+    public void WhenBuildingTheRequestWithStatues_ThenTheCorrectUrlIsGenerated(long accountId,
+        int pageNumber,
+        int pageItemCount,
+        long transferSenderId,
+        List<ApprenticeshipStatus> statuses)
+    {
+        // Act
+        var request = new GetCommittedLearnersCostByAccountIdRequest(
+            accountId,
+            pageNumber,
+            pageItemCount,
+            transferSenderId,
+            statuses);
+
+        // Assert
+        var expectedStatuses = string.Join("&", statuses.Select(s => $"statuses={s}"));
+        request.GetUrl.Should().Be(
+            $"api/apprenticeships?accountId={accountId}&transferSenderId={transferSenderId}&{expectedStatuses}&pageNumber={pageNumber}&pageItemCount={pageItemCount}");
+
     }
 }
