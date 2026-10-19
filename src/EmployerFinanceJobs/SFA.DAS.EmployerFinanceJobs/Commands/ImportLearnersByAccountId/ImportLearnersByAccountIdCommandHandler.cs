@@ -136,13 +136,6 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
         bool isTransfer)
     {
         var payment = apprenticeshipPayment is { ApprenticeshipId: > 0 } ? apprenticeshipPayment : null;
-        var totalCost = apprenticeDetails.TotalAgreedPrice ?? 0;
-
-        if (apprenticeDetails.HasChangeHistory)
-        {
-            var priceEpisodes = await GetPriceEpisodes(apprenticeDetails.Id);
-            totalCost = priceEpisodes.PriceEpisodes.Sum(priceEpisode => priceEpisode.Cost);
-        }
 
         var request = new PostApprenticeshipPaymentSummaryRequest(accountId, apprenticeDetails.Id, new PostApprenticeshipPaymentSummaryRequestData
         {
@@ -151,7 +144,7 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             EndDate = DateOnly.FromDateTime(apprenticeDetails.EndDate),
             IsTransfer = isTransfer,
             Status = apprenticeDetails.ApprenticeshipStatus,
-            TotalCost = totalCost,
+            TotalCost = apprenticeDetails.TotalAgreedPrice ?? 0,
             TotalPaid = CalculateTotalPaid(apprenticeDetails.StartDate, apprenticeDetails.EndDate, apprenticeDetails.TotalAgreedPrice),
             Uln = long.Parse(apprenticeDetails.Uln),
             LastPaymentAmount = payment?.Amount,
@@ -194,13 +187,7 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
 
         return new DateOnly(year, month, 1);
     }
-
-    private async Task<GetPriceEpisodesResponse> GetPriceEpisodes(long apprenticeshipId)
-    {
-        var request = new GetPriceEpisodesRequest(apprenticeshipId);
-        var result = await commitmentsV2ApiClient.Get<GetPriceEpisodesResponse>(request);
-        return result;
-    }
+    
 
     //TODO - might need to look at this as if it fails with a different error we will potentially load without the data
     private async Task<GetApprenticeshipPaymentByAccountIdResponse?> GetApprenticeshipPaymentByAccountId(long accountId, long apprenticeshipId)
