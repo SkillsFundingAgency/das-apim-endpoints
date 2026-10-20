@@ -66,7 +66,7 @@ public class GetProviderAvailableCoursesQueryHandlerTests
         var result = sut.Handle(request, CancellationToken.None);
 
         // Assert
-        result.Result.Courses.Should().Contain(x => x.LarsCode == "TestLars2");
+        result.Result!.Courses.Should().Contain(x => x.LarsCode == "TestLars2");
         result.Result.Courses.Should().NotContain(x => x.LarsCode == "TestLars1");
     }
 
@@ -110,7 +110,7 @@ public class GetProviderAvailableCoursesQueryHandlerTests
         var result = sut.Handle(request, CancellationToken.None);
 
         // Assert
-        result.Result.Courses.Should().Contain(x => x.LarsCode == "TestLars2");
+        result.Result!.Courses.Should().Contain(x => x.LarsCode == "TestLars2");
         result.Result.Courses.Should().Contain(x => x.LarsCode == "TestLars1");
     }
 
