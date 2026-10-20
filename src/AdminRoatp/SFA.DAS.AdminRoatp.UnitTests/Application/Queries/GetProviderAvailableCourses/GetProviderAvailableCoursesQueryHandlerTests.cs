@@ -142,6 +142,26 @@ public class GetProviderAvailableCoursesQueryHandlerTests
     }
 
     [Test, MoqAutoData]
+    public async Task WhenGetProviderAllowedCoursesReturnsNotFoundResponse_ThenReturnNull(
+    [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
+    [Greedy] GetProviderAvailableCoursesQueryHandler sut,
+    GetProviderAvailableCoursesQuery request,
+    GetProviderAllowedCoursesResponse providerAllowedCourses)
+    {
+        // Arrange
+
+        apiClientMock
+            .Setup(a => a.GetWithResponseCode<GetProviderAllowedCoursesResponse>(It.Is<GetProviderAllowedCoursesRequest>(x => x.Ukprn == request.Ukprn && x.CourseType == request.CourseType)))
+            .ReturnsAsync(new ApiResponse<GetProviderAllowedCoursesResponse>(providerAllowedCourses, HttpStatusCode.NotFound, ""));
+
+        // Act
+        var result = sut.Handle(request, CancellationToken.None);
+
+        // Assert
+        result.Result.Should().BeNull();
+    }
+
+    [Test, MoqAutoData]
     public async Task WhenGetProviderAllowedCoursesReturnsUnsuccessfulResponse_ThenThrowsException(
     [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
     [Greedy] GetProviderAvailableCoursesQueryHandler sut,
