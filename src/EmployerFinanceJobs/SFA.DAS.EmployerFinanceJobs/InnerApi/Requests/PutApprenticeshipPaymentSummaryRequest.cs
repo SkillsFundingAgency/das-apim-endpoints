@@ -3,13 +3,13 @@ using SFA.DAS.EmployerFinanceJobs.Domain.Enums;
 
 namespace SFA.DAS.EmployerFinanceJobs.InnerApi.Requests;
 
-public sealed record PostApprenticeshipPaymentSummaryRequest(long AccountId, long ApprenticeshipId, PostApprenticeshipPaymentSummaryRequestData Payload) : IPostApiRequest
+public sealed record PutApprenticeshipPaymentSummaryRequest(long AccountId, long ApprenticeshipId, PutApprenticeshipPaymentSummaryRequestData Payload) : IPutApiRequest
 {
-    public string PostUrl => $"api/employer/{AccountId}/apprenticeship-payment-summary/{ApprenticeshipId}";
+    public string PutUrl => $"api/employer/{AccountId}/apprenticeship-payment-summary/{ApprenticeshipId}";
     public object Data { get; set; } = Payload;
 }
 
-public sealed record PostApprenticeshipPaymentSummaryRequestData
+public sealed record PutApprenticeshipPaymentSummaryRequestData
 {
     public bool IsTransfer { get; set; }
     public long Uln { get; set; }

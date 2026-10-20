@@ -144,7 +144,7 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             .ThenByDescending(p => p.LastUpdatedDate)
             .FirstOrDefault();
 
-        var request = new PostApprenticeshipPaymentSummaryRequest(accountId, apprenticeDetails.Id, new PostApprenticeshipPaymentSummaryRequestData
+        var request = new PutApprenticeshipPaymentSummaryRequest(accountId, apprenticeDetails.Id, new PutApprenticeshipPaymentSummaryRequestData
         {
             Dob = DateOnly.FromDateTime(apprenticeDetails.DateOfBirth),
             StartDate = DateOnly.FromDateTime(apprenticeDetails.StartDate),
@@ -159,7 +159,7 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             LastUpdatedDate = DateTime.UtcNow
         });
 
-        var result = await fundingProjectionApiClient.PostWithResponseCode<ApprenticeshipPaymentSummaryResponse>(request);
+        var result = await fundingProjectionApiClient.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(request);
 
         result.EnsureSuccessStatusCode();
     }

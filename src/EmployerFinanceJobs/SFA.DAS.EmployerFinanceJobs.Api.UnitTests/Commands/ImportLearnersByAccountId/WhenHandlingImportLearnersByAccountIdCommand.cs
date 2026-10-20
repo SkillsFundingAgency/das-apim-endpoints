@@ -40,7 +40,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         result.LastSuccessfulImportDate.Should().NotBeNull();
         result.FailureReason.Should().BeNull();
         financeClient.Verify(c => c.Get<List<GetApprenticeshipPaymentByAccountIdResponse>>(It.IsAny<GetApprenticeshipPaymentByAccountIdRequest>()), Times.Never);
-        fundingProjectionClient.Verify(c => c.PostWithResponseCode<ApprenticeshipPaymentSummaryResponse>(It.IsAny<PostApprenticeshipPaymentSummaryRequest>(), true), Times.Never);
+        fundingProjectionClient.Verify(c => c.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(It.IsAny<PutApprenticeshipPaymentSummaryRequest>()), Times.Never);
     }
 
     [Test, MoqAutoData]
@@ -67,16 +67,16 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         result.IsSuccessful.Should().BeTrue();
         result.TotalRecordsProcessed.Should().Be(2);
         result.FailedRecordsCount.Should().Be(0);
-        fundingProjectionClient.Verify(c => c.PostWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
-            It.Is<PostApprenticeshipPaymentSummaryRequest>(r =>
+        fundingProjectionClient.Verify(c => c.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
+            It.Is<PutApprenticeshipPaymentSummaryRequest>(r =>
                 r.AccountId == command.AccountId &&
                 r.ApprenticeshipId == learner.Id &&
-                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).IsTransfer == false), true), Times.Once);
-        fundingProjectionClient.Verify(c => c.PostWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
-            It.Is<PostApprenticeshipPaymentSummaryRequest>(r =>
+                ((PutApprenticeshipPaymentSummaryRequestData)r.Data).IsTransfer == false)), Times.Once);
+        fundingProjectionClient.Verify(c => c.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
+            It.Is<PutApprenticeshipPaymentSummaryRequest>(r =>
                 r.AccountId == command.AccountId &&
                 r.ApprenticeshipId == transfer.Id &&
-                ((PostApprenticeshipPaymentSummaryRequestData)r.Data).IsTransfer), true), Times.Once);
+                ((PutApprenticeshipPaymentSummaryRequestData)r.Data).IsTransfer)), Times.Once);
     }
 
     [Test, MoqAutoData]
@@ -233,7 +233,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         result.TotalRecordsProcessed.Should().Be(2);
         result.FailedRecordsCount.Should().Be(1);
         result.LastSuccessfulImportDate.Should().BeNull();
-        fundingProjectionClient.Verify(c => c.PostWithResponseCode<ApprenticeshipPaymentSummaryResponse>(It.IsAny<PostApprenticeshipPaymentSummaryRequest>(), true), Times.Once);
+        fundingProjectionClient.Verify(c => c.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(It.IsAny<PutApprenticeshipPaymentSummaryRequest>()), Times.Once);
     }
 
     [Test, MoqAutoData]
@@ -314,14 +314,14 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         };
     }
 
-    private static List<PostApprenticeshipPaymentSummaryRequestData> CapturePostedSummaries(
+    private static List<PutApprenticeshipPaymentSummaryRequestData> CapturePostedSummaries(
         Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> client)
     {
-        var posted = new List<PostApprenticeshipPaymentSummaryRequestData>();
+        var posted = new List<PutApprenticeshipPaymentSummaryRequestData>();
         client
-            .Setup(c => c.PostWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
-                It.IsAny<PostApprenticeshipPaymentSummaryRequest>(), true))
-            .Callback<IPostApiRequest, bool>((r, _) => posted.Add((PostApprenticeshipPaymentSummaryRequestData)r.Data))
+            .Setup(c => c.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
+                It.IsAny<PutApprenticeshipPaymentSummaryRequest>()))
+            .Callback<IPutApiRequest>((r) => posted.Add((PutApprenticeshipPaymentSummaryRequestData)r.Data))
             .ReturnsAsync(new ApiResponse<ApprenticeshipPaymentSummaryResponse>(
                 new ApprenticeshipPaymentSummaryResponse(), HttpStatusCode.OK, string.Empty));
         return posted;
@@ -331,8 +331,8 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> client)
     {
         client
-            .Setup(c => c.PostWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
-                It.IsAny<PostApprenticeshipPaymentSummaryRequest>(), true))
+            .Setup(c => c.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
+                It.IsAny<PutApprenticeshipPaymentSummaryRequest>()))
             .ReturnsAsync(new ApiResponse<ApprenticeshipPaymentSummaryResponse>(
                 new ApprenticeshipPaymentSummaryResponse(), HttpStatusCode.OK, string.Empty));
     }
