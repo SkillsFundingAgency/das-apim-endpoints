@@ -45,7 +45,9 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             var committedLearners = committedLearnersTask.Result;
             var committedTransferOut = committedTransferOutTask.Result;
 
-            var committedLearnersResponse = committedLearners.ToList();
+            var committedLearnersResponse = committedLearners
+                .Where(c=>c.TransferSenderId == null)
+                .ToList();
             var committedTransferOutResponse = committedTransferOut.ToList();
 
             var allApprenticeships = committedLearnersResponse.Select(a => (a, isTransfer: false))

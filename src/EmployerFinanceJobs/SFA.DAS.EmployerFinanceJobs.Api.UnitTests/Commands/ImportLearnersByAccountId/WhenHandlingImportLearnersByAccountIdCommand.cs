@@ -80,6 +80,48 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
     }
 
     [Test, MoqAutoData]
+    public async Task Then_Excludes_Learners_Funded_By_A_Transfer_From_Another_Account(
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var learner = CreateApprenticeship(1);
+        var transferFundedLearner = CreateApprenticeship(2);
+        transferFundedLearner.TransferSenderId = command.AccountId + 1;
+        // Transfers out always have this account as the sender, so they must not be filtered
+        var transferOut = CreateApprenticeship(3);
+        transferOut.TransferSenderId = command.AccountId;
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner, transferFundedLearner]);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, [transferOut]);
+        SetupPayment(financeClient, learner.Id);
+        SetupPayment(financeClient, transferOut.Id);
+        SetupSuccessfulPost(fundingProjectionClient);
+
+        // Act
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsSuccessful.Should().BeTrue();
+        result.TotalRecordsProcessed.Should().Be(2);
+        result.FailedRecordsCount.Should().Be(0);
+        fundingProjectionClient.Verify(c => c.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
+            It.Is<PutApprenticeshipPaymentSummaryRequest>(r =>
+                r.ApprenticeshipId == learner.Id &&
+                ((PutApprenticeshipPaymentSummaryRequestData)r.Data).IsTransfer == false)), Times.Once);
+        fundingProjectionClient.Verify(c => c.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
+            It.Is<PutApprenticeshipPaymentSummaryRequest>(r =>
+                r.ApprenticeshipId == transferOut.Id &&
+                ((PutApprenticeshipPaymentSummaryRequestData)r.Data).IsTransfer)), Times.Once);
+        fundingProjectionClient.Verify(c => c.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
+            It.Is<PutApprenticeshipPaymentSummaryRequest>(r => r.ApprenticeshipId == transferFundedLearner.Id)), Times.Never);
+        financeClient.Verify(c => c.Get<List<GetApprenticeshipPaymentByAccountIdResponse>>(
+            It.Is<GetApprenticeshipPaymentByAccountIdRequest>(r => r.ApprenticeshipId == transferFundedLearner.Id)), Times.Never);
+    }
+
+    [Test, MoqAutoData]
     public async Task Then_Maps_Total_Paid_And_Last_Payment_From_All_Payments(
         ImportLearnersByAccountIdCommand command,
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
