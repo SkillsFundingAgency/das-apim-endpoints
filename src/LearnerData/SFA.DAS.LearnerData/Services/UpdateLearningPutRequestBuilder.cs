@@ -5,14 +5,14 @@ namespace SFA.DAS.LearnerData.Services;
 
 public interface IUpdateLearningPutRequestBuilder
 {
-    UpdateLearningApiPutRequest Build(long ukprn, UpdateLearnerRequest updateLearnerRequest, Guid learnerKey);
+    Task<UpdateLearningApiPutRequest> Build(long ukprn, UpdateLearnerRequest updateLearnerRequest, Guid learnerKey);
 }
 
 public class UpdateLearningPutRequestBuilder(IUpdateLearningRequestBodyBuilder requestBodyBuilder) : IUpdateLearningPutRequestBuilder
 {
-    public UpdateLearningApiPutRequest Build(long ukprn, UpdateLearnerRequest updateLearnerRequest, Guid learnerKey)
+    public async Task<UpdateLearningApiPutRequest> Build(long ukprn, UpdateLearnerRequest updateLearnerRequest, Guid learnerKey)
     {
-        var body = requestBodyBuilder.Build(ukprn, updateLearnerRequest);
+        var body = await requestBodyBuilder.Build(ukprn, updateLearnerRequest);
         return new UpdateLearningApiPutRequest(ukprn, learnerKey, body);
     }
 }
