@@ -60,28 +60,31 @@ public class UpdateLearnerCommandHandler(
                 command.LearnerKey, string.Join(", ", learningApiPutResponse));
 
             var needsFurtherApproval = learningApiPutResponse.ChangeDetails.Any(x => x.RequiresApproval);
-            ApprovalsOutcome? approval = null;
 
             if (learningApiPutResponse.Changes.Count == 0 || learningApiPutResponse.Changes.HasPersonalDetailsOnly())
             {
                 logger.LogInformation("No changes requiring earnings update for learner {LearnerKey}", command.LearnerKey);
             }
-            else if (needsFurtherApproval
-                     && !(approval = await approvalsService.RequestApproval(command.Ukprn, command.UpdateLearnerRequest.Learner.Uln, learningApiPutResponse)).AllAutoApproved)
-            {
-                logger.LogInformation("Changes for learning {LearningKey} were not auto-approved by Approvals, so Earnings has not been updated", learningApiPutResponse.LearningKey);
-            }
-            else if (approval == null && learningApiPutResponse.FurtherApprovalNeeded)
-            {
-                // Nothing in this update needed approval, but the episode is still flagged from an earlier one.
-                logger.LogWarning("Learning {LearningKey}, episode {EpisodeKey} is still awaiting further approval of an earlier change, so Earnings has not been updated with changes: {Changes}",
-                    learningApiPutResponse.LearningKey, learningApiPutResponse.LearningEpisodeKey, string.Join(", ", learningApiPutResponse.Changes));
-            }
             else
             {
-                if (approval != null && await ClearFurtherApprovalNeeded(learningApiPutResponse))
+                var cleared = false;
+                if (needsFurtherApproval)
                 {
-                    await PublishApprovedLearningUpdatedEvent(learningApiPutResponse, approval.Response);
+                    var approval = await approvalsService.RequestApproval(command.Ukprn, command.UpdateLearnerRequest.Learner.Uln, learningApiPutResponse);
+                    if (approval.AllAutoApproved && await ClearFurtherApprovalNeeded(learningApiPutResponse))
+                    {
+                        cleared = true;
+                        await PublishApprovedLearningUpdatedEvent(learningApiPutResponse, approval.Response);
+                    }
+                }
+
+                // FurtherApprovalNeeded on the learning response is sourced from the episode's stored flag,
+                // so this also covers a change still awaiting approval from an earlier update
+                var furtherApprovalRequired = learningApiPutResponse.FurtherApprovalNeeded && !cleared;
+                if (furtherApprovalRequired)
+                {
+                    logger.LogInformation("Learning {LearningKey}, episode {EpisodeKey} needs further approval, so Earnings will withhold payments",
+                        learningApiPutResponse.LearningKey, learningApiPutResponse.LearningEpisodeKey);
                 }
 
                 var releaseEarnings = false;
@@ -89,7 +92,7 @@ public class UpdateLearnerCommandHandler(
                 if (learningApiPutResponse.Changes.HasOnProgrammeUpdate())
                 {
                     logger.LogInformation("Updating Earnings with OnProgramme changes for learning {LearningKey}", learningApiPutResponse.LearningKey);
-                    var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(command.UpdateLearnerRequest, learningApiPutResponse, request.Data);
+                    var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(command.UpdateLearnerRequest, learningApiPutResponse, request.Data, furtherApprovalRequired);
                     var earningsOnProgrammeResponse = await earningsApiClient.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(earningsOnProgrammeApiRequest);
 
                     if (earningsOnProgrammeResponse.Body.HasNewEarningsProfileVersionBeenGenerated)
@@ -132,10 +135,7 @@ public class UpdateLearnerCommandHandler(
 
     /// <summary>
     /// Learning flags the episode as FurtherApprovalNeeded when an update needs further approval. Now that Approvals has
-    /// auto-approved the change, clear it. A failure is logged and swallowed: Approvals has approved, so Earnings must
-    /// still be updated, and throwing would also skip the LearnerDataEvent publishing that follows.
-    /// Known consequence: the flag stays set, so later updates for this learner are not sent to Earnings until it is cleared.
-    /// Returns whether the flag was cleared.
+    /// auto-approved the change, clear it. Returns whether the flag was cleared.
     /// </summary>
     private async Task<bool> ClearFurtherApprovalNeeded(BaseLearnerApiPutResponse learningApiPutResponse)
     {

@@ -48,7 +48,7 @@ public class WhenHandlingUpdateLearnerCommand
     {
         _fixture = new Fixture();
         _fixture.Customize(new JsonNodeCustomization());
-        // Otherwise a random true would stop Earnings being updated in tests that are not about further approval
+        // Otherwise a random true would tell Earnings that further approval is required in tests that are not about it
         _fixture.Customize<UpdateLearnerApiPutResponse>(x => x.With(r => r.FurtherApprovalNeeded, false));
         _learningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _earningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
@@ -220,7 +220,7 @@ public class WhenHandlingUpdateLearnerCommand
         MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
         var apiPutRequest = MockLearningPutRequestBuilder(command);
 
-        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data))
+        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data, false))
             .ReturnsAsync(updateOnProgPutRequest);
 
         _earningsApiClient.Setup(x => x.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
@@ -261,7 +261,7 @@ public class WhenHandlingUpdateLearnerCommand
         MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
         var apiPutRequest = MockLearningPutRequestBuilder(command);
 
-        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data))
+        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data, false))
             .ReturnsAsync(updateOnProgPutRequest);
 
         _earningsApiClient.Setup(x => x.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
@@ -546,7 +546,7 @@ public class WhenHandlingUpdateLearnerCommand
     }
 
     [Test]
-    public async Task Then_Earnings_Is_Not_Updated_If_Approval_Is_Not_Granted()
+    public async Task Then_Earnings_Is_Updated_As_Requiring_Further_Approval_If_Approval_Is_Not_Granted()
     {
         // Arrange
         var (command, learningResponse) = ArrangeStartDateChange();
@@ -558,8 +558,37 @@ public class WhenHandlingUpdateLearnerCommand
         await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        _earningsApiClient.VerifyNoOtherCalls();
+        VerifyEarningsUpdated(command, learningResponse, furtherApprovalRequired: true);
         _learningApiClient.Verify(x => x.PostWithResponseCode<object>(It.IsAny<ClearFurtherApprovalNeededApiPostRequest>(), It.IsAny<bool>()), Times.Never);
+    }
+
+    [Test]
+    public async Task Then_Earnings_Is_Updated_As_Not_Requiring_Further_Approval_If_Approval_Is_Granted_And_Cleared()
+    {
+        // Arrange
+        var (command, learningResponse) = ArrangeStartDateChange();
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        VerifyEarningsUpdated(command, learningResponse, furtherApprovalRequired: false);
+    }
+
+    [Test]
+    public async Task Then_Earnings_Is_Updated_As_Requiring_Further_Approval_If_Approval_Is_Granted_But_Clearing_Fails()
+    {
+        // Arrange: Learning still holds the flag, so Earnings must withhold payments too
+        var (command, learningResponse) = ArrangeStartDateChange();
+        _learningApiClient
+            .Setup(x => x.PostWithResponseCode<object>(It.IsAny<ClearFurtherApprovalNeededApiPostRequest>(), false))
+            .ReturnsAsync(new ApiResponse<object>(null!, HttpStatusCode.NotFound, "not found"));
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        VerifyEarningsUpdated(command, learningResponse, furtherApprovalRequired: true);
     }
 
     [Test]
@@ -680,7 +709,7 @@ public class WhenHandlingUpdateLearnerCommand
     }
 
     [Test]
-    public async Task Then_Earnings_Is_Not_Updated_If_An_Earlier_Change_Is_Still_Awaiting_Approval()
+    public async Task Then_Earnings_Is_Updated_As_Requiring_Further_Approval_If_An_Earlier_Change_Is_Still_Awaiting_Approval()
     {
         // Arrange: this update is a withdrawal that needs no approval, but the episode is still flagged from an earlier one
         var (command, learningResponse) = ArrangeStartDateChange(
@@ -693,7 +722,7 @@ public class WhenHandlingUpdateLearnerCommand
         await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        _earningsApiClient.VerifyNoOtherCalls();
+        VerifyEarningsUpdated(command, learningResponse, furtherApprovalRequired: true);
         _approvalsService.VerifyNoOtherCalls();
         _learningApiClient.Verify(x => x.PostWithResponseCode<object>(It.IsAny<ClearFurtherApprovalNeededApiPostRequest>(), It.IsAny<bool>()), Times.Never);
     }
@@ -822,7 +851,7 @@ public class WhenHandlingUpdateLearnerCommand
         var apiPutRequest = MockLearningPutRequestBuilder(command);
 
         _updateEarningsOnProgrammeRequestBuilder
-            .Setup(x => x.Build(command.UpdateLearnerRequest, learningResponse, apiPutRequest.Data))
+            .Setup(x => x.Build(command.UpdateLearnerRequest, learningResponse, apiPutRequest.Data, It.IsAny<bool>()))
             .ReturnsAsync(_fixture.Create<UpdateOnProgrammeApiPutRequest>());
 
         _earningsApiClient
@@ -830,6 +859,12 @@ public class WhenHandlingUpdateLearnerCommand
             .ReturnsAsync(new ApiResponse<UpdateOnProgrammeEarningsApiPutResponse>(new UpdateOnProgrammeEarningsApiPutResponse(), HttpStatusCode.OK, string.Empty));
 
         return (command, learningResponse);
+    }
+
+    private void VerifyEarningsUpdated(UpdateLearnerCommand command, UpdateLearnerApiPutResponse learningResponse, bool furtherApprovalRequired)
+    {
+        _updateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(command.UpdateLearnerRequest, learningResponse, It.IsAny<UpdateLearningRequestBody>(), furtherApprovalRequired), Times.Once);
+        _earningsApiClient.Verify(x => x.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Once);
     }
 
     private void VerifyErrorLogged(UpdateLearnerApiPutResponse learningResponse)

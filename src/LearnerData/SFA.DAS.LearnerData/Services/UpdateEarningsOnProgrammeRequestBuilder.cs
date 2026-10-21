@@ -11,25 +11,26 @@ namespace SFA.DAS.LearnerData.Services;
 
 public interface IUpdateEarningsOnProgrammeRequestBuilder
 {
-    Task<UpdateOnProgrammeApiPutRequest> Build(UpdateLearnerRequest updateLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningRequestBody requestBody);
+    Task<UpdateOnProgrammeApiPutRequest> Build(UpdateLearnerRequest updateLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningRequestBody requestBody, bool furtherApprovalRequired);
     Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, CreateLearnerRequest createLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningRequestBody requestBody);
 }
 
 public class UpdateEarningsOnProgrammeRequestBuilder(ICourseService courseService) : IUpdateEarningsOnProgrammeRequestBuilder
 {
     public async Task<UpdateOnProgrammeApiPutRequest> Build(UpdateLearnerRequest updateLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse,
-        UpdateLearningRequestBody requestBody)
+        UpdateLearningRequestBody requestBody, bool furtherApprovalRequired)
     {
-        return await BuildInternal(learningApiPutResponse.LearningKey, updateLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(), learningApiPutResponse, requestBody);
+        return await BuildInternal(learningApiPutResponse.LearningKey, updateLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(), learningApiPutResponse, requestBody, furtherApprovalRequired);
     }
 
     public async Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, CreateLearnerRequest createLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse,
         UpdateLearningRequestBody requestBody)
     {
-        return await BuildInternal(learningKey, createLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(), learningApiPutResponse, requestBody);
+        // Known gap: further approval is not yet supported on POST. A reinstating POST can change the start date
+        return await BuildInternal(learningKey, createLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(), learningApiPutResponse, requestBody, furtherApprovalRequired: false);
     }
 
-    private async Task<UpdateOnProgrammeApiPutRequest> BuildInternal(Guid learningKey, List<OnProgrammeRequestDetails> onProgramme, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningRequestBody requestBody)
+    private async Task<UpdateOnProgrammeApiPutRequest> BuildInternal(Guid learningKey, List<OnProgrammeRequestDetails> onProgramme, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningRequestBody requestBody, bool furtherApprovalRequired)
     {
         var fundingBandMaximum = default(int?);
         var includesFundingBandMaximumUpdate = false;
@@ -67,7 +68,8 @@ public class UpdateEarningsOnProgrammeRequestBuilder(ICourseService courseServic
                 IsCareLeaver = requestBody.Learner.Care.IsCareLeaver,
                 CareLeaverEmployerConsentGiven = requestBody.Learner.Care.CareLeaverEmployerConsentGiven
             },
-            LearningSupport = requestBody.OnProgramme.LearningSupport
+            LearningSupport = requestBody.OnProgramme.LearningSupport,
+            FurtherApprovalRequired = furtherApprovalRequired
         };
 
         return new UpdateOnProgrammeApiPutRequest(learningKey, payload);

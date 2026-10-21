@@ -220,6 +220,18 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
             $"Expected a request to {requestUrl} but found {requests.Count} requests instead.");
     }
 
+    [Then(@"the on-programme update request sent to the earnings domain (requires|does not require) further approval")]
+    public void ThenTheOnProgrammeUpdateRequestSentToTheEarningsDomainRequiresFurtherApproval(string requires)
+    {
+        var requestUrl = GetEarningsRequestUrl("on-programme");
+
+        var entry = testContext.EarningsApi.MockServer.LogEntries
+            .Single(request => request.RequestMessage.Url.Contains(requestUrl));
+
+        var body = JsonConvert.DeserializeObject<UpdateOnProgrammeRequest>(entry.RequestMessage.Body);
+        body!.FurtherApprovalRequired.Should().Be(requires == "requires");
+    }
+
     [Then(@"no changes are made to the learner")]
     public void ThenNoChangesAreMadeToTheLearner()
     {
@@ -356,6 +368,8 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         response.LearningEpisodeKey = Guid.NewGuid();
         response.ApprovalsApprenticeshipId = 12345;
         response.IsApproved = true;
+        // Learning sets the stored flag when it reports a change that requires approval
+        response.FurtherApprovalNeeded = true;
         response.ChangeDetails =
         [
             new UpdateLearnerApiPutResponse.ChangeDetail
