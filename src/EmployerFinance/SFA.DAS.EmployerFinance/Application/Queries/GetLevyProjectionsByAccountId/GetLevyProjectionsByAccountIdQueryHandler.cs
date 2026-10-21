@@ -24,40 +24,48 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
     {
         var now = DateTime.UtcNow.Date;
 
-        var lastSubmissionTask = financeApiClient.Get<GetLevyLastSubmissionDateResponse>(
-            new GetLevyLastSubmissionDateRequest(request.AccountId));
+        var fundsInTask = financeApiClient.Get<List<CalendarPeriodAmount>>(new GetLevyFundsInRequest(request.AccountId));
+        var fundsOutTask = financeApiClient.Get<List<CalendarPeriodAmount>>(new GetPaymentFundsOutRequest(request.AccountId));
+        var expiredLevyTask = financeApiClient.Get<GetExpiredLevyResponse>(new GetExpiredLevyRequest(request.AccountId));
 
-        var levySummaryTask = await financeApiClient.Get<GetLevySummaryByAccountIdResponse>(
+        var levySummaryTask = financeApiClient.Get<GetLevySummaryByAccountIdResponse>(
             new GetLevySummaryByAccountIdRequest(request.AccountId));
 
-        var declarations = await FetchHistoricTransactionLinesDataAsync(now, request.AccountId);
+        var declarationsTask = FetchHistoricTransactionLinesDataAsync(now, request.AccountId);
 
-        var projectionTask = projectionApiClient.PostWithResponseCode<EstimatesTimeline>(
+        await Task.WhenAll(levySummaryTask, declarationsTask, fundsInTask, fundsOutTask, expiredLevyTask);
+        var levySummary = levySummaryTask.Result;
+        var declarations = declarationsTask.Result;
+        var expiredLevy = expiredLevyTask.Result;
+
+        var projectionResponse = await projectionApiClient.PostWithResponseCode<EstimatesTimeline>(
             new PostEmployerFundingProjectionRequest(request.AccountId, new PostEmployerFundingProjectionRequestData
             {
                 Months = request.Months,
-                CurrentLevyFunds = levySummaryTask.CurrentLevyFunds,
-                HistoricLevyIn = BuildLevyInSummary(declarations)
+                CurrentLevyFunds = levySummary.CurrentLevyFunds,
+                HistoricLevyIn = BuildLevyInSummary(declarations),
+                LevyFundsInForExpiry = fundsInTask.Result ?? [],
+                PaymentFundsOutForExpiry = fundsOutTask.Result ?? [],
+                LongTermExpiredFunds = expiredLevy?.LongTerm ?? [],
+                ShortTermExpiredFunds = expiredLevy?.ShortTerm ?? []
             }));
 
-        await Task.WhenAll(lastSubmissionTask, projectionTask);
-
-        var projection = projectionTask.Result.Body;
+        var projection = projectionResponse.Body;
 
         return new GetLevyProjectionsByAccountIdQueryResult
         {
             AccountId = request.AccountId,
             Summary = new GetLevySummaryByAccountIdQueryResult
             {
-                CurrentLevyFunds = levySummaryTask.CurrentLevyFunds,
-                TotalLevyDeclaredLast12Months = levySummaryTask.TotalLevyDeclaredLast12Months,
-                TotalLevySpentLast12Months = levySummaryTask.TotalLevySpentLast12Months,
-                TotalLevyExpiredLast12Months = levySummaryTask.TotalLevyExpiredLast12Months,
+                CurrentLevyFunds = levySummary.CurrentLevyFunds,
+                TotalLevyDeclaredLast12Months = levySummary.TotalLevyDeclaredLast12Months,
+                TotalLevySpentLast12Months = levySummary.TotalLevySpentLast12Months,
+                TotalLevyExpiredLast12Months = levySummary.TotalLevyExpiredLast12Months,
                 TotalCommittedLearnerCosts = projection.TotalEstimatedCommitedCost,
                 TotalCommittedTransfersCosts = projection.TotalEstimatedCommitedTransferCost
             },
             Projections = projection.Projections,
-            LatestLevyDeclarationInDate = lastSubmissionTask.Result.LastSubmissionDate ?? DateTime.MinValue
+            LatestLevyDeclarationInDate = GetLatestSubmissionDate(declarations) ?? DateTime.MinValue
         };
     }
 
@@ -70,6 +78,11 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
                 new DateOnly(g.Key.Year, g.Key.Month, 1),
                 g.Sum(t => t.TotalAmount - t.TopUp)))
     ];
+
+    private static DateTime? GetLatestSubmissionDate(List<LevyDeclaration> declarations) =>
+        declarations
+            .Where(d => d.TotalAmount > 0)
+            .Max(d => d.SubmissionDate);
 
     private async Task<List<LevyDeclaration>> FetchHistoricTransactionLinesDataAsync(DateTime now, long accountId)
     {
