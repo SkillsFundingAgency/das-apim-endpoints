@@ -68,6 +68,7 @@ public class DraftEnglishAndMathsItem
     public DateTime? WithdrawalDate { get; set; }
     public DateTime? CompletionDate { get; set; }
     public List<ApprenticeshipPeriodInLearningItem> PeriodsInLearning { get; set; } = [];
+    public List<ApprenticeshipLearningSupportItem> LearningSupport { get; set; } = [];
 }
 
 public class DraftCareRequest
