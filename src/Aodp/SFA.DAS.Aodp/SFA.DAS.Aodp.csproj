@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="12.5.0" />
+    <PackageReference Include="MediatR" Version="14.2.0" />
     <PackageReference Include="OpenTelemetry.Api" Version="1.16.0" />
   </ItemGroup>
 
