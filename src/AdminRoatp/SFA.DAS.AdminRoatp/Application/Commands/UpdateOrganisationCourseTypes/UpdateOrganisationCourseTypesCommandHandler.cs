@@ -29,7 +29,7 @@ public class UpdateOrganisationCourseTypesCommandHandler(IRoatpServiceApiClient<
     {
         ApiResponse<OrganisationResponse> response = await _roatpV1ApiClient.GetWithResponseCode<OrganisationResponse>(new GetOrganisationRequest(command.Ukprn));
         response.EnsureSuccessStatusCode();
-        if (response.Body.ProviderType != ProviderType.Main) return;
+        if (response.Body.ProviderType == ProviderType.Supporting) return;
 
         var courseTypeNames = command.CourseTypeIds.Select(x => (CourseType)x).ToArray();
         var addCourseTypesCommand = new AddCourseTypesModel()
