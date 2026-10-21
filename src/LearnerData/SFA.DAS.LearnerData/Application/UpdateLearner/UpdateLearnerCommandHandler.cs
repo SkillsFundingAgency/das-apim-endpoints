@@ -41,7 +41,7 @@ public class UpdateLearnerCommandHandler(
         logger.LogInformation("Feature toggle ApprenticeshipUpdateLearner is {ApprenticeshipUpdateLearner}", featureFlags.ApprenticeshipUpdateLearner);
         if (featureFlags.ApprenticeshipUpdateLearner)
         {
-            var request = updateLearningPutRequestBuilder.Build(command.Ukprn, command.UpdateLearnerRequest, command.LearnerKey);
+            var request = await updateLearningPutRequestBuilder.Build(command.Ukprn, command.UpdateLearnerRequest, command.LearnerKey);
 
             var learningResponse = await learningApiClient.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(request);
 
