@@ -54,6 +54,12 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(item => item.EmploymentLocationInformation)
                 .Excluding(item => item.Address)
                 .Excluding(item => item.OtherAddresses)
+                .Excluding(item => item.EmployerContactEmail)
+                .Excluding(item => item.EmployerContactName)
+                .Excluding(item => item.EmployerContactPhone)
+                .Excluding(item => item.ProviderContactEmail)
+                .Excluding(item => item.ProviderContactName)
+                .Excluding(item => item.ProviderContactPhone)
             );
             actual.FullDescription.Should().Be(source.LongDescription);
             actual.Qualifications.Should().BeEquivalentTo(source.Qualifications.Select(c=>(GetVacancyQualification)c).ToList());
@@ -75,6 +81,46 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             actual.CompanyBenefitsInformation.Should().Be(source.CompanyBenefitsInformation);
             actual.ThingsToConsider.Should().Be(source.ThingsToConsider);
             actual.Skills.Should().BeEquivalentTo(source.Skills);
+        }
+        
+        [Test, AutoData]
+        public void Then_The_Employer_Contact_Details_Are_Mapped_Correctly(GetVacancyApiResponse source, int ukprn)
+        {
+            // arrange
+            source.Ukprn = ukprn.ToString();
+            source.VacancyReference = $"VAC{source.VacancyReference}";
+
+            source.ProviderContactEmail = null;
+            source.ProviderContactName = null;
+            source.ProviderContactPhone = null;
+            
+            // act
+            var actual = (GetVacancyResponseV2)source;
+            
+            // assert
+            actual.EmployerContactEmail.Should().Be(source.EmployerContactEmail);
+            actual.EmployerContactName.Should().Be(source.EmployerContactName);
+            actual.EmployerContactPhone.Should().Be(source.EmployerContactPhone);
+        }
+        
+        [Test, AutoData]
+        public void Then_The_Provider_Contact_Details_Are_Mapped_Correctly(GetVacancyApiResponse source, int ukprn)
+        {
+            // arrange
+            source.Ukprn = ukprn.ToString();
+            source.VacancyReference = $"VAC{source.VacancyReference}";
+
+            source.EmployerContactEmail = null;
+            source.EmployerContactName = null;
+            source.EmployerContactPhone = null;
+            
+            // act
+            var actual = (GetVacancyResponseV2)source;
+            
+            // assert
+            actual.EmployerContactEmail.Should().Be(source.ProviderContactEmail);
+            actual.EmployerContactName.Should().Be(source.ProviderContactName);
+            actual.EmployerContactPhone.Should().Be(source.ProviderContactPhone);
         }
 
         [Test, AutoData]

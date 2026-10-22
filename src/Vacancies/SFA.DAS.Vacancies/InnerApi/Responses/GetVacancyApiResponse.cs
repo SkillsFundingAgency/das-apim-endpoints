@@ -120,6 +120,15 @@ public class GetVacancyApiResponse
         
     [JsonPropertyName("employerContactName")]
     public string EmployerContactName { get; set; }
+    
+    [JsonPropertyName("providerContactPhone")]
+    public string ProviderContactPhone { get; set; }
+        
+    [JsonPropertyName("providerContactEmail")]
+    public string ProviderContactEmail { get; set; }
+        
+    [JsonPropertyName("providerContactName")]
+    public string ProviderContactName { get; set; }
         
     [JsonPropertyName("address")]
     public Address Address { get; set; }
