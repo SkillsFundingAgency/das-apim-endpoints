@@ -6,6 +6,7 @@ namespace SFA.DAS.RoatpOversight.Api.Controllers;
 
 [Route("providers/course-types")]
 [ApiController]
+[ProducesResponseType(StatusCodes.Status200OK)]
 public class ProviderCourseTypesController(IMediator _mediator) : ControllerBase
 {
     [HttpPost]
