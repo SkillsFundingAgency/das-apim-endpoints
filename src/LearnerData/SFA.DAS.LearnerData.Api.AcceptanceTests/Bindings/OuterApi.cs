@@ -43,7 +43,9 @@ public class OuterApi
                 {"AzureAD:tenant", ""},
                 {"AzureAD:identifier", ""},
                 {"PaymentsConfiguration:PaymentsEndpoint", "stub"},
-                {"FeatureFlags:ApprenticeshipUpdateLearner", "true"}
+                {"FeatureFlags:ApprenticeshipUpdateLearner", "true"},
+                {"FeatureFlags:ApprenticeshipCreateDraftLearner", "true"},
+                {"FeatureFlags:ApprenticeshipEarningsGeneration", "true"}
             };
 
 

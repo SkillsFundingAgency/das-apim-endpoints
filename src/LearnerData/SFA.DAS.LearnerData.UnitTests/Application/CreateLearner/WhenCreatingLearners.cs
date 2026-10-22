@@ -1,4 +1,4 @@
-using AutoFixture;
+﻿using AutoFixture;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Common.Domain.Types;
 using NServiceBus;
@@ -34,6 +34,7 @@ public class WhenCreatingLearners
     private Mock<IUpdateEarningsOnProgrammeRequestBuilder> _mockUpdateEarningsOnProgrammeRequestBuilder;
     private Mock<ICreateUnapprovedApprenticeshipLearningRequestBuilder> _mockCreateUnapprovedApprenticeshipLearningRequestBuilder;
     private Mock<ICourseService> _mockCourseService;
+    private Mock<IFurtherApprovalService> _mockFurtherApprovalService;
     private CreateLearnerCommandHandler _sut;
 
 
@@ -54,6 +55,7 @@ public class WhenCreatingLearners
         _mockUpdateEarningsOnProgrammeRequestBuilder = new Mock<IUpdateEarningsOnProgrammeRequestBuilder>();
         _mockCreateUnapprovedApprenticeshipLearningRequestBuilder = new Mock<ICreateUnapprovedApprenticeshipLearningRequestBuilder>();
         _mockCourseService = new Mock<ICourseService>();
+        _mockFurtherApprovalService = new Mock<IFurtherApprovalService>();
 
         _sut = new CreateLearnerCommandHandler(
             _mockLogger.Object,
@@ -64,6 +66,7 @@ public class WhenCreatingLearners
             _mockUpdateEarningsOnProgrammeRequestBuilder.Object,
             _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
             _mockCourseService.Object,
+            _mockFurtherApprovalService.Object,
             new LearnerDataEventMapper(),
             new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = true });
 
@@ -91,6 +94,10 @@ public class WhenCreatingLearners
         _mockEarningsApiClient
             .Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostCreateUnapprovedApprenticeshipLearningRequest>(), true))
             .ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.OK, string.Empty));
+
+        _mockFurtherApprovalService
+            .Setup(x => x.Resolve(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<BaseLearnerApiPutResponse>()))
+            .ReturnsAsync(false);
     }
 
 
@@ -221,42 +228,137 @@ public class WhenCreatingLearners
     //    Assert.ThrowsAsync<InvalidOperationException>(async () => await _sut.Handle(command, CancellationToken.None));
     //}
 
-    //[Test]
-    //public async Task Then_reinstates_earnings_if_learner_is_reinstated()
-    //{
-    //    // Arrange
-    //    var command = GetProcessLearnersCommand();
-    //    var learningKey = Guid.NewGuid();
-    //    var responseBody = new CreateDraftLearnerApiPutResponse
-    //    {
-    //        LearningKey = learningKey,
-    //        Changes = new List<BaseLearnerApiPutResponse.LearningUpdateChanges> { BaseLearnerApiPutResponse.LearningUpdateChanges.Reinstated }
-    //    };
-    //    var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(
-    //        responseBody,
-    //        HttpStatusCode.OK,
-    //        string.Empty);
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task Then_reinstates_earnings_if_learner_is_reinstated(bool furtherApprovalRequired)
+    {
+        // Arrange
+        var command = GetProcessLearnersCommand();
+        var responseBody = ArrangeReinstatement();
+        _mockFurtherApprovalService
+            .Setup(x => x.Resolve(command.Ukprn, command.Request.Learner.Uln, responseBody))
+            .ReturnsAsync(furtherApprovalRequired);
 
-    //    _mockLearningApiClient
-    //        .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
-    //        .ReturnsAsync(successResponse);
+        var earningsPutRequest = _fixture.Create<UpdateOnProgrammeApiPutRequest>();
+        _mockUpdateEarningsOnProgrammeRequestBuilder
+            .Setup(x => x.Build(responseBody.LearningKey, command.Request, responseBody, It.IsAny<UpdateLearningRequestBody>(), furtherApprovalRequired))
+            .ReturnsAsync(earningsPutRequest);
 
-    //    var earningsPutRequest = _fixture.Create<UpdateOnProgrammeApiPutRequest>();
-    //    _mockUpdateEarningsOnProgrammeRequestBuilder
-    //        .Setup(x => x.Build(learningKey, command.Request, responseBody, It.IsAny<UpdateLearningRequestBody>()))
-    //        .ReturnsAsync(earningsPutRequest);
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
 
-    //    _mockEarningsApiClient
-    //        .Setup(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
-    //        .Returns(Task.CompletedTask);
+        // Assert
+        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(responseBody.LearningKey, command.Request, responseBody, It.IsAny<UpdateLearningRequestBody>(), furtherApprovalRequired), Times.Once);
+        _mockEarningsApiClient.Verify(x => x.Put(earningsPutRequest), Times.Once);
+    }
 
-    //    // Act
-    //    await _sut.Handle(command, CancellationToken.None);
+    [Test]
+    public async Task Then_further_approval_is_resolved_for_a_reinstatement()
+    {
+        // Arrange
+        var command = GetProcessLearnersCommand();
+        var responseBody = ArrangeReinstatement();
 
-    //    // Assert
-    //    _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(learningKey, command.Request, responseBody, It.IsAny<UpdateLearningRequestBody>()), Times.Once);
-    //    _mockEarningsApiClient.Verify(x => x.Put(earningsPutRequest), Times.Once);
-    //}
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _mockFurtherApprovalService.Verify(x => x.Resolve(command.Ukprn, command.Request.Learner.Uln, responseBody), Times.Once);
+    }
+
+    [Test]
+    public async Task Then_further_approval_is_resolved_before_earnings_is_updated_for_a_reinstatement()
+    {
+        // Arrange
+        var command = GetProcessLearnersCommand();
+        ArrangeReinstatement();
+        var calls = new List<string>();
+
+        _mockFurtherApprovalService
+            .Setup(x => x.Resolve(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<BaseLearnerApiPutResponse>()))
+            .Callback(() => calls.Add("resolve"))
+            .ReturnsAsync(false);
+        _mockEarningsApiClient
+            .Setup(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
+            .Callback(() => calls.Add("earnings"))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        calls.Should().Equal("resolve", "earnings");
+    }
+
+    [Test]
+    public async Task Then_further_approval_is_not_resolved_for_a_new_draft()
+    {
+        // Arrange: the default Learning response has no changes, so a new draft is created
+        var command = GetProcessLearnersCommand();
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _mockFurtherApprovalService.VerifyNoOtherCalls();
+    }
+
+    [Test]
+    public async Task Then_further_approval_is_not_resolved_if_learner_is_not_reinstated()
+    {
+        // Arrange: a draft upsert can never need further approval
+        var command = GetProcessLearnersCommand();
+        _mockLearningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
+            .ReturnsAsync(new ApiResponse<CreateDraftLearnerApiPutResponse>(
+                new CreateDraftLearnerApiPutResponse
+                {
+                    LearningKey = Guid.NewGuid(),
+                    Changes = new List<BaseLearnerApiPutResponse.LearningUpdateChanges> { BaseLearnerApiPutResponse.LearningUpdateChanges.PersonalDetails }
+                },
+                HttpStatusCode.OK,
+                string.Empty));
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _mockFurtherApprovalService.VerifyNoOtherCalls();
+    }
+
+    [Test]
+    public void Then_the_exception_is_propagated_and_earnings_is_untouched_if_resolving_further_approval_fails()
+    {
+        // Arrange
+        var command = GetProcessLearnersCommand();
+        ArrangeReinstatement();
+        _mockFurtherApprovalService
+            .Setup(x => x.Resolve(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<BaseLearnerApiPutResponse>()))
+            .ThrowsAsync(new HttpRequestException("approvals is down"));
+
+        // Act / Assert
+        Assert.ThrowsAsync<HttpRequestException>(async () => await _sut.Handle(command, CancellationToken.None));
+        _mockEarningsApiClient.Verify(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Never);
+    }
+
+    private CreateDraftLearnerApiPutResponse ArrangeReinstatement()
+    {
+        var responseBody = new CreateDraftLearnerApiPutResponse
+        {
+            LearningKey = Guid.NewGuid(),
+            Changes = new List<BaseLearnerApiPutResponse.LearningUpdateChanges> { BaseLearnerApiPutResponse.LearningUpdateChanges.Reinstated }
+        };
+
+        _mockLearningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
+            .ReturnsAsync(new ApiResponse<CreateDraftLearnerApiPutResponse>(responseBody, HttpStatusCode.OK, string.Empty));
+
+        _mockUpdateEarningsOnProgrammeRequestBuilder
+            .Setup(x => x.Build(It.IsAny<Guid>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>(), It.IsAny<bool>()))
+            .ReturnsAsync(_fixture.Create<UpdateOnProgrammeApiPutRequest>());
+
+        return responseBody;
+    }
 
     [Test]
     public async Task Then_does_not_reinstate_earnings_if_learner_is_not_reinstated()
@@ -281,7 +383,7 @@ public class WhenCreatingLearners
         await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(It.IsAny<Guid>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Never);
+        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(It.IsAny<Guid>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>(), It.IsAny<bool>()), Times.Never);
         _mockEarningsApiClient.Verify(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Never);
         _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Verify(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<CreateDraftLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Once);
         _mockEarningsApiClient.Verify(x => x.PostWithResponseCode<object>(It.IsAny<PostCreateUnapprovedApprenticeshipLearningRequest>(), true), Times.Once);
@@ -305,7 +407,7 @@ public class WhenCreatingLearners
         await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(It.IsAny<Guid>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Never);
+        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(It.IsAny<Guid>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>(), It.IsAny<bool>()), Times.Never);
         _mockEarningsApiClient.Verify(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Never);
         _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Verify(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<CreateDraftLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Never);
         _mockEarningsApiClient.Verify(x => x.PostWithResponseCode<object>(It.IsAny<PostCreateUnapprovedApprenticeshipLearningRequest>(), true), Times.Never);
@@ -324,6 +426,7 @@ public class WhenCreatingLearners
             _mockUpdateEarningsOnProgrammeRequestBuilder.Object,
             _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
             _mockCourseService.Object,
+            _mockFurtherApprovalService.Object,
             new LearnerDataEventMapper(),
             new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = false });
 
@@ -337,7 +440,7 @@ public class WhenCreatingLearners
         _mockMessageSession.Verify(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()), Times.Once());
 
         // ...but no call to Earnings Inner is made
-        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(It.IsAny<Guid>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Never);
+        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(It.IsAny<Guid>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>(), It.IsAny<bool>()), Times.Never);
         _mockEarningsApiClient.Verify(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Never);
         _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Verify(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<CreateDraftLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Never);
         _mockEarningsApiClient.Verify(x => x.PostWithResponseCode<object>(It.IsAny<PostCreateUnapprovedApprenticeshipLearningRequest>(), true), Times.Never);
@@ -419,6 +522,7 @@ public class WhenCreatingLearners
             _mockUpdateEarningsOnProgrammeRequestBuilder.Object,
             _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
             _mockCourseService.Object,
+            _mockFurtherApprovalService.Object,
             new LearnerDataEventMapper(),
             new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = false });
 
