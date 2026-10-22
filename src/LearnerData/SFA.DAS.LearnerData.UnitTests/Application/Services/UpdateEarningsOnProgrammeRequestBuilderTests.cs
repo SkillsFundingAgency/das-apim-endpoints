@@ -1,4 +1,4 @@
-using AutoFixture;
+﻿using AutoFixture;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
@@ -155,11 +155,11 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
         result.Data.FurtherApprovalRequired.Should().Be(furtherApprovalRequired);
     }
 
-    [Test]
-    public async Task Build_For_A_Created_Learner_Does_Not_Yet_Pass_Further_Approval()
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task Build_For_A_Created_Learner_Passes_Further_Approval(bool furtherApprovalRequired)
     {
-        // Arrange: further approval is not yet supported on the create (POST) path, so it is always sent as false.
-        // Known gap, to be fixed by a follow-up ticket: a reinstating POST can need further approval.
+        // Arrange: a reinstating POST can need further approval, just as a PUT can
         var createLearnerRequest = _fixture.Create<CreateLearnerRequest>();
         var putRequest = _fixture.Create<UpdateLearningApiPutRequest>();
         var response = _fixture.Build<UpdateLearnerApiPutResponse>()
@@ -167,10 +167,10 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
                                .Create();
 
         // Act
-        var result = await _sut.Build(_fixture.Create<Guid>(), createLearnerRequest, response, putRequest.Data);
+        var result = await _sut.Build(_fixture.Create<Guid>(), createLearnerRequest, response, putRequest.Data, furtherApprovalRequired);
 
         // Assert
-        result.Data.FurtherApprovalRequired.Should().BeFalse();
+        result.Data.FurtherApprovalRequired.Should().Be(furtherApprovalRequired);
     }
 
 }

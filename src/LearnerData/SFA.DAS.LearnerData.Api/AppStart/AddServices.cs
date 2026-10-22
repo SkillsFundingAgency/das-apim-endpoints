@@ -53,5 +53,6 @@ public static class AddApiServicesExtension
         services.AddTransient<IApprovalsRequestBuilder, ApprovalsRequestBuilder>();
         services.AddTransient<IApprovedLearningUpdatedEventBuilder, ApprovedLearningUpdatedEventBuilder>();
         services.AddTransient<IApprovalsService, ApprovalsService>();
+        services.AddTransient<IFurtherApprovalService, FurtherApprovalService>();
     }
 }
