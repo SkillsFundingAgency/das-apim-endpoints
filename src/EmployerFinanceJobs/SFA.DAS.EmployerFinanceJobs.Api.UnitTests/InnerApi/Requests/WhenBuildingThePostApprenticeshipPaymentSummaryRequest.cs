@@ -11,23 +11,23 @@ internal class WhenBuildingThePostApprenticeshipPaymentSummaryRequest
     public void WhenBuildingTheRequest_ThenTheCorrectUrlIsGenerated(
         long accountId,
         long apprenticeshipId,
-        PostApprenticeshipPaymentSummaryRequestData payload)
+        PutApprenticeshipPaymentSummaryRequestData payload)
     {
         // Act
-        var request = new PostApprenticeshipPaymentSummaryRequest(accountId, apprenticeshipId, payload);
+        var request = new PutApprenticeshipPaymentSummaryRequest(accountId, apprenticeshipId, payload);
 
         // Assert
-        request.PostUrl.Should().Be($"api/employer/{accountId}/apprenticeship-payment-summary/{apprenticeshipId}");
+        request.PutUrl.Should().Be($"api/employer/{accountId}/apprenticeship-payment-summary/{apprenticeshipId}");
     }
 
     [Test, MoqAutoData]
     public void WhenBuildingTheRequest_ThenThePayloadIsUsedAsData(
         long accountId,
         long apprenticeshipId,
-        PostApprenticeshipPaymentSummaryRequestData payload)
+        PutApprenticeshipPaymentSummaryRequestData payload)
     {
         // Act
-        var request = new PostApprenticeshipPaymentSummaryRequest(accountId, apprenticeshipId, payload);
+        var request = new PutApprenticeshipPaymentSummaryRequest(accountId, apprenticeshipId, payload);
 
         // Assert
         request.Data.Should().BeSameAs(payload);

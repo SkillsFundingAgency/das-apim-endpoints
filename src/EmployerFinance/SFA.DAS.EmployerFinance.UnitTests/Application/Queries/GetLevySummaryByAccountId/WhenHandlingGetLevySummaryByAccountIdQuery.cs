@@ -66,9 +66,9 @@ public class GetLevySummaryByAccountIdQueryHandlerTests
         result.TotalLevySpentLast12Months.Should().Be(levySummaryResponse.TotalLevySpentLast12Months);
         result.TotalLevyExpiredLast12Months.Should().Be(levySummaryResponse.TotalLevyExpiredLast12Months);
         result.TotalCommittedLearnerCosts.Should().Be(
-            Convert.ToDecimal(committedLearnersResponse.Apprenticeships.Sum(a => a.Cost)));
+            Convert.ToDecimal(committedLearnersResponse.Apprenticeships.Sum(a => a.TotalAgreedPrice)));
         result.TotalCommittedTransfersCosts.Should().Be(
-            Convert.ToDecimal(committedTransferOutResponse.Apprenticeships.Sum(a => a.Cost)));
+            Convert.ToDecimal(committedTransferOutResponse.Apprenticeships.Sum(a => a.TotalAgreedPrice)));
     }
 
     [Test, MoqAutoData]
@@ -148,58 +148,14 @@ public class GetLevySummaryByAccountIdQueryHandlerTests
 
         // Assert — combined cost from both pages
         var expectedCost = Convert.ToDecimal(
-            pageOneResponse.Apprenticeships.Sum(a => a.Cost) +
-            pageTwoResponse.Apprenticeships.Sum(a => a.Cost));
+            pageOneResponse.Apprenticeships.Sum(a => a.TotalAgreedPrice) +
+            pageTwoResponse.Apprenticeships.Sum(a => a.TotalAgreedPrice));
 
         result.TotalCommittedLearnerCosts.Should().Be(expectedCost);
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Fetches_Price_Episodes_For_Apprenticeships_With_Change_History(
-        GetLevySummaryByAccountIdQuery query,
-        GetLevySummaryByAccountIdResponse levySummaryResponse,
-        GetCommittedLearnersCostByAccountIdResponse committedLearnersResponse,
-        GetCommittedLearnersCostByAccountIdResponse committedTransferOutResponse,
-        GetPriceEpisodeResponse priceEpisodeResponse,
-        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockFinanceApiClient,
-        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsV2ApiClient,
-        [Greedy] GetLevySummaryByAccountIdQueryHandler handler)
-    {
-        // Arrange — all learners have change history
-        committedLearnersResponse.TotalApprenticeshipsFound = committedLearnersResponse.Apprenticeships.Count();
-        committedTransferOutResponse.TotalApprenticeshipsFound = committedTransferOutResponse.Apprenticeships.Count();
-        committedLearnersResponse.Apprenticeships.ToList().ForEach(a => a.HasChangeHistory = true);
-        committedTransferOutResponse.Apprenticeships.ToList().ForEach(a => a.HasChangeHistory = false);
-
-        mockFinanceApiClient
-            .Setup(c => c.Get<GetLevySummaryByAccountIdResponse>(
-                It.Is<GetLevySummaryByAccountIdRequest>(r => r.AccountId == query.AccountId)))
-            .ReturnsAsync(levySummaryResponse);
-
-        SetupCommitmentsPage(mockCommitmentsV2ApiClient, query.AccountId, null, 1, committedLearnersResponse);
-        SetupCommitmentsPage(mockCommitmentsV2ApiClient, null, query.AccountId, 1, committedTransferOutResponse);
-
-        mockCommitmentsV2ApiClient
-            .Setup(c => c.Get<GetPriceEpisodeResponse>(It.IsAny<GetPriceEpisodeByApprenticeshipIdRequest>()))
-            .ReturnsAsync(priceEpisodeResponse);
-
-        // Act
-        var result = await handler.Handle(query, CancellationToken.None);
-
-        // Assert — one price episode call per apprenticeship with change history
-        mockCommitmentsV2ApiClient.Verify(
-            c => c.Get<GetPriceEpisodeResponse>(It.IsAny<GetPriceEpisodeByApprenticeshipIdRequest>()),
-            Times.Exactly(committedLearnersResponse.Apprenticeships.Count()));
-
-        var expectedCost = Convert.ToDecimal(
-            committedLearnersResponse.Apprenticeships.Count() *
-            priceEpisodeResponse.PriceEpisodes.Sum(pe => pe.Cost));
-
-        result.TotalCommittedLearnerCosts.Should().Be(expectedCost);
-    }
-
-    [Test, MoqAutoData]
-    public async Task Then_Does_Not_Fetch_Price_Episodes_When_No_Apprenticeships_Have_Change_History(
+    public async Task Then_Uses_TotalAgreedPrice_And_Does_Not_Fetch_Price_Episodes_When_Change_History_Exists(
         GetLevySummaryByAccountIdQuery query,
         GetLevySummaryByAccountIdResponse levySummaryResponse,
         GetCommittedLearnersCostByAccountIdResponse committedLearnersResponse,
@@ -211,8 +167,8 @@ public class GetLevySummaryByAccountIdQueryHandlerTests
         // Arrange
         committedLearnersResponse.TotalApprenticeshipsFound = committedLearnersResponse.Apprenticeships.Count();
         committedTransferOutResponse.TotalApprenticeshipsFound = committedTransferOutResponse.Apprenticeships.Count();
-        committedLearnersResponse.Apprenticeships.ToList().ForEach(a => a.HasChangeHistory = false);
-        committedTransferOutResponse.Apprenticeships.ToList().ForEach(a => a.HasChangeHistory = false);
+        committedLearnersResponse.Apprenticeships.ToList().ForEach(a => a.HasChangeHistory = true);
+        committedTransferOutResponse.Apprenticeships.ToList().ForEach(a => a.HasChangeHistory = true);
 
         mockFinanceApiClient
             .Setup(c => c.Get<GetLevySummaryByAccountIdResponse>(
@@ -223,99 +179,15 @@ public class GetLevySummaryByAccountIdQueryHandlerTests
         SetupCommitmentsPage(mockCommitmentsV2ApiClient, null, query.AccountId, 1, committedTransferOutResponse);
 
         // Act
-        await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, CancellationToken.None);
 
         // Assert
         mockCommitmentsV2ApiClient.Verify(
             c => c.Get<GetPriceEpisodeResponse>(It.IsAny<GetPriceEpisodeByApprenticeshipIdRequest>()),
             Times.Never);
-    }
-
-    [Test, MoqAutoData]
-    public async Task Then_Fetches_Price_Episodes_Only_For_Apprenticeships_With_Change_History(
-        GetLevySummaryByAccountIdQuery query,
-        GetLevySummaryByAccountIdResponse levySummaryResponse,
-        GetCommittedLearnersCostByAccountIdResponse committedLearnersResponse,
-        GetCommittedLearnersCostByAccountIdResponse committedTransferOutResponse,
-        GetPriceEpisodeResponse priceEpisodeResponse,
-        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockFinanceApiClient,
-        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsV2ApiClient,
-        [Greedy] GetLevySummaryByAccountIdQueryHandler handler)
-    {
-        // Arrange — only first apprenticeship has change history
-        var apprenticeships = committedLearnersResponse.Apprenticeships.ToList();
-        apprenticeships[0].HasChangeHistory = true;
-        apprenticeships.Skip(1).ToList().ForEach(a => a.HasChangeHistory = false);
-
-        committedLearnersResponse.TotalApprenticeshipsFound = apprenticeships.Count;
-        committedTransferOutResponse.TotalApprenticeshipsFound = committedTransferOutResponse.Apprenticeships.Count();
-        committedTransferOutResponse.Apprenticeships.ToList().ForEach(a => a.HasChangeHistory = false);
-
-        mockFinanceApiClient
-            .Setup(c => c.Get<GetLevySummaryByAccountIdResponse>(
-                It.Is<GetLevySummaryByAccountIdRequest>(r => r.AccountId == query.AccountId)))
-            .ReturnsAsync(levySummaryResponse);
-
-        SetupCommitmentsPage(mockCommitmentsV2ApiClient, query.AccountId, null, 1, committedLearnersResponse);
-        SetupCommitmentsPage(mockCommitmentsV2ApiClient, null, query.AccountId, 1, committedTransferOutResponse);
-
-        mockCommitmentsV2ApiClient
-            .Setup(c => c.Get<GetPriceEpisodeResponse>(
-                It.Is<GetPriceEpisodeByApprenticeshipIdRequest>(r => r.ApprenticeshipId == apprenticeships[0].Id)))
-            .ReturnsAsync(priceEpisodeResponse);
-
-        // Act
-        await handler.Handle(query, CancellationToken.None);
-
-        // Assert — called only once for the qualifying apprenticeship
-        mockCommitmentsV2ApiClient.Verify(
-            c => c.Get<GetPriceEpisodeResponse>(It.IsAny<GetPriceEpisodeByApprenticeshipIdRequest>()),
-            Times.Once);
-
-        mockCommitmentsV2ApiClient.Verify(
-            c => c.Get<GetPriceEpisodeResponse>(
-                It.Is<GetPriceEpisodeByApprenticeshipIdRequest>(r =>
-                    r.ApprenticeshipId == apprenticeships[0].Id)),
-            Times.Once);
-    }
-
-    [Test, MoqAutoData]
-    public async Task Then_Price_Episode_Cost_Overwrites_Apprenticeship_Cost_When_Change_History_Exists(
-        GetLevySummaryByAccountIdQuery query,
-        GetLevySummaryByAccountIdResponse levySummaryResponse,
-        GetCommittedLearnersCostByAccountIdResponse committedLearnersResponse,
-        GetCommittedLearnersCostByAccountIdResponse committedTransferOutResponse,
-        GetPriceEpisodeResponse priceEpisodeResponse,
-        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> mockFinanceApiClient,
-        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsV2ApiClient,
-        [Greedy] GetLevySummaryByAccountIdQueryHandler handler)
-    {
-        // Arrange — single apprenticeship with change history
-        var apprenticeship = committedLearnersResponse.Apprenticeships.First();
-        apprenticeship.HasChangeHistory = true;
-        committedLearnersResponse.Apprenticeships = new List<GetCommittedLearnersCostByAccountIdResponse.ApprenticeshipDetailsResponse> { apprenticeship };
-        committedLearnersResponse.TotalApprenticeshipsFound = 1;
-        committedTransferOutResponse.TotalApprenticeshipsFound = committedTransferOutResponse.Apprenticeships.Count();
-        committedTransferOutResponse.Apprenticeships.ToList().ForEach(a => a.HasChangeHistory = false);
-
-        mockFinanceApiClient
-            .Setup(c => c.Get<GetLevySummaryByAccountIdResponse>(
-                It.Is<GetLevySummaryByAccountIdRequest>(r => r.AccountId == query.AccountId)))
-            .ReturnsAsync(levySummaryResponse);
-
-        SetupCommitmentsPage(mockCommitmentsV2ApiClient, query.AccountId, null, 1, committedLearnersResponse);
-        SetupCommitmentsPage(mockCommitmentsV2ApiClient, null, query.AccountId, 1, committedTransferOutResponse);
-
-        mockCommitmentsV2ApiClient
-            .Setup(c => c.Get<GetPriceEpisodeResponse>(
-                It.Is<GetPriceEpisodeByApprenticeshipIdRequest>(r => r.ApprenticeshipId == apprenticeship.Id)))
-            .ReturnsAsync(priceEpisodeResponse);
-
-        // Act
-        var result = await handler.Handle(query, CancellationToken.None);
-
-        // Assert — cost comes from price episodes, not the original apprenticeship value
-        var expectedCost = Convert.ToDecimal(priceEpisodeResponse.PriceEpisodes.Sum(pe => pe.Cost));
-        result.TotalCommittedLearnerCosts.Should().Be(expectedCost);
+        result.TotalCommittedLearnerCosts.Should().Be(
+            Convert.ToDecimal(committedLearnersResponse.Apprenticeships.Sum(a => a.TotalAgreedPrice)));
+        result.TotalCommittedTransfersCosts.Should().Be(
+            Convert.ToDecimal(committedTransferOutResponse.Apprenticeships.Sum(a => a.TotalAgreedPrice)));
     }
 }

@@ -1,11 +1,12 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.EmployerFinanceJobs.Domain.Enums;
 using SFA.DAS.EmployerFinanceJobs.InnerApi.Requests;
 using SFA.DAS.EmployerFinanceJobs.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Collections.Concurrent;
-using SFA.DAS.Apim.Shared.Extensions;
 
 namespace SFA.DAS.EmployerFinanceJobs.Commands.ImportLearnersByAccountId;
 
@@ -17,6 +18,16 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
 {
     private const int PageItemCount = 100;
     private const int MaxDegreeOfParallelism = 5;
+
+    private static readonly ApprenticeshipStatus[] ActiveStatuses =
+    [
+        ApprenticeshipStatus.Live,
+        ApprenticeshipStatus.Completed,
+        ApprenticeshipStatus.Paused,
+        ApprenticeshipStatus.Stopped,
+        ApprenticeshipStatus.WaitingToStart,
+        // ApprenticeshipStatus.Unknown --Ignored as this is not a valid status for an apprenticeship and will be filtered out by the API
+    ];
 
     public async Task<ImportLearnersByAccountIdResult> Handle(ImportLearnersByAccountIdCommand request, CancellationToken cancellationToken)
     {
@@ -34,7 +45,9 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             var committedLearners = committedLearnersTask.Result;
             var committedTransferOut = committedTransferOutTask.Result;
 
-            var committedLearnersResponse = committedLearners.ToList();
+            var committedLearnersResponse = committedLearners
+                .Where(c=>c.TransferSenderId == null)
+                .ToList();
             var committedTransferOutResponse = committedTransferOut.ToList();
 
             var allApprenticeships = committedLearnersResponse.Select(a => (a, isTransfer: false))
@@ -53,8 +66,8 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             {
                 try
                 {
-                    var payment = await GetApprenticeshipPaymentByAccountId(request.AccountId, item.a.Id);
-                    await PostApprenticeshipPaymentSummary(request.AccountId, item.a, payment, item.isTransfer);
+                    var payments = await GetApprenticeshipPaymentByAccountId(request.AccountId, item.a.Id);
+                    await PostApprenticeshipPaymentSummary(request.AccountId, item.a, payments, item.isTransfer);
                 }
                 catch (Exception ex)
                 {
@@ -92,7 +105,11 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
         CancellationToken cancellationToken)
     {
         var firstPage = await commitmentsV2ApiClient.Get<GetCommittedLearnersCostByAccountIdResponse>(
-            new GetCommittedLearnersCostByAccountIdRequest(accountId, PageNumber: 1, PageItemCount, transferSenderId));
+            new GetCommittedLearnersCostByAccountIdRequest(accountId, PageNumber: 1, PageItemCount, transferSenderId,
+                [.. ActiveStatuses]));
+
+        if (firstPage?.Apprenticeships == null || !firstPage.Apprenticeships.Any())
+            return [];
 
         if (firstPage.TotalApprenticeshipsFound <= PageItemCount)
             return firstPage.Apprenticeships;
@@ -106,7 +123,8 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             async (page, _) =>
             {
                 var response = await commitmentsV2ApiClient.Get<GetCommittedLearnersCostByAccountIdResponse>(
-                    new GetCommittedLearnersCostByAccountIdRequest(accountId, PageNumber: page, PageItemCount, transferSenderId));
+                    new GetCommittedLearnersCostByAccountIdRequest(accountId, PageNumber: page, PageItemCount, transferSenderId,
+                        [.. ActiveStatuses]));
                 remainingPages.Add(response);
             });
 
@@ -116,28 +134,35 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
     private async Task PostApprenticeshipPaymentSummary(
         long accountId,
         GetCommittedLearnersCostByAccountIdResponse.ApprenticeshipDetailsResponse apprenticeDetails,
-        GetApprenticeshipPaymentByAccountIdResponse? apprenticeshipPayment,
+        List<GetApprenticeshipPaymentByAccountIdResponse>? apprenticeshipPayments,
         bool isTransfer)
     {
-        var payment = apprenticeshipPayment is { ApprenticeshipId: > 0 } ? apprenticeshipPayment : null;
+        // No payments yet is a future committed cost, so still post it with the payment fields left null
+        var payments = apprenticeshipPayments ?? [];
 
-        var request = new PostApprenticeshipPaymentSummaryRequest(accountId, apprenticeDetails.Id, new PostApprenticeshipPaymentSummaryRequestData
+        var lastPayment = payments
+            .OrderByDescending(p => p.CollectionPeriodYear)
+            .ThenByDescending(p => p.CollectionPeriodMonth)
+            .ThenByDescending(p => p.LastUpdatedDate)
+            .FirstOrDefault();
+
+        var request = new PutApprenticeshipPaymentSummaryRequest(accountId, apprenticeDetails.Id, new PutApprenticeshipPaymentSummaryRequestData
         {
             Dob = DateOnly.FromDateTime(apprenticeDetails.DateOfBirth),
             StartDate = DateOnly.FromDateTime(apprenticeDetails.StartDate),
             EndDate = DateOnly.FromDateTime(apprenticeDetails.EndDate),
             IsTransfer = isTransfer,
             Status = apprenticeDetails.ApprenticeshipStatus,
-            TotalCost = apprenticeDetails.Cost ?? 0,
-            TotalPaid = apprenticeDetails.TotalAgreedPrice ?? 0,
+            TotalCost = apprenticeDetails.TotalAgreedPrice ?? 0,
+            TotalPaid = payments.Sum(p => p.Amount),
             Uln = long.Parse(apprenticeDetails.Uln),
-            LastPaymentAmount = payment?.Amount,
-            LastPaymentDate = payment is null ? null : GetCollectionPeriodDate(payment),
-            LastUpdatedDate = payment?.LastUpdatedDate
+            LastPaymentAmount = lastPayment?.Amount,
+            LastPaymentDate = lastPayment is null ? null : GetCollectionPeriodDate(lastPayment),
+            LastUpdatedDate = DateTime.UtcNow
         });
 
-        var result = await fundingProjectionApiClient.PostWithResponseCode<ApprenticeshipPaymentSummaryResponse>(request);
-        
+        var result = await fundingProjectionApiClient.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(request);
+
         result.EnsureSuccessStatusCode();
     }
 
@@ -153,10 +178,10 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
     }
 
     //TODO - might need to look at this as if it fails with a different error we will potentially load without the data
-    private async Task<GetApprenticeshipPaymentByAccountIdResponse?> GetApprenticeshipPaymentByAccountId(long accountId, long apprenticeshipId)
+    private async Task<List<GetApprenticeshipPaymentByAccountIdResponse>?> GetApprenticeshipPaymentByAccountId(long accountId, long apprenticeshipId)
     {
         var request = new GetApprenticeshipPaymentByAccountIdRequest(accountId, apprenticeshipId);
-        var result = await financeApiClient.Get<GetApprenticeshipPaymentByAccountIdResponse>(request);
+        var result = await financeApiClient.Get<List<GetApprenticeshipPaymentByAccountIdResponse>>(request);
         return result;
     }
 }
