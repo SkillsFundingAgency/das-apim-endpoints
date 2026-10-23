@@ -47,6 +47,7 @@ namespace SFA.DAS.LearnerData.Requests.LearningInner
         public List<BreakInLearning> BreaksInLearning { get; set; }
         public List<LearningSupport> LearningSupport { get; set; }
         public DateTime? WithdrawalDate { get; set; }
+        public short? WithdrawalReasonCode { get; set; }
         public string TrainingCode { get; set; }
     }
 
