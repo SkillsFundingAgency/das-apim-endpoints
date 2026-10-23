@@ -14,6 +14,7 @@ public class TestCleanUp
         MockServers.ApprenticeshipsApi?.Dispose();
         MockServers.CollectionCalendarApi?.Dispose();
         MockServers.CoursesApi?.Dispose();
+        MockServers.SldDataApi?.Dispose();
 
         OuterApi.Factory?.Dispose();
         OuterApi.Client?.Dispose();
@@ -25,5 +26,6 @@ public class TestCleanUp
         MockServers.ApprenticeshipsApi = null;
         MockServers.CollectionCalendarApi = null;
         MockServers.CoursesApi = null;
+        MockServers.SldDataApi = null;
     }
 }

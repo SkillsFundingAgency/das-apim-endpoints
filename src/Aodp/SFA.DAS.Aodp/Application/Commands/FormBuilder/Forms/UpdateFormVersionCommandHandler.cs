@@ -2,6 +2,7 @@
 using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.Aodp.InnerApi.AodpApi.FormBuilder.Forms;
 using SFA.DAS.Aodp.Services;
+using System.Net;
 
 namespace SFA.DAS.Aodp.Application.Commands.FormBuilder.Forms;
 
@@ -28,7 +29,15 @@ public class UpdateFormVersionCommandHandler : IRequestHandler<UpdateFormVersion
                 Data = request,
                 FormVersionId = request.FormVersionId,
             };
-            await _apiClient.Put(apiRequest);
+            var result = await _apiClient.PutWithResponseCode<UpdateFormVersionCommandResponse>(apiRequest);
+
+            if (result.StatusCode == HttpStatusCode.BadRequest)
+            {
+                response.ErrorCode = ErrorCodes.BadRequest;
+                response.ErrorMessage = result.ErrorContent;
+                return response;
+            }
+
             response.Success = true;
         }
         catch (Exception ex)
