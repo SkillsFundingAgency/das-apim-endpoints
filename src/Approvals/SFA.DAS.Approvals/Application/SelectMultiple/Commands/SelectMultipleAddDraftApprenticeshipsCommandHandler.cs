@@ -89,7 +89,7 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
                 Email = learner.Email,
                 CourseCode = learner.TrainingCode,
                 StartDateAsString = learner.StartDate.ToString("yyyy-MM-dd"),
-                EndDateAsString = learner.PlannedEndDate.ToString("yyyy-MM-dd"),
+                EndDateAsString = learner.PlannedEndDate.ToString("yyyy-MM"),
                 ProviderId = command.ProviderId,
                 CostAsString = (learner.TrainingPrice + learner.EpaoPrice).ToString(),
                 AgreementId = command.AgreementId,
