@@ -1,0 +1,94 @@
+﻿#nullable enable
+using MediatR;
+using SFA.DAS.EmployerFinance.Application.Queries.GetLevySummaryByAccountId;
+using SFA.DAS.EmployerFinance.InnerApi.Requests.Finance;
+using SFA.DAS.EmployerFinance.InnerApi.Responses;
+using SFA.DAS.EmployerFinance.InnerApi.Responses.Finance;
+using SFA.DAS.EmployerFinance.Models.Projections;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace SFA.DAS.EmployerFinance.Application.Queries.GetLevyProjectionsByAccountId;
+
+public class GetLevyProjectionsByAccountIdQueryHandler(
+    IFinanceApiClient<FinanceApiConfiguration> financeApiClient,
+    IFundingProjectionApiClient<FundingProjectionApiConfiguration> projectionApiClient)
+    : IRequestHandler<GetLevyProjectionsByAccountIdQuery, GetLevyProjectionsByAccountIdQueryResult>
+{
+    public async Task<GetLevyProjectionsByAccountIdQueryResult> Handle(GetLevyProjectionsByAccountIdQuery request, CancellationToken cancellationToken)
+    {
+        var now = DateTime.UtcNow.Date;
+
+        var fundsInTask = financeApiClient.Get<List<CalendarPeriodAmount>>(new GetLevyFundsInRequest(request.AccountId));
+        var fundsOutTask = financeApiClient.Get<List<CalendarPeriodAmount>>(new GetPaymentFundsOutRequest(request.AccountId));
+        var expiredLevyTask = financeApiClient.Get<GetExpiredLevyResponse>(new GetExpiredLevyRequest(request.AccountId));
+
+        var levySummaryTask = financeApiClient.Get<GetLevySummaryByAccountIdResponse>(
+            new GetLevySummaryByAccountIdRequest(request.AccountId));
+
+        var declarationsTask = FetchHistoricTransactionLinesDataAsync(now, request.AccountId);
+
+        await Task.WhenAll(levySummaryTask, declarationsTask, fundsInTask, fundsOutTask, expiredLevyTask);
+        var levySummary = levySummaryTask.Result;
+        var declarations = declarationsTask.Result;
+        var expiredLevy = expiredLevyTask.Result;
+
+        var projectionResponse = await projectionApiClient.PostWithResponseCode<EstimatesTimeline>(
+            new PostEmployerFundingProjectionRequest(request.AccountId, new PostEmployerFundingProjectionRequestData
+            {
+                Months = request.Months,
+                CurrentLevyFunds = levySummary.CurrentLevyFunds,
+                HistoricLevyIn = BuildLevyInSummary(declarations),
+                LevyFundsInForExpiry = fundsInTask.Result ?? [],
+                PaymentFundsOutForExpiry = fundsOutTask.Result ?? [],
+                LongTermExpiredFunds = expiredLevy?.LongTerm ?? [],
+                ShortTermExpiredFunds = expiredLevy?.ShortTerm ?? []
+            }));
+
+        var projection = projectionResponse.Body;
+
+        return new GetLevyProjectionsByAccountIdQueryResult
+        {
+            AccountId = request.AccountId,
+            Summary = new GetLevySummaryByAccountIdQueryResult
+            {
+                CurrentLevyFunds = levySummary.CurrentLevyFunds,
+                TotalLevyDeclaredLast12Months = levySummary.TotalLevyDeclaredLast12Months,
+                TotalLevySpentLast12Months = levySummary.TotalLevySpentLast12Months,
+                TotalLevyExpiredLast12Months = levySummary.TotalLevyExpiredLast12Months,
+                TotalCommittedLearnerCosts = projection.TotalEstimatedCommitedCost,
+                TotalCommittedTransfersCosts = projection.TotalEstimatedCommitedTransferCost
+            },
+            Projections = projection.Projections,
+            LatestLevyDeclarationInDate = GetLatestSubmissionDate(declarations) ?? DateTime.MinValue
+        };
+    }
+
+    private static List<LevyInMonthSummary> BuildLevyInSummary(List<LevyDeclaration> declarations) =>
+    [
+        .. declarations
+            .Where(t => t.PayrollDate() != null)
+            .GroupBy(t => t.PayrollDate()!.Value)
+            .Select(g => new LevyInMonthSummary(
+                new DateOnly(g.Key.Year, g.Key.Month, 1),
+                g.Sum(t => t.TotalAmount - t.TopUp)))
+    ];
+
+    private static DateTime? GetLatestSubmissionDate(List<LevyDeclaration> declarations) =>
+        declarations
+            .Where(d => d.TotalAmount > 0)
+            .Max(d => d.SubmissionDate);
+
+    private async Task<List<LevyDeclaration>> FetchHistoricTransactionLinesDataAsync(DateTime now, long accountId)
+    {
+        var startOfMonth = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+        var startDate = startOfMonth.AddYears(-1);
+        var endDate = startOfMonth.AddMonths(1).AddTicks(-1);
+        return await financeApiClient.Get<List<LevyDeclaration>>(new GetLevyDeclarationSummaryByDate(accountId, startDate, endDate));
+    }
+}
