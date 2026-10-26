@@ -15,6 +15,7 @@ public static class AddConfigurationOptionsExtension
         services.AddConfigurationOptions<EarningsApiConfiguration>(configuration);
         services.AddConfigurationOptions<CommitmentsV2ApiConfiguration>(configuration);
         services.AddConfigurationOptions<CollectionCalendarApiConfiguration>(configuration);
+        services.AddConfigurationOptions<SLDDataApiConfiguration>(configuration);
         services.AddConfigurationOptions<CoursesApiConfiguration>(configuration);
         services.AddConfigurationOptions<ProviderRelationshipsApiConfiguration>(configuration);
         services.AddConfigurationOptions<AccountsConfiguration>(configuration);

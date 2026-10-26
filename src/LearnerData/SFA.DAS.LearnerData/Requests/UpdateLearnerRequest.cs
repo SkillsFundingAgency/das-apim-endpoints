@@ -66,7 +66,6 @@ public class MathsAndEnglish
     //with the CreateLearner requests
     public string Course { get; set; } = "";
     public string LearnAimRef { get; set; }
-    public decimal Amount { get; set; } = 0;
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public DateTime? CompletionDate { get; set; }
