@@ -353,7 +353,6 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
             CollectionPeriodMonth = collectionPeriodMonth,
             Amount = amount,
             LastUpdatedDate = lastUpdatedDate,
-            FreezedDate = null
         };
     }
 
