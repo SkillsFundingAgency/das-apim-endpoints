@@ -4,6 +4,8 @@ using SFA.DAS.LearnerData.Responses.LearningInner;
 
 namespace SFA.DAS.LearnerData.TestHelpers;
 
+using Learning = SFA.DAS.LearnerData.Responses.LearningInner.Learning;
+
 
 /// <summary>
 /// Generates test data for FM36 related tests. This should not be used for update tests as it using concrete implementations

@@ -43,6 +43,11 @@ public class InnerApis(TestContext context)
             context.CoursesApi = new MockApi();
         }
 
+        if (context.CommitmentsApi == null)
+        {
+            context.CommitmentsApi = new MockApi();
+        }
+
         if (context.SldDataApi == null)
         {
             context.SldDataApi = new MockApi();
@@ -66,6 +71,7 @@ public class InnerApis(TestContext context)
                 {"ApprenticeshipsApiConfiguration:url", context?.ApprenticeshipsApi?.BaseAddress + "/"},
                 {"CollectionCalendarApiConfiguration:url", context?.CollectionCalendarApi?.BaseAddress + "/"},
                 {"CoursesApiConfiguration:url", context?.CoursesApi?.BaseAddress + "/"},
+                {"CommitmentsV2ApiConfiguration:url", context?.CommitmentsApi?.BaseAddress + "/"},
                 {"SLDDataApiConfiguration:url", context?.SldDataApi?.BaseAddress + "/"},
                 {"SLDDataApiConfiguration:TokenSettings:url", context?.SldDataApi?.BaseAddress + "/"},
                 {"SLDDataApiConfiguration:TokenSettings:ShouldSkipForLocal", "true"},

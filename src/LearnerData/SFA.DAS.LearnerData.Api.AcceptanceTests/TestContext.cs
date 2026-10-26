@@ -9,6 +9,7 @@ public static class MockServers
     public static MockApi ApprenticeshipsApi { get; set; }
     public static MockApi CollectionCalendarApi { get; set; }
     public static MockApi CoursesApi { get; set; }
+    public static MockApi CommitmentsApi { get; set; }
     public static MockApi SldDataApi { get; set; }
 }
 
@@ -54,6 +55,16 @@ public class TestContext : IDisposable
         }
     }
 
+    public MockApi CommitmentsApi
+    {
+        get => MockServers.CommitmentsApi;
+        set
+        {
+            MockServers.CommitmentsApi = value;
+            CleanUpOuterApi();
+        }
+    }
+
     public MockApi SldDataApi
     {
         get => MockServers.SldDataApi;
@@ -85,6 +96,7 @@ public class TestContext : IDisposable
             ApprenticeshipsApi?.Reset();
             CollectionCalendarApi?.Reset();
             CoursesApi?.Reset();
+            CommitmentsApi?.Reset();
             SldDataApi?.Reset();
         }
 

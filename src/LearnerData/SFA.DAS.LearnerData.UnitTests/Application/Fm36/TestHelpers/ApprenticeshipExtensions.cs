@@ -4,6 +4,8 @@ using System.ComponentModel;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 
+using Learning = SFA.DAS.LearnerData.Responses.LearningInner.Learning;
+
 internal static class ApprenticeshipExtensions
 {
     internal static Guid GetEpisodePriceKey(this Learning learning, short academicYear, byte deliveryPeriod)

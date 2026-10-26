@@ -15,6 +15,8 @@ using WireMock.Util;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps.Fm36;
 
+using Learning = SFA.DAS.LearnerData.Responses.LearningInner.Learning;
+
 [Binding]
 public class PagingSteps(TestContext testContext, ScenarioContext scenarioContext)
 {

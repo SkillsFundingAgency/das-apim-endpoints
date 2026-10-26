@@ -8,6 +8,7 @@ using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.CommitmentsInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
@@ -24,6 +25,8 @@ public class UpdateLearnerCommandHandler(
     IUpdateLearningPutRequestBuilder updateLearningPutRequestBuilder,
     IUpdateEarningsOnProgrammeRequestBuilder updateEarningsOnProgrammeRequestBuilder,
     IUpdateEarningsEnglishAndMathsRequestBuilder updateEarningsEnglishAndMathsRequestBuilder,
+    IApprovalsService approvalsService,
+    IApprovedLearningUpdatedEventBuilder approvedLearningUpdatedEventBuilder,
     ILearnerDataCacheService learnerDataCacheService,
     IMessageSession messageSession,
     IApprovedApprenticeshipExistsChecker approvedApprenticeshipExistsChecker,
@@ -57,12 +60,31 @@ public class UpdateLearnerCommandHandler(
             logger.LogInformation("Learner with key {LearnerKey} updated successfully. Changes: {@Changes}",
                 command.LearnerKey, string.Join(", ", learningApiPutResponse));
 
+            var needsFurtherApproval = learningApiPutResponse.ChangeDetails.Any(x => x.RequiresApproval);
+            ApprovalsOutcome? approval = null;
+
             if (learningApiPutResponse.Changes.Count == 0 || learningApiPutResponse.Changes.HasPersonalDetailsOnly())
             {
                 logger.LogInformation("No changes requiring earnings update for learner {LearnerKey}", command.LearnerKey);
             }
+            else if (needsFurtherApproval
+                     && !(approval = await approvalsService.RequestApproval(command.Ukprn, command.UpdateLearnerRequest.Learner.Uln, learningApiPutResponse)).AllAutoApproved)
+            {
+                logger.LogInformation("Changes for learning {LearningKey} were not auto-approved by Approvals, so Earnings has not been updated", learningApiPutResponse.LearningKey);
+            }
+            else if (approval == null && learningApiPutResponse.FurtherApprovalNeeded)
+            {
+                // Nothing in this update needed approval, but the episode is still flagged from an earlier one.
+                logger.LogWarning("Learning {LearningKey}, episode {EpisodeKey} is still awaiting further approval of an earlier change, so Earnings has not been updated with changes: {Changes}",
+                    learningApiPutResponse.LearningKey, learningApiPutResponse.LearningEpisodeKey, string.Join(", ", learningApiPutResponse.Changes));
+            }
             else
             {
+                if (approval != null && await ClearFurtherApprovalNeeded(learningApiPutResponse))
+                {
+                    await PublishApprovedLearningUpdatedEvent(learningApiPutResponse, approval.Response);
+                }
+
                 var releaseOnProgramme = false;
                 var englishAndMathsCourseKeys = new List<Guid>();
 
@@ -113,6 +135,62 @@ public class UpdateLearnerCommandHandler(
         }
 
         await PublishLearnerDataEventsForUnapprovedApprenticeships(command);
+    }
+
+    /// <summary>
+    /// Learning flags the episode as FurtherApprovalNeeded when an update needs further approval. Now that Approvals has
+    /// auto-approved the change, clear it. A failure is logged and swallowed: Approvals has approved, so Earnings must
+    /// still be updated, and throwing would also skip the LearnerDataEvent publishing that follows.
+    /// Known consequence: the flag stays set, so later updates for this learner are not sent to Earnings until it is cleared.
+    /// Returns whether the flag was cleared.
+    /// </summary>
+    private async Task<bool> ClearFurtherApprovalNeeded(BaseLearnerApiPutResponse learningApiPutResponse)
+    {
+        try
+        {
+            var response = await learningApiClient.PostWithResponseCode<object>(
+                new ClearFurtherApprovalNeededApiPostRequest(learningApiPutResponse.LearningKey, learningApiPutResponse.LearningEpisodeKey, learningApiPutResponse.LearningType),
+                false);
+
+            if (!response.StatusCode.IsSuccessStatusCode())
+            {
+                logger.LogError("Change was auto-approved for learning {LearningKey}, episode {EpisodeKey}, but clearing FurtherApprovalNeeded failed with status {StatusCode}. The flag is still set",
+                    learningApiPutResponse.LearningKey, learningApiPutResponse.LearningEpisodeKey, response.StatusCode);
+                return false;
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Change was auto-approved for learning {LearningKey}, episode {EpisodeKey}, but clearing FurtherApprovalNeeded failed. The flag is still set",
+                learningApiPutResponse.LearningKey, learningApiPutResponse.LearningEpisodeKey);
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Echoes the approved changes back as an ApprovedLearningUpdatedEvent.
+    /// Failures are logged and swallowed so that Earnings is still updated
+    /// </summary>
+    private async Task PublishApprovedLearningUpdatedEvent(BaseLearnerApiPutResponse learningApiPutResponse, ApprovalsResponse approvalsResponse)
+    {
+        // Nb, this event belongs to Learning: it describes a change to approved learning. It is published here, by agreed
+        // design, because only the outer API holds the Approvals response at this point. A change approved later by the
+        // employer never passes through this handler, so it will need publishing from elsewhere.
+        // The event itself is also dishonest: it reads as Learning reporting what changed, but its changes and their old and
+        // new values are copied from Approvals' response and sent straight back to Approvals. It is defined as an event, but is a
+        // command in disguise, since it is really an instruction to Approvals to apply the change it has just auto-approved.
+
+        try
+        {
+            await messageSession.Publish(approvedLearningUpdatedEventBuilder.Build(learningApiPutResponse, approvalsResponse));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Change was auto-approved for learning {LearningKey} (apprenticeship {ApprenticeshipId}), but publishing ApprovedLearningUpdatedEvent failed. The event has not been sent for changes: {Changes}",
+                learningApiPutResponse.LearningKey, learningApiPutResponse.ApprovalsApprenticeshipId, string.Join(", ", approvalsResponse.Changes.Select(x => x.ChangeType)));
+        }
     }
 
     private async Task PublishLearnerDataEventsForUnapprovedApprenticeships(UpdateLearnerCommand command)

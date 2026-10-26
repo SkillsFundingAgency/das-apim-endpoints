@@ -8,6 +8,8 @@ using Episode = SFA.DAS.LearnerData.Responses.LearningInner.Episode;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
 
+using Learning = SFA.DAS.LearnerData.Responses.LearningInner.Learning;
+
 public static class ApprenticeshipModelExtensions
 {
     public static InnerApiResponses GetInnerApiResponses(this ApprenticeshipModel apprenticeshipModel)
