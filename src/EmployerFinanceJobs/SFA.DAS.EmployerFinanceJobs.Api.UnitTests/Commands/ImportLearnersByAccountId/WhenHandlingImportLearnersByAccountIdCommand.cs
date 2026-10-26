@@ -352,7 +352,8 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
             CollectionPeriodYear = collectionPeriodYear,
             CollectionPeriodMonth = collectionPeriodMonth,
             Amount = amount,
-            LastUpdatedDate = lastUpdatedDate
+            LastUpdatedDate = lastUpdatedDate,
+            FreezedDate = null
         };
     }
 
@@ -390,7 +391,8 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
             EndDate = new DateTime(2026, 1, 1),
             ApprenticeshipStatus = ApprenticeshipStatus.Live,
             Cost = 1000,
-            TotalAgreedPrice = 1200
+            TotalAgreedPrice = 1200,
+            FreezedDate = null
         };
     }
 }

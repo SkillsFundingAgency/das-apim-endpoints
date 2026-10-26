@@ -152,7 +152,7 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             StartDate = DateOnly.FromDateTime(apprenticeDetails.StartDate),
             EndDate = DateOnly.FromDateTime(apprenticeDetails.EndDate),
             IsTransfer = isTransfer,
-            Status = apprenticeDetails.ApprenticeshipStatus,
+            Status =  apprenticesDetails.FreezedDate == null ? apprenticeDetails.ApprenticeshipStatus : ApprenticeshipStatus.Paused,
             TotalCost = apprenticeDetails.TotalAgreedPrice ?? 0,
             TotalPaid = payments.Sum(p => p.Amount),
             Uln = long.Parse(apprenticeDetails.Uln),
