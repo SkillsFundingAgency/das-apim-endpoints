@@ -2,10 +2,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.AdminRoatp.Application.Commands.AddProviderAllowedCourse;
-using SFA.DAS.AdminRoatp.Application.Commands.PatchProviderAllowedCourse;
+using SFA.DAS.AdminRoatp.Application.Commands.UpdateProviderAllowedCourse;
 using SFA.DAS.AdminRoatp.Application.Queries.GetProviderAllowedCourseDetails;
 using SFA.DAS.AdminRoatp.Application.Queries.GetProviderAllowedCourses;
-using SFA.DAS.AdminRoatp.Infrastructure;
 using SFA.DAS.AdminRoatp.InnerApi.Models;
 using SFA.DAS.AdminRoatp.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.InnerApi;
@@ -37,22 +36,20 @@ public class ProviderAllowedCoursesController(IMediator _mediator, ILogger<Provi
         return NoContent();
     }
 
-    [HttpPatch("{larsCode}")]
+    [HttpPut("{larsCode}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> PatchProviderAllowedCourse([FromRoute] int ukprn, [FromRoute] string larsCode, [FromBody] PatchProviderAllowedCourseRequestModel request, [FromHeader(Name = Constants.RequestingUserIdHeader)] string userId, [FromHeader(Name = Constants.RequestingUserNameHeader)] string userName)
+    public async Task<IActionResult> UpdateProviderAllowedCourse([FromRoute] int ukprn, [FromRoute] string larsCode, [FromBody] PutProviderAllowedCourseRequestModel request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Request to patch provider allowed course for UKPRN {Ukprn} and LarsCode {LarsCode}", ukprn, larsCode);
+        _logger.LogInformation("Request to update provider allowed course for UKPRN {Ukprn} and LarsCode {LarsCode}", ukprn, larsCode);
 
-        var command = new PatchProviderAllowedCourseCommand
+        var command = new UpdateProviderAllowedCourseCommand
         {
-            UserId = userId,
-            UserDisplayName = userName,
             Ukprn = ukprn,
             LarsCode = larsCode,
-            LastDateStarts = request.LastDateStarts
+            RequestModel = request
         };
 
-        await _mediator.Send(command);
+        await _mediator.Send(command, cancellationToken);
 
         return NoContent();
     }

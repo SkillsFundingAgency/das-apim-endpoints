@@ -58,14 +58,14 @@ public class UpdateProviderRestrictedApprenticeshipCommandHandlerTests
             .ReturnsAsync(new ApiResponse<GetProviderAllowedCourseDetailsResponse>(new GetProviderAllowedCourseDetailsResponse(), HttpStatusCode.OK, ""));
 
         apiClientMock
-            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchProviderAllowedCourseRequest>()))
-            .ReturnsAsync(new ApiResponse<string>(string.Empty, HttpStatusCode.OK, string.Empty));
+            .Setup(x => x.PutWithResponseCode<PutProviderAllowedCourseRequestModel, object>(It.IsAny<PutProviderAllowedCourseRequest>()))
+            .ReturnsAsync(new ApiResponse<object>(string.Empty, HttpStatusCode.OK, string.Empty));
 
         // Act
         await sut.Handle(command, CancellationToken.None);
 
         // Assert
-        apiClientMock.Verify(x => x.PatchWithResponseCode(It.IsAny<PatchProviderAllowedCourseRequest>()), Times.Once);
+        apiClientMock.Verify(x => x.PutWithResponseCode<PutProviderAllowedCourseRequestModel, object>(It.IsAny<PutProviderAllowedCourseRequest>()), Times.Once);
     }
 
     [Test, MoqAutoData]
@@ -109,7 +109,7 @@ public class UpdateProviderRestrictedApprenticeshipCommandHandlerTests
     }
 
     [Test, MoqAutoData]
-    public async Task WhenPatchProviderAllowedCourseReturnsError_ThenShouldThrowApiResponseException(
+    public async Task WhenPutProviderAllowedCourseReturnsError_ThenShouldThrowApiResponseException(
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
         [Greedy] UpdateProviderRestrictedApprenticeshipCommandHandler sut,
         UpdateProviderRestrictedApprenticeshipCommand command)
@@ -120,8 +120,8 @@ public class UpdateProviderRestrictedApprenticeshipCommandHandlerTests
             .ReturnsAsync(new ApiResponse<GetProviderAllowedCourseDetailsResponse>(new GetProviderAllowedCourseDetailsResponse(), HttpStatusCode.OK, ""));
 
         apiClientMock
-            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchProviderAllowedCourseRequest>()))
-            .ReturnsAsync(new ApiResponse<string>(string.Empty, HttpStatusCode.InternalServerError, string.Empty));
+            .Setup(x => x.PutWithResponseCode<PutProviderAllowedCourseRequestModel, object>(It.IsAny<PutProviderAllowedCourseRequest>()))
+            .ReturnsAsync(new ApiResponse<object>(string.Empty, HttpStatusCode.InternalServerError, string.Empty));
 
         // Act
         Func<Task> action = () => sut.Handle(command, CancellationToken.None);

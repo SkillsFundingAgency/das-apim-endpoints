@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.AdminRoatp.Api.Controllers;
-using SFA.DAS.AdminRoatp.Application.Commands.PatchProviderAllowedCourse;
+using SFA.DAS.AdminRoatp.Application.Commands.UpdateProviderAllowedCourse;
 using SFA.DAS.AdminRoatp.InnerApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -16,19 +16,18 @@ public class ProviderAllowedCoursesControllerPatchTests
     public async Task WhenPatchProviderAllowedCourseIsInvoked_ThenReturnsCreatedResult(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ProviderAllowedCoursesController sut,
-        PatchProviderAllowedCourseRequestModel command,
+        PutProviderAllowedCourseRequestModel command,
         int ukprn,
-        string larsCode,
-        string userId,
-        string userDisplayName)
+        string larsCode)
     {
+        CancellationToken cancellationToken = new();
         // Arrange
         mediatorMock
-            .Setup(x => x.Send(It.IsAny<PatchProviderAllowedCourseCommand>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.Send(It.IsAny<UpdateProviderAllowedCourseCommand>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
         // Act
-        var result = await sut.PatchProviderAllowedCourse(ukprn, larsCode, command, userId, userDisplayName);
+        var result = await sut.UpdateProviderAllowedCourse(ukprn, larsCode, command, cancellationToken);
 
         // Assert
         result.Should().BeOfType<NoContentResult>();
@@ -38,35 +37,34 @@ public class ProviderAllowedCoursesControllerPatchTests
     public async Task WhenPatchProviderAllowedCourseIsInvoked_ThenVerifyMediatorIsCalled(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ProviderAllowedCoursesController sut,
-        PatchProviderAllowedCourseRequestModel command,
+        PutProviderAllowedCourseRequestModel command,
         int ukprn,
-        string larsCode,
-        string userId,
-        string userDisplayName)
+        string larsCode)
     {
+        CancellationToken cancellationToken = new();
         // Arrange
         mediatorMock
             .Setup(x => x.Send(
-                It.Is<PatchProviderAllowedCourseCommand>(c =>
+                It.Is<UpdateProviderAllowedCourseCommand>(c =>
                     c.Ukprn == ukprn &&
                     c.LarsCode == larsCode &&
-                    c.UserId == userId &&
-                    c.UserDisplayName == userDisplayName &&
-                    c.LastDateStarts == command.LastDateStarts),
+                    c.RequestModel.UserId == command.UserId &&
+                    c.RequestModel.UserDisplayName == command.UserDisplayName &&
+                    c.RequestModel.LastDateStarts == command.LastDateStarts),
                 It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
         // Act
-        await sut.PatchProviderAllowedCourse(ukprn, larsCode, command, userId, userDisplayName);
+        await sut.UpdateProviderAllowedCourse(ukprn, larsCode, command, cancellationToken);
 
         // Assert
         mediatorMock.Verify(x => x.Send(
-            It.Is<PatchProviderAllowedCourseCommand>(c =>
+            It.Is<UpdateProviderAllowedCourseCommand>(c =>
                 c.Ukprn == ukprn &&
                 c.LarsCode == larsCode &&
-                c.UserId == userId &&
-                c.UserDisplayName == userDisplayName &&
-                c.LastDateStarts == command.LastDateStarts),
-            It.IsAny<CancellationToken>()), Times.Once);
+                c.RequestModel.UserId == command.UserId &&
+                c.RequestModel.UserDisplayName == command.UserDisplayName &&
+                c.RequestModel.LastDateStarts == command.LastDateStarts),
+            cancellationToken), Times.Once);
     }
 }
