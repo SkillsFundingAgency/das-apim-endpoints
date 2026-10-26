@@ -24,5 +24,6 @@ public sealed record GetCommittedLearnersCostByAccountIdResponse
         public long? TransferSenderId { get; set; }
         public decimal? Cost { get; set; }
         public bool HasChangeHistory { get; set; }
+        public DateTime? FreezedDate { get; set; }
     }
 }
