@@ -95,7 +95,12 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
                 AgreementId = command.AgreementId,
                 LegalEntityId = command.AccountLegalEntityId,
                 CohortId = cohort.CohortId,
-                CohortRef = cohort.CohortReference
+                CohortRef = cohort.CohortReference,
+                RecognisePriorLearningAsString = "false",
+                TrainingPrice = learner.TrainingPrice,
+                EndPointAssessmentPrice = learner.EpaoPrice,
+                ActualStartDate = learner.StartDate,
+                LearnerDataId = learner.Id
             };
         }).ToList();
     }
