@@ -4,8 +4,11 @@ using NServiceBus;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Common.Domain.Types;
 using SFA.DAS.LearnerData.Configuration;
+using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Services.ShortCourses;
@@ -21,7 +24,6 @@ public class UpdateLearnerCommandHandler(
     IUpdateLearningPutRequestBuilder updateLearningPutRequestBuilder,
     IUpdateEarningsOnProgrammeRequestBuilder updateEarningsOnProgrammeRequestBuilder,
     IUpdateEarningsEnglishAndMathsRequestBuilder updateEarningsEnglishAndMathsRequestBuilder,
-    IUpdateEarningsLearningSupportRequestBuilder updateEarningsLearningSupportRequestBuilder,
     ILearnerDataCacheService learnerDataCacheService,
     IMessageSession messageSession,
     IApprovedApprenticeshipExistsChecker approvedApprenticeshipExistsChecker,
@@ -39,7 +41,7 @@ public class UpdateLearnerCommandHandler(
         logger.LogInformation("Feature toggle ApprenticeshipUpdateLearner is {ApprenticeshipUpdateLearner}", featureFlags.ApprenticeshipUpdateLearner);
         if (featureFlags.ApprenticeshipUpdateLearner)
         {
-            var request = updateLearningPutRequestBuilder.Build(command.Ukprn, command.UpdateLearnerRequest, command.LearnerKey);
+            var request = await updateLearningPutRequestBuilder.Build(command.Ukprn, command.UpdateLearnerRequest, command.LearnerKey);
 
             var learningResponse = await learningApiClient.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(request);
 
@@ -61,29 +63,52 @@ public class UpdateLearnerCommandHandler(
             }
             else
             {
+                var releaseOnProgramme = false;
+                var englishAndMathsCourseKeys = new List<Guid>();
+
                 //Update Earnings
                 if (learningApiPutResponse.Changes.HasOnProgrammeUpdate())
                 {
                     logger.LogInformation("Updating Earnings with OnProgramme changes for learning {LearningKey}", learningApiPutResponse.LearningKey);
                     var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(command.UpdateLearnerRequest, learningApiPutResponse, request.Data);
-                    await earningsApiClient.Put(earningsOnProgrammeApiRequest);
+                    var earningsOnProgrammeResponse = await earningsApiClient.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(earningsOnProgrammeApiRequest);
+
+                    if (earningsOnProgrammeResponse.Body.HasNewEarningsProfileVersionBeenGenerated)
+                    {
+                        releaseOnProgramme = true;
+                    }
                 }
 
                 if (learningApiPutResponse.Changes.HasEnglishAndMathsUpdate())
                 {
                     logger.LogInformation("Updating Earnings with English and Maths changes for learning {LearningKey}", learningApiPutResponse.LearningKey);
                     var englishAndMathsRequest = updateEarningsEnglishAndMathsRequestBuilder.Build(command, learningApiPutResponse, request);
-                    await earningsApiClient.Put(englishAndMathsRequest);
-                }
-
-                if (learningApiPutResponse.Changes.HasLearningSupportUpdate())
-                {
-                    logger.LogInformation("Updating Earnings with Learning Support changes for learning {LearningKey}", learningApiPutResponse.LearningKey);
-                    var earningsLearningSupportRequest = updateEarningsLearningSupportRequestBuilder.Build(learningApiPutResponse, request);
-                    await earningsApiClient.Put(earningsLearningSupportRequest);
+                    var englishAndMathsResponse = await earningsApiClient.PutWithResponseCode<UpdateEnglishAndMathsRequest, UpdateEnglishAndMathsEarningsApiPutResponse>(englishAndMathsRequest);
+                    englishAndMathsCourseKeys = englishAndMathsResponse.Body.GetUpdatedCourseKeys();
                 }
 
                 logger.LogInformation("Earnings updated for learning {LearningKey}", learningApiPutResponse.LearningKey);
+
+                var releaseEnglishAndMaths = englishAndMathsCourseKeys.Count > 0;
+
+                if (releaseOnProgramme || releaseEnglishAndMaths)
+                {
+                    var releaseType = GetReleaseType(releaseOnProgramme, releaseEnglishAndMaths);
+
+                    var releaseEarningsRequest = new ReleaseEarningsApiPostRequest(learningApiPutResponse.LearningKey,
+                        new ReleaseEarningsRequest
+                        {
+                            LearnerKey = command.LearnerKey,
+                            LearnerRef = command.UpdateLearnerRequest.Learner.LearnerRef,
+                            ReleaseType = releaseType,
+                            EnglishAndMathsCourseKeys = englishAndMathsCourseKeys
+                        });
+                    await earningsApiClient.Post(releaseEarningsRequest);
+
+                    logger.LogInformation("Release earnings to payments for learning {LearningKey} with ReleaseType {ReleaseType} and {CourseKeyCount} English and Maths course keys",
+                        learningApiPutResponse.LearningKey, releaseType, englishAndMathsCourseKeys.Count);
+                }
+
             }
         }
 
@@ -128,6 +153,14 @@ public class UpdateLearnerCommandHandler(
                 command.UpdateLearnerRequest.ConsumerReference);
             await messageSession.Publish(evt);
         }
+    }
+
+    private static ReleaseType GetReleaseType(bool releaseOnProgramme, bool releaseEnglishAndMaths)
+    {
+        if (releaseOnProgramme && releaseEnglishAndMaths)
+            return ReleaseType.All;
+
+        return releaseOnProgramme ? ReleaseType.OnProgramme : ReleaseType.FunctionalSkill;
     }
 
     private async Task<LearningType> GetLearningType(int standardCode)

@@ -18,6 +18,6 @@ public class ProviderAvailableCoursesController(IMediator _mediator, ILogger<Pro
 
         GetProviderAvailableCoursesQuery query = new() { Ukprn = ukprn, CourseType = courseType };
         GetProviderAvailableCoursesQueryResult result = await _mediator.Send(query);
-        return Ok(result);
+        return result == null ? NotFound() : Ok(result);
     }
 }

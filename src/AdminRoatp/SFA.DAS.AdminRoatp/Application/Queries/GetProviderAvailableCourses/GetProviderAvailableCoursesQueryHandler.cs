@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
 using SFA.DAS.AdminRoatp.InnerApi.Responses;
@@ -8,9 +9,9 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.AdminRoatp.Application.Queries.GetProviderAvailableCourses;
 
-public class GetProviderAvailableCoursesQueryHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _courseManagementApiClient, ILogger<GetProviderAvailableCoursesQueryHandler> _logger) : IRequestHandler<GetProviderAvailableCoursesQuery, GetProviderAvailableCoursesQueryResult>
+public class GetProviderAvailableCoursesQueryHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _courseManagementApiClient, ILogger<GetProviderAvailableCoursesQueryHandler> _logger) : IRequestHandler<GetProviderAvailableCoursesQuery, GetProviderAvailableCoursesQueryResult?>
 {
-    public async Task<GetProviderAvailableCoursesQueryResult> Handle(GetProviderAvailableCoursesQuery request, CancellationToken cancellationToken)
+    public async Task<GetProviderAvailableCoursesQueryResult?> Handle(GetProviderAvailableCoursesQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Handle GetProviderAvailableCourses for Ukprn {Ukprn} and Course Type {CourseType}", request.Ukprn, request.CourseType);
 
@@ -20,6 +21,11 @@ public class GetProviderAvailableCoursesQueryHandler(IRoatpCourseManagementApiCl
         }
 
         var providerAllowedCourses = await _courseManagementApiClient.GetWithResponseCode<GetProviderAllowedCoursesResponse>(new GetProviderAllowedCoursesRequest(request.Ukprn, request.CourseType));
+
+        if (providerAllowedCourses.StatusCode == HttpStatusCode.NotFound)
+        {
+            return null;
+        }
 
         providerAllowedCourses.EnsureSuccessStatusCode();
 

@@ -71,4 +71,5 @@ public class GetApprenticeshipResponse : IPartyResource
     public bool HasUnacknowledgedInvalidIlrChanges { get; set; }
     public bool HasUnacknowledgedDeclinedChanges { get; set; }
     public Guid? PendingApprovalRequestId { get; set; }
+    public bool HasAutoApprovedRequests { get; set; }
 }

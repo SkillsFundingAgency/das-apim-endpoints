@@ -1,6 +1,9 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Requests;
+using Polly;
+using Polly.Retry;
+using StackExchange.Redis;
 using System.Text.Json;
 
 namespace SFA.DAS.LearnerData.Services;
@@ -12,12 +15,34 @@ public interface ILearnerDataCacheService
     Task<List<T>> GetLearners<T>(long ukprn, IEnumerable<string> ulns, CancellationToken cancellationToken) where T : class;
 }
 
-public class LearnerDataCacheService(IDistributedCache cache, ILogger<LearnerDataCacheService> logger) : ILearnerDataCacheService
+public class LearnerDataCacheService(IDistributedCache cache, ILogger<LearnerDataCacheService> logger, TimeSpan? retryBaseDelay = null) : ILearnerDataCacheService
 {
     private const string ApprenticeshipLearnerDataPrefix = "LearnerDataApprenticeship";
     private const string ShortCourseLearnerDataPrefix = "LearnerDataShortCourse";
 
     private const int CacheDuration = 4;
+    private const int MaxRetryAttempts = 3;
+    private static readonly TimeSpan DefaultRetryBaseDelay = TimeSpan.FromMilliseconds(200);
+
+    private readonly ResiliencePipeline _retryPipeline = BuildRetryPipeline(retryBaseDelay ?? DefaultRetryBaseDelay, logger);
+
+    private static ResiliencePipeline BuildRetryPipeline(TimeSpan baseDelay, ILogger logger) =>
+        new ResiliencePipelineBuilder()
+            .AddRetry(new RetryStrategyOptions
+            {
+                ShouldHandle = new PredicateBuilder().Handle<RedisConnectionException>().Handle<RedisTimeoutException>(),
+                MaxRetryAttempts = MaxRetryAttempts,
+                BackoffType = DelayBackoffType.Exponential,
+                UseJitter = true,
+                Delay = baseDelay,
+                OnRetry = args =>
+                {
+                    logger.LogWarning(args.Outcome.Exception, "CACHE RETRY attempt={Attempt} delay={Delay}ms", args.AttemptNumber + 1, args.RetryDelay.TotalMilliseconds);
+                    return default;
+                }
+            })
+            .Build();
+
     private static string BuildKey(string prefix, long ukprn, string uln) => $"{prefix}_{ukprn}_{uln}";
 
     public async Task StoreLearner<T>(T data, long ukprn, CancellationToken cancellationToken)
@@ -27,14 +52,14 @@ public class LearnerDataCacheService(IDistributedCache cache, ILogger<LearnerDat
 
         logger.LogInformation("CACHE STORE key={Key} size={Size}B", key, json.Length);
 
-        await cache.SetStringAsync(
+        await _retryPipeline.ExecuteAsync(async ct => await cache.SetStringAsync(
             key,
             json,
             new DistributedCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(CacheDuration)
             },
-            cancellationToken);
+            ct), cancellationToken);
     }
 
     public async Task<T?> GetLearner<T>(long ukprn, string uln, CancellationToken cancellationToken) where T : class
@@ -43,7 +68,7 @@ public class LearnerDataCacheService(IDistributedCache cache, ILogger<LearnerDat
 
         logger.LogInformation("CACHE GET key={Key}", key);
 
-        var json = await cache.GetStringAsync(key, cancellationToken);
+        var json = await _retryPipeline.ExecuteAsync(async ct => await cache.GetStringAsync(key, ct), cancellationToken);
 
         if (string.IsNullOrEmpty(json))
         {
