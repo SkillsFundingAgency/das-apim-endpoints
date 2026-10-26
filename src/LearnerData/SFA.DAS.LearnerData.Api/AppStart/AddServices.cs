@@ -1,5 +1,7 @@
-﻿using SFA.DAS.Api.Common.Infrastructure;
+﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
@@ -24,11 +26,26 @@ public static class AddApiServicesExtension
         services.AddTransient<IEarningsApiClient<EarningsApiConfiguration>, EarningsApiClient>();
         services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
         services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
+        services.TryAddSingleton(TimeProvider.System);
+        services.AddTransient(typeof(IAccessTokenApiClient<>), typeof(AccessTokenApiClient<>));
+        services.AddSingleton<SldDataApiCertificateValidator>();
+        services.AddHttpClient(SldDataApiHttpClientFactory.ClientName)
+            .ConfigurePrimaryHttpMessageHandler(serviceProvider => new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = serviceProvider.GetRequiredService<SldDataApiCertificateValidator>().IsServerCertificateValid
+            });
+        services.AddTransient<ISldDataApiClient<SLDDataApiConfiguration>>(serviceProvider => new SldDataApiClient(
+            new AccessTokenApiClient<SLDDataApiConfiguration>(
+                serviceProvider.GetRequiredService<ILogger<AccessTokenApiClient<SLDDataApiConfiguration>>>(),
+                new SldDataApiHttpClientFactory(serviceProvider.GetRequiredService<IHttpClientFactory>()),
+                serviceProvider.GetRequiredService<SLDDataApiConfiguration>(),
+                serviceProvider.GetRequiredService<TimeProvider>())));
         services.AddTransient<ILearningSupportService, LearningSupportService>();
         services.AddTransient<IBreaksInLearningService, BreaksInLearningService>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
         services.AddTransient<ICourseService, CourseService>();
         services.AddTransient<IUpdateLearningRequestBodyBuilder, UpdateLearningRequestBodyBuilder>();
+        services.AddTransient<IEnglishAndMathsValueService, EnglishAndMathsValueService>();
         services.AddTransient<ICreateDraftLearningApiPostRequestBuilder, CreateDraftLearningApiPostRequestBuilder>();
         services.AddTransient<IUpdateLearningPutRequestBuilder, UpdateLearningPutRequestBuilder>();
         services.AddTransient<ICreateUnapprovedApprenticeshipLearningRequestBuilder, CreateUnapprovedApprenticeshipLearningRequestBuilder>();

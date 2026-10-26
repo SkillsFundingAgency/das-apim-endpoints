@@ -76,7 +76,7 @@ public class WhenCreatingLearners
 
         _mockCreateDraftLearningApiPostRequestBuilder
             .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<int>(), It.IsAny<LearningType>()))
-            .Returns(new CreateDraftLearningApiPostRequest(new UpdateLearningRequestBody(), 0));
+            .ReturnsAsync(new CreateDraftLearningApiPostRequest(new UpdateLearningRequestBody(), 0));
 
         var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(
             new CreateDraftLearnerApiPutResponse { Changes = new List<BaseLearnerApiPutResponse.LearningUpdateChanges>() },

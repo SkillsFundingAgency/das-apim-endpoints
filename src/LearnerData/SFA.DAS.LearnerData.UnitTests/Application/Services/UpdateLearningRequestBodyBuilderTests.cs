@@ -15,7 +15,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 public class UpdateLearningRequestBodyBuilderTests
 {
     [Test]
-    public void Build_Sets_WithdrawalDate_From_LatestOnProgramme()
+    public async Task Build_Sets_WithdrawalDate_From_LatestOnProgramme()
     {
         var fixture = new Fixture();
 
@@ -24,20 +24,17 @@ public class UpdateLearningRequestBodyBuilderTests
         var withdrawalDate = fixture.Create<DateTime>();
         command.UpdateLearnerRequest.Delivery.OnProgramme.Last().WithdrawalDate = withdrawalDate;
 
-        var sut = new UpdateLearningRequestBodyBuilder(
-            Mock.Of<ILearningSupportService>(),
-            Mock.Of<IBreaksInLearningService>(),
-            Mock.Of<ICostsService>());
+        var sut = CreateSut(Mock.Of<IEnglishAndMathsValueService>());
 
         // Act
-        var actualRequestBody = sut.Build(command.Ukprn, command.UpdateLearnerRequest);
+        var actualRequestBody = await sut.Build(command.Ukprn, command.UpdateLearnerRequest);
 
         // Assert
         actualRequestBody.OnProgramme.WithdrawalDate.Should().Be(withdrawalDate);
     }
 
     [Test]
-    public void Build_Sets_WithdrawalReasonCode_From_LatestOnProgramme()
+    public async Task Build_Sets_WithdrawalReasonCode_From_LatestOnProgramme()
     {
         var fixture = new Fixture();
 
@@ -46,20 +43,17 @@ public class UpdateLearningRequestBodyBuilderTests
         var withdrawalReasonCode = fixture.Create<short>();
         command.UpdateLearnerRequest.Delivery.OnProgramme.Last().WithdrawalReasonCode = withdrawalReasonCode;
 
-        var sut = new UpdateLearningRequestBodyBuilder(
-            Mock.Of<ILearningSupportService>(),
-            Mock.Of<IBreaksInLearningService>(),
-            Mock.Of<ICostsService>());
+        var sut = CreateSut(Mock.Of<IEnglishAndMathsValueService>());
 
         // Act
-        var actualRequestBody = sut.Build(command.Ukprn, command.UpdateLearnerRequest);
+        var actualRequestBody = await sut.Build(command.Ukprn, command.UpdateLearnerRequest);
 
         // Assert
         actualRequestBody.OnProgramme.WithdrawalReasonCode.Should().Be(withdrawalReasonCode);
     }
 
     [Test]
-    public void Build_Sets_CompletionDate_From_LatestOnProgramme()
+    public async Task Build_Sets_CompletionDate_From_LatestOnProgramme()
     {
         var fixture = new Fixture();
 
@@ -68,20 +62,17 @@ public class UpdateLearningRequestBodyBuilderTests
         var completionDate = fixture.Create<DateTime>();
         command.UpdateLearnerRequest.Delivery.OnProgramme.Last().CompletionDate = completionDate;
 
-        var sut = new UpdateLearningRequestBodyBuilder(
-            Mock.Of<ILearningSupportService>(),
-            Mock.Of<IBreaksInLearningService>(),
-            Mock.Of<ICostsService>());
+        var sut = CreateSut(Mock.Of<IEnglishAndMathsValueService>());
 
         // Act
-        var actualRequestBody = sut.Build(command.Ukprn, command.UpdateLearnerRequest);
+        var actualRequestBody = await sut.Build(command.Ukprn, command.UpdateLearnerRequest);
 
         // Assert
         actualRequestBody.Learner.CompletionDate.Should().Be(completionDate);
     }
 
     [Test]
-    public void Build_Sets_ExpectedEndDate_From_LatestOnProgramme()
+    public async Task Build_Sets_ExpectedEndDate_From_LatestOnProgramme()
     {
         var fixture = new Fixture();
 
@@ -90,20 +81,17 @@ public class UpdateLearningRequestBodyBuilderTests
         var expectedEndDate = fixture.Create<DateTime>();
         command.UpdateLearnerRequest.Delivery.OnProgramme.Last().ExpectedEndDate = expectedEndDate;
 
-        var sut = new UpdateLearningRequestBodyBuilder(
-            Mock.Of<ILearningSupportService>(),
-            Mock.Of<IBreaksInLearningService>(),
-            Mock.Of<ICostsService>());
+        var sut = CreateSut(Mock.Of<IEnglishAndMathsValueService>());
 
         // Act
-        var actualRequestBody = sut.Build(command.Ukprn, command.UpdateLearnerRequest);
+        var actualRequestBody = await sut.Build(command.Ukprn, command.UpdateLearnerRequest);
 
         // Assert
         actualRequestBody.OnProgramme.ExpectedEndDate.Should().Be(expectedEndDate);
     }
 
     [Test]
-    public void Build_Sets_AchievementDate_From_LatestOnProgramme()
+    public async Task Build_Sets_AchievementDate_From_LatestOnProgramme()
     {
         var fixture = new Fixture();
 
@@ -112,20 +100,17 @@ public class UpdateLearningRequestBodyBuilderTests
         var achievementDate = fixture.Create<DateTime>();
         command.UpdateLearnerRequest.Delivery.OnProgramme.Last().AchievementDate = achievementDate;
 
-        var sut = new UpdateLearningRequestBodyBuilder(
-            Mock.Of<ILearningSupportService>(),
-            Mock.Of<IBreaksInLearningService>(),
-            Mock.Of<ICostsService>());
+        var sut = CreateSut(Mock.Of<IEnglishAndMathsValueService>());
 
         // Act
-        var actualRequestBody = sut.Build(command.Ukprn, command.UpdateLearnerRequest);
+        var actualRequestBody = await sut.Build(command.Ukprn, command.UpdateLearnerRequest);
 
         // Assert
         actualRequestBody.OnProgramme.AchievementDate.Should().Be(achievementDate);
     }
 
     [Test]
-    public void Build_Sets_PauseDate_From_LatestOnProgramme()
+    public async Task Build_Sets_PauseDate_From_LatestOnProgramme()
     {
         var fixture = new Fixture();
 
@@ -134,20 +119,17 @@ public class UpdateLearningRequestBodyBuilderTests
         var pauseDate = fixture.Create<DateTime>();
         command.UpdateLearnerRequest.Delivery.OnProgramme.Last().PauseDate = pauseDate;
 
-        var sut = new UpdateLearningRequestBodyBuilder(
-            Mock.Of<ILearningSupportService>(),
-            Mock.Of<IBreaksInLearningService>(),
-            Mock.Of<ICostsService>());
+        var sut = CreateSut(Mock.Of<IEnglishAndMathsValueService>());
 
         // Act
-        var actualRequestBody = sut.Build(command.Ukprn, command.UpdateLearnerRequest);
+        var actualRequestBody = await sut.Build(command.Ukprn, command.UpdateLearnerRequest);
 
         // Assert
         actualRequestBody.OnProgramme.PauseDate.Should().Be(pauseDate);
     }
 
     [Test]
-    public void Build_Sets_CareDetails_From_LatestOnProgramme()
+    public async Task Build_Sets_CareDetails_From_LatestOnProgramme()
     {
         var fixture = new Fixture();
 
@@ -156,13 +138,10 @@ public class UpdateLearningRequestBodyBuilderTests
         var careDetails = fixture.Create<Requests.Care>();
         command.UpdateLearnerRequest.Delivery.OnProgramme.Last().Care = careDetails;
 
-        var sut = new UpdateLearningRequestBodyBuilder(
-            Mock.Of<ILearningSupportService>(),
-            Mock.Of<IBreaksInLearningService>(),
-            Mock.Of<ICostsService>());
+        var sut = CreateSut(Mock.Of<IEnglishAndMathsValueService>());
 
         // Act
-        var actualRequestBody = sut.Build(command.Ukprn, command.UpdateLearnerRequest);
+        var actualRequestBody = await sut.Build(command.Ukprn, command.UpdateLearnerRequest);
 
         // Assert
         actualRequestBody.Learner.Care.HasEHCP.Should().Be(command.UpdateLearnerRequest.Learner.HasEhcp);
@@ -171,7 +150,7 @@ public class UpdateLearningRequestBodyBuilderTests
     }
 
     [Test]
-    public void Build_WithCreateLearnerRequest_MapsPropertiesCorrectly()
+    public async Task Build_WithCreateLearnerRequest_MapsPropertiesCorrectly()
     {
         var fixture = new Fixture();
 
@@ -217,13 +196,10 @@ public class UpdateLearningRequestBodyBuilderTests
             }
         };
 
-        var sut = new UpdateLearningRequestBodyBuilder(
-            Mock.Of<ILearningSupportService>(),
-            Mock.Of<IBreaksInLearningService>(),
-            Mock.Of<ICostsService>());
+        var sut = CreateSut(Mock.Of<IEnglishAndMathsValueService>());
 
         // Act
-        var actualRequestBody = sut.Build(10005077, createRequest, 2526, LearningType.Apprenticeship);
+        var actualRequestBody = await sut.Build(10005077, createRequest, 2526, LearningType.Apprenticeship);
 
         // Assert
         actualRequestBody.Learner.Uln.Should().Be(123456789);
@@ -240,19 +216,16 @@ public class UpdateLearningRequestBodyBuilderTests
     }
 
     [Test]
-    public void Build_Sets_LearnerRef_From_UpdateLearnerRequest()
+    public async Task Build_Sets_LearnerRef_From_UpdateLearnerRequest()
     {
         // Arrange
         var command = BreaksInLearningTestHelper.CreateLearnerWithBreaksInLearning(false);
         command.UpdateLearnerRequest.Learner.LearnerRef = "LR-12345";
 
-        var sut = new UpdateLearningRequestBodyBuilder(
-            Mock.Of<ILearningSupportService>(),
-            Mock.Of<IBreaksInLearningService>(),
-            Mock.Of<ICostsService>());
+        var sut = CreateSut(Mock.Of<IEnglishAndMathsValueService>());
 
         // Act
-        var actualRequestBody = sut.Build(command.Ukprn, command.UpdateLearnerRequest);
+        var actualRequestBody = await sut.Build(command.Ukprn, command.UpdateLearnerRequest);
 
         // Assert
         actualRequestBody.Learner.LearnerRef.Should().Be("LR-12345");
@@ -260,28 +233,25 @@ public class UpdateLearningRequestBodyBuilderTests
 
     [TestCase(null)]
     [TestCase("")]
-    public void Build_Does_Not_Throw_When_LearnerRef_Is_Null_Or_Empty_On_UpdateLearnerRequest(string? learnerRef)
+    public async Task Build_Does_Not_Throw_When_LearnerRef_Is_Null_Or_Empty_On_UpdateLearnerRequest(string? learnerRef)
     {
         // Arrange
         var command = BreaksInLearningTestHelper.CreateLearnerWithBreaksInLearning(false);
         command.UpdateLearnerRequest.Learner.LearnerRef = learnerRef!;
 
-        var sut = new UpdateLearningRequestBodyBuilder(
-            Mock.Of<ILearningSupportService>(),
-            Mock.Of<IBreaksInLearningService>(),
-            Mock.Of<ICostsService>());
+        var sut = CreateSut(Mock.Of<IEnglishAndMathsValueService>());
 
         // Act
-        Action act = () => sut.Build(command.Ukprn, command.UpdateLearnerRequest);
+        Func<Task> act = () => sut.Build(command.Ukprn, command.UpdateLearnerRequest);
 
         // Assert
-        act.Should().NotThrow();
-        var actualRequestBody = sut.Build(command.Ukprn, command.UpdateLearnerRequest);
+        await act.Should().NotThrowAsync();
+        var actualRequestBody = await sut.Build(command.Ukprn, command.UpdateLearnerRequest);
         actualRequestBody.Learner.LearnerRef.Should().Be(learnerRef);
     }
 
     [Test]
-    public void Build_WithCreateLearnerRequest_MapsLearnerRef()
+    public async Task Build_WithCreateLearnerRequest_MapsLearnerRef()
     {
         // Arrange
         var createRequest = new CreateLearnerRequest
@@ -326,13 +296,10 @@ public class UpdateLearningRequestBodyBuilderTests
             }
         };
 
-        var sut = new UpdateLearningRequestBodyBuilder(
-            Mock.Of<ILearningSupportService>(),
-            Mock.Of<IBreaksInLearningService>(),
-            Mock.Of<ICostsService>());
+        var sut = CreateSut(Mock.Of<IEnglishAndMathsValueService>());
 
         // Act
-        var actualRequestBody = sut.Build(10005077, createRequest, 2526, LearningType.Apprenticeship);
+        var actualRequestBody = await sut.Build(10005077, createRequest, 2526, LearningType.Apprenticeship);
 
         // Assert
         actualRequestBody.Learner.LearnerRef.Should().Be("LR-98765");
@@ -340,7 +307,7 @@ public class UpdateLearningRequestBodyBuilderTests
 
     [TestCase(null)]
     [TestCase("")]
-    public void Build_WithCreateLearnerRequest_Does_Not_Throw_When_LearnerRef_Is_Null_Or_Empty(string? learnerRef)
+    public async Task Build_WithCreateLearnerRequest_Does_Not_Throw_When_LearnerRef_Is_Null_Or_Empty(string? learnerRef)
     {
         // Arrange
         var createRequest = new CreateLearnerRequest
@@ -385,22 +352,19 @@ public class UpdateLearningRequestBodyBuilderTests
             }
         };
 
-        var sut = new UpdateLearningRequestBodyBuilder(
-            Mock.Of<ILearningSupportService>(),
-            Mock.Of<IBreaksInLearningService>(),
-            Mock.Of<ICostsService>());
+        var sut = CreateSut(Mock.Of<IEnglishAndMathsValueService>());
 
         // Act
-        Action act = () => sut.Build(10005077, createRequest, 2526, LearningType.Apprenticeship);
+        Func<Task> act = () => sut.Build(10005077, createRequest, 2526, LearningType.Apprenticeship);
 
         // Assert
-        act.Should().NotThrow();
-        var actualRequestBody = sut.Build(10005077, createRequest, 2526, LearningType.Apprenticeship);
+        await act.Should().NotThrowAsync();
+        var actualRequestBody = await sut.Build(10005077, createRequest, 2526, LearningType.Apprenticeship);
         actualRequestBody.Learner.LearnerRef.Should().Be(learnerRef);
     }
 
     [Test]
-    public void Build_Sets_TrainingCode_From_FirstOnProgramme_StandardCode()
+    public async Task Build_Sets_TrainingCode_From_FirstOnProgramme_StandardCode()
     {
         var fixture = new Fixture();
 
@@ -410,15 +374,175 @@ public class UpdateLearningRequestBodyBuilderTests
             .OrderBy(x => x.StartDate)
             .First();
 
-        var sut = new UpdateLearningRequestBodyBuilder(
-            Mock.Of<ILearningSupportService>(),
-            Mock.Of<IBreaksInLearningService>(),
-            Mock.Of<ICostsService>());
+        var sut = CreateSut(Mock.Of<IEnglishAndMathsValueService>());
 
         // Act
-        var actualRequestBody = sut.Build(command.Ukprn, command.UpdateLearnerRequest);
+        var actualRequestBody = await sut.Build(command.Ukprn, command.UpdateLearnerRequest);
 
         // Assert
         actualRequestBody.OnProgramme.TrainingCode.Should().Be(firstOnProgramme.StandardCode.ToString());
+    }
+
+    [Test]
+    public async Task Build_Sets_EnglishAndMaths_Amount_To_The_Value_From_Sld()
+    {
+        // Arrange
+        var command = BreaksInLearningTestHelper.CreateLearnerWithBreaksInLearning(false);
+        command.UpdateLearnerRequest.Delivery.EnglishAndMaths =
+        [
+            EnglishAndMathsCourse("60342287", new DateTime(2025, 9, 1))
+        ];
+
+        var englishAndMathsValueService = new Mock<IEnglishAndMathsValueService>();
+        englishAndMathsValueService.Setup(x => x.GetValue("60342287", new DateTime(2025, 9, 1))).ReturnsAsync(1234.56m);
+
+        var sut = CreateSut(englishAndMathsValueService.Object);
+
+        // Act
+        var actualRequestBody = await sut.Build(command.Ukprn, command.UpdateLearnerRequest);
+
+        // Assert
+        actualRequestBody.EnglishAndMathsCourses.Single().Amount.Should().Be(1234.56m);
+    }
+
+    [Test]
+    public async Task Build_Looks_Up_Each_EnglishAndMaths_Course_Separately()
+    {
+        // Arrange
+        var command = BreaksInLearningTestHelper.CreateLearnerWithBreaksInLearning(false);
+        command.UpdateLearnerRequest.Delivery.EnglishAndMaths =
+        [
+            EnglishAndMathsCourse("60342287", new DateTime(2025, 9, 1)),
+            EnglishAndMathsCourse("50086832", new DateTime(2025, 10, 1))
+        ];
+
+        var englishAndMathsValueService = new Mock<IEnglishAndMathsValueService>();
+        englishAndMathsValueService.Setup(x => x.GetValue("60342287", new DateTime(2025, 9, 1))).ReturnsAsync(1000m);
+        englishAndMathsValueService.Setup(x => x.GetValue("50086832", new DateTime(2025, 10, 1))).ReturnsAsync(1500m);
+
+        var sut = CreateSut(englishAndMathsValueService.Object);
+
+        // Act
+        var actualRequestBody = await sut.Build(command.Ukprn, command.UpdateLearnerRequest);
+
+        // Assert
+        actualRequestBody.EnglishAndMathsCourses.Single(x => x.LearnAimRef == "60342287").Amount.Should().Be(1000m);
+        actualRequestBody.EnglishAndMathsCourses.Single(x => x.LearnAimRef == "50086832").Amount.Should().Be(1500m);
+    }
+
+    [Test]
+    public async Task Build_Looks_Up_A_Course_With_A_Break_In_Learning_Once_Using_Its_First_StartDate()
+    {
+        // Arrange
+        var command = BreaksInLearningTestHelper.CreateLearnerWithBreaksInLearning(false);
+        command.UpdateLearnerRequest.Delivery.EnglishAndMaths =
+        [
+            EnglishAndMathsCourse("60342287", new DateTime(2026, 1, 1)),
+            EnglishAndMathsCourse("60342287", new DateTime(2025, 9, 1))
+        ];
+
+        var englishAndMathsValueService = new Mock<IEnglishAndMathsValueService>();
+        englishAndMathsValueService.Setup(x => x.GetValue("60342287", new DateTime(2025, 9, 1))).ReturnsAsync(1234.56m);
+
+        var sut = CreateSut(englishAndMathsValueService.Object);
+
+        // Act
+        var actualRequestBody = await sut.Build(command.Ukprn, command.UpdateLearnerRequest);
+
+        // Assert
+        actualRequestBody.EnglishAndMathsCourses.Single().Amount.Should().Be(1234.56m);
+        englishAndMathsValueService.Verify(x => x.GetValue(It.IsAny<string>(), It.IsAny<DateTime>()), Times.Once);
+    }
+
+    [Test]
+    public async Task Build_WithCreateLearnerRequest_Sets_EnglishAndMaths_Amount_To_The_Value_From_Sld()
+    {
+        // Arrange
+        var createRequest = CreateLearnerRequestWithEnglishAndMaths(
+            EnglishAndMathsCourse("60342287", new DateTime(2025, 9, 1)));
+
+        var englishAndMathsValueService = new Mock<IEnglishAndMathsValueService>();
+        englishAndMathsValueService.Setup(x => x.GetValue("60342287", new DateTime(2025, 9, 1))).ReturnsAsync(1234.56m);
+
+        var sut = CreateSut(englishAndMathsValueService.Object);
+
+        // Act
+        var actualRequestBody = await sut.Build(10005077, createRequest, 2526, LearningType.Apprenticeship);
+
+        // Assert
+        actualRequestBody.EnglishAndMathsCourses.Single().Amount.Should().Be(1234.56m);
+    }
+
+    [Test]
+    public async Task Build_When_The_EnglishAndMaths_Value_Cannot_Be_Obtained_Lets_The_Failure_Through()
+    {
+        // Arrange
+        var command = BreaksInLearningTestHelper.CreateLearnerWithBreaksInLearning(false);
+        command.UpdateLearnerRequest.Delivery.EnglishAndMaths =
+        [
+            EnglishAndMathsCourse("60342287", new DateTime(2025, 9, 1))
+        ];
+
+        var englishAndMathsValueService = new Mock<IEnglishAndMathsValueService>();
+        englishAndMathsValueService
+            .Setup(x => x.GetValue(It.IsAny<string>(), It.IsAny<DateTime>()))
+            .ThrowsAsync(new EnglishAndMathsValueNotFoundException("60342287", new DateTime(2025, 9, 1)));
+
+        var sut = CreateSut(englishAndMathsValueService.Object);
+
+        // Act
+        var act = () => sut.Build(command.Ukprn, command.UpdateLearnerRequest);
+
+        // Assert
+        await act.Should().ThrowAsync<EnglishAndMathsValueNotFoundException>();
+    }
+
+    private static UpdateLearningRequestBodyBuilder CreateSut(IEnglishAndMathsValueService englishAndMathsValueService)
+    {
+        return new UpdateLearningRequestBodyBuilder(
+            Mock.Of<ILearningSupportService>(),
+            Mock.Of<IBreaksInLearningService>(),
+            Mock.Of<ICostsService>(),
+            englishAndMathsValueService);
+    }
+
+    private static MathsAndEnglish EnglishAndMathsCourse(string learnAimRef, DateTime startDate)
+    {
+        return new MathsAndEnglish
+        {
+            LearnAimRef = learnAimRef,
+            Course = "Maths",
+            StartDate = startDate,
+            EndDate = startDate.AddYears(1),
+            LearningSupport = []
+        };
+    }
+
+    private static CreateLearnerRequest CreateLearnerRequestWithEnglishAndMaths(params MathsAndEnglish[] englishAndMaths)
+    {
+        return new CreateLearnerRequest
+        {
+            Learner = new CreateLearnerRequest.LearnerDetails
+            {
+                Uln = 123456789,
+                Dob = new DateTime(2000, 1, 1)
+            },
+            Delivery = new CreateLearnerRequest.DeliveryDetails
+            {
+                OnProgramme =
+                [
+                    new CreateLearnerRequest.OnProgrammeDetails
+                    {
+                        StartDate = new DateTime(2025, 9, 1),
+                        ExpectedEndDate = new DateTime(2027, 9, 1),
+                        StandardCode = 123,
+                        AgreementId = "AG-1",
+                        Costs = [new CostDetails { FromDate = new DateTime(2025, 9, 1), TrainingPrice = 5000, EpaoPrice = 1000 }],
+                        Care = new Care()
+                    }
+                ],
+                EnglishAndMaths = englishAndMaths.ToList()
+            }
+        };
     }
 }
