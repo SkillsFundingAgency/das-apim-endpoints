@@ -1,4 +1,4 @@
-using SFA.DAS.SharedOuterApi.Types.Configuration;
+﻿using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
@@ -11,25 +11,25 @@ namespace SFA.DAS.LearnerData.Services;
 
 public interface IUpdateEarningsOnProgrammeRequestBuilder
 {
-    Task<UpdateOnProgrammeApiPutRequest> Build(UpdateLearnerRequest updateLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningRequestBody requestBody);
-    Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, CreateLearnerRequest createLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningRequestBody requestBody);
+    Task<UpdateOnProgrammeApiPutRequest> Build(UpdateLearnerRequest updateLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningRequestBody requestBody, bool furtherApprovalRequired);
+    Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, CreateLearnerRequest createLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningRequestBody requestBody, bool furtherApprovalRequired);
 }
 
 public class UpdateEarningsOnProgrammeRequestBuilder(ICourseService courseService) : IUpdateEarningsOnProgrammeRequestBuilder
 {
     public async Task<UpdateOnProgrammeApiPutRequest> Build(UpdateLearnerRequest updateLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse,
-        UpdateLearningRequestBody requestBody)
+        UpdateLearningRequestBody requestBody, bool furtherApprovalRequired)
     {
-        return await BuildInternal(learningApiPutResponse.LearningKey, updateLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(), learningApiPutResponse, requestBody);
+        return await BuildInternal(learningApiPutResponse.LearningKey, updateLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(), learningApiPutResponse, requestBody, furtherApprovalRequired);
     }
 
     public async Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, CreateLearnerRequest createLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse,
-        UpdateLearningRequestBody requestBody)
+        UpdateLearningRequestBody requestBody, bool furtherApprovalRequired)
     {
-        return await BuildInternal(learningKey, createLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(), learningApiPutResponse, requestBody);
+        return await BuildInternal(learningKey, createLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(), learningApiPutResponse, requestBody, furtherApprovalRequired);
     }
 
-    private async Task<UpdateOnProgrammeApiPutRequest> BuildInternal(Guid learningKey, List<OnProgrammeRequestDetails> onProgramme, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningRequestBody requestBody)
+    private async Task<UpdateOnProgrammeApiPutRequest> BuildInternal(Guid learningKey, List<OnProgrammeRequestDetails> onProgramme, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningRequestBody requestBody, bool furtherApprovalRequired)
     {
         var fundingBandMaximum = default(int?);
         var includesFundingBandMaximumUpdate = false;
@@ -67,7 +67,8 @@ public class UpdateEarningsOnProgrammeRequestBuilder(ICourseService courseServic
                 IsCareLeaver = requestBody.Learner.Care.IsCareLeaver,
                 CareLeaverEmployerConsentGiven = requestBody.Learner.Care.CareLeaverEmployerConsentGiven
             },
-            LearningSupport = requestBody.OnProgramme.LearningSupport
+            LearningSupport = requestBody.OnProgramme.LearningSupport,
+            FurtherApprovalRequired = furtherApprovalRequired
         };
 
         return new UpdateOnProgrammeApiPutRequest(learningKey, payload);

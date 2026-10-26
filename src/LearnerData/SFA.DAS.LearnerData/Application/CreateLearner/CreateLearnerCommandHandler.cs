@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
@@ -24,6 +24,7 @@ public class CreateLearnerCommandHandler(
     IUpdateEarningsOnProgrammeRequestBuilder updateEarningsOnProgrammeRequestBuilder,
     ICreateUnapprovedApprenticeshipLearningRequestBuilder createUnapprovedApprenticeshipLearningRequestBuilder,
     ICourseService courseService,
+    IFurtherApprovalService furtherApprovalService,
     ILearnerDataEventMapper learnerDataEventMapper,
     FeatureFlags featureFlags) : IRequestHandler<CreateLearnerCommand>
 {
@@ -50,7 +51,9 @@ public class CreateLearnerCommandHandler(
                 if (learningResponse.Body?.Changes != null && learningResponse.Body.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.Reinstated))
                 {
                     logger.LogInformation("Reinstating learner with learning key {LearningKey}", learningResponse.Body.LearningKey);
-                    var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(learningResponse.Body.LearningKey, command.Request, learningResponse.Body, (UpdateLearningRequestBody)postRequest.Data);
+                    // a reinstated episode is still approved, so a change made by the reinstating POST (e.g. to the start date) can need further approval
+                    var furtherApprovalRequired = await furtherApprovalService.Resolve(command.Ukprn, command.Request.Learner.Uln, learningResponse.Body);
+                    var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(learningResponse.Body.LearningKey, command.Request, learningResponse.Body, (UpdateLearningRequestBody)postRequest.Data, furtherApprovalRequired);
                     await earningsApiClient.Put(earningsOnProgrammeApiRequest);
                 }
                 else if (learningResponse.Body != null)
