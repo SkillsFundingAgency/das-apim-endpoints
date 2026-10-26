@@ -363,7 +363,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         client
             .Setup(c => c.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
                 It.IsAny<PutApprenticeshipPaymentSummaryRequest>()))
-            .Callback<IPutApiRequest>((r) => posted.Add((PutApprenticeshipPaymentSummaryRequestData)r.Data))
+            .Callback<IPutApiRequest>((r) => posted.Add((PutApprenticeshipPaymentSummaryRequestData)r.Data!))
             .ReturnsAsync(new ApiResponse<ApprenticeshipPaymentSummaryResponse>(
                 new ApprenticeshipPaymentSummaryResponse(), HttpStatusCode.OK, string.Empty));
         return posted;
