@@ -34,6 +34,7 @@ public class WhenCreatingLearners
     private Mock<IUpdateEarningsOnProgrammeRequestBuilder> _mockUpdateEarningsOnProgrammeRequestBuilder;
     private Mock<ICreateUnapprovedApprenticeshipLearningRequestBuilder> _mockCreateUnapprovedApprenticeshipLearningRequestBuilder;
     private Mock<ICourseService> _mockCourseService;
+    private Mock<ILearnerDataCacheService> _mockLearnerDataCacheService;
     private CreateLearnerCommandHandler _sut;
 
 
@@ -54,8 +55,9 @@ public class WhenCreatingLearners
         _mockUpdateEarningsOnProgrammeRequestBuilder = new Mock<IUpdateEarningsOnProgrammeRequestBuilder>();
         _mockCreateUnapprovedApprenticeshipLearningRequestBuilder = new Mock<ICreateUnapprovedApprenticeshipLearningRequestBuilder>();
         _mockCourseService = new Mock<ICourseService>();
+        _mockLearnerDataCacheService = new Mock<ILearnerDataCacheService>();
 
-        _sut = new CreateLearnerCommandHandler(
+        _sut =new CreateLearnerCommandHandler(
             _mockLogger.Object,
             _mockMessageSession.Object,
             _mockLearningApiClient.Object,
@@ -65,6 +67,7 @@ public class WhenCreatingLearners
             _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
             _mockCourseService.Object,
             new LearnerDataEventMapper(),
+            _mockLearnerDataCacheService.Object,
             new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = true });
 
         _mockCourseService
@@ -106,6 +109,19 @@ public class WhenCreatingLearners
         // Assert
         _mockMessageSession.Verify(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()),
             Times.Once());
+    }
+
+    [Test]
+    public async Task Then_learner_is_stored_in_the_cache()
+    {
+        // Arrange
+        var command = GetProcessLearnersCommand();
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _mockLearnerDataCacheService.Verify(x => x.StoreLearner(command.Request, command.Ukprn, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test]
@@ -325,6 +341,7 @@ public class WhenCreatingLearners
             _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
             _mockCourseService.Object,
             new LearnerDataEventMapper(),
+            _mockLearnerDataCacheService.Object,
             new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = false });
 
         var command = GetProcessLearnersCommand();
@@ -420,6 +437,7 @@ public class WhenCreatingLearners
             _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
             _mockCourseService.Object,
             new LearnerDataEventMapper(),
+            _mockLearnerDataCacheService.Object,
             new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = false });
 
         var responseBody = new CreateDraftLearnerApiPutResponse

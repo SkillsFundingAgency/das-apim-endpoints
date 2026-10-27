@@ -99,6 +99,12 @@ public class LearnerDataCacheService(IDistributedCache cache, ILogger<LearnerDat
 
     private string GetKey<T>(T data, long ukprn) 
     {
+        // CreateLearnerRequest hides Learner with `new`, so the base property is null; check it first
+        if (data is CreateLearnerRequest createLearnerData)
+        {
+            return BuildKey(ApprenticeshipLearnerDataPrefix, ukprn, createLearnerData.Learner.Uln.ToString());
+        }
+
         if(data is UpdateLearnerRequest learnerData)
         {
             return BuildKey(ApprenticeshipLearnerDataPrefix, ukprn, learnerData.Learner.Uln.ToString());
