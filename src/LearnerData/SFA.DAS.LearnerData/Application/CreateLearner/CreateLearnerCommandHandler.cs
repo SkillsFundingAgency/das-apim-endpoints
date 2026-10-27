@@ -25,11 +25,15 @@ public class CreateLearnerCommandHandler(
     ICreateUnapprovedApprenticeshipLearningRequestBuilder createUnapprovedApprenticeshipLearningRequestBuilder,
     ICourseService courseService,
     ILearnerDataEventMapper learnerDataEventMapper,
+    ILearnerDataCacheService learnerDataCacheService,
     FeatureFlags featureFlags) : IRequestHandler<CreateLearnerCommand>
 {
     public async Task Handle(CreateLearnerCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Handling CreateLearnerCommand for Ukprn {Ukprn}", command.Ukprn);
+
+        await learnerDataCacheService.StoreLearner(command.Request, command.Ukprn, cancellationToken);
+
         var learningType = await GetLearningType(command.Request.Delivery.OnProgramme.MinBy(x => x.StartDate)!.StandardCode);
 
         logger.LogInformation("Feature toggle ApprenticeshipCreateDraftLearner is {ApprenticeshipCreateDraftLearner}", featureFlags.ApprenticeshipCreateDraftLearner);
