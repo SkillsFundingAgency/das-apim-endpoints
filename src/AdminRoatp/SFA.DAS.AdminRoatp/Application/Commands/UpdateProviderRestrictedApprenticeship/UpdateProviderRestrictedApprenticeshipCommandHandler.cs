@@ -4,7 +4,6 @@ using SFA.DAS.AdminRoatp.InnerApi.Models;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
 using SFA.DAS.AdminRoatp.InnerApi.Responses;
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
@@ -37,11 +36,9 @@ public class UpdateProviderRestrictedApprenticeshipCommandHandler(IRoatpCourseMa
 
         if (providerAllowedCourseResponse.StatusCode == HttpStatusCode.OK)
         {
-            var request = new PutProviderAllowedCourseRequest(command.Ukprn, command.LarsCode, new PutProviderAllowedCourseRequestModel(null, command.UserId, command.UserDisplayName));
+            var request = new PutProviderAllowedCourseRequest(command.Ukprn, command.LarsCode, new PutProviderAllowedCourseModel(command.LastDateStarts, command.UserId, command.UserDisplayName));
 
-            ApiResponse<object> response = await _courseManagementApiClient.PutWithResponseCode<PutProviderAllowedCourseRequestModel, object>(request);
-
-            response.EnsureSuccessStatusCode();
+            await _courseManagementApiClient.Put(request);
         }
     }
 }

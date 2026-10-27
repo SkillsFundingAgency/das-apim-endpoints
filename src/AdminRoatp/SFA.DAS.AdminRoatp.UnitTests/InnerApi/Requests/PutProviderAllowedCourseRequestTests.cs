@@ -7,7 +7,7 @@ namespace SFA.DAS.AdminRoatp.UnitTests.InnerApi.Requests;
 public class PutProviderAllowedCourseRequestTests
 {
     [Test, AutoData]
-    public void WhenBuildingRequest_ThenPatchUrlIsSetCorrectly(int ukprn, string larsCode, PutProviderAllowedCourseRequestModel model)
+    public void WhenBuildingRequest_ThenPatchUrlIsSetCorrectly(int ukprn, string larsCode, PutProviderAllowedCourseModel model)
     {
         var sut = new PutProviderAllowedCourseRequest(ukprn, larsCode, model);
 

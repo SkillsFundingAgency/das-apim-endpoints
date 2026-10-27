@@ -53,11 +53,9 @@ public class RemoveProviderRestrictedApprenticeshipCommandHandler(IRoatpCourseMa
 
     private async Task UpdateProviderAllowedCourse(RemoveProviderRestrictedApprenticeshipCommand command)
     {
-        var request = new PutProviderAllowedCourseRequest(command.Ukprn, command.LarsCode, new PutProviderAllowedCourseRequestModel(null, command.UserId, command.UserDisplayName));
+        var request = new PutProviderAllowedCourseRequest(command.Ukprn, command.LarsCode, new PutProviderAllowedCourseModel(null, command.UserId, command.UserDisplayName));
 
-        ApiResponse<object> response = await _courseManagementApiClient.PutWithResponseCode<PutProviderAllowedCourseRequestModel, object>(request);
-
-        response.EnsureSuccessStatusCode();
+        await _courseManagementApiClient.Put(request);
     }
 
     private async Task DeleteProviderAllowedCourse(RemoveProviderRestrictedApprenticeshipCommand command)

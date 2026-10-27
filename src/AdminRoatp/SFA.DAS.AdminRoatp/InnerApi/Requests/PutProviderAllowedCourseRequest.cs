@@ -3,13 +3,13 @@ using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.AdminRoatp.InnerApi.Requests;
 
-public record PutProviderAllowedCourseRequest : IPutApiRequest<PutProviderAllowedCourseRequestModel>
+public record PutProviderAllowedCourseRequest : IPutApiRequest<PutProviderAllowedCourseModel>
 {
     public int Ukprn { get; set; }
     public string LarsCode { get; set; }
-    public PutProviderAllowedCourseRequestModel? Data { get; set; }
+    public PutProviderAllowedCourseModel? Data { get; set; }
     public string PutUrl => $"providers/{Ukprn}/allowed-courses/{LarsCode}";
-    public PutProviderAllowedCourseRequest(int ukprn, string larsCode, PutProviderAllowedCourseRequestModel data)
+    public PutProviderAllowedCourseRequest(int ukprn, string larsCode, PutProviderAllowedCourseModel data)
     {
         Ukprn = ukprn;
         LarsCode = larsCode;

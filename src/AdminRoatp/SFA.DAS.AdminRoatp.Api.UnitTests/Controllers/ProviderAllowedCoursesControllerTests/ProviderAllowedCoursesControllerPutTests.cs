@@ -10,13 +10,13 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.AdminRoatp.Api.UnitTests.Controllers.ProviderAllowedCoursesControllerTests;
 
-public class ProviderAllowedCoursesControllerPatchTests
+public class ProviderAllowedCoursesControllerPutTests
 {
     [Test, MoqAutoData]
-    public async Task WhenPatchProviderAllowedCourseIsInvoked_ThenReturnsCreatedResult(
+    public async Task WhenPutProviderAllowedCourseIsInvoked_ThenReturnsNoContentResult(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ProviderAllowedCoursesController sut,
-        PutProviderAllowedCourseRequestModel command,
+        PutProviderAllowedCourseModel command,
         int ukprn,
         string larsCode)
     {
@@ -34,10 +34,10 @@ public class ProviderAllowedCoursesControllerPatchTests
     }
 
     [Test, MoqAutoData]
-    public async Task WhenPatchProviderAllowedCourseIsInvoked_ThenVerifyMediatorIsCalled(
+    public async Task WhenPutProviderAllowedCourseIsInvoked_ThenVerifyMediatorIsCalled(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ProviderAllowedCoursesController sut,
-        PutProviderAllowedCourseRequestModel command,
+        PutProviderAllowedCourseModel command,
         int ukprn,
         string larsCode)
     {

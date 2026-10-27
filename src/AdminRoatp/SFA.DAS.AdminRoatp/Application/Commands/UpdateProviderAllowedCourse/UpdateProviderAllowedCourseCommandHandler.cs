@@ -1,7 +1,5 @@
 ﻿using MediatR;
-using SFA.DAS.AdminRoatp.InnerApi.Models;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
-using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
@@ -13,8 +11,6 @@ public class UpdateProviderAllowedCourseCommandHandler(IRoatpCourseManagementApi
     {
         var apiRequest = new PutProviderAllowedCourseRequest(command.Ukprn, command.LarsCode, command.RequestModel);
 
-        var response = await _courseManagementApiClient.PutWithResponseCode<PutProviderAllowedCourseRequestModel, object>(apiRequest);
-
-        response.EnsureSuccessStatusCode();
+        await _courseManagementApiClient.Put(apiRequest);
     }
 }

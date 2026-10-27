@@ -38,7 +38,7 @@ public class ProviderAllowedCoursesController(IMediator _mediator, ILogger<Provi
 
     [HttpPut("{larsCode}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> UpdateProviderAllowedCourse([FromRoute] int ukprn, [FromRoute] string larsCode, [FromBody] PutProviderAllowedCourseRequestModel request, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateProviderAllowedCourse([FromRoute] int ukprn, [FromRoute] string larsCode, [FromBody] PutProviderAllowedCourseModel request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Request to update provider allowed course for UKPRN {Ukprn} and LarsCode {LarsCode}", ukprn, larsCode);
 

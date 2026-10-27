@@ -7,5 +7,5 @@ public class UpdateProviderAllowedCourseCommand : IRequest
 {
     public int Ukprn { get; set; }
     public string LarsCode { get; set; } = string.Empty;
-    public required PutProviderAllowedCourseRequestModel RequestModel { get; set; }
+    public required PutProviderAllowedCourseModel RequestModel { get; set; }
 }

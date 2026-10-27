@@ -67,12 +67,10 @@ public class AddProviderRestrictedApprenticeshipCommandHandler(IRoatpCourseManag
     private async Task UpdateProviderAllowedCourse(AddProviderRestrictedApprenticeshipCommand command, bool providerCourseExists)
     {
         DateTime? lastDateStarts = providerCourseExists ? command.LastDateStarts : StartRestrictedDate;
-        PutProviderAllowedCourseRequestModel model = new(lastDateStarts, command.UserId, command.UserDisplayName);
+        PutProviderAllowedCourseModel model = new(lastDateStarts, command.UserId, command.UserDisplayName);
         var request = new PutProviderAllowedCourseRequest(command.Ukprn, command.LarsCode, model);
 
-        ApiResponse<object> response = await _courseManagementApiClient.PutWithResponseCode<PutProviderAllowedCourseRequestModel, object>(request);
-
-        response.EnsureSuccessStatusCode();
+        await _courseManagementApiClient.Put(request);
     }
 
     private async Task DeleteProviderAllowedCourse(AddProviderRestrictedApprenticeshipCommand command)
