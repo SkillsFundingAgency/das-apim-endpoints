@@ -352,7 +352,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
             CollectionPeriodYear = collectionPeriodYear,
             CollectionPeriodMonth = collectionPeriodMonth,
             Amount = amount,
-            LastUpdatedDate = lastUpdatedDate
+            LastUpdatedDate = lastUpdatedDate,
         };
     }
 
@@ -363,7 +363,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         client
             .Setup(c => c.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
                 It.IsAny<PutApprenticeshipPaymentSummaryRequest>()))
-            .Callback<IPutApiRequest>((r) => posted.Add((PutApprenticeshipPaymentSummaryRequestData)r.Data))
+            .Callback<IPutApiRequest>((r) => posted.Add((PutApprenticeshipPaymentSummaryRequestData)r.Data!))
             .ReturnsAsync(new ApiResponse<ApprenticeshipPaymentSummaryResponse>(
                 new ApprenticeshipPaymentSummaryResponse(), HttpStatusCode.OK, string.Empty));
         return posted;
@@ -390,7 +390,8 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
             EndDate = new DateTime(2026, 1, 1),
             ApprenticeshipStatus = ApprenticeshipStatus.Live,
             Cost = 1000,
-            TotalAgreedPrice = 1200
+            TotalAgreedPrice = 1200,
+            FreezedDate = null
         };
     }
 }

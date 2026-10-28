@@ -17,4 +17,5 @@ public sealed record ApprenticeshipPaymentSummaryResponse
     public DateOnly? LastPaymentDate { get; set; }
     public decimal? LastPaymentAmount { get; set; }
     public DateTime? LastUpdatedDate { get; set; }
+    public DateTime? FreezedDate { get; set; }
 }
