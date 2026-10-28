@@ -13,18 +13,23 @@ internal class WhenBuildingTheGetCommittedLearnersCostByAccountIdRequest
         long accountId,
         int pageNumber,
         int pageItemCount,
-        long transferSenderId)
+        long transferSenderId,
+        List<ApprenticeshipStatus> statuses,
+        DateTime? lastUpdated)
     {
         // Act
         var request = new GetCommittedLearnersCostByAccountIdRequest(
             accountId,
             pageNumber,
             pageItemCount,
-            transferSenderId);
+            transferSenderId,
+            statuses,
+            lastUpdated);
 
+        var expectedStatuses = string.Join("&", statuses.Select(s => $"statuses={s}"));
         // Assert
         request.GetUrl.Should().Be(
-            $"api/apprenticeships?accountId={accountId}&transferSenderId={transferSenderId}&pageNumber={pageNumber}&pageItemCount={pageItemCount}");
+            $"api/apprenticeships?accountId={accountId}&transferSenderId={transferSenderId}&{expectedStatuses}&lastUpdated={lastUpdated:yyyy-MM-ddTHH:mm:ss}&pageNumber={pageNumber}&pageItemCount={pageItemCount}");
     }
 
     [Test, MoqAutoData]
@@ -82,6 +87,5 @@ internal class WhenBuildingTheGetCommittedLearnersCostByAccountIdRequest
         var expectedStatuses = string.Join("&", statuses.Select(s => $"statuses={s}"));
         request.GetUrl.Should().Be(
             $"api/apprenticeships?accountId={accountId}&transferSenderId={transferSenderId}&{expectedStatuses}&pageNumber={pageNumber}&pageItemCount={pageItemCount}");
-
     }
 }

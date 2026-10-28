@@ -7,6 +7,7 @@ using SFA.DAS.EmployerFinanceJobs.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Collections.Concurrent;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.EmployerFinanceJobs.Commands.ImportLearnersByAccountId;
 
@@ -37,8 +38,8 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
 
         try
         {
-            var committedLearnersTask = GetAllPagedAsync(request.AccountId, transferSenderId: null, cancellationToken);
-            var committedTransferOutTask = GetAllPagedAsync(accountId: null, transferSenderId: request.AccountId, cancellationToken);
+            var committedLearnersTask = GetAllPagedAsync(request.AccountId, transferSenderId: null, request.LastSuccessfulImportDate, cancellationToken);
+            var committedTransferOutTask = GetAllPagedAsync(accountId: null, transferSenderId: request.AccountId, request.LastSuccessfulImportDate, cancellationToken);
 
             await Task.WhenAll(committedLearnersTask, committedTransferOutTask);
 
@@ -102,11 +103,12 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
     private async Task<IEnumerable<GetCommittedLearnersCostByAccountIdResponse.ApprenticeshipDetailsResponse>> GetAllPagedAsync(
         long? accountId,
         long? transferSenderId,
+        DateTime? lastUpdated,
         CancellationToken cancellationToken)
     {
         var firstPage = await commitmentsV2ApiClient.Get<GetCommittedLearnersCostByAccountIdResponse>(
             new GetCommittedLearnersCostByAccountIdRequest(accountId, PageNumber: 1, PageItemCount, transferSenderId,
-                [.. ActiveStatuses]));
+                [.. ActiveStatuses], LastUpdated: lastUpdated));
 
         if (firstPage?.Apprenticeships == null || !firstPage.Apprenticeships.Any())
             return [];
