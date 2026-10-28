@@ -106,6 +106,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
         {
             return await _levyTransferMatchingApiClient.Get<GetApplicationsResponse>(request);
         }
+
+        public async Task<GetApplicationsForAutomaticApprovalResponse> GetApplicationsForAutomaticApproval(GetApplicationsForAutomaticApprovalRequest request)
+        {
+            return await _levyTransferMatchingApiClient.Get<GetApplicationsForAutomaticApprovalResponse>(request);
+        }
         public async Task<GetApplicationsToAutoDeclineResponse> GetApplicationsToAutoDecline(GetApplicationsToAutoDeclineRequest request)
         {
             return await _levyTransferMatchingApiClient.Get<GetApplicationsToAutoDeclineResponse>(request);
