@@ -191,6 +191,7 @@ public static class ApprenticeshipModelExtensions
             LearnAimRef = em.LearnAimRef,
             StartDate = em.StartDate,
             EndDate = em.EndDate,
+            WithdrawalDate = em.WithdrawalDate,
             AimSequenceNumber = em.AimSequenceNumber
         }).ToList();
     }
