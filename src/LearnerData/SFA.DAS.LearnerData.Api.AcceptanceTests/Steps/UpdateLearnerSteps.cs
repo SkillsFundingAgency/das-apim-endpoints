@@ -1,6 +1,7 @@
 using AutoFixture;
 using FluentAssertions;
 using Newtonsoft.Json;
+using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
@@ -164,6 +165,18 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         var body = JsonConvert.DeserializeObject<ReleaseEarningsRequest>(entry.RequestMessage.Body);
         body!.LearnerKey.Should().Be(learnerKey);
         body.LearnerRef.Should().Be(expectedLearnerRef);
+    }
+
+    [Then(@"only a release-earnings request for all earnings is sent to the earnings domain")]
+    public void ThenOnlyAReleaseEarningsRequestForAllEarningsIsSentToTheEarningsDomain()
+    {
+        var entry = testContext.EarningsApi.MockServer.LogEntries.Should().ContainSingle().Subject;
+        entry.RequestMessage.Method.Should().Be("POST");
+        entry.RequestMessage.Url.Should().Contain(GetEarningsRequestUrl("release-earnings"));
+
+        var body = JsonConvert.DeserializeObject<ReleaseEarningsRequest>(entry.RequestMessage.Body);
+        body!.ReleaseType.Should().Be(ReleaseType.All);
+        body.EnglishAndMathsCourseKeys.Should().BeEmpty();
     }
 
     [Then(@"sld data is stored to the cache")]
