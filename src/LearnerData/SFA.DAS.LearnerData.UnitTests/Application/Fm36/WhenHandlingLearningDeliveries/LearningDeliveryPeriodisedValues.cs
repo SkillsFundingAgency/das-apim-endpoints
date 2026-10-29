@@ -51,6 +51,36 @@ public class LearningDeliveryPeriodisedValues
             .Contain(x => x.AttributeName == "ProgrammeAimCompletionPayment" && x.AllValuesAreSetToZero());
     }
 
+    [Test]
+    public async Task Then_ProgrammeAimBalPayment_IsBalancingInstalmentForCompletionPeriod()
+    {
+        // Arrange
+        var testFixture = new GetFm36QueryTestFixture(TestScenario.SimpleApprenticeship);
+        var priceKey = testFixture.UnpagedLearningsResponse.Single().Episodes.Single().Prices.Last().Key;
+
+        // Completed part way through September 2020, so the balancing instalment is in a period that ends after the completion date
+        testFixture.SldLearnerData.Single().Delivery.OnProgramme.Single().CompletionDate = new DateTime(2020, 9, 15);
+        testFixture.GetEarningEpisode().Instalments.Add(new Instalment
+        {
+            AcademicYear = 2021,
+            DeliveryPeriod = 2,
+            Amount = 750,
+            EpisodePriceKey = priceKey,
+            InstalmentType = "Balancing"
+        });
+
+        // Act
+        await testFixture.CallSubjectUnderTest(collectionYear: 2021);
+
+        // Assert
+        var learningDelivery = testFixture.GetLearningDelivery(TestScenario.SimpleApprenticeship);
+        var result = learningDelivery.LearningDeliveryPeriodisedValues.Single(x => x.AttributeName == "ProgrammeAimBalPayment");
+        result.Period2.Should().Be(750);
+        result.Period1.Should().Be(0);
+        result.Period3.Should().Be(0);
+        result.Period12.Should().Be(0);
+    }
+
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
     [TestCase(TestScenario.ApprenticeshipWithEnglish)]
