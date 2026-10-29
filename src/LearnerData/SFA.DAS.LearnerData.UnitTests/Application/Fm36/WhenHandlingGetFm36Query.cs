@@ -53,7 +53,7 @@ public class WhenHandlingGetFm36Query
 
         foreach (var apprenticeship in _testFixture.UnpagedLearningsResponse)
         {
-            _testFixture.Result.Items.Should().Contain(learner => learner.ULN == long.Parse(apprenticeship.Uln) && learner.LearnRefNumber == "9999999999");
+            _testFixture.Result.Items.Should().Contain(learner => learner.ULN == long.Parse(apprenticeship.Uln) && learner.LearnRefNumber == _testFixture.Ukprn.ToString());
         }
     }
 
@@ -88,7 +88,7 @@ public class WhenHandlingGetFm36Query
 
         foreach (var apprenticeship in _testFixture.UnpagedLearningsResponse)
         {
-            _testFixture.Result.Items.Should().Contain(learner => learner.ULN == long.Parse(apprenticeship.Uln) && learner.LearnRefNumber == "9999999999");
+            _testFixture.Result.Items.Should().Contain(learner => learner.ULN == long.Parse(apprenticeship.Uln) && learner.LearnRefNumber == _testFixture.Ukprn.ToString());
         }
     }
 }

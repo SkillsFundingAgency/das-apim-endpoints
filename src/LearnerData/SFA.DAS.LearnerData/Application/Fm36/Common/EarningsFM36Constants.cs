@@ -2,9 +2,6 @@
 
 public class EarningsFM36Constants
 {
-    //Learner
-    public const string LearnRefNumber = "9999999999";
-
     //LearningDelivery & PriceEpisode: AimSequenceNumber
     public const int AimSeqNumber = 1;
 
