@@ -211,7 +211,9 @@ internal static class JoinedDataModelsExtensions
         ldv.ApplicCompDate = EarningsFM36Constants.ApplicCompDate;
         ldv.CombinedAdjProp = EarningsFM36Constants.CombinedAdjProp;
         ldv.Completed = EarningsFM36Constants.Completed;
-        ldv.FundStart = joinedLearnerData.FundingStart();
+        ldv.FundStart = joinedLearningDelivery is JoinedEnglishAndMathsLearningDelivery englishAndMathsForFundStart
+            ? englishAndMathsForFundStart.EnglishAndMathsFundingStart()
+            : joinedLearnerData.OnProgrammeFundingStart();
         ldv.LDApplic1618FrameworkUpliftTotalActEarnings = EarningsFM36Constants.LDApplic1618FrameworkUpliftTotalActEarnings;
         ldv.LearnAimRef = joinedLearningDelivery.LearnAimRef;
         ldv.LearnStartDate = joinedLearningDelivery.StartDate;
@@ -243,7 +245,9 @@ internal static class JoinedDataModelsExtensions
         ldv.PwayCode = EarningsFM36Constants.PwayCode;
         ldv.SecondIncentiveThresholdDate = GetIncentiveThresholdDate(joinedLearningDelivery, secondAdditionalPaymentDate);
         ldv.StdCode = int.TryParse(joinedLearnerData.Episodes.MinBy(x => x.StartDate)?.TrainingCode, out int parsedTrainingCode) ? parsedTrainingCode : null;
-        ldv.ThresholdDays = joinedLearnerData.QualifyingPeriod();
+        ldv.ThresholdDays = joinedLearningDelivery is JoinedEnglishAndMathsLearningDelivery englishAndMathsForThreshold
+            ? englishAndMathsForThreshold.EnglishAndMathsQualifyingPeriod()
+            : joinedLearnerData.OnProgrammeQualifyingPeriod();
         ldv.LearnDelApplicCareLeaverIncentive = EarningsFM36Constants.LearnDelApplicCareLeaverIncentive;
         ldv.LearnDelHistDaysCareLeavers = EarningsFM36Constants.LearnDelHistDaysCareLeavers;
         ldv.LearnDelAccDaysILCareLeavers = EarningsFM36Constants.LearnDelAccDaysILCareLeavers;
@@ -253,16 +257,7 @@ internal static class JoinedDataModelsExtensions
         ldv.LearnDelRedStartDate = EarningsFM36Constants.LearnDelRedStartDate;
         ldv.FirstIncentiveThresholdDate = GetIncentiveThresholdDate(joinedLearningDelivery, firstAdditionalPaymentDate);
 
-        if (joinedLearningDelivery.LearningDeliveryType == LearningDeliveryType.EnglishAndMaths)
-        {
-            // English and Maths
-            ldv.LearnDelMathEng = true;
-        }
-        else
-        {
-            // On Programme
-            ldv.LearnDelMathEng = false;
-        }
+        ldv.LearnDelMathEng = joinedLearningDelivery is JoinedEnglishAndMathsLearningDelivery;
 
         return ldv;
     }
@@ -282,7 +277,7 @@ internal static class JoinedDataModelsExtensions
         var shortAcademicYear = currentAcademicYear.GetShortAcademicYear();
         var periodisedValues = new List<LearningDeliveryPeriodisedValues>();
 
-        if (joinedLearningDelivery.LearningDeliveryType != LearningDeliveryType.EnglishAndMaths)
+        if (joinedLearningDelivery is not JoinedEnglishAndMathsLearningDelivery)
         {
             // On Programme
             periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.MathEngBalPayment, 0);
@@ -353,7 +348,7 @@ internal static class JoinedDataModelsExtensions
         return 0;// Default to zero if still in learning
     }
 
-    private static bool FundingStart(this JoinedLearnerData joinedLearnerData)
+    private static bool OnProgrammeFundingStart(this JoinedLearnerData joinedLearnerData)
     {
         var daysInLearning = joinedLearnerData.DaysInLearning();
 
@@ -364,14 +359,36 @@ internal static class JoinedDataModelsExtensions
             return true;
         }
 
-        var qualifyingPeriod = joinedLearnerData.QualifyingPeriod();
+        var qualifyingPeriod = joinedLearnerData.OnProgrammeQualifyingPeriod();
 
         return daysInLearning >= qualifyingPeriod;
     }
 
-    private static int QualifyingPeriod(this JoinedLearnerData joinedLearnerData)
+    private static bool EnglishAndMathsFundingStart(this JoinedEnglishAndMathsLearningDelivery englishAndMaths)
     {
-        var plannedDuration = joinedLearnerData.PlannedDuration();
+        if (!englishAndMaths.WithdrawalDate.HasValue)
+        {
+            return true;
+        }
+
+        var daysInLearning = englishAndMaths.StartDate.GetNumberOfDaysUntil(englishAndMaths.WithdrawalDate.Value);
+
+        return daysInLearning >= englishAndMaths.EnglishAndMathsQualifyingPeriod();
+    }
+
+    private static int EnglishAndMathsQualifyingPeriod(this JoinedEnglishAndMathsLearningDelivery englishAndMaths)
+    {
+        return GetQualifyingPeriod(englishAndMaths.StartDate, englishAndMaths.ExpectedEndDate);
+    }
+
+    private static int OnProgrammeQualifyingPeriod(this JoinedLearnerData joinedLearnerData)
+    {
+        return GetQualifyingPeriod(joinedLearnerData.StartDate, joinedLearnerData.PlannedEndDate);
+    }
+
+    private static int GetQualifyingPeriod(DateTime startDate, DateTime plannedEndDate)
+    {
+        var plannedDuration = startDate.GetNumberOfDaysUntil(plannedEndDate);
 
         switch (plannedDuration)
         {
@@ -379,11 +396,6 @@ internal static class JoinedDataModelsExtensions
             case <= 167: return 14;
             default: return 42;
         }
-    }
-
-    private static int PlannedDuration(this JoinedLearnerData joinedLearnerData)
-    {
-        return joinedLearnerData.StartDate.GetNumberOfDaysUntil(joinedLearnerData.PlannedEndDate);
     }
 
     private static decimal GetPreviousEarnings(JoinedLearnerData? joinedLearnerData, short academicYear, short collectionPeriod)

@@ -45,8 +45,8 @@ public class IncentivesSteps(TestContext testContext, ScenarioContext scenarioCo
 
         testContext.ApprenticeshipsApi.MockServer
             .Given(
-                Request.Create().WithPath($"/10005077/{academicYear}/{deliveryPeriod}")
-                    .UsingGet())
+                Request.Create().WithPath($"/10005077/learnings/by-keys")
+                    .UsingPost())
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
