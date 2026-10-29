@@ -91,28 +91,36 @@ public class UpdateLearnerCommandHandler(
 
                 var releaseEnglishAndMaths = englishAndMathsCourseKeys.Count > 0;
 
-                if (releaseOnProgramme || releaseEnglishAndMaths)
+                if (learningApiPutResponse.Changes.HasForceEarningsSync())
+                {
+                    await ReleaseEarnings(command, learningApiPutResponse.LearningKey, ReleaseType.All, []);
+                }
+                else if (releaseOnProgramme || releaseEnglishAndMaths)
                 {
                     var releaseType = GetReleaseType(releaseOnProgramme, releaseEnglishAndMaths);
-
-                    var releaseEarningsRequest = new ReleaseEarningsApiPostRequest(learningApiPutResponse.LearningKey,
-                        new ReleaseEarningsRequest
-                        {
-                            LearnerKey = command.LearnerKey,
-                            LearnerRef = command.UpdateLearnerRequest.Learner.LearnerRef,
-                            ReleaseType = releaseType,
-                            EnglishAndMathsCourseKeys = englishAndMathsCourseKeys
-                        });
-                    await earningsApiClient.Post(releaseEarningsRequest);
-
-                    logger.LogInformation("Release earnings to payments for learning {LearningKey} with ReleaseType {ReleaseType} and {CourseKeyCount} English and Maths course keys",
-                        learningApiPutResponse.LearningKey, releaseType, englishAndMathsCourseKeys.Count);
+                    await ReleaseEarnings(command, learningApiPutResponse.LearningKey, releaseType, englishAndMathsCourseKeys);
                 }
 
             }
         }
 
         await PublishLearnerDataEventsForUnapprovedApprenticeships(command);
+    }
+
+    private async Task ReleaseEarnings(UpdateLearnerCommand command, Guid learningKey, ReleaseType releaseType, List<Guid> englishAndMathsCourseKeys)
+    {
+        var releaseEarningsRequest = new ReleaseEarningsApiPostRequest(learningKey,
+            new ReleaseEarningsRequest
+            {
+                LearnerKey = command.LearnerKey,
+                LearnerRef = command.UpdateLearnerRequest.Learner.LearnerRef,
+                ReleaseType = releaseType,
+                EnglishAndMathsCourseKeys = englishAndMathsCourseKeys
+            });
+        await earningsApiClient.Post(releaseEarningsRequest);
+
+        logger.LogInformation("Release earnings to payments for learning {LearningKey} with ReleaseType {ReleaseType} and {CourseKeyCount} English and Maths course keys",
+            learningKey, releaseType, englishAndMathsCourseKeys.Count);
     }
 
     private async Task PublishLearnerDataEventsForUnapprovedApprenticeships(UpdateLearnerCommand command)

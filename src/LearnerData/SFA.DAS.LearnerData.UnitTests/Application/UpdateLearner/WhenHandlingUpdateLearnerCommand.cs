@@ -452,6 +452,37 @@ public class WhenHandlingUpdateLearnerCommand
     }
 
     [Test]
+    public async Task Then_All_Earnings_Are_Released_When_Earnings_Sync_Is_Forced()
+    {
+        // Arrange
+        var command = _fixture.Create<UpdateLearnerCommand>();
+
+        var updateLearningApiResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
+        updateLearningApiResponse.Changes.Clear();
+        updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.ForceEarningsSync);
+
+        MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
+        MockLearningPutRequestBuilder(command);
+
+        _earningsApiClient.Setup(x => x.Post(It.IsAny<ReleaseEarningsApiPostRequest>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        //Assert
+        _earningsApiClient.Verify(x => x.Post(
+                It.Is<ReleaseEarningsApiPostRequest>(r =>
+                    r.Data.LearnerKey == command.LearnerKey &&
+                    r.Data.LearnerRef == command.UpdateLearnerRequest.Learner.LearnerRef &&
+                    r.Data.ReleaseType == ReleaseType.All &&
+                    r.Data.EnglishAndMathsCourseKeys.Count == 0)),
+            Times.Once);
+
+        _earningsApiClient.VerifyNoOtherCalls();
+    }
+
+    [Test]
     public void Then_Updated_EnglishAndMaths_Course_Keys_Are_Combined_Without_Duplicates()
     {
         // Arrange
