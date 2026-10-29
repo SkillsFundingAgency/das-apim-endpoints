@@ -33,4 +33,9 @@ public static class LearningUpdateChangesExtensions
     {
         return changes.SequenceEqual(new [] { UpdateLearnerApiPutResponse.LearningUpdateChanges.PersonalDetails });
     }
+
+    public static bool HasForceEarningsSync(this List<UpdateLearnerApiPutResponse.LearningUpdateChanges> changes)
+    {
+        return changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.ForceEarningsSync);
+    }
 }
