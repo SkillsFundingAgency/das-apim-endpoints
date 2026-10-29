@@ -1,6 +1,8 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using NUnit.Framework.Internal;
+using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
+using System.Text.Json;
 using SFA.DAS.LearnerData.TestHelpers;
 using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 using static SFA.DAS.LearnerData.Application.Fm36.Common.EarningsFM36Constants;
@@ -79,6 +81,70 @@ public class LearningDeliveryPeriodisedValues
         result.Period1.Should().Be(0);
         result.Period3.Should().Be(0);
         result.Period12.Should().Be(0);
+    }
+
+    [Test]
+    public async Task Then_ProgrammeAimCompletionPayment_IsCompletionInstalmentInPeriodItIsDue()
+    {
+        // Arrange
+        var testFixture = new GetFm36QueryTestFixture(TestScenario.SimpleApprenticeship);
+        var priceKey = testFixture.UnpagedLearningsResponse.Single().Episodes.Single().Prices.Last().Key;
+
+        // The completion instalment is due in the period of the achievement date, which is well after the completion date
+        testFixture.SldLearnerData.Single().Delivery.OnProgramme.Single().CompletionDate = new DateTime(2020, 9, 15);
+        testFixture.GetEarningEpisode().Instalments.Add(new Instalment
+        {
+            AcademicYear = 2021,
+            DeliveryPeriod = 6,
+            Amount = 3000,
+            EpisodePriceKey = priceKey,
+            InstalmentType = "Completion"
+        });
+
+        // Act
+        await testFixture.CallSubjectUnderTest(collectionYear: 2021);
+
+        // Assert
+        var learningDelivery = testFixture.GetLearningDelivery(TestScenario.SimpleApprenticeship);
+        var result = learningDelivery.LearningDeliveryPeriodisedValues.Single(x => x.AttributeName == "ProgrammeAimCompletionPayment");
+        result.Period6.Should().Be(3000);
+        result.Period1.Should().Be(0);
+        result.Period5.Should().Be(0);
+        result.Period7.Should().Be(0);
+    }
+
+    [Test]
+    public async Task Then_ProgrammeAimCompletionPayment_IsOnlySetOnTheLatestStartedOnProgrammeDelivery()
+    {
+        // Arrange
+        var testFixture = new GetFm36QueryTestFixture(TestScenario.SimpleApprenticeship);
+        var priceKey = testFixture.UnpagedLearningsResponse.Single().Episodes.Single().Prices.Last().Key;
+
+        var onProgrammes = testFixture.SldLearnerData.Single().Delivery.OnProgramme;
+        var firstDelivery = onProgrammes.Single();
+        firstDelivery.AimSequenceNumber = 1;
+        var secondDelivery = JsonSerializer.Deserialize<OnProgrammeRequestDetails>(JsonSerializer.Serialize(firstDelivery))!;
+        secondDelivery.AimSequenceNumber = 2;
+        secondDelivery.StartDate = new DateTime(2020, 10, 1);
+        onProgrammes.Add(secondDelivery);
+
+        testFixture.GetEarningEpisode().Instalments.Add(new Instalment
+        {
+            AcademicYear = 2021,
+            DeliveryPeriod = 6,
+            Amount = 3000,
+            EpisodePriceKey = priceKey,
+            InstalmentType = "Completion"
+        });
+
+        // Act
+        await testFixture.CallSubjectUnderTest(collectionYear: 2021);
+
+        // Assert
+        testFixture.GetLearningDeliveryByAimSequenceNumber(1).LearningDeliveryPeriodisedValues
+            .Single(x => x.AttributeName == "ProgrammeAimCompletionPayment").AllValuesAreSetToZero().Should().BeTrue();
+        testFixture.GetLearningDeliveryByAimSequenceNumber(2).LearningDeliveryPeriodisedValues
+            .Single(x => x.AttributeName == "ProgrammeAimCompletionPayment").Period6.Should().Be(3000);
     }
 
     [TestCase(TestScenario.SimpleApprenticeship)]

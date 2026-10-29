@@ -84,9 +84,17 @@ public class JoinedLearnerData
 
         var unassignedAdditionalPayments = joinedPriceEpisodes.SelectMany(x => x.AdditionalPayments).ToList(); // these will be allocated to onprogramme or english and maths deliveries, being removed from this list as they are allocated 
 
+        var allInstalments = joinedPriceEpisodes.SelectMany(x => x.Instalments).ToList();
+
         foreach (var onProgram in sldLearnerData.Delivery.OnProgramme)
         {
-            var delivery = new JoinedOnProgrammeLearningDelivery(onProgram, joinedPriceEpisodes.SelectMany(x=>x.Instalments), unassignedAdditionalPayments);
+            var delivery = new JoinedOnProgrammeLearningDelivery(onProgram, allInstalments, unassignedAdditionalPayments);
+
+            // Completion instalments are due in the period of the achievement date, which is independent of the delivery's own end date
+            delivery.Instalments.AddRange(allInstalments.Where(x =>
+                x.InstalmentType == InstalmentType.Completion &&
+                OwnsCompletionInstalment(onProgram, sldLearnerData.Delivery.OnProgramme, x)));
+
             joinedLearningDeliveries.Add(delivery);
         }
 
@@ -112,6 +120,21 @@ public class JoinedLearnerData
         }
 
         return joinedLearningDeliveries;
+    }
+
+    /// <summary>
+    /// A completion instalment belongs to the latest starting on programme delivery that started on or before the end of the instalment's period
+    /// </summary>
+    private static bool OwnsCompletionInstalment(OnProgrammeRequestDetails onProgramme, List<OnProgrammeRequestDetails> allOnProgrammes, JoinedInstalment completionInstalment)
+    {
+        var instalmentPeriodEnd = completionInstalment.AcademicYear.GetDateTime(completionInstalment.DeliveryPeriod).EndOfMonth();
+
+        var owner = allOnProgrammes
+            .Where(x => x.StartDate <= instalmentPeriodEnd)
+            .OrderByDescending(x => x.StartDate)
+            .FirstOrDefault();
+
+        return ReferenceEquals(owner, onProgramme);
     }
 }
 
@@ -303,9 +326,20 @@ public class JoinedOnProgrammeLearningDelivery : JoinedLearningDelivery
         AimSequenceNumber = onProgramme.AimSequenceNumber;
         LearnAimRef = onProgramme.LearnAimRef;
 
+        // Completion instalments are not included here, they are allocated by JoinedLearnerData as they are not bound by the delivery's end date
         Instalments = instalments
-            .Where(x => x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() >= startDate &&
-                        x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() <= endDate)
+            .Where(x => x.InstalmentType != InstalmentType.Completion)
+            .Where(x =>
+            {
+                var periodStart = x.AcademicYear.GetDateTime(x.DeliveryPeriod);
+
+                // A balancing instalment sits in the period of the completion date, which usually ends after the completion date itself
+                var isWithinEndDate = x.InstalmentType == InstalmentType.Balancing
+                    ? periodStart <= endDate
+                    : periodStart.EndOfMonth() <= endDate;
+
+                return periodStart.EndOfMonth() >= startDate && isWithinEndDate;
+            })
             .ToList();
 
         AdditionalPayments = unassignedAdditionalPayments.TakeMatching(startDate, endDate, 
