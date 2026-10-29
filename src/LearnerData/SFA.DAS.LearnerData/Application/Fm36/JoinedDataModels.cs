@@ -166,6 +166,9 @@ public class JoinedPriceEpisode
     /// <summary> Derived from Apprenticeships API, apprenticeship.Episodes.LastDayOfLearning </summary>
     public DateTime? ActualEndDate { get; set; }
 
+    /// <summary> Derived from Apprenticeships API, apprenticeship.Episode.EmployerAccountId (the receiving employer in the case of a transfer) </summary>
+    public long? EmployerAccountId { get; set; }
+
     public JoinedPriceEpisode()
     {
 
@@ -201,6 +204,7 @@ public class JoinedPriceEpisode
         OutOfRangeAdditionalPayments = allAdditionalPayments.Except(AdditionalPayments).ToList();
 
         ActualEndDate = apprenticeshipEpisode.LastDayOfLearning;
+        EmployerAccountId = apprenticeshipEpisode.EmployerAccountId;
     }
 
     /// <summary>
@@ -223,6 +227,7 @@ public class JoinedPriceEpisode
         AdditionalPayments = existingEpisode.AdditionalPayments.Where(x => x.AcademicYear == academicYear).ToList();
         IsTerminatedByAcademicYearEnd = isTerminatedByAcademicYearEnd;
         ActualEndDate = existingEpisode.ActualEndDate;
+        EmployerAccountId = existingEpisode.EmployerAccountId;
     }
 
     private List<JoinedInstalment> GetInstalments(EpisodePrice apprenticeshipEpisodePrice, List<Instalment> instalments)

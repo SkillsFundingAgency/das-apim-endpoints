@@ -20,6 +20,11 @@ public class TestLearner
 
     public string TrainingCode { get; set; }
 
+    /// <summary>
+    /// The employer account id returned by learning inner on the episode (the receiving employer in the case of a transfer)
+    /// </summary>
+    public long? EmployerAccountId { get; set; } = 12345;
+
     public int Ukprn { get; set; }
 
     public int FundingBandMax { get; set; }
