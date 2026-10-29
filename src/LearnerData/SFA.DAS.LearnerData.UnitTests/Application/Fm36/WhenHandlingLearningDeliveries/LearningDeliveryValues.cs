@@ -48,8 +48,40 @@ public class LearningDeliveryValues
         learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618Incentive.Should().BeNull(); learningDelivery.LearningDeliveryValues.LearnDelAppPrevAccDaysIL.Should().BeNull();
         learningDelivery.LearningDeliveryValues.LearnDelHistDaysThisApp.Should().BeNull();
         learningDelivery.LearningDeliveryValues.LearnDelHistProgEarnings.Should().BeNull(); 
-        learningDelivery.LearningDeliveryValues.PlannedNumOnProgInstalm.Should().BeNull();
         learningDelivery.LearningDeliveryValues.PlannedTotalDaysIL.Should().BeNull();
+    }
+
+    [TestCase(TestScenario.SimpleApprenticeship)]
+    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
+    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
+    public async Task Then_PlannedNumOnProgInstalm_IsCorrect(TestScenario scenario)
+    {
+        // Arrange / Act
+        var testFixture = await CallFm36Handler(scenario);
+        var learningDelivery = testFixture.GetLearningDelivery(scenario);
+        var sldDelivery = testFixture.SldLearnerData.Single().Delivery;
+
+        var (startDate, expectedEndDate) = scenario == TestScenario.ApprenticeshipWithEnglish
+            ? (sldDelivery.EnglishAndMaths.First().StartDate, sldDelivery.EnglishAndMaths.First().EndDate)
+            : (sldDelivery.OnProgramme.Single().StartDate, sldDelivery.OnProgramme.Single().ExpectedEndDate);
+
+        // Assert
+        learningDelivery.LearningDeliveryValues.PlannedNumOnProgInstalm
+            .Should().Be(InstalmentHelper.GetNumberOfInstalmentsBetweenDates(startDate, expectedEndDate));
+    }
+
+    [TestCase(2)]
+    [TestCase(3)]
+    public async Task Then_PlannedNumOnProgInstalm_IsCalculatedPerEnglishAndMathsDelivery_IgnoringAcademicYearBoundaries(int aimSequenceNumber)
+    {
+        // Arrange / Act
+        var testFixture = await CallFm36Handler(TestScenario.LearningSupportComplexScenario);
+        var learningDelivery = testFixture.GetLearningDeliveryByAimSequenceNumber(aimSequenceNumber);
+        var course = testFixture.SldLearnerData.Single().Delivery.EnglishAndMaths.Single(x => x.AimSequenceNumber == aimSequenceNumber);
+
+        // Assert
+        learningDelivery.LearningDeliveryValues.PlannedNumOnProgInstalm
+            .Should().Be(InstalmentHelper.GetNumberOfInstalmentsBetweenDates(course.StartDate, course.EndDate));
     }
 
     // Simple apprenticeship has employer incentives due in AY 1920 (first) and AY 2021 (second)

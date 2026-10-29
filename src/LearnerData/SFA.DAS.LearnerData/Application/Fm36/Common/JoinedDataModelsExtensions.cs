@@ -228,7 +228,7 @@ internal static class JoinedDataModelsExtensions
         ldv.LearnDelApplicEmp1618Incentive = null;
         ldv.LearnDelApplicProv1618Incentive = null;
         ldv.LearnDelHistDaysThisApp = null; 
-        ldv.PlannedNumOnProgInstalm = null;
+        ldv.PlannedNumOnProgInstalm = joinedLearningDelivery.StartDate.GetNumberOfIncludedCensusDatesUntil(joinedLearningDelivery.ExpectedEndDate);
         ldv.PlannedTotalDaysIL = null;
         ldv.LearnDelHistProgEarnings = null;
         ldv.LearnDelAppPrevAccDaysIL = null;
