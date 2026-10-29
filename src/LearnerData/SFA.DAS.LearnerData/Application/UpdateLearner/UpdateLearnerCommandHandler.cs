@@ -65,6 +65,7 @@ public class UpdateLearnerCommandHandler(
             {
                 var releaseOnProgramme = false;
                 var englishAndMathsCourseKeys = new List<Guid>();
+                var removedEnglishAndMathsCourseKeys = new List<Guid>();
 
                 //Update Earnings
                 if (learningApiPutResponse.Changes.HasOnProgrammeUpdate())
@@ -85,34 +86,50 @@ public class UpdateLearnerCommandHandler(
                     var englishAndMathsRequest = updateEarningsEnglishAndMathsRequestBuilder.Build(command, learningApiPutResponse, request);
                     var englishAndMathsResponse = await earningsApiClient.PutWithResponseCode<UpdateEnglishAndMathsRequest, UpdateEnglishAndMathsEarningsApiPutResponse>(englishAndMathsRequest);
                     englishAndMathsCourseKeys = englishAndMathsResponse.Body.GetUpdatedCourseKeys();
+                    removedEnglishAndMathsCourseKeys = englishAndMathsResponse.Body.RemovedCourseKeys;
                 }
 
                 logger.LogInformation("Earnings updated for learning {LearningKey}", learningApiPutResponse.LearningKey);
 
                 var releaseEnglishAndMaths = englishAndMathsCourseKeys.Count > 0;
 
-                if (releaseOnProgramme || releaseEnglishAndMaths)
+                if (learningApiPutResponse.Changes.HasForceEarningsSync())
+                {
+                    // Release All
+                    await ReleaseEarnings(command, learningApiPutResponse.LearningKey, ReleaseType.All, []);
+
+                    // In addition, also perform a release of any removed E&M courses
+                    if (removedEnglishAndMathsCourseKeys.Count > 0)
+                    {
+                        await ReleaseEarnings(command, learningApiPutResponse.LearningKey, ReleaseType.FunctionalSkill, removedEnglishAndMathsCourseKeys);
+                    }
+                }
+                else if (releaseOnProgramme || releaseEnglishAndMaths)
                 {
                     var releaseType = GetReleaseType(releaseOnProgramme, releaseEnglishAndMaths);
-
-                    var releaseEarningsRequest = new ReleaseEarningsApiPostRequest(learningApiPutResponse.LearningKey,
-                        new ReleaseEarningsRequest
-                        {
-                            LearnerKey = command.LearnerKey,
-                            LearnerRef = command.UpdateLearnerRequest.Learner.LearnerRef,
-                            ReleaseType = releaseType,
-                            EnglishAndMathsCourseKeys = englishAndMathsCourseKeys
-                        });
-                    await earningsApiClient.Post(releaseEarningsRequest);
-
-                    logger.LogInformation("Release earnings to payments for learning {LearningKey} with ReleaseType {ReleaseType} and {CourseKeyCount} English and Maths course keys",
-                        learningApiPutResponse.LearningKey, releaseType, englishAndMathsCourseKeys.Count);
+                    await ReleaseEarnings(command, learningApiPutResponse.LearningKey, releaseType, englishAndMathsCourseKeys);
                 }
 
             }
         }
 
         await PublishLearnerDataEventsForUnapprovedApprenticeships(command);
+    }
+
+    private async Task ReleaseEarnings(UpdateLearnerCommand command, Guid learningKey, ReleaseType releaseType, List<Guid> englishAndMathsCourseKeys)
+    {
+        var releaseEarningsRequest = new ReleaseEarningsApiPostRequest(learningKey,
+            new ReleaseEarningsRequest
+            {
+                LearnerKey = command.LearnerKey,
+                LearnerRef = command.UpdateLearnerRequest.Learner.LearnerRef,
+                ReleaseType = releaseType,
+                EnglishAndMathsCourseKeys = englishAndMathsCourseKeys
+            });
+        await earningsApiClient.Post(releaseEarningsRequest);
+
+        logger.LogInformation("Release earnings to payments for learning {LearningKey} with ReleaseType {ReleaseType} and {CourseKeyCount} English and Maths course keys",
+            learningKey, releaseType, englishAndMathsCourseKeys.Count);
     }
 
     private async Task PublishLearnerDataEventsForUnapprovedApprenticeships(UpdateLearnerCommand command)
