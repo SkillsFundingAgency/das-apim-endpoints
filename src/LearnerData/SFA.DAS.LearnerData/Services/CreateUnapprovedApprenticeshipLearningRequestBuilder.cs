@@ -100,10 +100,10 @@ public class CreateUnapprovedApprenticeshipLearningRequestBuilder(ICourseService
     }
 
     private static List<DraftEnglishAndMathsItem> GetEnglishAndMaths(
-        List<MathsAndEnglishDetails> englishAndMathsCourses,
-        List<MathsAndEnglish> originalEnglishAndMaths)
+        List<MathsAndEnglishDetails> learningEnglishAndMathsCourses,
+        List<MathsAndEnglish> englishAndMathsCourses)
     {
-        return englishAndMathsCourses.Select(course => new DraftEnglishAndMathsItem
+        return learningEnglishAndMathsCourses.Select(course => new DraftEnglishAndMathsItem
         {
             StartDate = course.StartDate,
             EndDate = course.PlannedEndDate,
@@ -114,7 +114,7 @@ public class CreateUnapprovedApprenticeshipLearningRequestBuilder(ICourseService
             PauseDate = course.PauseDate,
             WithdrawalDate = course.WithdrawalDate,
             CompletionDate = course.CompletionDate,
-            PeriodsInLearning = GetEnglishAndMathsPeriods(course.LearnAimRef, originalEnglishAndMaths),
+            PeriodsInLearning = GetEnglishAndMathsPeriods(course.LearnAimRef, englishAndMathsCourses),
             LearningSupport = course.LearningSupport
                 .Select(x => new ApprenticeshipLearningSupportItem
                 {
