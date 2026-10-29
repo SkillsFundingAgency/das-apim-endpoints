@@ -317,7 +317,7 @@ internal static class JoinedDataModelsExtensions
         periodisedValues.AddAdditionalPaymentPerPeriodIndicators(EarningsFM36Constants.PeriodisedAttributes.LearnSuppFund, joinedLearningDelivery, shortAcademicYear, EarningsFM36Constants.AdditionalPaymentsTypes.LearningSupport);
         periodisedValues.AddAdditionalPaymentPerPeriodValues(EarningsFM36Constants.PeriodisedAttributes.LearnSuppFundCash, joinedLearningDelivery, shortAcademicYear, EarningsFM36Constants.AdditionalPaymentsTypes.LearningSupport);
 
-        if (joinedLearningDelivery.LearningDeliveryType != LearningDeliveryType.EnglishAndMaths)
+        if (joinedLearningDelivery is not JoinedEnglishAndMathsLearningDelivery)
         {
             // Don't set these for English & Maths (FLP-2152)
             periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimBalPayment, 0);
