@@ -4,6 +4,7 @@ public class UpdateLearnerApiPutResponse : BaseLearnerApiPutResponse;
 
 public class CreateDraftLearnerApiPutResponse : BaseLearnerApiPutResponse
 {
+    public Guid LearnerKey { get; set; }
     public Guid? RemovedLearningKey { get; set; }
 }
 

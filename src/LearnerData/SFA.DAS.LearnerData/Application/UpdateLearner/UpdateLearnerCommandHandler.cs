@@ -65,6 +65,7 @@ public class UpdateLearnerCommandHandler(
             {
                 var releaseOnProgramme = false;
                 var englishAndMathsCourseKeys = new List<Guid>();
+                var removedEnglishAndMathsCourseKeys = new List<Guid>();
 
                 //Update Earnings
                 if (learningApiPutResponse.Changes.HasOnProgrammeUpdate())
@@ -85,6 +86,7 @@ public class UpdateLearnerCommandHandler(
                     var englishAndMathsRequest = updateEarningsEnglishAndMathsRequestBuilder.Build(command, learningApiPutResponse, request);
                     var englishAndMathsResponse = await earningsApiClient.PutWithResponseCode<UpdateEnglishAndMathsRequest, UpdateEnglishAndMathsEarningsApiPutResponse>(englishAndMathsRequest);
                     englishAndMathsCourseKeys = englishAndMathsResponse.Body.GetUpdatedCourseKeys();
+                    removedEnglishAndMathsCourseKeys = englishAndMathsResponse.Body.RemovedCourseKeys;
                 }
 
                 logger.LogInformation("Earnings updated for learning {LearningKey}", learningApiPutResponse.LearningKey);
@@ -93,7 +95,14 @@ public class UpdateLearnerCommandHandler(
 
                 if (learningApiPutResponse.Changes.HasForceEarningsSync())
                 {
+                    // Release All
                     await ReleaseEarnings(command, learningApiPutResponse.LearningKey, ReleaseType.All, []);
+
+                    // In addition, also perform a release of any removed E&M courses
+                    if (removedEnglishAndMathsCourseKeys.Count > 0)
+                    {
+                        await ReleaseEarnings(command, learningApiPutResponse.LearningKey, ReleaseType.FunctionalSkill, removedEnglishAndMathsCourseKeys);
+                    }
                 }
                 else if (releaseOnProgramme || releaseEnglishAndMaths)
                 {
