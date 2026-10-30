@@ -298,9 +298,6 @@ internal static class JoinedDataModelsExtensions
             periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.MathEngBalPayment, joinedLearningDelivery, shortAcademicYear, InstalmentType.Balancing);
             periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.MathEngOnProgPayment, joinedLearningDelivery, shortAcademicYear);
 
-            periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimBalPayment, 0);
-            periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimCompletionPayment, 0);
-
             periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelFirstEmp1618Pay, 0);
             periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelFirstProv1618Pay, 0);
 
