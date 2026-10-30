@@ -166,7 +166,7 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             ProviderId = apprenticeDetails.ProviderId,
             ProviderOrder = providerPaymentsPriority?.ProviderPaymentPriorities
                 .FirstOrDefault(p => p.ProviderId == apprenticeDetails.ProviderId)?
-                .PriorityOrder
+                .PriorityOrder ?? 0
         });
 
         var result = await fundingProjectionApiClient.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(request);
