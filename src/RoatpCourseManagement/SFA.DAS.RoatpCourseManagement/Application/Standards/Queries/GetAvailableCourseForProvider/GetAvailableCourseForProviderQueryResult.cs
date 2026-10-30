@@ -1,4 +1,5 @@
 ﻿using System;
+using SFA.DAS.Common.Domain.Types;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAvailableCourseForProvider;
 
@@ -11,4 +12,6 @@ public class GetAvailableCourseForProviderQueryResult
     public bool IsRegulatedForProvider { get; set; }
     public string ApprovalBody { get; set; }
     public DateTime? LastDateStarts { get; set; }
+    public string IfateReferenceNumber { get; set; }
+    public LearningType LearningType { get; set; }
 }
