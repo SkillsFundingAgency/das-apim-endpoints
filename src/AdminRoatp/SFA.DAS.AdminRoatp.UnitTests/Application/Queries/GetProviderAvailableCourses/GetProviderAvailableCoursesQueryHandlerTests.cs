@@ -66,7 +66,7 @@ public class GetProviderAvailableCoursesQueryHandlerTests
         var result = sut.Handle(request, CancellationToken.None);
 
         // Assert
-        result.Result.Courses.Should().Contain(x => x.LarsCode == "TestLars2");
+        result.Result!.Courses.Should().Contain(x => x.LarsCode == "TestLars2");
         result.Result.Courses.Should().NotContain(x => x.LarsCode == "TestLars1");
     }
 
@@ -110,7 +110,7 @@ public class GetProviderAvailableCoursesQueryHandlerTests
         var result = sut.Handle(request, CancellationToken.None);
 
         // Assert
-        result.Result.Courses.Should().Contain(x => x.LarsCode == "TestLars2");
+        result.Result!.Courses.Should().Contain(x => x.LarsCode == "TestLars2");
         result.Result.Courses.Should().Contain(x => x.LarsCode == "TestLars1");
     }
 
@@ -139,6 +139,26 @@ public class GetProviderAvailableCoursesQueryHandlerTests
             .Verify(a => a.GetWithResponseCode<GetProviderAllowedCoursesResponse>(It.Is<GetProviderAllowedCoursesRequest>(x => x.Ukprn == request.Ukprn && x.CourseType == request.CourseType)), Times.Once());
         apiClientMock
             .Verify(a => a.GetWithResponseCode<GetAllStandardsResponse>(It.Is<GetAllStandardsRequest>(x => x.CourseType == request.CourseType)), Times.Once());
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenGetProviderAllowedCoursesReturnsNotFoundResponse_ThenReturnNull(
+    [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
+    [Greedy] GetProviderAvailableCoursesQueryHandler sut,
+    GetProviderAvailableCoursesQuery request,
+    GetProviderAllowedCoursesResponse providerAllowedCourses)
+    {
+        // Arrange
+
+        apiClientMock
+            .Setup(a => a.GetWithResponseCode<GetProviderAllowedCoursesResponse>(It.Is<GetProviderAllowedCoursesRequest>(x => x.Ukprn == request.Ukprn && x.CourseType == request.CourseType)))
+            .ReturnsAsync(new ApiResponse<GetProviderAllowedCoursesResponse>(providerAllowedCourses, HttpStatusCode.NotFound, ""));
+
+        // Act
+        var result = sut.Handle(request, CancellationToken.None);
+
+        // Assert
+        result.Result.Should().BeNull();
     }
 
     [Test, MoqAutoData]

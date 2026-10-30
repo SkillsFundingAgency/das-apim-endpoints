@@ -291,15 +291,12 @@ internal class GetFm36QueryTestFixture
 
     internal void SetupMocks(long ukprn)
     {
+        var learningsResponse = new ApiResponse<List<Learning>>(_fm36TestContext.LearningInnerApiResponse, System.Net.HttpStatusCode.OK, string.Empty);
         MockApprenticeshipsApiClient
-            .Setup(x => x.Get<List<Learning>>(It.Is<GetLearningsRequest>(r => r.Ukprn == ukprn)))
-            .ReturnsAsync(_fm36TestContext.LearningInnerApiResponse);
+            .Setup(x => x.PostWithResponseCode<List<Learning>>(It.Is<PostGetLearningsRequest>(r => r.Ukprn == ukprn), It.IsAny<bool>()))
+            .ReturnsAsync(learningsResponse);
 
-        MockApprenticeshipsApiClient
-            .Setup(x => x.Get<GetPagedLearnersFromLearningInner>(It.Is<GetLearningsRequest>(r => r.Ukprn == ukprn)))
-            .ReturnsAsync(new GetPagedLearnersFromLearningInner { Items = _fm36TestContext.LearningInnerApiResponse, Page = 1, PageSize = _fm36TestContext.LearningInnerApiResponse.Count, TotalItems = _fm36TestContext.LearningInnerApiResponse.Count });
-
-
+        _fm36TestContext.EarningsInnerApiResponse.TotalItems = _fm36TestContext.EarningsInnerApiResponse.Apprenticeships.Count;
         var response = new ApiResponse<GetFm36DataResponse>(_fm36TestContext.EarningsInnerApiResponse, System.Net.HttpStatusCode.OK, string.Empty);
         MockEarningsApiClient
             .Setup(x => x.PostWithResponseCode<GetFm36DataResponse>(

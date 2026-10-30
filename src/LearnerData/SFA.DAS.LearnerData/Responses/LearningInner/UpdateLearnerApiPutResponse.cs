@@ -4,6 +4,7 @@ public class UpdateLearnerApiPutResponse : BaseLearnerApiPutResponse;
 
 public class CreateDraftLearnerApiPutResponse : BaseLearnerApiPutResponse
 {
+    public Guid LearnerKey { get; set; }
     public Guid? RemovedLearningKey { get; set; }
 }
 
@@ -45,6 +46,7 @@ public abstract class BaseLearnerApiPutResponse
 		Reinstated = 16,
         NewApprenticeshipLearner = 17,
         EnglishAndMathsLearningSupport = 18,
-        WithdrawalReasonChanged = 19
+        WithdrawalReasonChanged = 19,
+        ForceEarningsSync = 20
     }
 }
