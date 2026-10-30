@@ -53,7 +53,7 @@ public class ProviderCoursesControllerGetAllAvailableCoursesTests
     {
         mediatorMock.Setup(m => m.Send(It.Is<GetAvailableCourseForProviderQuery>(q => q.Ukprn == ukprn && q.CourseType == courseType && q.LarsCode == larsCode), It.IsAny<CancellationToken>())).ReturnsAsync(response);
 
-        var result = await sut.GetAllAvailableCourse(ukprn, courseType, larsCode);
+        var result = await sut.GetAvailableCourse(ukprn, courseType, larsCode);
 
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okObjectResult = result as OkObjectResult;
@@ -73,7 +73,7 @@ public class ProviderCoursesControllerGetAllAvailableCoursesTests
     {
         mediatorMock.Setup(m => m.Send(It.IsAny<GetAvailableCourseForProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync((GetAvailableCourseForProviderQueryResult)null);
 
-        var result = await sut.GetAllAvailableCourse(ukprn, courseType, larsCode);
+        var result = await sut.GetAvailableCourse(ukprn, courseType, larsCode);
 
         Assert.That(result, Is.InstanceOf<NotFoundResult>());
     }

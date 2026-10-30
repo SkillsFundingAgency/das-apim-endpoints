@@ -89,7 +89,7 @@ public class ProviderCoursesController : ControllerBase
 
     [HttpGet]
     [Route("available-courses/{courseType}/{larsCode}")]
-    public async Task<IActionResult> GetAllAvailableCourse([FromRoute] int ukprn, [FromRoute] CourseType courseType, [FromRoute] string larsCode)
+    public async Task<IActionResult> GetAvailableCourse([FromRoute] int ukprn, [FromRoute] CourseType courseType, [FromRoute] string larsCode)
     {
         var result = await _mediator.Send(new GetAvailableCourseForProviderQuery(ukprn, courseType, larsCode));
         _logger.LogInformation("Request to get available course for ukprn: {Ukprn} and larCode: {LarsCode}", ukprn, larsCode);
