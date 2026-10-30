@@ -54,6 +54,8 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
                 .Concat(committedTransferOutResponse.Select(a => (a, isTransfer: true)))
                 .ToList();
 
+            var providerPaymentsPriority = await GetProviderPaymentsPriority(request.AccountId);
+
             totalRecords = allApprenticeships.Count;
 
             var parallelOptions = new ParallelOptions
@@ -67,7 +69,8 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
                 try
                 {
                     var payments = await GetApprenticeshipPaymentByAccountId(request.AccountId, item.a.Id);
-                    await PostApprenticeshipPaymentSummary(request.AccountId, item.a, payments, item.isTransfer);
+                    await PostApprenticeshipPaymentSummary(request.AccountId, item.a, payments, item.isTransfer,
+                        providerPaymentsPriority);
                 }
                 catch (Exception ex)
                 {
@@ -135,7 +138,8 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
         long accountId,
         GetCommittedLearnersCostByAccountIdResponse.ApprenticeshipDetailsResponse apprenticeDetails,
         List<GetApprenticeshipPaymentByAccountIdResponse>? apprenticeshipPayments,
-        bool isTransfer)
+        bool isTransfer,
+        GetProviderPaymentsPriorityResponse? providerPaymentsPriority)
     {
         // No payments yet is a future committed cost, so still post it with the payment fields left null
         var payments = apprenticeshipPayments ?? [];
@@ -158,7 +162,11 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             Uln = long.Parse(apprenticeDetails.Uln),
             LastPaymentAmount = lastPayment?.Amount,
             LastPaymentDate = lastPayment is null ? null : GetCollectionPeriodDate(lastPayment),
-            LastUpdatedDate = DateTime.UtcNow
+            LastUpdatedDate = DateTime.UtcNow,
+            ProviderId = apprenticeDetails.ProviderId,
+            ProviderOrder = providerPaymentsPriority?.ProviderPaymentPriorities
+                .FirstOrDefault(p => p.ProviderId == apprenticeDetails.ProviderId)?
+                .PriorityOrder ?? 0
         });
 
         var result = await fundingProjectionApiClient.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(request);
@@ -175,6 +183,13 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             return null;
 
         return new DateOnly(year, month, 1);
+    }
+
+    private async Task<GetProviderPaymentsPriorityResponse?> GetProviderPaymentsPriority(long accountId)
+    {
+        var request = new GetProviderPaymentsPriorityRequest(accountId);
+        var result = await commitmentsV2ApiClient.Get<GetProviderPaymentsPriorityResponse>(request);
+        return result;
     }
 
     //TODO - might need to look at this as if it fails with a different error we will potentially load without the data
