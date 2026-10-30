@@ -1,5 +1,5 @@
 using AutoFixture;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Application.Fm36;
