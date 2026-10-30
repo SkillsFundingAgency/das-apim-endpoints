@@ -47,10 +47,21 @@ public class LearningDeliveryPeriodisedValues
             .Contain(x => x.AttributeName == "LearnDelSEMContWaiver" && x.AllValuesAreSetToZero());
         learningDelivery.LearningDeliveryPeriodisedValues.Should()
             .Contain(x => x.AttributeName == "LearnDelESFAContribPct" && x.AllValuesAreSetTo(0.95m));
-        learningDelivery.LearningDeliveryPeriodisedValues.Should()
-            .Contain(x => x.AttributeName == "ProgrammeAimBalPayment" && x.AllValuesAreSetToZero());
-        learningDelivery.LearningDeliveryPeriodisedValues.Should()
-            .Contain(x => x.AttributeName == "ProgrammeAimCompletionPayment" && x.AllValuesAreSetToZero());
+
+        if (scenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                .NotContain(x => x.AttributeName == "ProgrammeAimBalPayment");
+            learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                .NotContain(x => x.AttributeName == "ProgrammeAimCompletionPayment");
+        }
+        else
+        {
+            learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                .Contain(x => x.AttributeName == "ProgrammeAimBalPayment" && x.AllValuesAreSetToZero());
+            learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                .Contain(x => x.AttributeName == "ProgrammeAimCompletionPayment" && x.AllValuesAreSetToZero());
+        }
     }
 
     [Test]
@@ -245,6 +256,13 @@ public class LearningDeliveryPeriodisedValues
 
         var learningDelivery = testFixture.GetLearningDelivery(scenario);
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
+
+        if (scenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            learningDelivery.LearningDeliveryPeriodisedValues.Should().NotContain(x => x.AttributeName == "ProgrammeAimOnProgPayment");
+            return;
+        }
+
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "ProgrammeAimOnProgPayment");
         result.Should().NotBeNull();
         result.Period1.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount).GetValueOrDefault());
@@ -282,6 +300,13 @@ public class LearningDeliveryPeriodisedValues
 
         var learningDelivery = testFixture.GetLearningDelivery(scenario);
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
+
+        if (scenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            learningDelivery.LearningDeliveryPeriodisedValues.Should().NotContain(x => x.AttributeName == "ProgrammeAimProgFundIndMaxEmpCont");
+            return;
+        }
+
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "ProgrammeAimProgFundIndMaxEmpCont");
         result.Should().NotBeNull();
 
@@ -322,6 +347,13 @@ public class LearningDeliveryPeriodisedValues
 
         var learningDelivery = testFixture.GetLearningDelivery(scenario);
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
+
+        if (scenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            learningDelivery.LearningDeliveryPeriodisedValues.Should().NotContain(x => x.AttributeName == "ProgrammeAimProgFundIndMinCoInvest");
+            return;
+        }
+
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "ProgrammeAimProgFundIndMinCoInvest");
         result.Should().NotBeNull();
 
@@ -362,6 +394,13 @@ public class LearningDeliveryPeriodisedValues
 
         var learningDelivery = testFixture.GetLearningDelivery(scenario);
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
+
+        if (scenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            learningDelivery.LearningDeliveryPeriodisedValues.Should().NotContain(x => x.AttributeName == "ProgrammeAimTotProgFund");
+            return;
+        }
+
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "ProgrammeAimTotProgFund");
         result.Should().NotBeNull();
         result.Period1.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount).GetValueOrDefault());

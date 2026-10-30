@@ -16,6 +16,7 @@ using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Configuration;
+using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using System.Net;
 
@@ -304,6 +305,59 @@ public class WhenCreatingLearners
     }
 
     [Test]
+    public async Task Then_all_earnings_are_released_when_a_reinstated_learner_has_earnings_sync_forced()
+    {
+        // Arrange
+        var command = GetProcessLearnersCommand();
+        var responseBody = MockCreateDraftLearnerResponse(
+            BaseLearnerApiPutResponse.LearningUpdateChanges.Reinstated,
+            BaseLearnerApiPutResponse.LearningUpdateChanges.ForceEarningsSync);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _mockEarningsApiClient.Verify(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Once);
+        _mockEarningsApiClient.Verify(x => x.Post(
+                It.Is<ReleaseEarningsApiPostRequest>(r =>
+                    r.PostUrl.Contains(responseBody.LearningKey.ToString()) &&
+                    r.Data.LearnerKey == responseBody.LearnerKey &&
+                    r.Data.LearnerRef == command.Request.Learner.LearnerRef &&
+                    r.Data.ReleaseType == ReleaseType.All &&
+                    r.Data.EnglishAndMathsCourseKeys.Count == 0)),
+            Times.Once);
+    }
+
+    [Test]
+    public async Task Then_earnings_are_not_released_when_a_reinstated_learner_does_not_have_earnings_sync_forced()
+    {
+        // Arrange
+        var command = GetProcessLearnersCommand();
+        MockCreateDraftLearnerResponse(BaseLearnerApiPutResponse.LearningUpdateChanges.Reinstated);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _mockEarningsApiClient.Verify(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Once);
+        _mockEarningsApiClient.Verify(x => x.Post(It.IsAny<ReleaseEarningsApiPostRequest>()), Times.Never);
+    }
+
+    [Test]
+    public async Task Then_earnings_are_not_released_when_earnings_sync_is_forced_but_the_learner_is_not_reinstated()
+    {
+        // Arrange
+        var command = GetProcessLearnersCommand();
+        MockCreateDraftLearnerResponse(BaseLearnerApiPutResponse.LearningUpdateChanges.ForceEarningsSync);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _mockEarningsApiClient.Verify(x => x.Post(It.IsAny<ReleaseEarningsApiPostRequest>()), Times.Never);
+    }
+
+    [Test]
     public async Task Then_does_not_reinstate_earnings_if_response_body_is_null()
     {
         // Arrange
@@ -507,5 +561,21 @@ public class WhenCreatingLearners
         command.Request.Delivery.OnProgramme.MinBy(x => x.StartDate)!.Costs = new List<CostDetails> { _fixture.Create<CostDetails>() };
 
         return command;
+    }
+
+    private CreateDraftLearnerApiPutResponse MockCreateDraftLearnerResponse(params BaseLearnerApiPutResponse.LearningUpdateChanges[] changes)
+    {
+        var responseBody = new CreateDraftLearnerApiPutResponse
+        {
+            LearnerKey = Guid.NewGuid(),
+            LearningKey = Guid.NewGuid(),
+            Changes = changes.ToList()
+        };
+
+        _mockLearningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
+            .ReturnsAsync(new ApiResponse<CreateDraftLearnerApiPutResponse>(responseBody, HttpStatusCode.OK, string.Empty));
+
+        return responseBody;
     }
 }

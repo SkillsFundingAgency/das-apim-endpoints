@@ -89,5 +89,40 @@ namespace SFA.DAS.LearnerData.UnitTests.Extensions
 
             changes.HasPersonalDetailsOnly().Should().BeFalse();
         }
+
+        [Test]
+        public void HasForceEarningsSync_ReturnsTrue_WhenForceEarningsSyncPresent()
+        {
+            var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>
+            {
+                UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate,
+                UpdateLearnerApiPutResponse.LearningUpdateChanges.ForceEarningsSync
+            };
+
+            changes.HasForceEarningsSync().Should().BeTrue();
+        }
+
+        [Test]
+        public void HasForceEarningsSync_ReturnsFalse_WhenForceEarningsSyncAbsent()
+        {
+            var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>
+            {
+                UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate
+            };
+
+            changes.HasForceEarningsSync().Should().BeFalse();
+        }
+
+        [Test]
+        public void ForceEarningsSync_Does_Not_Trigger_An_Earnings_Recalculation()
+        {
+            var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>
+            {
+                UpdateLearnerApiPutResponse.LearningUpdateChanges.ForceEarningsSync
+            };
+
+            changes.HasOnProgrammeUpdate().Should().BeFalse();
+            changes.HasEnglishAndMathsUpdate().Should().BeFalse();
+        }
     }
 }
