@@ -1,4 +1,4 @@
-﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+﻿using DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 using TechTalk.SpecFlow;

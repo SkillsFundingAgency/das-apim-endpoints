@@ -1,4 +1,4 @@
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.LearnerData.Responses;
 
 namespace SFA.DAS.LearnerData.Application.Fm36;

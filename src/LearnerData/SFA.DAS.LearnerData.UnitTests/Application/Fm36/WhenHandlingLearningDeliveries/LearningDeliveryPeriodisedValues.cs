@@ -1,4 +1,4 @@
-﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+﻿using DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using NUnit.Framework.Internal;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
@@ -785,7 +785,7 @@ public class LearningDeliveryPeriodisedValues
     }
 
     private void AssertLearningSupport(
-        ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery learningDelivery, List<AdditionalPayment> expectedLearningSupport)
+        DC.ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery learningDelivery, List<AdditionalPayment> expectedLearningSupport)
     {
 
         var valueResult = learningDelivery.LearningDeliveryPeriodisedValues.Single(x => x.AttributeName == PeriodisedAttributes.LearnSuppFundCash);

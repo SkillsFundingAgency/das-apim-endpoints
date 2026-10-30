@@ -77,7 +77,6 @@ public static class LearnerBuilder
                 EndDate = endDate,
                 TrainingPrice = cost.TrainingPrice,
                 EndPointAssessmentPrice = cost.EpaoPrice,
-                FundingBandMaximum = testLearner.FundingBandMax,
                 TotalPrice = totalPrice
             });
 
@@ -112,7 +111,8 @@ public static class LearnerBuilder
             Instalments = new List<Instalment>(),
             AdditionalPayments = new List<AdditionalPayment>(),
             CompletionPayment = totalPrice * 0.2m,
-            OnProgramTotal = totalPrice * 0.8m
+            OnProgramTotal = totalPrice * 0.8m,
+            FundingBandMaximum = testLearner.FundingBandMax
         }).First();
 
         if (testLearner.Instalments != null && testLearner.Instalments.Any())
