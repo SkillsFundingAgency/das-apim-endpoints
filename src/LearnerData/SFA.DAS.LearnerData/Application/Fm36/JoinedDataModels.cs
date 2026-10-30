@@ -40,11 +40,14 @@ public class JoinedLearnerData
     public string FundingLineType { get; set; }
     /// <summary> Derived from Apprenticeships API, apprenticeship.CompletionDate </summary>
     public DateTime? CompletionDate { get; set; }
+    /// <summary> Derived from SLD cache, learner.LearnerRef </summary>
+    public string LearnerRef { get; set; }
 
     internal JoinedLearnerData(Learning learning, EarningsApprenticeship earningsApprenticeship, UpdateLearnerRequest sldLearnerData, short academicYear)
     {
         Key = learning.Key;
         Uln = learning.Uln;
+        LearnerRef = sldLearnerData.Learner.LearnerRef;
         StartDate = learning.StartDate;
         PlannedEndDate = learning.PlannedEndDate;
         Episodes = JoinEpisodes(learning, earningsApprenticeship, academicYear);
