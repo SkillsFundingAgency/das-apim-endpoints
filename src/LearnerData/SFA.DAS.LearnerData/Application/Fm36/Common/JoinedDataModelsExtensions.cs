@@ -234,12 +234,8 @@ internal static class JoinedDataModelsExtensions
         ldv.LearnDelAppPrevAccDaysIL = null;
         ldv.LearnDelDisadAmount = EarningsFM36Constants.LearnDelDisadAmount;
         ldv.LearnDelEligDisadvPayment = EarningsFM36Constants.LearnDelEligDisadvPayment;
-        ldv.LearnDelEmpIdFirstAdditionalPaymentThreshold = joinedLearningDelivery is JoinedOnProgrammeLearningDelivery
-            ? GetEmployerIdIfNthEmployerIncentiveDueInYear(joinedLearnerData, joinedLearningDelivery, currentAcademicYear.GetShortAcademicYear(), 1, EarningsFM36Constants.LearnDelEmpIdFirstAdditionalPaymentThreshold)
-            : EarningsFM36Constants.LearnDelEmpIdFirstAdditionalPaymentThreshold;
-        ldv.LearnDelEmpIdSecondAdditionalPaymentThreshold = joinedLearningDelivery is JoinedOnProgrammeLearningDelivery
-            ? GetEmployerIdIfNthEmployerIncentiveDueInYear(joinedLearnerData, joinedLearningDelivery, currentAcademicYear.GetShortAcademicYear(), 2, EarningsFM36Constants.LearnDelEmpIdSecondAdditionalPaymentThreshold)
-            : EarningsFM36Constants.LearnDelEmpIdSecondAdditionalPaymentThreshold;
+        ldv.LearnDelEmpIdFirstAdditionalPaymentThreshold = EarningsFM36Constants.LearnDelEmpIdFirstAdditionalPaymentThreshold;
+        ldv.LearnDelEmpIdSecondAdditionalPaymentThreshold = EarningsFM36Constants.LearnDelEmpIdSecondAdditionalPaymentThreshold;
         ldv.LearnDelInitialFundLineType = joinedLearnerData.FundingLineType;
         ldv.LearnDelProgEarliestACT2Date = EarningsFM36Constants.LearnDelProgEarliestACT2Date;
         ldv.LearnDelNonLevyProcured = EarningsFM36Constants.LearnDelNonLevyProcured;
@@ -264,41 +260,6 @@ internal static class JoinedDataModelsExtensions
         ldv.LearnDelMathEng = joinedLearningDelivery is JoinedEnglishAndMathsLearningDelivery;
 
         return ldv;
-    }
-
-    /// <summary>
-    /// Returns the employer account id of the episode holding the nth employer incentive, but only if that incentive is due in the given academic year.
-    /// Otherwise returns the default value.
-    /// </summary>
-    private static int? GetEmployerIdIfNthEmployerIncentiveDueInYear(JoinedLearnerData joinedLearnerData, JoinedLearningDelivery joinedLearningDelivery, short academicYear, int n, int? defaultValue)
-    {
-        var nthPayment = joinedLearningDelivery.AdditionalPayments
-            .Where(x => x.AdditionalPaymentType == EarningsFM36Constants.AdditionalPaymentsTypes.EmployerIncentive)
-            .OrderBy(x => x.AcademicYear)
-            .ThenBy(x => x.DeliveryPeriod)
-            .Skip(n - 1)
-            .FirstOrDefault();
-
-        if (nthPayment == null || nthPayment.AcademicYear != academicYear)
-        {
-            return defaultValue;
-        }
-
-        var employerAccountId = joinedLearnerData.Episodes
-            .FirstOrDefault(x => x.AdditionalPayments.Contains(nthPayment))?.EmployerAccountId;
-
-        if (employerAccountId == null)
-        {
-            return defaultValue;
-        }
-
-        //todo employer account id long vs int? field
-        if (employerAccountId.Value is > int.MaxValue or < int.MinValue)
-        {
-            throw new NotImplementedException("todo employer account id long vs int? field");
-        }
-
-        return (int)employerAccountId.Value;
     }
 
     /// <summary>

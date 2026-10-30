@@ -85,44 +85,19 @@ public class LearningDeliveryValues
     }
 
     // Simple apprenticeship has employer incentives due in AY 1920 (first) and AY 2021 (second)
-    [TestCase(1920, 12345, null)]
-    [TestCase(2021, null, 12345)]
-    [TestCase(2425, null, null)]
-    public async Task Then_LearnDelEmpIdAdditionalPaymentThresholds_AreOnlySetWhenEmployerIncentiveIsDueInRequestedYear(int collectionYear, int? expectedFirst, int? expectedSecond)
+    [TestCase(TestScenario.SimpleApprenticeship, 1920)]
+    [TestCase(TestScenario.SimpleApprenticeship, 2021)]
+    [TestCase(TestScenario.SimpleApprenticeship, 2425)]
+    [TestCase(TestScenario.ApprenticeshipWithEnglish, 1920)]
+    public async Task Then_LearnDelEmpIdAdditionalPaymentThresholds_AreAlwaysNull(TestScenario scenario, int collectionYear)
     {
         // Arrange / Act
-        var testFixture = await CallFm36Handler(TestScenario.SimpleApprenticeship, collectionYear);
-        var learningDelivery = testFixture.GetLearningDelivery(TestScenario.SimpleApprenticeship);
-
-        // Assert
-        learningDelivery.LearningDeliveryValues.LearnDelEmpIdFirstAdditionalPaymentThreshold.Should().Be(expectedFirst);
-        learningDelivery.LearningDeliveryValues.LearnDelEmpIdSecondAdditionalPaymentThreshold.Should().Be(expectedSecond);
-    }
-
-    [Test]
-    public async Task Then_LearnDelEmpIdAdditionalPaymentThresholds_AreNotSetOnEnglishAndMathsDelivery()
-    {
-        // Arrange / Act
-        var testFixture = await CallFm36Handler(TestScenario.ApprenticeshipWithEnglish, 1920);
-        var learningDelivery = testFixture.GetLearningDelivery(TestScenario.ApprenticeshipWithEnglish);
+        var testFixture = await CallFm36Handler(scenario, collectionYear);
+        var learningDelivery = testFixture.GetLearningDelivery(scenario);
 
         // Assert
         learningDelivery.LearningDeliveryValues.LearnDelEmpIdFirstAdditionalPaymentThreshold.Should().BeNull();
         learningDelivery.LearningDeliveryValues.LearnDelEmpIdSecondAdditionalPaymentThreshold.Should().BeNull();
-    }
-
-    [Test]
-    public async Task Then_LearnDelEmpIdAdditionalPaymentThresholds_AreNotSetWhenEmployerAccountIdIsNotKnown()
-    {
-        // Arrange
-        var testFixture = new GetFm36QueryTestFixture(TestScenario.SimpleApprenticeship, context => context.TestLearners.Single().EmployerAccountId = null);
-
-        // Act
-        await testFixture.CallSubjectUnderTest(collectionYear: 1920);
-        var learningDelivery = testFixture.GetLearningDelivery(TestScenario.SimpleApprenticeship);
-
-        // Assert
-        learningDelivery.LearningDeliveryValues.LearnDelEmpIdFirstAdditionalPaymentThreshold.Should().BeNull();
     }
 
     [TestCase(TestScenario.SimpleApprenticeship)]

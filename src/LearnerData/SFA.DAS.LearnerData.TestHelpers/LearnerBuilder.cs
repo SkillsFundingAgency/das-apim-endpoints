@@ -90,7 +90,6 @@ public static class LearnerBuilder
             Key = Guid.NewGuid(),
             TrainingCode = testLearner.TrainingCode,
             LastDayOfLearning = testLearner.UpdateLearnerRequest.Delivery.OnProgramme.Max(x => x.WithdrawalDate),
-            EmployerAccountId = testLearner.EmployerAccountId,
             Prices = prices.OrderBy(x => x.StartDate).ToList()
         };
 
