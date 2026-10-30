@@ -228,7 +228,7 @@ internal static class JoinedDataModelsExtensions
         ldv.LearnDelApplicEmp1618Incentive = null;
         ldv.LearnDelApplicProv1618Incentive = null;
         ldv.LearnDelHistDaysThisApp = null; 
-        ldv.PlannedNumOnProgInstalm = null;
+        ldv.PlannedNumOnProgInstalm = joinedLearningDelivery.StartDate.GetNumberOfIncludedCensusDatesUntil(joinedLearningDelivery.ExpectedEndDate);
         ldv.PlannedTotalDaysIL = null;
         ldv.LearnDelHistProgEarnings = null;
         ldv.LearnDelAppPrevAccDaysIL = null;
@@ -283,6 +283,9 @@ internal static class JoinedDataModelsExtensions
             periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.MathEngBalPayment, 0);
             periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.MathEngOnProgPayment, 0);
 
+            periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimBalPayment, joinedLearningDelivery, shortAcademicYear, InstalmentType.Balancing);
+            periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimCompletionPayment, joinedLearningDelivery, shortAcademicYear, InstalmentType.Completion);
+
             periodisedValues.AddNthIncentivePaymentValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelFirstEmp1618Pay, joinedLearningDelivery, shortAcademicYear, "EmployerIncentive", 1);
             periodisedValues.AddNthIncentivePaymentValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelFirstProv1618Pay, joinedLearningDelivery, shortAcademicYear, "ProviderIncentive", 1);
 
@@ -320,8 +323,6 @@ internal static class JoinedDataModelsExtensions
         if (joinedLearningDelivery is not JoinedEnglishAndMathsLearningDelivery)
         {
             // Don't set these for English & Maths (FLP-2152)
-            periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimBalPayment, 0);
-            periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimCompletionPayment, 0);
             periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimOnProgPayment, joinedLearningDelivery, shortAcademicYear);
             periodisedValues.AddCoInvestmentValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimProgFundIndMaxEmpCont, joinedLearningDelivery, shortAcademicYear, EarningsFM36Constants.CoInvestEmployerMultiplier);
             periodisedValues.AddCoInvestmentValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimProgFundIndMinCoInvest, joinedLearningDelivery, shortAcademicYear, EarningsFM36Constants.CoInvestSfaMultiplier);
