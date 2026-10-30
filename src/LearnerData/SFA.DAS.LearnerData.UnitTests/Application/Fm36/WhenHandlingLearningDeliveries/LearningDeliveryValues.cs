@@ -18,16 +18,10 @@ public class LearningDeliveryValues
         var learningDelivery = testFixture.GetLearningDelivery(scenario);
 
         // Assert
-        //learningDelivery!.LearningDeliveryValues.LearnDelApplicProv1618FrameworkUplift.Should().Be(0);
         learningDelivery.LearningDeliveryValues.ActualNumInstalm.Should().BeNull();
         learningDelivery.LearningDeliveryValues.ApplicCompDate.Should().Be(new DateTime(9999, 9, 9).ToDateOnly());
         learningDelivery.LearningDeliveryValues.CombinedAdjProp.Should().Be(1);
         learningDelivery.LearningDeliveryValues.Completed.Should().BeFalse();
-        //learningDelivery.LearningDeliveryValues.LDApplic1618FrameworkUpliftTotalActEarnings.Should().Be(0);
-        //learningDelivery.LearningDeliveryValues.LearnDelApplicDisadvAmount.Should().Be(0);
-        //learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618FrameworkUplift.Should().Be(0);
-        //learningDelivery.LearningDeliveryValues.LearnDelDisadAmount.Should().Be(0);
-        //learningDelivery.LearningDeliveryValues.LearnDelEligDisadvPayment.Should().BeFalse();
         learningDelivery.LearningDeliveryValues.LearnDelEmpIdFirstAdditionalPaymentThreshold.Should().BeNull();
         learningDelivery.LearningDeliveryValues.LearnDelEmpIdSecondAdditionalPaymentThreshold.Should().BeNull();
         learningDelivery.LearningDeliveryValues.LearnDelProgEarliestACT2Date.Should().BeNull();
@@ -35,7 +29,6 @@ public class LearningDeliveryValues
         learningDelivery.LearningDeliveryValues.MathEngAimValue.Should().Be(0);
         learningDelivery.LearningDeliveryValues.OutstandNumOnProgInstalm.Should().BeNull();
         learningDelivery.LearningDeliveryValues.ProgType.Should().Be(25);
-        //learningDelivery.LearningDeliveryValues.PwayCode.Should().BeNull();
         learningDelivery.LearningDeliveryValues.LearnDelApplicCareLeaverIncentive.Should().Be(0);
         learningDelivery.LearningDeliveryValues.LearnDelHistDaysCareLeavers.Should().Be(0);
         learningDelivery.LearningDeliveryValues.LearnDelAccDaysILCareLeavers.Should().Be(0);
