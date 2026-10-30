@@ -106,7 +106,7 @@ internal static class JoinedDataModelsExtensions
 
 
             PriceEpisodeTotalTNPPrice = joinedPriceEpisode.TotalPrice,
-            PriceEpisodeUpperLimitAdjustment = EarningsFM36Constants.PriceEpisodeUpperLimitAdjustment,
+            PriceEpisodeUpperLimitAdjustment = GetUpperLimitAdjustment(joinedPriceEpisode),
 
             PriceEpisodePlannedInstalments = joinedPriceEpisode.StartDate.GetNumberOfIncludedCensusDatesUntil(joinedLearnerData.PlannedEndDate),
             PriceEpisodeActualInstalments = joinedLearnerData.GetPriceEpisodeActualInstalments(currentAcademicYear, hasSubsequentPriceEpisodes),
@@ -402,6 +402,13 @@ internal static class JoinedDataModelsExtensions
             case <= 167: return 14;
             default: return 42;
         }
+    }
+
+    private static decimal GetUpperLimitAdjustment(JoinedPriceEpisode joinedPriceEpisode)
+    {
+        return joinedPriceEpisode.TotalPrice > joinedPriceEpisode.FundingBandMaximum
+            ? joinedPriceEpisode.TotalPrice - joinedPriceEpisode.FundingBandMaximum
+            : 0;
     }
 
     private static decimal GetPreviousEarnings(JoinedLearnerData? joinedLearnerData, short academicYear, short collectionPeriod)
