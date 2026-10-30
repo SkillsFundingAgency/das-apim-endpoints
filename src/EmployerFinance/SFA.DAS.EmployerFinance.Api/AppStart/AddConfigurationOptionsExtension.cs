@@ -26,6 +26,10 @@ namespace SFA.DAS.EmployerFinance.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>().Value);
             services.Configure<FinanceApiConfiguration>(configuration.GetSection(nameof(FinanceApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<FinanceApiConfiguration>>().Value);
+            services.Configure<FundingProjectionApiConfiguration>(configuration.GetSection(nameof(FundingProjectionApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<FundingProjectionApiConfiguration>>().Value);
+            services.Configure<CommitmentsV2ApiConfiguration>(configuration.GetSection(nameof(CommitmentsV2ApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2ApiConfiguration>>().Value);
         }
     }
 }
