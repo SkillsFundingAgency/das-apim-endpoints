@@ -148,4 +148,80 @@ public class CreateUnapprovedApprenticeshipLearningRequestBuilderTests
         payload.PeriodsInLearning.Select(x => x.StartDate).Should().Contain(match.StartDate);
         payload.PeriodsInLearning.Select(x => x.StartDate).Should().Contain(match2.StartDate);
     }
+
+    [Test]
+    public async Task Build_Should_Map_EnglishAndMaths_Periods_From_Original_Items_When_There_Is_A_Break_In_Learning()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var learningResponse = _fixture.Create<CreateDraftLearnerApiPutResponse>();
+
+        var firstStart = new DateTime(2025, 9, 1);
+        var firstPause = new DateTime(2025, 12, 15);
+        var firstEnd = new DateTime(2026, 3, 31);
+        var secondStart = new DateTime(2026, 2, 1);
+        var secondEnd = new DateTime(2026, 6, 30);
+
+        var firstItem = _fixture.Build<MathsAndEnglish>()
+            .With(x => x.LearnAimRef, "AIM1")
+            .With(x => x.StartDate, firstStart)
+            .With(x => x.EndDate, firstEnd)
+            .With(x => x.PauseDate, firstPause)
+            .With(x => x.CompletionDate, (DateTime?)null)
+            .With(x => x.WithdrawalDate, (DateTime?)null)
+            .Create();
+
+        var secondItem = _fixture.Build<MathsAndEnglish>()
+            .With(x => x.LearnAimRef, "AIM1")
+            .With(x => x.StartDate, secondStart)
+            .With(x => x.EndDate, secondEnd)
+            .With(x => x.PauseDate, (DateTime?)null)
+            .With(x => x.CompletionDate, (DateTime?)null)
+            .With(x => x.WithdrawalDate, (DateTime?)null)
+            .Create();
+
+        var request = _fixture.Build<CreateLearnerRequest>()
+            .With(x => x.Delivery, new CreateLearnerRequest.DeliveryDetails
+            {
+                OnProgramme = _fixture.CreateMany<CreateLearnerRequest.OnProgrammeDetails>(1).ToList(),
+                EnglishAndMaths = [secondItem, firstItem]
+            })
+            .Create();
+
+        var requestBody = _fixture.Create<UpdateLearningRequestBody>();
+        requestBody.EnglishAndMathsCourses =
+        [
+            new MathsAndEnglishDetails
+            {
+                LearnAimRef = "AIM1",
+                StartDate = firstStart,
+                PlannedEndDate = secondEnd,
+                LearningSupport = [],
+                BreaksInLearning =
+                [
+                    new BreakInLearning
+                    {
+                        StartDate = firstPause.AddDays(1),
+                        EndDate = secondStart.AddDays(-1),
+                        PriorPeriodExpectedEndDate = firstEnd
+                    }
+                ]
+            }
+        ];
+
+        // Act
+        var result = await _sut.Build(ukprn, request, learningResponse, requestBody);
+
+        // Assert
+        var payload = (SFA.DAS.LearnerData.Requests.EarningsInner.CreateUnapprovedApprenticeshipLearningRequest)result.Data;
+        var periods = payload.EnglishAndMaths.Single().PeriodsInLearning;
+
+        periods.Should().HaveCount(2);
+        periods[0].StartDate.Should().Be(firstStart);
+        periods[0].EndDate.Should().Be(firstPause);
+        periods[0].OriginalExpectedEndDate.Should().Be(firstEnd);
+        periods[1].StartDate.Should().Be(secondStart);
+        periods[1].EndDate.Should().BeNull();
+        periods[1].OriginalExpectedEndDate.Should().Be(secondEnd);
+    }
 }

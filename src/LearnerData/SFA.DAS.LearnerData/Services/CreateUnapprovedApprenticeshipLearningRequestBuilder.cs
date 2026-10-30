@@ -70,7 +70,7 @@ public class CreateUnapprovedApprenticeshipLearningRequestBuilder(ICourseService
                 TotalPrice = x.TotalPrice
             }).ToList(),
             PeriodsInLearning = GetPeriodsInLearning(matchingOnProgrammes),
-            EnglishAndMaths = GetEnglishAndMaths(requestBody.EnglishAndMathsCourses),
+            EnglishAndMaths = GetEnglishAndMaths(requestBody.EnglishAndMathsCourses, createLearnerRequest.Delivery.EnglishAndMaths),
             LearningSupport = requestBody.OnProgramme.LearningSupport
                 .Select(x => new ApprenticeshipLearningSupportItem
                 {
@@ -99,9 +99,11 @@ public class CreateUnapprovedApprenticeshipLearningRequestBuilder(ICourseService
         }).ToList();
     }
 
-    private static List<DraftEnglishAndMathsItem> GetEnglishAndMaths(List<MathsAndEnglishDetails> englishAndMathsCourses)
+    private static List<DraftEnglishAndMathsItem> GetEnglishAndMaths(
+        List<MathsAndEnglishDetails> learningEnglishAndMathsCourses,
+        List<MathsAndEnglish> englishAndMathsCourses)
     {
-        return englishAndMathsCourses.Select(course => new DraftEnglishAndMathsItem
+        return learningEnglishAndMathsCourses.Select(course => new DraftEnglishAndMathsItem
         {
             StartDate = course.StartDate,
             EndDate = course.PlannedEndDate,
@@ -112,7 +114,7 @@ public class CreateUnapprovedApprenticeshipLearningRequestBuilder(ICourseService
             PauseDate = course.PauseDate,
             WithdrawalDate = course.WithdrawalDate,
             CompletionDate = course.CompletionDate,
-            PeriodsInLearning = GetEnglishAndMathsPeriods(course),
+            PeriodsInLearning = GetEnglishAndMathsPeriods(course.LearnAimRef, englishAndMathsCourses),
             LearningSupport = course.LearningSupport
                 .Select(x => new ApprenticeshipLearningSupportItem
                 {
@@ -122,43 +124,20 @@ public class CreateUnapprovedApprenticeshipLearningRequestBuilder(ICourseService
         }).ToList();
     }
 
-    private static List<ApprenticeshipPeriodInLearningItem> GetEnglishAndMathsPeriods(MathsAndEnglishDetails course)
+    private static List<ApprenticeshipPeriodInLearningItem> GetEnglishAndMathsPeriods(
+        string learnAimRef,
+        List<MathsAndEnglish> originalEnglishAndMaths)
     {
-        if (course.BreaksInLearning.Count == 0)
-        {
-            return
-            [
-                new ApprenticeshipPeriodInLearningItem
-                {
-                    StartDate = course.StartDate,
-                    EndDate = course.CompletionDate ?? course.PauseDate ?? course.WithdrawalDate,
-                    OriginalExpectedEndDate = course.PlannedEndDate
-                }
-            ];
-        }
-
-        var periods = new List<ApprenticeshipPeriodInLearningItem>();
-
-        var periodStart = course.StartDate;
-        foreach (var breakInLearning in course.BreaksInLearning.OrderBy(x => x.StartDate))
-        {
-            periods.Add(new ApprenticeshipPeriodInLearningItem
+        return originalEnglishAndMaths
+            .Where(x => x.LearnAimRef == learnAimRef)
+            .DistinctBy(x => x.StartDate)
+            .OrderBy(x => x.StartDate)
+            .Select(x => new ApprenticeshipPeriodInLearningItem
             {
-                StartDate = periodStart,
-                EndDate = breakInLearning.StartDate,
-                OriginalExpectedEndDate = breakInLearning.PriorPeriodExpectedEndDate
-            });
-
-            periodStart = breakInLearning.EndDate;
-        }
-
-        periods.Add(new ApprenticeshipPeriodInLearningItem
-        {
-            StartDate = periodStart,
-            EndDate = course.CompletionDate ?? course.PauseDate ?? course.WithdrawalDate,
-            OriginalExpectedEndDate = course.PlannedEndDate
-        });
-
-        return periods;
+                StartDate = x.StartDate,
+                EndDate = x.CompletionDate ?? x.PauseDate ?? x.WithdrawalDate,
+                OriginalExpectedEndDate = x.EndDate
+            })
+            .ToList();
     }
 }
