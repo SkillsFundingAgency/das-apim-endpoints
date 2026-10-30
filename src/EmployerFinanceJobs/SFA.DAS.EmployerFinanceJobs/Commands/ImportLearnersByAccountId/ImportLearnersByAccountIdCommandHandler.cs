@@ -7,7 +7,6 @@ using SFA.DAS.EmployerFinanceJobs.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Collections.Concurrent;
-using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.EmployerFinanceJobs.Commands.ImportLearnersByAccountId;
 
@@ -107,8 +106,12 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
         CancellationToken cancellationToken)
     {
         var firstPage = await commitmentsV2ApiClient.Get<GetCommittedLearnersCostByAccountIdResponse>(
-            new GetCommittedLearnersCostByAccountIdRequest(accountId, PageNumber: 1, PageItemCount, transferSenderId,
-                [.. ActiveStatuses], LastUpdated: lastUpdated));
+            new GetCommittedLearnersCostByAccountIdRequest(accountId, 
+                PageNumber: 1, 
+                PageItemCount,
+                transferSenderId,
+                [.. ActiveStatuses], 
+                LastUpdated: lastUpdated.GetValueOrDefault().AddDays(-1))); // added a day to ensure we get all records that were updated on the last successful import date
 
         if (firstPage?.Apprenticeships == null || !firstPage.Apprenticeships.Any())
             return [];
