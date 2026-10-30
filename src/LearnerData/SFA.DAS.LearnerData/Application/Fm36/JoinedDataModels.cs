@@ -180,8 +180,8 @@ public class JoinedPriceEpisode
     /// <summary> Derived from apprenticeship.Episode.EpisodePrice.EndPointAssessmentPrice </summary>
     public decimal? EndPointAssessmentPrice { get; set; }
 
-    /// <summary> Derived from apprenticeship.Episode.EpisodePrice.FundingBandMaximum </summary>
-    public int FundingBandMaximum { get; set; }
+    /// <summary> Derived from earnings.Episode.FundingBandMaximum </summary>
+    public decimal FundingBandMaximum { get; set; }
 
     /// <summary>
     /// Denotes an episode terminated by an "artificial" academic year-end boundary
@@ -215,7 +215,7 @@ public class JoinedPriceEpisode
         TotalPrice = apprenticeshipEpisodePrice.TotalPrice;
         TrainingPrice = apprenticeshipEpisodePrice.TrainingPrice;
         EndPointAssessmentPrice = apprenticeshipEpisodePrice.EndPointAssessmentPrice;
-        FundingBandMaximum = apprenticeshipEpisodePrice.FundingBandMaximum;
+        FundingBandMaximum = earningsEpisode?.FundingBandMaximum ?? 0;
         Instalments = GetInstalments(apprenticeshipEpisodePrice, earningsEpisode?.Instalments ?? []);
 
         var allAdditionalPayments = GetAdditionalPayments(apprenticeshipEpisodePrice, earningsEpisode?.AdditionalPayments ?? []);

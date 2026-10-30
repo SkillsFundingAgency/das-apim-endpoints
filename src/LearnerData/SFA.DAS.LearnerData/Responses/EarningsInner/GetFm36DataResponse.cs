@@ -31,6 +31,7 @@ public class Episode
     public List<AdditionalPayment> AdditionalPayments { get; set; }
     public decimal CompletionPayment { get; set; }
     public decimal OnProgramTotal { get; set; }
+    public decimal FundingBandMaximum { get; set; }
     public List<EnglishAndMaths> EnglishAndMaths { get; set; }
 }
 

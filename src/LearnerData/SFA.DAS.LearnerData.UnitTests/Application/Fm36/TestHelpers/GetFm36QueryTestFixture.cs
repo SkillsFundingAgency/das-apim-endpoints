@@ -355,7 +355,6 @@ internal class GetFm36QueryTestFixture
                     StartDate = CollectionCalendarResponse.StartDate,
                     EndDate = episodePrice.Price.EndDate,
                     EndPointAssessmentPrice = episodePrice.Price.EndPointAssessmentPrice,
-                    FundingBandMaximum = episodePrice.Price.FundingBandMaximum,
                     TotalPrice = episodePrice.Price.TotalPrice,
                     TrainingPrice = episodePrice.Price.TrainingPrice
                 };
