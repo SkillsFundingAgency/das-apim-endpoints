@@ -37,7 +37,6 @@ public class EarningsFM36Constants
     public const decimal TNP3 = 0;
     public const decimal TNP4 = 0;
     public static DateTime? PriceEpisodeActualEndDateIncEPA = null;
-    public const decimal PriceEpisodeUpperLimitAdjustment = 0;
     public const decimal PriceEpisodePreviousEarnings = 0;
     public const decimal PriceEpisodeOnProgPayment = 0;
     public const decimal PriceEpisodeBalanceValue = 0;
