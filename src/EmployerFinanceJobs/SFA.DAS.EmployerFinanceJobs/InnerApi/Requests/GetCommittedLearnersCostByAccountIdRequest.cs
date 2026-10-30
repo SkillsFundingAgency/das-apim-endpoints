@@ -8,7 +8,8 @@ public sealed record GetCommittedLearnersCostByAccountIdRequest(
     int PageNumber = 1,
     int PageItemCount = 1000,
     long? TransferSenderId = null,
-    List<ApprenticeshipStatus>? Statuses = null) : IGetApiRequest
+    List<ApprenticeshipStatus>? Statuses = null,
+    DateTime? LastUpdated = null) : IGetApiRequest
 {
     public string GetUrl
     {
@@ -25,6 +26,11 @@ public sealed record GetCommittedLearnersCostByAccountIdRequest(
             if (Statuses != null && Statuses.Any())
             {
                 queryParams.AddRange(Statuses.Select(status => $"statuses={status}"));
+            }
+
+            if(LastUpdated.HasValue)
+            {
+                queryParams.Add($"lastUpdated={LastUpdated.Value:yyyy-MM-ddTHH:mm:ss}");
             }
 
             queryParams.Add($"pageNumber={PageNumber}");

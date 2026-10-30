@@ -12,25 +12,20 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.EmployerFinance.Api.AppStart;
 using SFA.DAS.EmployerFinance.Application.Queries.GetFrameworks;
+using SFA.DAS.EmployerFinance.Domain.Configurations;
 using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.EmployerFinance.Api
 {
-    public class Startup
+    public class Startup(IConfiguration configuration,
+        IWebHostEnvironment env)
     {
-        private readonly IWebHostEnvironment _env;
-        private readonly IConfiguration _configuration;
-
-        public Startup(IConfiguration configuration, IWebHostEnvironment env)
-        {
-            _env = env;
-            _configuration = configuration.BuildSharedConfiguration();
-        }
+        private readonly IConfiguration _configuration = configuration.BuildSharedConfiguration();
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton(_env);
+            services.AddSingleton(env);
 
             services.AddConfigurationOptions(_configuration);
 
@@ -45,6 +40,21 @@ namespace SFA.DAS.EmployerFinance.Api
                 };
 
                 services.AddAuthentication(azureAdConfiguration, policies);
+
+                // Add Redis cache for non-local environments
+                var redisConfiguration = _configuration
+                    .GetSection(nameof(RedisConfiguration))
+                    .Get<RedisConfiguration>();
+
+                services.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = redisConfiguration?.ConnectionString;
+                });
+            }
+            else
+            {
+                // Add in-memory cache for local and dev environments
+                services.AddDistributedMemoryCache();
             }
 
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetFrameworksQuery).Assembly));

@@ -37,8 +37,8 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
 
         try
         {
-            var committedLearnersTask = GetAllPagedAsync(request.AccountId, transferSenderId: null, cancellationToken);
-            var committedTransferOutTask = GetAllPagedAsync(accountId: null, transferSenderId: request.AccountId, cancellationToken);
+            var committedLearnersTask = GetAllPagedAsync(request.AccountId, transferSenderId: null, request.LastSuccessfulImportDate, cancellationToken);
+            var committedTransferOutTask = GetAllPagedAsync(accountId: null, transferSenderId: request.AccountId, request.LastSuccessfulImportDate, cancellationToken);
 
             await Task.WhenAll(committedLearnersTask, committedTransferOutTask);
 
@@ -102,11 +102,16 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
     private async Task<IEnumerable<GetCommittedLearnersCostByAccountIdResponse.ApprenticeshipDetailsResponse>> GetAllPagedAsync(
         long? accountId,
         long? transferSenderId,
+        DateTime? lastUpdated,
         CancellationToken cancellationToken)
     {
         var firstPage = await commitmentsV2ApiClient.Get<GetCommittedLearnersCostByAccountIdResponse>(
-            new GetCommittedLearnersCostByAccountIdRequest(accountId, PageNumber: 1, PageItemCount, transferSenderId,
-                [.. ActiveStatuses]));
+            new GetCommittedLearnersCostByAccountIdRequest(accountId, 
+                PageNumber: 1, 
+                PageItemCount,
+                transferSenderId,
+                [.. ActiveStatuses], 
+                LastUpdated: lastUpdated.GetValueOrDefault().AddDays(-1))); // added a day to ensure we get all records that were updated on the last successful import date
 
         if (firstPage?.Apprenticeships == null || !firstPage.Apprenticeships.Any())
             return [];

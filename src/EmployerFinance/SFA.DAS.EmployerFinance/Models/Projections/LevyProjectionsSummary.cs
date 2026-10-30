@@ -1,6 +1,6 @@
-﻿namespace SFA.DAS.EmployerFinance.Application.Queries.GetLevySummaryByAccountId;
+﻿namespace SFA.DAS.EmployerFinance.Models.Projections;
 
-public sealed record GetLevySummaryByAccountIdQueryResult
+public sealed record LevyProjectionsSummary
 {
     public decimal CurrentLevyFunds { get; init; } = 0;
     public decimal TotalLevyDeclaredLast12Months { get; init; } = 0;
