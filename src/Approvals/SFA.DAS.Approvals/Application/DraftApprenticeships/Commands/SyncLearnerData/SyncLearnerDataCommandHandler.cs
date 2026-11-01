@@ -20,6 +20,7 @@ public class SyncLearnerDataCommandHandler(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsApiClient,
     IInternalApiClient<LearnerDataInnerApiConfiguration> learnerDataClient,
     ITrainingProgrammeResolutionService trainingProgrammeResolutionService,
+    IApprenticeshipUnitVersionService apprenticeshipUnitVersionService,
     ILogger<SyncLearnerDataCommandHandler> logger)
     : IRequestHandler<SyncLearnerDataCommand, GetDraftApprenticeshipResponse>
 {
@@ -78,7 +79,8 @@ public class SyncLearnerDataCommandHandler(
             TrainingPrice = learnerData.TrainingPrice,
             EndPointAssessmentPrice = learnerData.EpaoPrice,
             StartDate = learnerData.StartDate,
-            ActualStartDate = draftApprenticeship.ActualStartDate,
+            ActualStartDate = learnerData.LearningType == LearningType.ApprenticeshipUnit
+                ? learnerData.StartDate : draftApprenticeship.ActualStartDate,
             EndDate = learnerData.PlannedEndDate,
             DateOfBirth = learnerData.Dob,
             Reference = draftApprenticeship.Reference,
@@ -122,6 +124,13 @@ public class SyncLearnerDataCommandHandler(
         if (string.IsNullOrWhiteSpace(courseCode) || (int.TryParse(courseCode, out standardId) && standardId <= 0))
         {
             return (courseCode, courseName, string.Empty, string.Empty, string.Empty);
+        }
+
+        if (learnerData.LearningType == LearningType.ApprenticeshipUnit)
+        {
+            var unit = await apprenticeshipUnitVersionService.Resolve(courseCode, learnerData.StartDate);
+            return (courseCode, !string.IsNullOrWhiteSpace(courseName) ? courseName : unit.Title,
+                unit.Version, string.Empty, unit.StandardUId);
         }
 
         var response = await trainingProgrammeResolutionService.GetTrainingProgrammeAsync(courseCode, learnerData.StartDate);

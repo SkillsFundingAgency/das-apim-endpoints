@@ -13,6 +13,8 @@ public class UpdateDraftApprenticeshipRequest
     public DateTime? DateOfBirth { get; set; }
     public string Uln { get; set; }
     public string CourseCode { get; set; }
+    public string TrainingCourseVersion { get; set; }
+    public string StandardUId { get; set; }
     public string CourseOption { get; set; }
     public DeliveryModel DeliveryModel { get; set; }
     public int? EmploymentPrice { get; set; }

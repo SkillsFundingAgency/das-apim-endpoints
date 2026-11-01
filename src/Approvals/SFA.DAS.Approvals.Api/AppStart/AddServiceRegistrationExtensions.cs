@@ -73,6 +73,7 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<IProviderCoursesOrStandardsService, ProviderCoursesService>();
         services.AddTransient<IProviderStandardsService, ProviderStandardsService>();
         services.AddTransient<ITrainingProgrammeResolutionService, TrainingProgrammeResolutionService>();
+        services.AddTransient<IApprenticeshipUnitVersionService, ApprenticeshipUnitVersionService>();
         services.AddTransient<IBulkCourseMetadataService, BulkCourseMetadataService>();
         services.AddSingleton<IMapLearnerRecords, MapLearnerRecords>();
         services.AddTransient<IAddCourseTypeDataToCsvService, AddCourseTypeDataToCsvService>();
