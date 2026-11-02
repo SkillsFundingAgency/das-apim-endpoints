@@ -5,6 +5,7 @@ using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.LearnerData.TestHelpers;
 using static SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers.GetFm36QueryTestFixture;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36;
@@ -57,7 +58,7 @@ public class WhenHandlingGetFm36Query
 
         foreach (var apprenticeship in _testFixture.UnpagedLearningsResponse)
         {
-            _testFixture.Result.Items.Should().Contain(learner => learner.ULN == long.Parse(apprenticeship.Uln) && learner.LearnRefNumber == _testFixture.Ukprn.ToString());
+            _testFixture.Result.Items.Should().Contain(learner => learner.ULN == long.Parse(apprenticeship.Uln) && learner.LearnRefNumber == DefaultLearner.LearnerRef);
         }
     }
 
@@ -141,7 +142,7 @@ public class WhenHandlingGetFm36Query
 
         foreach (var apprenticeship in _testFixture.UnpagedLearningsResponse)
         {
-            _testFixture.Result.Items.Should().Contain(learner => learner.ULN == long.Parse(apprenticeship.Uln) && learner.LearnRefNumber == _testFixture.Ukprn.ToString());
+            _testFixture.Result.Items.Should().Contain(learner => learner.ULN == long.Parse(apprenticeship.Uln) && learner.LearnRefNumber == DefaultLearner.LearnerRef);
         }
     }
 }

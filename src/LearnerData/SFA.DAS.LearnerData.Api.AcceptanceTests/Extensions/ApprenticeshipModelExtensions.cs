@@ -32,7 +32,6 @@ public static class ApprenticeshipModelExtensions
                         StartDate = x.StartDate,
                         EndDate = x.EndDate,
                         EndPointAssessmentPrice = 1000,
-                        FundingBandMaximum = 10000,
                         TotalPrice = 11000,
                         TrainingPrice = 10000
                     }).ToList()
@@ -48,6 +47,7 @@ public static class ApprenticeshipModelExtensions
                 new SFA.DAS.LearnerData.Responses.EarningsInner.Episode
                 {
                     Key = Guid.NewGuid(),
+                    FundingBandMaximum = 10000,
                     Instalments = GetEarningsInstalments(apprenticeshipModel),
                     AdditionalPayments = apprenticeshipModel.AdditionalPayments.Select(x =>
                         new SFA.DAS.LearnerData.Responses.EarningsInner.AdditionalPayment
