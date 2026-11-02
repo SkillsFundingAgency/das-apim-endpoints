@@ -55,7 +55,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
 
         var joinedLearnerData = JoinDataSources(learnings, earnings, sldLearners, currentAcademicYear);
 
-        var fm36Learners = TransformToFm36Learners(joinedLearnerData, currentAcademicYear, request.CollectionPeriod);
+        var fm36Learners = TransformToFm36Learners(joinedLearnerData, currentAcademicYear, request.CollectionPeriod, request.Ukprn);
 
         return BuildResult(request, fm36Learners, totalLearners);
     }
@@ -148,7 +148,8 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
     private List<FM36Learner> TransformToFm36Learners(
         List<JoinedLearnerData> joinedLearnerData,
         GetAcademicYearsResponse currentAcademicYear,
-        byte collectionPeriod)
+        byte collectionPeriod,
+        long ukprn)
     {
         var learners = new List<FM36Learner>();
 
@@ -160,7 +161,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
                     return new FM36Learner
                     {
                         ULN = long.Parse(joinedLearner.Uln),
-                        LearnRefNumber = EarningsFM36Constants.LearnRefNumber,
+                        LearnRefNumber = ukprn.ToString(),
                         EarningsPlatform = SimplificationEarningsPlatform,
                         PriceEpisodes = PriceEpisodeBuilder.GetPriceEpisodes(joinedLearner, currentAcademicYear, collectionPeriod),
                         LearningDeliveries = LearningDeliveryBuilder.GetLearningDeliveries(currentAcademicYear, joinedLearner),
