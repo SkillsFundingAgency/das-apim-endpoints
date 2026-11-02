@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using MediatR;
-using SFA.DAS.AdminRoatp.Application.Commands.PatchProviderAllowedCourse;
 using SFA.DAS.AdminRoatp.InnerApi.Models;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
 using SFA.DAS.AdminRoatp.InnerApi.Responses;
@@ -33,7 +32,7 @@ public class AddProviderRestrictedApprenticeshipCommandHandler(IRoatpCourseManag
                 return;
 
             case ({ StatusCode: HttpStatusCode.OK, Body.IsCourseRestricted: false }, { StatusCode: HttpStatusCode.BadRequest }):
-                await PatchProviderAllowedCourse(command, false);
+                await UpdateProviderAllowedCourse(command, false);
                 return;
 
             case ({ StatusCode: HttpStatusCode.OK, Body.IsCourseRestricted: true }, { StatusCode: HttpStatusCode.BadRequest }):
@@ -41,7 +40,7 @@ public class AddProviderRestrictedApprenticeshipCommandHandler(IRoatpCourseManag
                 return;
 
             case ({ StatusCode: HttpStatusCode.OK }, { StatusCode: HttpStatusCode.OK }):
-                await PatchProviderAllowedCourse(command, true);
+                await UpdateProviderAllowedCourse(command, true);
                 return;
         }
 
@@ -65,22 +64,13 @@ public class AddProviderRestrictedApprenticeshipCommandHandler(IRoatpCourseManag
         response.EnsureSuccessStatusCode();
     }
 
-    private async Task PatchProviderAllowedCourse(AddProviderRestrictedApprenticeshipCommand command, bool providerCourseExists)
+    private async Task UpdateProviderAllowedCourse(AddProviderRestrictedApprenticeshipCommand command, bool providerCourseExists)
     {
-        var patchCommand = new PatchProviderAllowedCourseCommand
-        {
-            UserId = command.UserId,
-            UserDisplayName = command.UserDisplayName,
-            Ukprn = command.Ukprn,
-            LarsCode = command.LarsCode,
-            LastDateStarts = !providerCourseExists ? StartRestrictedDate : command.LastDateStarts
-        };
+        DateTime? lastDateStarts = providerCourseExists ? command.LastDateStarts : StartRestrictedDate;
+        PutProviderAllowedCourseModel model = new(lastDateStarts, command.UserId, command.UserDisplayName);
+        var request = new PutProviderAllowedCourseRequest(command.Ukprn, command.LarsCode, model);
 
-        var request = new PatchProviderAllowedCourseRequest(patchCommand);
-
-        ApiResponse<string> response = await _courseManagementApiClient.PatchWithResponseCode(request);
-
-        response.EnsureSuccessStatusCode();
+        await _courseManagementApiClient.Put(request);
     }
 
     private async Task DeleteProviderAllowedCourse(AddProviderRestrictedApprenticeshipCommand command)

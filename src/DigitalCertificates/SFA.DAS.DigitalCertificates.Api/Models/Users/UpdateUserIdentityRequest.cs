@@ -15,14 +15,13 @@ namespace SFA.DAS.DigitalCertificates.Api.Models.Users
         {
             return new UpdateUserIdentityCommand
             {
-                Names = source.Names?.Select(n => new Name
+                Names = source.Names?.Select(n => new IdentityName
                 {
-                    UserIdentityId = n.UserIdentityId,
                     ValidSince = n.ValidSince,
                     ValidUntil = n.ValidUntil,
                     FamilyName = n.FamilyName,
                     GivenNames = n.GivenNames
-                }).ToList() ?? new List<Name>(),
+                }).ToList() ?? new List<IdentityName>(),
                 DateOfBirth = source.DateOfBirth
             };
         }

@@ -6,6 +6,13 @@ namespace SFA.DAS.LearnerData.Responses.EarningsInner;
 public class GetFm36DataResponse
 {
     public List<Apprenticeship> Apprenticeships { get; set; } = [];
+
+    /// <summary>
+    /// Total number of matching learnings across all pages
+    /// </summary>
+    public int TotalItems { get; set; }
+    public int? Page { get; set; }
+    public int? PageSize { get; set; }
 }
 
 public class Apprenticeship

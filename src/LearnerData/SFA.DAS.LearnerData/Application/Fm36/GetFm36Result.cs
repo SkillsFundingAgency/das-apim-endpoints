@@ -1,17 +1,11 @@
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.LearnerData.Responses;
-using SFA.DAS.LearnerData.Responses.LearningInner;
 
 namespace SFA.DAS.LearnerData.Application.Fm36;
 
 using Learning = SFA.DAS.LearnerData.Responses.LearningInner.Learning;
 
 public class GetFm36Result : PagedQueryResult<FM36Learner>
-{
-
-}
-
-public class GetPagedLearnersFromLearningInner : PagedQueryResult<Learning>
 {
 
 }
