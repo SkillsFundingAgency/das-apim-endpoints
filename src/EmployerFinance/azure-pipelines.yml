@@ -53,4 +53,6 @@ stages:
 - template: ../../pipeline-templates/stage/outerapi-pipeline.yml
   parameters:
     OuterApiName: EmployerFinance
+    ConfigurationSecrets:
+      ApimEndpointsRedisConnectionString: $(ApimEndpointsRedisConnectionString)
     useProductAppInsights: 'True'
