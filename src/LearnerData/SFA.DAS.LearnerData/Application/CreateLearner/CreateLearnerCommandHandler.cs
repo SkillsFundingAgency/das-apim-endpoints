@@ -11,6 +11,8 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.LearnerData.Configuration;
+using SFA.DAS.LearnerData.Enums;
+using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.Common.Domain.Types;
 
 namespace SFA.DAS.LearnerData.Application.CreateLearner;
@@ -56,6 +58,11 @@ public class CreateLearnerCommandHandler(
                     logger.LogInformation("Reinstating learner with learning key {LearningKey}", learningResponse.Body.LearningKey);
                     var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(learningResponse.Body.LearningKey, command.Request, learningResponse.Body, (UpdateLearningRequestBody)postRequest.Data);
                     await earningsApiClient.Put(earningsOnProgrammeApiRequest);
+
+                    if (learningResponse.Body.Changes.HasForceEarningsSync())
+                    {
+                        await ReleaseAllEarnings(command, learningResponse.Body);
+                    }
                 }
                 else if (learningResponse.Body != null)
                 {
@@ -94,6 +101,20 @@ public class CreateLearnerCommandHandler(
             command.ReceivedOn,
             command.Request.ConsumerReference);
         await messageSession.Publish(evt);
+    }
+
+    private async Task ReleaseAllEarnings(CreateLearnerCommand command, CreateDraftLearnerApiPutResponse learningResponse)
+    {
+        var releaseEarningsRequest = new ReleaseEarningsApiPostRequest(learningResponse.LearningKey,
+            new ReleaseEarningsRequest
+            {
+                LearnerKey = learningResponse.LearnerKey,
+                LearnerRef = command.Request.Learner.LearnerRef,
+                ReleaseType = ReleaseType.All
+            });
+        await earningsApiClient.Post(releaseEarningsRequest);
+
+        logger.LogInformation("Release all earnings to payments for reinstated learning {LearningKey} as earnings sync is forced", learningResponse.LearningKey);
     }
 
     private async Task<LearningType> GetLearningType(int standardCode)
