@@ -1,4 +1,3 @@
-using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
@@ -15,7 +14,7 @@ public static class LearnerBuilder
     // we can use this because the data being generated is for fm36 tests only.
     // these concrete class have their own tests to validate their behaviour.
     private static UpdateLearningPutRequestBuilder _updateLearningPutRequestBuilder = 
-        new UpdateLearningPutRequestBuilder(new UpdateLearningRequestBodyBuilder(new LearningSupportService(), new BreaksInLearningService(), new CostsService()));
+        new UpdateLearningPutRequestBuilder(new UpdateLearningRequestBodyBuilder(new LearningSupportService(), new BreaksInLearningService(), new CostsService(), new StubEnglishAndMathsValueService()));
 
     internal static Learning BuildLearningInnerApiResponse(TestLearner testLearner)
     {
@@ -25,7 +24,8 @@ public static class LearnerBuilder
         var firstOnProg = sldDelivery.OnProgramme.OrderBy(x => x.StartDate).First();
         var latestOnProg = sldDelivery.OnProgramme.OrderByDescending(x => x.StartDate).First();
 
-        var updateLearningRequest = _updateLearningPutRequestBuilder.Build(testLearner.Ukprn, testLearner.UpdateLearnerRequest, testLearner.LearningKey);
+        // Safe to block: the only async work is StubEnglishAndMathsValueService, which completes synchronously
+        var updateLearningRequest = _updateLearningPutRequestBuilder.Build(testLearner.Ukprn, testLearner.UpdateLearnerRequest, testLearner.LearningKey).GetAwaiter().GetResult();
 
         return new Learning
         {
@@ -142,7 +142,7 @@ public static class LearnerBuilder
                     {
                         AcademicYear = dt.ToAcademicYear(),
                         DeliveryPeriod = dt.ToDeliveryPeriod(),
-                        Amount = x.Amount/instalmentCount,
+                        Amount = testLearner.EnglishAndMathsValues[x.LearnAimRef]/instalmentCount,
                         InstalmentType = "Regular"
                     }).ToList()
             }).ToList();
@@ -205,5 +205,13 @@ public static class LearnerBuilder
         }
 
         return instalments;
+    }
+
+    // This is a stubbed implementation of IEnglishAndMathsValueService for use in the fm36 test data builder.
+    // The fm36 test data takes English and Maths values from TestLearner.EnglishAndMathsValues, not from the built Learning request,
+    // so no value actually needs looking up
+    private sealed class StubEnglishAndMathsValueService : IEnglishAndMathsValueService
+    {
+        public Task<decimal> GetValue(string learnAimRef, DateTime startDate) => Task.FromResult(0m);
     }
 }

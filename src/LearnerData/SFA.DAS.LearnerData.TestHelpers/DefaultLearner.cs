@@ -42,11 +42,12 @@ public class DefaultLearner
         LearnAimRef = "ZPROG001"
     };
 
+    public static decimal EnglishAndMathsValue => 1500;
+
     public static MathsAndEnglish EnglishAndMathsLearningDelivery => new MathsAndEnglish
     {
         AimSequenceNumber = 2,
         LearnAimRef = "ENG001",
-        Amount = 1500,
         StartDate = new DateTime(2020, 9, 1),
         EndDate = new DateTime(2021, 1, 31),
         Course = "English",

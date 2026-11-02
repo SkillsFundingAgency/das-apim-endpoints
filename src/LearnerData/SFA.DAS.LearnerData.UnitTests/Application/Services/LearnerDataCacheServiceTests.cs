@@ -141,6 +141,36 @@ public class LearnerDataCacheServiceTests
     }
 
     [Test]
+    public async Task StoreLearner_CreateLearnerRequest_StoresUnderApprenticeshipKeyAndIsReadableAsUpdateLearnerRequest()
+    {
+        var ukprn = _fixture.Create<long>();
+        var request = _fixture.Create<CreateLearnerRequest>();
+        var expectedKey = $"LearnerDataApprenticeship_{ukprn}_{request.Learner.Uln}";
+
+        byte[]? storedBytes = null;
+        _cache.Setup(c => c.SetAsync(
+                It.IsAny<string>(),
+                It.IsAny<byte[]>(),
+                It.IsAny<DistributedCacheEntryOptions>(),
+                It.IsAny<CancellationToken>()))
+            .Callback<string, byte[], DistributedCacheEntryOptions, CancellationToken>((_, bytes, _, _) => storedBytes = bytes)
+            .Returns(Task.CompletedTask);
+
+        await _sut.StoreLearner(request, ukprn, CancellationToken.None);
+
+        _cache.Verify(c => c.SetAsync(
+                expectedKey,
+                It.IsAny<byte[]>(),
+                It.IsAny<DistributedCacheEntryOptions>(),
+                It.IsAny<CancellationToken>()),
+            Times.Once);
+
+        var roundTripped = JsonSerializer.Deserialize<UpdateLearnerRequest>(storedBytes!);
+        roundTripped!.Learner.Uln.Should().Be(request.Learner.Uln);
+        roundTripped.Delivery.OnProgramme.Should().HaveCount(request.Delivery.OnProgramme.Count);
+    }
+
+    [Test]
     public async Task GetLearner_ReturnsNull_OnCacheMiss()
     {
         _cache.Setup(c => c.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))

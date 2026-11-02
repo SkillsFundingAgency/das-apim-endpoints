@@ -13,7 +13,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 public class UpdateLearningPutRequestBuilderTests
 {
     [Test]
-    public void Build_DelegatesToRequestBodyBuilder_And_ReturnsUpdateLearningApiPutRequest()
+    public async Task Build_DelegatesToRequestBodyBuilder_And_ReturnsUpdateLearningApiPutRequest()
     {
         // Arrange
         var fixture = new Fixture();
@@ -25,12 +25,12 @@ public class UpdateLearningPutRequestBuilderTests
         var mockBodyBuilder = new Mock<IUpdateLearningRequestBodyBuilder>();
         mockBodyBuilder
             .Setup(x => x.Build(ukprn, updateLearnerRequest))
-            .Returns(requestBody);
+            .ReturnsAsync(requestBody);
 
         var sut = new UpdateLearningPutRequestBuilder(mockBodyBuilder.Object);
 
         // Act
-        var result = sut.Build(ukprn, updateLearnerRequest, learnerKey);
+        var result = await sut.Build(ukprn, updateLearnerRequest, learnerKey);
 
         // Assert
         result.Should().NotBeNull();

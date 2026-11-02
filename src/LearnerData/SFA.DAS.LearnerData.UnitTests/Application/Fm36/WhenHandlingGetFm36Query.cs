@@ -1,3 +1,4 @@
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Application.Fm36;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
@@ -23,13 +24,15 @@ public class WhenHandlingGetFm36Query
     }
 
     [Test]
-    public async Task ThenCallsApprenticeshipsApiWithUnpagedQuery()
+    public async Task ThenCallsLearningApiWithTheKeysReturnedByEarningsWithUnpagedQuery()
     {
         // Act
         await _testFixture.CallSubjectUnderTest();
 
         //Assert
-        _testFixture.MockApprenticeshipsApiClient.Verify(x => x.Get<List<Learning>>(It.Is<GetLearningsRequest>(r => r.Ukprn == _testFixture.Ukprn)), Times.Once);
+        var expectedKeys = _testFixture.EarningsResponse.Apprenticeships.Select(x => x.Key).ToList();
+        _testFixture.MockApprenticeshipsApiClient.Verify(x => x.PostWithResponseCode<List<Learning>>(
+            It.Is<PostGetLearningsRequest>(r => r.Ukprn == _testFixture.Ukprn && ((List<Guid>)r.Data).SequenceEqual(expectedKeys)), It.IsAny<bool>()), Times.Once);
     }
 
     [Test]
@@ -39,7 +42,8 @@ public class WhenHandlingGetFm36Query
         await _testFixture.CallSubjectUnderTest();
 
         //Assert
-        _testFixture.MockEarningsApiClient.Verify(x => x.PostWithResponseCode<GetFm36DataResponse>(It.Is<PostGetFm36DataRequest>(r => r.Ukprn == _testFixture.Ukprn), It.IsAny<bool>()), Times.Once);
+        _testFixture.MockEarningsApiClient.Verify(x => x.PostWithResponseCode<GetFm36DataResponse>(
+            It.Is<PostGetFm36DataRequest>(r => r.Ukprn == _testFixture.Ukprn && r.Page == null && r.PageSize == null && r.PostUrl.Contains("?") == false), It.IsAny<bool>()), Times.Once);
     }
 
     [Test]
@@ -58,23 +62,72 @@ public class WhenHandlingGetFm36Query
     }
 
     [Test]
-    public async Task ThenCallsApprenticeshipsApi()
+    public async Task ThenCallsEarningsApiWithPagingParameters()
     {
         // Act
         await _testFixture.CallSubjectUnderTest(QueryType.Paged);
 
         //Assert
-        _testFixture.MockApprenticeshipsApiClient.Verify(x => x.Get<GetPagedLearnersFromLearningInner>(It.Is<GetLearningsRequest>(r => r.Ukprn == _testFixture.Ukprn)), Times.Once);
+        _testFixture.MockEarningsApiClient.Verify(x => x.PostWithResponseCode<GetFm36DataResponse>(
+            It.Is<PostGetFm36DataRequest>(r => r.Ukprn == _testFixture.Ukprn && r.Page == 1 && r.PageSize == 1 && r.PostUrl.EndsWith("?page=1&pageSize=1")), It.IsAny<bool>()), Times.Once);
     }
 
     [Test]
-    public async Task ThenCallsEarningsApi()
+    public async Task ThenCallsLearningApiWithTheKeysReturnedByEarnings()
     {
         // Act
         await _testFixture.CallSubjectUnderTest(QueryType.Paged);
 
         //Assert
-        _testFixture.MockEarningsApiClient.Verify(x => x.PostWithResponseCode<GetFm36DataResponse>(It.Is<PostGetFm36DataRequest>(r => r.Ukprn == _testFixture.Ukprn), It.IsAny<bool>()), Times.Once);
+        _testFixture.MockApprenticeshipsApiClient.Verify(x => x.PostWithResponseCode<List<Learning>>(It.Is<PostGetLearningsRequest>(r => r.Ukprn == _testFixture.Ukprn), It.IsAny<bool>()), Times.Once);
+    }
+
+    [Test]
+    public async Task ThenCallsEarningsBeforeLearning()
+    {
+        // Arrange
+        var callOrder = new List<string>();
+
+        _testFixture.MockEarningsApiClient
+            .Setup(x => x.PostWithResponseCode<GetFm36DataResponse>(It.IsAny<PostGetFm36DataRequest>(), It.IsAny<bool>()))
+            .Callback(() => callOrder.Add("earnings"))
+            .ReturnsAsync(new ApiResponse<GetFm36DataResponse>(_testFixture.EarningsResponse, System.Net.HttpStatusCode.OK, string.Empty));
+
+        _testFixture.MockApprenticeshipsApiClient
+            .Setup(x => x.PostWithResponseCode<List<Learning>>(It.IsAny<PostGetLearningsRequest>(), It.IsAny<bool>()))
+            .Callback(() => callOrder.Add("learning"))
+            .ReturnsAsync(new ApiResponse<List<Learning>>(_testFixture.UnpagedLearningsResponse, System.Net.HttpStatusCode.OK, string.Empty));
+
+        // Act
+        await _testFixture.CallSubjectUnderTest(QueryType.Paged);
+
+        // Assert
+        callOrder.Should().Equal("earnings", "learning");
+    }
+
+    [Test]
+    public async Task ThenThrowsWhenLearningIsMissingForAnEarningsKey()
+    {
+        // Arrange
+        _testFixture.MockApprenticeshipsApiClient
+            .Setup(x => x.PostWithResponseCode<List<Learning>>(It.IsAny<PostGetLearningsRequest>(), It.IsAny<bool>()))
+            .ReturnsAsync(new ApiResponse<List<Learning>>(null!, System.Net.HttpStatusCode.NotFound, string.Empty));
+
+        // Act
+        var act = () => _testFixture.CallSubjectUnderTest(QueryType.Paged);
+
+        // Assert
+        await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("Learning data missing for earnings key*");
+    }
+
+    [Test]
+    public async Task ThenReturnsTotalItemsFromEarnings()
+    {
+        // Act
+        await _testFixture.CallSubjectUnderTest(QueryType.Paged);
+
+        // Assert
+        _testFixture.Result.TotalItems.Should().Be(_testFixture.EarningsResponse.TotalItems);
     }
 
     [Test]

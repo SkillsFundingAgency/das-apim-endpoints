@@ -189,9 +189,9 @@ public static class ApprenticeshipModelExtensions
         {
             Course = em.Course,
             LearnAimRef = em.LearnAimRef,
-            Amount = em.Amount,
             StartDate = em.StartDate,
             EndDate = em.EndDate,
+            WithdrawalDate = em.WithdrawalDate,
             AimSequenceNumber = em.AimSequenceNumber
         }).ToList();
     }

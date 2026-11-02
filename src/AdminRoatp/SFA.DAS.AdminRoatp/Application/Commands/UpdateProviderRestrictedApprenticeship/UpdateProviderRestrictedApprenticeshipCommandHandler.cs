@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using MediatR;
-using SFA.DAS.AdminRoatp.Application.Commands.PatchProviderAllowedCourse;
 using SFA.DAS.AdminRoatp.InnerApi.Models;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
 using SFA.DAS.AdminRoatp.InnerApi.Responses;
@@ -37,20 +36,9 @@ public class UpdateProviderRestrictedApprenticeshipCommandHandler(IRoatpCourseMa
 
         if (providerAllowedCourseResponse.StatusCode == HttpStatusCode.OK)
         {
-            var patchCommand = new PatchProviderAllowedCourseCommand()
-            {
-                UserId = command.UserId,
-                UserDisplayName = command.UserDisplayName,
-                Ukprn = command.Ukprn,
-                LarsCode = command.LarsCode,
-                LastDateStarts = command.LastDateStarts
-            };
+            var request = new PutProviderAllowedCourseRequest(command.Ukprn, command.LarsCode, new PutProviderAllowedCourseModel(command.LastDateStarts, command.UserId, command.UserDisplayName));
 
-            var apiRequest = new PatchProviderAllowedCourseRequest(patchCommand);
-
-            var response = await _courseManagementApiClient.PatchWithResponseCode(apiRequest);
-
-            response.EnsureSuccessStatusCode();
+            await _courseManagementApiClient.Put(request);
         }
     }
 }

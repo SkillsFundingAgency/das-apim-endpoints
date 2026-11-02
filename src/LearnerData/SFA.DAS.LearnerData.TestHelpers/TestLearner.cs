@@ -35,6 +35,11 @@ public class TestLearner
     /// These can be left blank or manually populated, there is no auto generation of additional payments at present.
     /// </summary>
     public List<SFA.DAS.LearnerData.Responses.EarningsInner.AdditionalPayment> AdditionalPayments { get; set; }
+
+    /// <summary>
+    /// English and Maths value per LearnAimRef, as Earnings would hold it.
+    /// </summary>
+    public Dictionary<string, decimal> EnglishAndMathsValues { get; set; } = new();
 }
 
 public static class TestLearnerExtensions
@@ -97,13 +102,11 @@ public static class TestLearnerExtensions
         if (endDate != null)
             englishAndMathsLearningDelivery.EndDate = endDate.Value;
 
-        if (amount != null)
-            englishAndMathsLearningDelivery.Amount = amount.Value;
-
         if(learningSupports != null)
             englishAndMathsLearningDelivery.LearningSupport = learningSupports;
 
         testLearner.UpdateLearnerRequest.Delivery.EnglishAndMaths.Add(englishAndMathsLearningDelivery);
+        testLearner.EnglishAndMathsValues[englishAndMathsLearningDelivery.LearnAimRef] = amount ?? DefaultLearner.EnglishAndMathsValue;
     }
 }
 

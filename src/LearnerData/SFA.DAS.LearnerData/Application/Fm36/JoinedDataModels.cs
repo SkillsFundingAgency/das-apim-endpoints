@@ -86,7 +86,7 @@ public class JoinedLearnerData
 
         foreach (var onProgram in sldLearnerData.Delivery.OnProgramme)
         {
-            var delivery = new JoinedLearningDelivery(onProgram, joinedPriceEpisodes.SelectMany(x=>x.Instalments), unassignedAdditionalPayments);
+            var delivery = new JoinedOnProgrammeLearningDelivery(onProgram, joinedPriceEpisodes.SelectMany(x=>x.Instalments), unassignedAdditionalPayments);
             joinedLearningDeliveries.Add(delivery);
         }
 
@@ -98,7 +98,7 @@ public class JoinedLearnerData
                 .SelectMany(x => x.EnglishAndMaths)
                 .FirstOrDefault(x => x.LearnAimRef == englishAndMath.LearnAimRef);
 
-            var delivery = new JoinedLearningDelivery(
+            var delivery = new JoinedEnglishAndMathsLearningDelivery(
                 englishAndMath,
                 matchingCourse.Instalments.Select(x => new JoinedInstalment
                 {
@@ -277,7 +277,7 @@ public class JoinedPriceEpisode
     }
 }
 
-public class JoinedLearningDelivery
+public abstract class JoinedLearningDelivery
 {
     public int AimSequenceNumber { get; set; }
     public string LearnAimRef { get; set; }
@@ -286,9 +286,11 @@ public class JoinedLearningDelivery
 
     public DateTime StartDate { get; set; }
     public DateTime ExpectedEndDate { get; set; }
-    public LearningDeliveryType LearningDeliveryType { get; set; }
+}
 
-    public JoinedLearningDelivery(OnProgrammeRequestDetails onProgramme, IEnumerable<JoinedInstalment> instalments, List<JoinedAdditionalPayment> unassignedAdditionalPayments)
+public class JoinedOnProgrammeLearningDelivery : JoinedLearningDelivery
+{
+    public JoinedOnProgrammeLearningDelivery(OnProgrammeRequestDetails onProgramme, IEnumerable<JoinedInstalment> instalments, List<JoinedAdditionalPayment> unassignedAdditionalPayments)
     {
         var startDate = onProgramme.StartDate;
         var endDate = onProgramme.PauseDate ?? onProgramme.CompletionDate ?? onProgramme.ExpectedEndDate;
@@ -310,10 +312,15 @@ public class JoinedLearningDelivery
 
         StartDate = onProgramme.StartDate;
         ExpectedEndDate = onProgramme.ExpectedEndDate;
-        LearningDeliveryType = LearningDeliveryType.OnProgramme;
     }
+}
 
-    public JoinedLearningDelivery(MathsAndEnglish englishAndMath, IEnumerable<JoinedInstalment> instalments, List<JoinedAdditionalPayment> unassignedAdditionalPayments)
+public class JoinedEnglishAndMathsLearningDelivery : JoinedLearningDelivery
+{
+    /// <summary> Derived from the SLD englishAndMaths WithdrawalDate (the Learning and Earnings APIs do not return this per course) </summary>
+    public DateTime? WithdrawalDate { get; set; }
+
+    public JoinedEnglishAndMathsLearningDelivery(MathsAndEnglish englishAndMath, IEnumerable<JoinedInstalment> instalments, List<JoinedAdditionalPayment> unassignedAdditionalPayments)
     {
         var startDate = englishAndMath.StartDate;
         var endDate = englishAndMath.PauseDate ?? englishAndMath.CompletionDate ?? englishAndMath.EndDate;
@@ -331,14 +338,8 @@ public class JoinedLearningDelivery
 
         StartDate = englishAndMath.StartDate;
         ExpectedEndDate = englishAndMath.EndDate;
-        LearningDeliveryType = LearningDeliveryType.EnglishAndMaths;
+        WithdrawalDate = englishAndMath.WithdrawalDate;
     }
-}
-
-public enum LearningDeliveryType
-{
-    OnProgramme = 0,
-    EnglishAndMaths = 1
 }
 
 [DebuggerDisplay("AY: {AcademicYear}, DP: {DeliveryPeriod}, Amount: {Amount}, InstalmentType: {InstalmentType}")]

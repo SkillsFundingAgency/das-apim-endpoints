@@ -301,7 +301,6 @@ public class LearningDeliveryValues
 
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
     public async Task Then_ThresholdDays_IsCorrect(TestScenario scenario)
     {
         // Arrange / Act
@@ -328,6 +327,52 @@ public class LearningDeliveryValues
         var learningDelivery = testFixture.Result.Items.Single().LearningDeliveries.SingleOrDefault();
         learningDelivery.Should().NotBeNull();
         learningDelivery.LearningDeliveryValues.FundStart.Should().Be(expectedFundingStart);
+    }
+
+    // The default English and Maths course runs 2020-09-01 to 2021-01-31 (153 days planned), so the qualifying period is 14 days
+    // and the qualifying period date is 2020-09-14, regardless of the on programme dates.
+    [Test]
+    public async Task Then_ThresholdDays_ForEnglishAndMaths_IsBasedOnItsOwnPlannedDuration()
+    {
+        // Arrange / Act
+        var testFixture = await CallFm36Handler(TestScenario.ApprenticeshipWithEnglish);
+        var learningDelivery = testFixture.GetLearningDelivery(TestScenario.ApprenticeshipWithEnglish);
+
+        // Assert
+        learningDelivery.LearningDeliveryValues.ThresholdDays.Should().Be(14);
+    }
+
+    [TestCase(null, true)]
+    [TestCase("2020-09-14", true)]
+    [TestCase("2020-09-13", false)]
+    public async Task ThenReturnsCorrectFundStartValueForEnglishAndMaths(string? withdrawalDate, bool expectedFundingStart)
+    {
+        // Arrange
+        var testFixture = new GetFm36QueryTestFixture(TestScenario.ApprenticeshipWithEnglish);
+        testFixture.SldLearnerData.Single().Delivery.EnglishAndMaths.Single().WithdrawalDate =
+            withdrawalDate == null ? null : DateTime.Parse(withdrawalDate);
+
+        // Act
+        await testFixture.CallSubjectUnderTest();
+
+        // Assert
+        var learningDelivery = testFixture.GetLearningDelivery(TestScenario.ApprenticeshipWithEnglish);
+        learningDelivery.LearningDeliveryValues.FundStart.Should().Be(expectedFundingStart);
+    }
+
+    [Test]
+    public async Task ThenEnglishAndMathsFundStartIgnoresOnProgrammeWithdrawal()
+    {
+        // Arrange
+        var testFixture = new GetFm36QueryTestFixture(TestScenario.ApprenticeshipWithEnglish);
+        testFixture.UnpagedLearningsResponse.Single().WithdrawnDate = new DateTime(2020, 1, 10);
+
+        // Act
+        await testFixture.CallSubjectUnderTest();
+
+        // Assert
+        var learningDelivery = testFixture.GetLearningDelivery(TestScenario.ApprenticeshipWithEnglish);
+        learningDelivery.LearningDeliveryValues.FundStart.Should().BeTrue();
     }
 
     private async Task<GetFm36QueryTestFixture> CallFm36Handler(TestScenario scenario, int? collectionYear = null)

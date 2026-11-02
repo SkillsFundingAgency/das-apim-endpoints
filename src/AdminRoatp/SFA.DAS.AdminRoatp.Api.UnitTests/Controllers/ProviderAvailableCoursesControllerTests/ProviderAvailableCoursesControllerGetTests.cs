@@ -36,6 +36,25 @@ public class ProviderAvailableCoursesControllerGetTests
     }
 
     [Test, MoqAutoData]
+    public async Task WhenGetProviderAvailableCoursesIsInvoked_AndResultIsNull_ThenReturnsNotFoundResult(
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] ProviderAvailableCoursesController sut,
+        int ukprn,
+        CourseType courseType)
+    {
+        // Arrange
+        mediatorMock
+            .Setup(x => x.Send(It.IsAny<GetProviderAvailableCoursesQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(() => null!);
+
+        // Act
+        var result = await sut.GetProviderAvailableCourses(ukprn, courseType);
+
+        // Assert
+        result.Should().BeOfType<NotFoundResult>();
+    }
+
+    [Test, MoqAutoData]
     public async Task WhenGetProviderAvailableCoursesIsInvoked_ThenMediatorIsCalled(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ProviderAvailableCoursesController sut,

@@ -7,6 +7,7 @@ using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses;
+using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using System.Net;
 using MediatR;
@@ -80,6 +81,11 @@ public class LearnersController(
             logger.LogError(e, "Invalid course code when creating learner");
             return new StatusCodeResult((int)HttpStatusCode.UnprocessableEntity);
         }
+        catch (EnglishAndMathsValueNotFoundException e)
+        {
+            logger.LogError(e, "English and Maths value not found when creating learner");
+            return new StatusCodeResult((int)HttpStatusCode.UnprocessableEntity);
+        }
         catch (Exception e)
         {
             logger.LogError(e, "Internal error occurred when processing learners list");
@@ -103,6 +109,11 @@ public class LearnersController(
                 ReceivedOn = DateTime.UtcNow
             });
             return Accepted();
+        }
+        catch (EnglishAndMathsValueNotFoundException e)
+        {
+            logger.LogError(e, "English and Maths value not found when updating learner {LearnerKey}", learnerKey);
+            return new StatusCodeResult((int)HttpStatusCode.UnprocessableEntity);
         }
         catch (Exception e)
         {
