@@ -158,3 +158,9 @@ Scenario: Change that does not need further approval does not ask Approvals
 	And further approval needed is not cleared in the learning domain
 	And no ApprovedLearningUpdatedEvent is published
 	And a on-programme update request is sent to the earnings domain
+
+Scenario: Unchanged resubmission with earnings sync forced releases all earnings without recalculating
+	Given there is a learner
+	And the ForceEarningsSync passed is different to the value in the learners domain
+	When the learner is updated
+	Then only a release-earnings request for all earnings is sent to the earnings domain

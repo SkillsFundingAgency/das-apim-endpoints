@@ -38,6 +38,18 @@ public  class LearningDeliverySteps(TestContext testContext, ScenarioContext sce
         learningDelivery.LearningDeliveryValues.ThresholdDays.Should().Be(expectedThresholdDays);
     }
 
+    [Then(@"FundStart for the English and Maths Learning Delivery is (.*)")]
+    public void ThenFundStartForTheEnglishAndMathsLearningDeliveryIs(bool expectedFundStart)
+    {
+        GetEnglishAndMathsLearningDelivery().LearningDeliveryValues.FundStart.Should().Be(expectedFundStart);
+    }
+
+    [Then(@"ThresholdDays for the English and Maths Learning Delivery is (.*)")]
+    public void ThenThresholdDaysForTheEnglishAndMathsLearningDeliveryIs(int expectedThresholdDays)
+    {
+        GetEnglishAndMathsLearningDelivery().LearningDeliveryValues.ThresholdDays.Should().Be(expectedThresholdDays);
+    }
+
     [Then(@"there are (.*) learning deliveries")]
     public void ThenThereAreLearningDeliveries(int expectedLearningDeliveriesCount)
     {
@@ -59,6 +71,11 @@ public  class LearningDeliverySteps(TestContext testContext, ScenarioContext sce
                 ld.AimSeqNumber == learningDelivery.AimSequenceNumber &&
                 ld.LearningDeliveryValues.LearnAimRef == learningDelivery.LearnAimRef);
         }
+    }
+
+    private LearningDelivery GetEnglishAndMathsLearningDelivery()
+    {
+        return GetFm36Learner().LearningDeliveries.Single(ld => ld.LearningDeliveryValues.LearnDelMathEng == true);
     }
 
     private FM36Learner GetFm36Learner()

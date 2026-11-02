@@ -11,6 +11,8 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.LearnerData.Configuration;
+using SFA.DAS.LearnerData.Enums;
+using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.Common.Domain.Types;
 
 namespace SFA.DAS.LearnerData.Application.CreateLearner;
@@ -26,11 +28,15 @@ public class CreateLearnerCommandHandler(
     ICourseService courseService,
     IFurtherApprovalService furtherApprovalService,
     ILearnerDataEventMapper learnerDataEventMapper,
+    ILearnerDataCacheService learnerDataCacheService,
     FeatureFlags featureFlags) : IRequestHandler<CreateLearnerCommand>
 {
     public async Task Handle(CreateLearnerCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Handling CreateLearnerCommand for Ukprn {Ukprn}", command.Ukprn);
+
+        await learnerDataCacheService.StoreLearner(command.Request, command.Ukprn, cancellationToken);
+
         var learningType = await GetLearningType(command.Request.Delivery.OnProgramme.MinBy(x => x.StartDate)!.StandardCode);
 
         logger.LogInformation("Feature toggle ApprenticeshipCreateDraftLearner is {ApprenticeshipCreateDraftLearner}", featureFlags.ApprenticeshipCreateDraftLearner);
@@ -55,6 +61,11 @@ public class CreateLearnerCommandHandler(
                     var furtherApprovalRequired = await furtherApprovalService.Resolve(command.Ukprn, command.Request.Learner.Uln, learningResponse.Body);
                     var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(learningResponse.Body.LearningKey, command.Request, learningResponse.Body, (UpdateLearningRequestBody)postRequest.Data, furtherApprovalRequired);
                     await earningsApiClient.Put(earningsOnProgrammeApiRequest);
+
+                    if (learningResponse.Body.Changes.HasForceEarningsSync())
+                    {
+                        await ReleaseAllEarnings(command, learningResponse.Body);
+                    }
                 }
                 else if (learningResponse.Body != null)
                 {
@@ -93,6 +104,20 @@ public class CreateLearnerCommandHandler(
             command.ReceivedOn,
             command.Request.ConsumerReference);
         await messageSession.Publish(evt);
+    }
+
+    private async Task ReleaseAllEarnings(CreateLearnerCommand command, CreateDraftLearnerApiPutResponse learningResponse)
+    {
+        var releaseEarningsRequest = new ReleaseEarningsApiPostRequest(learningResponse.LearningKey,
+            new ReleaseEarningsRequest
+            {
+                LearnerKey = learningResponse.LearnerKey,
+                LearnerRef = command.Request.Learner.LearnerRef,
+                ReleaseType = ReleaseType.All
+            });
+        await earningsApiClient.Post(releaseEarningsRequest);
+
+        logger.LogInformation("Release all earnings to payments for reinstated learning {LearningKey} as earnings sync is forced", learningResponse.LearningKey);
     }
 
     private async Task<LearningType> GetLearningType(int standardCode)
