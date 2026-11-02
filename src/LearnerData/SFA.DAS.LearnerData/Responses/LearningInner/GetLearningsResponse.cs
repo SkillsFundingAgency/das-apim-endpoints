@@ -30,7 +30,6 @@
         public decimal? TrainingPrice { get; set; }
         public decimal? EndPointAssessmentPrice { get; set; }
         public decimal TotalPrice { get; set; }
-        public int FundingBandMaximum { get; set; }
     }
 #pragma warning resto
 }
