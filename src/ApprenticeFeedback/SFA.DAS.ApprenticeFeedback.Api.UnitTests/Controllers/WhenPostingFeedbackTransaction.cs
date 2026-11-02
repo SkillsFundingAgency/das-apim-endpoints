@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeFeedback.Api.Controllers;
+using SFA.DAS.ApprenticeFeedback.Application.Commands.CreateFeedbackTransaction;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.ProcessEmailTransaction;
 using SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice;
 using SFA.DAS.Apim.Shared.Models;
@@ -30,6 +31,32 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
             _mockMediator = new Mock<IMediator>();
             _controller = new FeedbackTransactionController(_mockMediator.Object, 
                                                             Mock.Of<ILogger<FeedbackTransactionController>>());
+        }
+
+        [Test]
+        public async Task And_CreateFeedbackTransactionSucceeds_Then_ReturnNoContent()
+        {
+            var command = new CreateFeedbackTransactionCommand { ApprenticeshipId = 1159393, TemplateName = "ApprenticeshipOutcome" };
+            _mockMediator
+                .Setup(m => m.Send(command, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CreateFeedbackTransactionResponse());
+
+            var result = await _controller.CreateFeedbackTransaction(command);
+
+            result.Should().BeOfType<NoContentResult>();
+        }
+
+        [Test]
+        public async Task And_CreateFeedbackTransactionNotFound_Then_ReturnNotFound()
+        {
+            var command = new CreateFeedbackTransactionCommand { ApprenticeshipId = 1, TemplateName = "Unknown" };
+            _mockMediator
+                .Setup(m => m.Send(command, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CreateFeedbackTransactionResponse { NotFound = true });
+
+            var result = await _controller.CreateFeedbackTransaction(command);
+
+            result.Should().BeOfType<NotFoundResult>();
         }
 
         [Test, MoqAutoData]
