@@ -1,4 +1,4 @@
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Application.Fm36.Common;
@@ -162,7 +162,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
                     return new FM36Learner
                     {
                         ULN = long.Parse(joinedLearner.Uln),
-                        LearnRefNumber = EarningsFM36Constants.LearnRefNumber,
+                        LearnRefNumber = joinedLearner.LearnerRef,
                         EarningsPlatform = SimplificationEarningsPlatform,
                         PriceEpisodes = PriceEpisodeBuilder.GetPriceEpisodes(joinedLearner, currentAcademicYear, collectionPeriod),
                         LearningDeliveries = LearningDeliveryBuilder.GetLearningDeliveries(currentAcademicYear, joinedLearner),
