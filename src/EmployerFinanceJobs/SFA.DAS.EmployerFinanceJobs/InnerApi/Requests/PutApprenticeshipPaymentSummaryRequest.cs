@@ -23,6 +23,7 @@ public sealed record PutApprenticeshipPaymentSummaryRequestData
     public long ProviderId { get; set; }
     public int ProviderOrder { get; set; } = 0;
     public DateTime ApprovalDate { get; set; }
+    public DateOnly? FirstApprovalDate { get; set; }
     public LearningType LearningType { get; set; }
     public DateOnly? LastPaymentDate { get; set; }
     public decimal? LastPaymentAmount { get; set; }

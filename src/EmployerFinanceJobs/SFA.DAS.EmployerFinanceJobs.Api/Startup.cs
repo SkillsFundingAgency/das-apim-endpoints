@@ -4,11 +4,10 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.EmployerFinanceJobs.Api.AppStart;
+using SFA.DAS.EmployerFinanceJobs.Commands.ImportLearnersByAccountId;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using SFA.DAS.EmployerFinanceJobs.Commands.ImportLearnersByAccountId;
 
 namespace SFA.DAS.EmployerFinanceJobs.Api;
 
@@ -34,6 +33,14 @@ public static class Startup
             };
 
             services.AddAuthentication(azureAdConfiguration, policies);
+
+            // Add Redis cache for non-local environments
+            
+        }
+        else
+        {
+            // Add in-memory cache for local and dev environments
+            services.AddDistributedMemoryCache();
         }
 
         services.AddSingleton(new JsonSerializerOptions

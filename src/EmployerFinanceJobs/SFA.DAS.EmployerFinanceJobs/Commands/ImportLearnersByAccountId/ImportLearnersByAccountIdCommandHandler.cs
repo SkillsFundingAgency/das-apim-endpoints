@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.EmployerFinanceJobs.Domain.Enums;
 using SFA.DAS.EmployerFinanceJobs.InnerApi.Requests;
 using SFA.DAS.EmployerFinanceJobs.InnerApi.Responses;
@@ -13,11 +14,14 @@ namespace SFA.DAS.EmployerFinanceJobs.Commands.ImportLearnersByAccountId;
 public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAccountIdCommandHandler> logger,
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient,
     IFundingProjectionApiClient<FundingProjectionApiConfiguration> fundingProjectionApiClient,
-    IFinanceApiClient<FinanceApiConfiguration> financeApiClient)
+    IFinanceApiClient<FinanceApiConfiguration> financeApiClient,
+    ICacheStorageService cacheStorageService)
     : IRequestHandler<ImportLearnersByAccountIdCommand, ImportLearnersByAccountIdResult>
 {
     private const int PageItemCount = 100;
     private const int MaxDegreeOfParallelism = 5;
+    private const string FirstApprovedDateCacheKeyPrefix = "GetFirstApprovedDate_{0}_{1}";
+    private static readonly TimeSpan CacheExpiration = TimeSpan.FromDays(365); // Cache expiration set to 365 days for all cached data
 
     private static readonly ApprenticeshipStatus[] ActiveStatuses =
     [
@@ -46,7 +50,7 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             var committedTransferOut = committedTransferOutTask.Result;
 
             var committedLearnersResponse = committedLearners
-                .Where(c=>c.TransferSenderId == null)
+                .Where(c => c.TransferSenderId == null)
                 .ToList();
             var committedTransferOutResponse = committedTransferOut.ToList();
 
@@ -150,13 +154,21 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             .ThenByDescending(p => p.LastUpdatedDate)
             .FirstOrDefault();
 
+        var providerOrder = providerPaymentsPriority?.ProviderPaymentPriorities
+            .FirstOrDefault(p => p.ProviderId == apprenticeDetails.ProviderId)?
+            .PriorityOrder ?? 0;
+
+        var firstApprovalDate = providerOrder == 0
+            ? await GetFirstApprovalDateAsync(accountId, apprenticeDetails.ProviderId)
+            : null;
+
         var request = new PutApprenticeshipPaymentSummaryRequest(accountId, apprenticeDetails.Id, new PutApprenticeshipPaymentSummaryRequestData
         {
             Dob = DateOnly.FromDateTime(apprenticeDetails.DateOfBirth),
             StartDate = DateOnly.FromDateTime(apprenticeDetails.StartDate),
             EndDate = DateOnly.FromDateTime(apprenticeDetails.EndDate),
             IsTransfer = isTransfer,
-            Status =  apprenticeDetails.FreezedDate == null ? apprenticeDetails.ApprenticeshipStatus : ApprenticeshipStatus.Paused,
+            Status = apprenticeDetails.FreezedDate == null ? apprenticeDetails.ApprenticeshipStatus : ApprenticeshipStatus.Paused,
             TotalCost = apprenticeDetails.TotalAgreedPrice ?? 0,
             TotalPaid = payments.Sum(p => p.Amount),
             Uln = long.Parse(apprenticeDetails.Uln),
@@ -164,9 +176,10 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             LastPaymentDate = lastPayment is null ? null : GetCollectionPeriodDate(lastPayment),
             LastUpdatedDate = DateTime.UtcNow,
             ProviderId = apprenticeDetails.ProviderId,
-            ProviderOrder = providerPaymentsPriority?.ProviderPaymentPriorities
-                .FirstOrDefault(p => p.ProviderId == apprenticeDetails.ProviderId)?
-                .PriorityOrder ?? 0
+            ProviderOrder = providerOrder,
+            LearningType = apprenticeDetails.LearningType,
+            ApprovalDate = apprenticeDetails.ApprovedOn,
+            FirstApprovalDate = firstApprovalDate,
         });
 
         var result = await fundingProjectionApiClient.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(request);
@@ -192,11 +205,46 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
         return result;
     }
 
+    private async Task<DateOnly?> GetFirstApprovalDateAsync(long accountId, long providerId)
+    {
+        var cacheKey = string.Format(FirstApprovedDateCacheKeyPrefix, accountId, providerId);
+        var request = new GetCommittedLearnersCostByAccountIdRequest(accountId,
+            PageNumber: 1, PageItemCount: 1,
+            null,
+            null,
+            ProviderId: providerId,
+            SortField: "AgreedOn",
+            ReverseSort: true);
+
+        var result = await GetOrCacheAsync(
+            cacheKey,
+            async () => await commitmentsV2ApiClient.Get<GetCommittedLearnersCostByAccountIdResponse>(request));
+        var approvedOn = result?.Apprenticeships.FirstOrDefault()?.ApprovedOn;
+        return approvedOn.HasValue ? DateOnly.FromDateTime(approvedOn.Value) : null;
+    }
+
     //TODO - might need to look at this as if it fails with a different error we will potentially load without the data
     private async Task<List<GetApprenticeshipPaymentByAccountIdResponse>?> GetApprenticeshipPaymentByAccountId(long accountId, long apprenticeshipId)
     {
         var request = new GetApprenticeshipPaymentByAccountIdRequest(accountId, apprenticeshipId);
         var result = await financeApiClient.Get<List<GetApprenticeshipPaymentByAccountIdResponse>>(request);
+        return result;
+    }
+
+    private async Task<T?> GetOrCacheAsync<T>(
+        string cacheKey,
+        Func<Task<T?>> fetchAsync,
+        TimeSpan? cacheExpiration = null) where T : class
+    {
+        var cached = await cacheStorageService.RetrieveFromCache<T>(cacheKey);
+        if (cached is not null)
+            return cached;
+
+        var result = await fetchAsync();
+
+        if (result is not null)
+            await cacheStorageService.SaveToCache(cacheKey, result, cacheExpiration ?? CacheExpiration);
+
         return result;
     }
 }

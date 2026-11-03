@@ -20,7 +20,7 @@ public sealed record GetCommittedLearnersCostByAccountIdResponse
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public long ProviderId { get; set; }
-        public DateTime? ApprovedOn { get; set; }
+        public DateTime ApprovedOn { get; set; }
         public PaymentStatus PaymentStatus { get; set; }
         public LearningType LearningType { get; set; }
         public ApprenticeshipStatus ApprenticeshipStatus { get; set; }
