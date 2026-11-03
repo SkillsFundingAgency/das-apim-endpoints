@@ -681,19 +681,24 @@ public class LearningDeliveryPeriodisedValues
 
     // Second Learning support complex scenario
     // Onprogramme ended before learning support payments completed but English and Maths is still active
-    // payments assigned to English as it has a lower AimSequenceNumber than Maths
+    // payments assigned to English as they have English's LearnAimRef
     [Test]
     public async Task Then_ReturnsLearningSupportValues_WhenLearningSupportAfterOnProgrammeAndEnglishDelivery_AssignedToEnglish()
     {
         // Arrange
         var testFixture = new GetFm36QueryTestFixture(TestScenario.LearningSupportComplexScenario, textContext =>
         {
-            var learner = textContext.TestLearners.First().UpdateLearnerRequest;
+            var testLearner = textContext.TestLearners.First();
+            var learner = testLearner.UpdateLearnerRequest;
 
             var english = learner.Delivery.EnglishAndMaths.Where(x=>x.AimSequenceNumber == 2).Single();
             english.StartDate = new DateTime(2020, 9, 1);
             english.EndDate = new DateTime(2021, 4, 30);
 
+            foreach (var payment in testLearner.AdditionalPayments.Where(x => x.LearnAimRef == "MAT001"))
+            {
+                payment.LearnAimRef = "ENG001";
+            }
         });
 
         // Act
@@ -722,8 +727,80 @@ public class LearningDeliveryPeriodisedValues
         AssertLearningSupport(mathsLearningDelivery, new List<AdditionalPayment>());
     }
 
+    // Learning support payments are assigned by LearnAimRef, not by AimSequenceNumber or by which course is active
+    // English (lower AimSequenceNumber) and Maths are both active when the payments are due, but the payments belong to Maths
+    [Test]
+    public async Task Then_ReturnsLearningSupportValues_WhenLearningSupportBelongsToMathsAndEnglishIsAlsoActive_AssignedToMaths()
+    {
+        // Arrange
+        var testFixture = new GetFm36QueryTestFixture(TestScenario.LearningSupportComplexScenario, textContext =>
+        {
+            var learner = textContext.TestLearners.First().UpdateLearnerRequest;
+
+            var english = learner.Delivery.EnglishAndMaths.Where(x => x.AimSequenceNumber == 2).Single();
+            english.StartDate = new DateTime(2020, 9, 1);
+            english.EndDate = new DateTime(2021, 4, 30);
+        });
+
+        // Act
+        await testFixture.CallSubjectUnderTest(collectionYear: 2021);
+
+        //Assert
+        var onPrgrammeLearningDelivery = testFixture.GetLearningDeliveryByAimSequenceNumber(1);
+        var englishLearningDelivery = testFixture.GetLearningDeliveryByAimSequenceNumber(2);
+        var mathsLearningDelivery = testFixture.GetLearningDeliveryByAimSequenceNumber(3);
+
+        AssertLearningSupport(onPrgrammeLearningDelivery, new List<AdditionalPayment>
+        {
+            new AdditionalPayment {DeliveryPeriod = 3, Amount = 150 },
+            new AdditionalPayment {DeliveryPeriod = 4, Amount = 150 },
+            new AdditionalPayment {DeliveryPeriod = 5, Amount = 150 },
+        });
+
+        AssertLearningSupport(englishLearningDelivery, new List<AdditionalPayment>());
+
+        AssertLearningSupport(mathsLearningDelivery, new List<AdditionalPayment>
+        {
+            new AdditionalPayment {DeliveryPeriod = 7, Amount = 150 },
+            new AdditionalPayment {DeliveryPeriod = 8, Amount = 150 },
+            new AdditionalPayment {DeliveryPeriod = 9, Amount = 150 },
+        });
+    }
+
+    // Learning support for the onprogramme aim and each English and Maths course are shown on their own aim, whereas
+    // PriceEpisodeLSFCash includes the learning support from all of them
+    [Test]
+    public async Task Then_ReturnsLearningSupportValues_PerAim_AndPriceEpisodeLSFCashIncludesAllAims()
+    {
+        // Arrange
+        var testFixture = new GetFm36QueryTestFixture(TestScenario.LearningSupportComplexScenario, textContext =>
+        {
+            // One learning support payment per period (onprogramme, English, Maths), all within the price episode
+            textContext.TestLearners.First().AdditionalPayments = new List<AdditionalPayment>
+            {
+                new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 10, 30) },
+                new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 11, 30), LearnAimRef = "ENG001" },
+                new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 12, 30), LearnAimRef = "MAT001" },
+            };
+        });
+
+        // Act
+        await testFixture.CallSubjectUnderTest(collectionYear: 2021);
+
+        //Assert
+        AssertLearningSupport(testFixture.GetLearningDeliveryByAimSequenceNumber(1), new List<AdditionalPayment> { new AdditionalPayment { DeliveryPeriod = 3, Amount = 150 } });
+        AssertLearningSupport(testFixture.GetLearningDeliveryByAimSequenceNumber(2), new List<AdditionalPayment> { new AdditionalPayment { DeliveryPeriod = 4, Amount = 150 } });
+        AssertLearningSupport(testFixture.GetLearningDeliveryByAimSequenceNumber(3), new List<AdditionalPayment> { new AdditionalPayment { DeliveryPeriod = 5, Amount = 150 } });
+
+        var priceEpisode = testFixture.Result!.Items!.Single().PriceEpisodes.Single();
+        var priceEpisodeLsfCash = priceEpisode.PriceEpisodePeriodisedValues.Single(x => x.AttributeName == PeriodisedAttributes.PriceEpisodeLSFCash);
+        priceEpisodeLsfCash.Period3.Should().Be(150);
+        priceEpisodeLsfCash.Period4.Should().Be(150);
+        priceEpisodeLsfCash.Period5.Should().Be(150);
+    }
+
     // Third Learning support complex scenario
-    // Learning support payments are present before start of onprogramme are assigned to english
+    // Learning support payments belonging to English (by LearnAimRef) that are due before the start of onprogramme are assigned to english
     [Test]
     public async Task Then_ReturnsLearningSupportValues_WhenLearningSupportPaymentsBeforeOnProgrammeStart()
     {
@@ -742,9 +819,11 @@ public class LearningDeliveryPeriodisedValues
 
             textContext.TestLearners.First().AdditionalPayments = new List<AdditionalPayment>
                 {
+                    // English additional payments (before the onprogramme start)
+                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 8, 31), LearnAimRef = "ENG001" },
+                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 2, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 9, 30), LearnAimRef = "ENG001" },
+
                     // Onprogramme additional payments
-                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 8, 31) },
-                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 2, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 9, 30) },
                     new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 10, 31) },
                     new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 11, 30) },
                     new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 12, 31) },

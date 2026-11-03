@@ -450,6 +450,7 @@ internal static class JoinedDataModelsExtensions
         this List<JoinedAdditionalPayment> payments,
         DateTime startDate,
         DateTime endDate,
+        string? learnAimRef,
         params string[] includedTypes)
     {
         var matches = payments
@@ -461,6 +462,7 @@ internal static class JoinedDataModelsExtensions
 
                 return paymentDate >= startDate &&
                        paymentDate <= endDate &&
+                       x.LearnAimRef == learnAimRef &&
                        includedTypes.Contains(x.AdditionalPaymentType);
             })
             .ToList();
