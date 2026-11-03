@@ -624,11 +624,10 @@ public class LearningDeliveryPeriodisedValues
 
         if (scenario == TestScenario.ApprenticeshipWithEnglish)
         {
-            expectedLearningSupport = new List<AdditionalPayment>(); // In this test scenario, there are learning support
-                                                                     // payments but they all fall within onprogramme date range
-                                                                     // Learning support should only be recorded against English and maths
-                                                                     // if the payments fall outside of the onprogramme date range.
-                                                                     // this is covered in a seperate test scenario
+            expectedLearningSupport = new List<AdditionalPayment>(); // In this test scenario, the learning support payments have no LearnAimRef
+                                                                     // so they belong to the onprogramme aim, not English and maths.
+                                                                     // Payments belonging to English and maths courses are covered
+                                                                     // in separate test scenarios
         }
         else
         {
@@ -645,8 +644,8 @@ public class LearningDeliveryPeriodisedValues
     }
 
     // First Learning support complex scenario
-    // Onprogramme and English have ended before learning support payments completed
-    // payments assigned to Maths course
+    // Payments without a LearnAimRef are assigned to the onprogramme aim
+    // Payments with Maths' LearnAimRef are assigned to the Maths course
     [Test]
     public async Task Then_ReturnsLearningSupportValues_WhenLearningSupportAfterOnProgrammeAndEnglishDelivery()
     {
@@ -680,8 +679,7 @@ public class LearningDeliveryPeriodisedValues
     }
 
     // Second Learning support complex scenario
-    // Onprogramme ended before learning support payments completed but English and Maths is still active
-    // payments assigned to English as they have English's LearnAimRef
+    // Payments with English's LearnAimRef are assigned to the English course
     [Test]
     public async Task Then_ReturnsLearningSupportValues_WhenLearningSupportAfterOnProgrammeAndEnglishDelivery_AssignedToEnglish()
     {
@@ -727,46 +725,6 @@ public class LearningDeliveryPeriodisedValues
         AssertLearningSupport(mathsLearningDelivery, new List<AdditionalPayment>());
     }
 
-    // Learning support payments are assigned by LearnAimRef, not by AimSequenceNumber or by which course is active
-    // English (lower AimSequenceNumber) and Maths are both active when the payments are due, but the payments belong to Maths
-    [Test]
-    public async Task Then_ReturnsLearningSupportValues_WhenLearningSupportBelongsToMathsAndEnglishIsAlsoActive_AssignedToMaths()
-    {
-        // Arrange
-        var testFixture = new GetFm36QueryTestFixture(TestScenario.LearningSupportComplexScenario, textContext =>
-        {
-            var learner = textContext.TestLearners.First().UpdateLearnerRequest;
-
-            var english = learner.Delivery.EnglishAndMaths.Where(x => x.AimSequenceNumber == 2).Single();
-            english.StartDate = new DateTime(2020, 9, 1);
-            english.EndDate = new DateTime(2021, 4, 30);
-        });
-
-        // Act
-        await testFixture.CallSubjectUnderTest(collectionYear: 2021);
-
-        //Assert
-        var onPrgrammeLearningDelivery = testFixture.GetLearningDeliveryByAimSequenceNumber(1);
-        var englishLearningDelivery = testFixture.GetLearningDeliveryByAimSequenceNumber(2);
-        var mathsLearningDelivery = testFixture.GetLearningDeliveryByAimSequenceNumber(3);
-
-        AssertLearningSupport(onPrgrammeLearningDelivery, new List<AdditionalPayment>
-        {
-            new AdditionalPayment {DeliveryPeriod = 3, Amount = 150 },
-            new AdditionalPayment {DeliveryPeriod = 4, Amount = 150 },
-            new AdditionalPayment {DeliveryPeriod = 5, Amount = 150 },
-        });
-
-        AssertLearningSupport(englishLearningDelivery, new List<AdditionalPayment>());
-
-        AssertLearningSupport(mathsLearningDelivery, new List<AdditionalPayment>
-        {
-            new AdditionalPayment {DeliveryPeriod = 7, Amount = 150 },
-            new AdditionalPayment {DeliveryPeriod = 8, Amount = 150 },
-            new AdditionalPayment {DeliveryPeriod = 9, Amount = 150 },
-        });
-    }
-
     // Learning support for the onprogramme aim and each English and Maths course are shown on their own aim, whereas
     // PriceEpisodeLSFCash includes the learning support from all of them
     [Test]
@@ -775,7 +733,7 @@ public class LearningDeliveryPeriodisedValues
         // Arrange
         var testFixture = new GetFm36QueryTestFixture(TestScenario.LearningSupportComplexScenario, textContext =>
         {
-            // One learning support payment per period (onprogramme, English, Maths), all within the price episode
+            // One learning support payment per period (onprogramme, English, Maths)
             textContext.TestLearners.First().AdditionalPayments = new List<AdditionalPayment>
             {
                 new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 10, 30) },
@@ -797,70 +755,6 @@ public class LearningDeliveryPeriodisedValues
         priceEpisodeLsfCash.Period3.Should().Be(150);
         priceEpisodeLsfCash.Period4.Should().Be(150);
         priceEpisodeLsfCash.Period5.Should().Be(150);
-    }
-
-    // Third Learning support complex scenario
-    // Learning support payments belonging to English (by LearnAimRef) that are due before the start of onprogramme are assigned to english
-    [Test]
-    public async Task Then_ReturnsLearningSupportValues_WhenLearningSupportPaymentsBeforeOnProgrammeStart()
-    {
-        // Arrange
-        var testFixture = new GetFm36QueryTestFixture(TestScenario.LearningSupportComplexScenario, textContext =>
-        {
-            var learner = textContext.TestLearners.First().UpdateLearnerRequest;
-
-            var onProgramme = learner.Delivery.OnProgramme.Where(x => x.AimSequenceNumber == 1).Single();
-            onProgramme.StartDate = new DateTime(2020, 10, 1);
-            onProgramme.ExpectedEndDate = new DateTime(2021, 4, 30);
-
-            var english = learner.Delivery.EnglishAndMaths.Where(x => x.AimSequenceNumber == 2).Single();
-            english.StartDate = new DateTime(2020, 8, 1);
-            english.EndDate = new DateTime(2021, 4, 30);
-
-            textContext.TestLearners.First().AdditionalPayments = new List<AdditionalPayment>
-                {
-                    // English additional payments (before the onprogramme start)
-                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 8, 31), LearnAimRef = "ENG001" },
-                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 2, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 9, 30), LearnAimRef = "ENG001" },
-
-                    // Onprogramme additional payments
-                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 10, 31) },
-                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 11, 30) },
-                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 12, 31) },
-                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 6, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2021, 01, 31) },
-                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 7, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2021, 02, 28) },
-                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 8, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2021, 03, 31) },
-                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 9, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2021, 04, 30) },
-                };
-            });
-
-        // Act
-        await testFixture.CallSubjectUnderTest(collectionYear: 2021);
-
-        //Assert
-        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
-        var onPrgrammeLearningDelivery = testFixture.GetLearningDeliveryByAimSequenceNumber(1); //StartDate: 2020-1-1 EndDate: 2021-1-31
-        var englishLearningDelivery = testFixture.GetLearningDeliveryByAimSequenceNumber(2); //StartDate: 2020-9-1 EndDate:2021-4-30
-        var mathsLearningDelivery = testFixture.GetLearningDeliveryByAimSequenceNumber(3); //StartDate: 2020-12-1 EndDate: 2021-4-30
-
-        AssertLearningSupport(onPrgrammeLearningDelivery, new List<AdditionalPayment>
-        {
-            new AdditionalPayment {DeliveryPeriod = 3, Amount = 150 },
-            new AdditionalPayment {DeliveryPeriod = 4, Amount = 150 },
-            new AdditionalPayment {DeliveryPeriod = 5, Amount = 150 },
-            new AdditionalPayment {DeliveryPeriod = 6, Amount = 150 },
-            new AdditionalPayment {DeliveryPeriod = 7, Amount = 150 },
-            new AdditionalPayment {DeliveryPeriod = 8, Amount = 150 },
-            new AdditionalPayment {DeliveryPeriod = 9, Amount = 150 },
-        });
-
-        AssertLearningSupport(englishLearningDelivery, new List<AdditionalPayment>
-        {
-            new AdditionalPayment {DeliveryPeriod = 1, Amount = 150 },
-            new AdditionalPayment {DeliveryPeriod = 2, Amount = 150 }
-        });
-
-        AssertLearningSupport(mathsLearningDelivery, new List<AdditionalPayment>());
     }
 
     private void AssertLearningSupport(

@@ -460,8 +460,11 @@ internal static class JoinedDataModelsExtensions
                     .GetDateTime(x.DeliveryPeriod)
                     .EndOfMonth();
 
-                return paymentDate >= startDate &&
-                       paymentDate <= endDate &&
+                // A payment belonging to an English and maths course (LearnAimRef set) is assigned to that course whatever its dates.
+                // Otherwise (onprogramme payments) the dates are used to choose between onprogramme deliveries
+                var isInDateRange = learnAimRef != null || (paymentDate >= startDate && paymentDate <= endDate);
+
+                return isInDateRange &&
                        x.LearnAimRef == learnAimRef &&
                        includedTypes.Contains(x.AdditionalPaymentType);
             })
