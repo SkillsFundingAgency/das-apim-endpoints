@@ -56,12 +56,6 @@ Scenario: Learning Support is assigned to the aim it belongs to
 	| 0       | PriceEpisodeLSFCash | 1      | 150   |
 	| 0       | PriceEpisodeLSFCash | 2      | 150   |
 	| 0       | PriceEpisodeLSFCash | 3      | 150   |
-	| 0       | PriceEpisodeLSFCash | 5      | 150   |
-	| 0       | PriceEpisodeLSFCash | 6      | 150   |
-	| 0       | PriceEpisodeLSFCash | 7      | 150   |
-	| 0       | PriceEpisodeLSFCash | 8      | 150   |
-	| 0       | PriceEpisodeLSFCash | 11     | 150   |
-	| 0       | PriceEpisodeLSFCash | 12     | 150   |
 	And all other Price Episode PriceEpisodeLSFCash values are 0
 	And the Learning Delivery Periodised Values are as follows:
 	| Episode | Attribute         | Period | Value |

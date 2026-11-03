@@ -726,9 +726,9 @@ public class LearningDeliveryPeriodisedValues
     }
 
     // Learning support for the onprogramme aim and each English and Maths course are shown on their own aim, whereas
-    // PriceEpisodeLSFCash includes the learning support from all of them
+    // PriceEpisodeLSFCash only includes the learning support from the onprogramme aim
     [Test]
-    public async Task Then_ReturnsLearningSupportValues_PerAim_AndPriceEpisodeLSFCashIncludesAllAims()
+    public async Task Then_ReturnsLearningSupportValues_PerAim_AndPriceEpisodeLSFCashIncludesOnlyOnProgrammeAim()
     {
         // Arrange
         var testFixture = new GetFm36QueryTestFixture(TestScenario.LearningSupportComplexScenario, textContext =>
@@ -753,8 +753,8 @@ public class LearningDeliveryPeriodisedValues
         var priceEpisode = testFixture.Result!.Items!.Single().PriceEpisodes.Single();
         var priceEpisodeLsfCash = priceEpisode.PriceEpisodePeriodisedValues.Single(x => x.AttributeName == PeriodisedAttributes.PriceEpisodeLSFCash);
         priceEpisodeLsfCash.Period3.Should().Be(150);
-        priceEpisodeLsfCash.Period4.Should().Be(150);
-        priceEpisodeLsfCash.Period5.Should().Be(150);
+        priceEpisodeLsfCash.Period4.Should().Be(0);
+        priceEpisodeLsfCash.Period5.Should().Be(0);
     }
 
     private void AssertLearningSupport(

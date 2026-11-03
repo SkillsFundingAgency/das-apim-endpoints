@@ -198,8 +198,9 @@ public static class PriceEpisodePeriodisedValuesBuilder
 
     private static List<JoinedAdditionalPayment> GetAdditionalPayments(JoinedPriceEpisode joinedPriceEpisode, string additionalPaymentType)
     {
+        // Price episode values are for the main (onprogramme) aim only, so payments belonging to an English and maths course (LearnAimRef set) are excluded
         return joinedPriceEpisode.AdditionalPayments
-            .Where(i => i.AdditionalPaymentType == additionalPaymentType)
+            .Where(i => i.AdditionalPaymentType == additionalPaymentType && i.LearnAimRef == null)
             .ToList();
     }
 
