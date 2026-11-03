@@ -296,7 +296,8 @@ public class JoinedPriceEpisode
             DeliveryPeriod = x.DeliveryPeriod,
             Amount = x.Amount,
             AdditionalPaymentType = x.AdditionalPaymentType,
-            DueDate = x.DueDate
+            DueDate = x.DueDate,
+            LearnAimRef = x.LearnAimRef
         }).ToList();
 
         return allAdditionalPayments;
@@ -340,8 +341,9 @@ public class JoinedOnProgrammeLearningDelivery : JoinedLearningDelivery
             })
             .ToList();
 
-        AdditionalPayments = unassignedAdditionalPayments.TakeMatching(startDate, endDate, 
-            includedTypes: [ 
+        // Payments belonging to an English and maths course (LearnAimRef set) are allocated to that course's delivery instead
+        AdditionalPayments = unassignedAdditionalPayments.TakeMatching(startDate, endDate, learnAimRef: null,
+            includedTypes: [
                 AdditionalPaymentsTypes.ProviderIncentive, 
                 AdditionalPaymentsTypes.EmployerIncentive, 
                 AdditionalPaymentsTypes.LearningSupport
@@ -370,7 +372,7 @@ public class JoinedEnglishAndMathsLearningDelivery : JoinedLearningDelivery
                         x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() <= endDate)
             .ToList();
 
-        AdditionalPayments = unassignedAdditionalPayments.TakeMatching(startDate, endDate,
+        AdditionalPayments = unassignedAdditionalPayments.TakeMatching(startDate, endDate, learnAimRef: englishAndMath.LearnAimRef,
             includedTypes: [ AdditionalPaymentsTypes.LearningSupport ]);
 
         StartDate = englishAndMath.StartDate;
@@ -402,4 +404,7 @@ public class JoinedAdditionalPayment
     public decimal Amount { get; set; }
     public string AdditionalPaymentType { get; set; }
     public DateTime DueDate { get; set; }
+
+    /// <summary> The English and maths course the payment belongs to, or null for payments on the apprenticeship (on-programme) aim </summary>
+    public string? LearnAimRef { get; set; }
 }
