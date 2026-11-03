@@ -5,10 +5,15 @@ namespace SFA.DAS.Reservations.Api.Models
     public class GetTransferValidityResponse
     {
         public bool IsValid { get; private set; }
+        public string PledgeApplicationStatus { get; private set; }
 
         public static implicit operator GetTransferValidityResponse(GetTransferValidityQueryResult source)
         {
-            return new GetTransferValidityResponse{ IsValid =  source.IsValid };
+            return new GetTransferValidityResponse
+            {
+                IsValid = source.IsValid,
+                PledgeApplicationStatus = source.PledgeApplicationStatus
+            };
         }
     }
 }
