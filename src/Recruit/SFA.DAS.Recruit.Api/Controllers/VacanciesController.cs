@@ -1,14 +1,13 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Client;
+using SFA.DAS.Apim.Shared.Exceptions;
+using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Recruit.Api.Extensions;
 using SFA.DAS.Recruit.Api.Models.Requests;
 using SFA.DAS.Recruit.Api.Models.Responses;
 using SFA.DAS.Recruit.Api.Models.Vacancies;
 using SFA.DAS.Recruit.Api.Models.Vacancies.Requests;
-using SFA.DAS.Recruit.Application.Queries.GetNextVacancyReference;
 using SFA.DAS.Recruit.Data.Models;
 using SFA.DAS.Recruit.Domain.Vacancy;
 using SFA.DAS.Recruit.GraphQL;
@@ -17,22 +16,17 @@ using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests.VacancyAnalytics;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses.VacancyAnalytics;
+using SFA.DAS.Recruit.InnerApi.Requests;
+using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.Apim.Shared.Exceptions;
-using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
+using StrawberryShake;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Recruit.InnerApi.Requests;
-using SFA.DAS.Recruit.InnerApi.Responses;
-using StrawberryShake;
-using GetNextVacancyReferenceResponse = SFA.DAS.Recruit.Api.Models.Vacancies.Responses.GetNextVacancyReferenceResponse;
 using VacancyStatus = SFA.DAS.Recruit.GraphQL.VacancyStatus;
 
 namespace SFA.DAS.Recruit.Api.Controllers;
@@ -41,13 +35,6 @@ namespace SFA.DAS.Recruit.Api.Controllers;
 [Route("[controller]/")]
 public class VacanciesController(ILogger<VacanciesController> logger): ControllerBase
 {
-    [HttpGet, Route("vacancyReference")]
-    public async Task<IActionResult> GetNextVacancyReference([FromServices] IMediator mediator)
-    {
-        var result = await mediator.Send(new GetNextVacancyReferenceQuery());
-        return Ok(new GetNextVacancyReferenceResponse(result.Value));
-    }
-
     // TODO: Semi proxy for the inner api endpoint - this should go once we have migrated vacancies over to SQL
     [HttpPost, Route("{vacancyId:guid}")]
     public async Task<IActionResult> PostOne(

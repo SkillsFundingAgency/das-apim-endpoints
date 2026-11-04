@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using MediatR;
-using SFA.DAS.AdminRoatp.Application.Commands.PatchProviderAllowedCourse;
 using SFA.DAS.AdminRoatp.InnerApi.Models;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
 using SFA.DAS.AdminRoatp.InnerApi.Responses;
@@ -26,7 +25,7 @@ public class RemoveProviderRestrictedApprenticeshipCommandHandler(IRoatpCourseMa
                 return;
 
             case { StatusCode: HttpStatusCode.OK, Body.IsCourseRestricted: true }:
-                await PatchProviderAllowedCourse(command);
+                await UpdateProviderAllowedCourse(command);
                 return;
 
             case { StatusCode: HttpStatusCode.OK, Body.IsCourseRestricted: false }:
@@ -52,22 +51,11 @@ public class RemoveProviderRestrictedApprenticeshipCommandHandler(IRoatpCourseMa
         response.EnsureSuccessStatusCode();
     }
 
-    private async Task PatchProviderAllowedCourse(RemoveProviderRestrictedApprenticeshipCommand command)
+    private async Task UpdateProviderAllowedCourse(RemoveProviderRestrictedApprenticeshipCommand command)
     {
-        var patchCommand = new PatchProviderAllowedCourseCommand
-        {
-            UserId = command.UserId,
-            UserDisplayName = command.UserDisplayName,
-            Ukprn = command.Ukprn,
-            LarsCode = command.LarsCode,
-            LastDateStarts = null
-        };
+        var request = new PutProviderAllowedCourseRequest(command.Ukprn, command.LarsCode, new PutProviderAllowedCourseModel(null, command.UserId, command.UserDisplayName));
 
-        var request = new PatchProviderAllowedCourseRequest(patchCommand);
-
-        ApiResponse<string> response = await _courseManagementApiClient.PatchWithResponseCode(request);
-
-        response.EnsureSuccessStatusCode();
+        await _courseManagementApiClient.Put(request);
     }
 
     private async Task DeleteProviderAllowedCourse(RemoveProviderRestrictedApprenticeshipCommand command)

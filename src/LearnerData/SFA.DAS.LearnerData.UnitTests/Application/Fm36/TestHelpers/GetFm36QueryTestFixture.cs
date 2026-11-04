@@ -1,5 +1,5 @@
 using AutoFixture;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Application.Fm36;
@@ -244,11 +244,10 @@ internal class GetFm36QueryTestFixture
             new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2020, 11, 30) },
             new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2020, 12, 30) },
 
-            // English and Maths additional payments
-            // (note limitation of the test mocking this goes here, but it works because in earnings all learning support gets stored together)
-            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 7, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2021, 02, 28) },
-            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 8, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2021, 03, 31) },
-            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 9, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2021, 04, 30) },
+            // English and Maths additional payments (now assigned to maths via learn aim ref)
+            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 7, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2021, 02, 28), LearnAimRef = "MAT001" },
+            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 8, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2021, 03, 31), LearnAimRef = "MAT001" },
+            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 9, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2021, 04, 30), LearnAimRef = "MAT001" },
         };
 
         testLearner.AddEnglishAndMathsDelivery(
@@ -291,15 +290,12 @@ internal class GetFm36QueryTestFixture
 
     internal void SetupMocks(long ukprn)
     {
+        var learningsResponse = new ApiResponse<List<Learning>>(_fm36TestContext.LearningInnerApiResponse, System.Net.HttpStatusCode.OK, string.Empty);
         MockApprenticeshipsApiClient
-            .Setup(x => x.Get<List<Learning>>(It.Is<GetLearningsRequest>(r => r.Ukprn == ukprn)))
-            .ReturnsAsync(_fm36TestContext.LearningInnerApiResponse);
+            .Setup(x => x.PostWithResponseCode<List<Learning>>(It.Is<PostGetLearningsRequest>(r => r.Ukprn == ukprn), It.IsAny<bool>()))
+            .ReturnsAsync(learningsResponse);
 
-        MockApprenticeshipsApiClient
-            .Setup(x => x.Get<GetPagedLearnersFromLearningInner>(It.Is<GetLearningsRequest>(r => r.Ukprn == ukprn)))
-            .ReturnsAsync(new GetPagedLearnersFromLearningInner { Items = _fm36TestContext.LearningInnerApiResponse, Page = 1, PageSize = _fm36TestContext.LearningInnerApiResponse.Count, TotalItems = _fm36TestContext.LearningInnerApiResponse.Count });
-
-
+        _fm36TestContext.EarningsInnerApiResponse.TotalItems = _fm36TestContext.EarningsInnerApiResponse.Apprenticeships.Count;
         var response = new ApiResponse<GetFm36DataResponse>(_fm36TestContext.EarningsInnerApiResponse, System.Net.HttpStatusCode.OK, string.Empty);
         MockEarningsApiClient
             .Setup(x => x.PostWithResponseCode<GetFm36DataResponse>(
@@ -358,7 +354,6 @@ internal class GetFm36QueryTestFixture
                     StartDate = CollectionCalendarResponse.StartDate,
                     EndDate = episodePrice.Price.EndDate,
                     EndPointAssessmentPrice = episodePrice.Price.EndPointAssessmentPrice,
-                    FundingBandMaximum = episodePrice.Price.FundingBandMaximum,
                     TotalPrice = episodePrice.Price.TotalPrice,
                     TrainingPrice = episodePrice.Price.TrainingPrice
                 };
