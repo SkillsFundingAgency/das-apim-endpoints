@@ -37,7 +37,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetStandardC
             var apiResponse = new ApiResponse<GetStandardCertificateResponse>(responseBody, HttpStatusCode.OK, string.Empty);
 
             mockAssessorsApiClient
-                .Setup(c => c.GetWithResponseCode<GetStandardCertificateResponse>(It.Is<GetStandardCertificateRequest>(r => r.Id == id && r.IncludeLogs)))
+                .Setup(c => c.GetWithResponseCode<GetStandardCertificateResponse>(It.Is<GetStandardCertificateRequest>(r => r.Id == id && !r.IncludeLogs)))
                 .ReturnsAsync(apiResponse);
 
             var orgResponseBody = new GetOrganisationResponse { EndPointAssessorName = "Test Assessor" };

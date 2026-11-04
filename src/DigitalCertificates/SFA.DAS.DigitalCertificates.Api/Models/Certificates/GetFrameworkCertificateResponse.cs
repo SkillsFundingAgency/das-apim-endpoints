@@ -18,18 +18,22 @@ namespace SFA.DAS.DigitalCertificates.Api.Models.Certificates
         public string ProviderName { get; set; }
         public string EmployerName { get; set; }
         public DateTime? StartDate { get; set; }
+        public string CertificateType { get; set; }
+        public string Status { get; set; }
         public DateTime? PrintRequestedAt { get; set; }
         public string PrintRequestedBy { get; set; }
-        public string CertificateType { get; set; }
+        public string PrintStatus { get; set; }
+        public DateTime? PrintStatusAt { get; set; }
         public List<QualificationDetailsDto> QualificationsAndAwardingBodies { get; set; }
-        public List<DeliveryInformationDto> DeliveryInformation { get; set; }
 
-        public static implicit operator GetFrameworkCertificateResponse(GetFrameworkCertificateQueryResult source)
+        public static implicit operator GetFrameworkCertificateResponse(
+            GetFrameworkCertificateQueryResult source)
         {
-            if (source == null) return null;
+            if (source == null)
+                return null;
+
             return new GetFrameworkCertificateResponse
             {
-
                 FamilyName = source.FamilyName,
                 GivenNames = source.GivenNames,
                 Uln = source.Uln,
@@ -43,10 +47,18 @@ namespace SFA.DAS.DigitalCertificates.Api.Models.Certificates
                 ProviderName = source.ProviderName,
                 EmployerName = source.EmployerName,
                 StartDate = source.StartDate,
+                Status = source.Status,
                 PrintRequestedAt = source.PrintRequestedAt,
                 PrintRequestedBy = source.PrintRequestedBy,
-                QualificationsAndAwardingBodies = source.QualificationsAndAwardingBodies == null ? null : source.QualificationsAndAwardingBodies.ConvertAll(q => new QualificationDetailsDto { Name = q.Name, AwardingBody = q.AwardingBody }),
-                DeliveryInformation = source.DeliveryInformation == null ? null : source.DeliveryInformation.ConvertAll(d => new DeliveryInformationDto { Id = d.Id, Action = d.Action, Status = d.Status, EventTime = d.EventTime })
+                PrintStatus = source.PrintStatus,
+                PrintStatusAt = source.PrintStatusAt,
+                QualificationsAndAwardingBodies =
+                    source.QualificationsAndAwardingBodies?.ConvertAll(q =>
+                        new QualificationDetailsDto
+                        {
+                            Name = q.Name,
+                            AwardingBody = q.AwardingBody
+                        })
             };
         }
     }
@@ -55,13 +67,5 @@ namespace SFA.DAS.DigitalCertificates.Api.Models.Certificates
     {
         public string Name { get; set; }
         public string AwardingBody { get; set; }
-    }
-
-    public class DeliveryInformationDto
-    {
-        public Guid Id { get; set; }
-        public string Action { get; set; }
-        public string Status { get; set; }
-        public DateTime EventTime { get; set; }
     }
 }
