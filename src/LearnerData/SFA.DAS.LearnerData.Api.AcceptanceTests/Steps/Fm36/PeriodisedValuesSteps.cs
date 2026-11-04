@@ -72,7 +72,7 @@ public class PeriodisedValuesSteps(TestContext testContext, ScenarioContext scen
             var actual =
                 learningDelivery.LearningDeliveryPeriodisedValues.Single(x => x.AttributeName == expectation.Attribute);
 
-            actual.GetPeriodValue(expectation.Period).Should().Be(expectation.Value);
+            actual.GetPeriodValue(expectation.Period).Should().Be(expectation.Value, $"learning delivery {expectation.Episode} (aim {learningDelivery.AimSeqNumber}) {expectation.Attribute} period {expectation.Period}");
         }
     }
 
