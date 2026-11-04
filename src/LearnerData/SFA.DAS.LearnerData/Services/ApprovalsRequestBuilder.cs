@@ -39,7 +39,7 @@ public class ApprovalsRequestBuilder : IApprovalsRequestBuilder
         {
             body.Changes.Add(new ApprovalsFieldChange
             {
-                ChangeType = ApprovalsChangeTypes.StartDate,
+                ChangeType = nameof(CocChangeField.StartDate),
                 Data = new ApprovalsChangeData
                 {
                     // Old is Learning's last-held value, which can be stale and not useful.

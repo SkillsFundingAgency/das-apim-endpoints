@@ -45,7 +45,16 @@ public class ApprovalsPrice
     public DateTime EffectiveFrom { get; set; }
 }
 
-public static class ApprovalsChangeTypes
+/// <summary>
+/// Mirrors Approvals' CocChangeField: the change types Approvals accepts, sent by name as <see cref="ApprovalsFieldChange.ChangeType"/>.
+/// Approvals publish no package for it, so it is copied here; only the names matter on the wire, and they must match theirs exactly.
+/// </summary>
+public enum CocChangeField
 {
-    public const string StartDate = "StartDate";
+    TNP1,
+    TNP2,
+    Firstname,
+    Lastname,
+    StartDate,
+    PlannedEndDate
 }

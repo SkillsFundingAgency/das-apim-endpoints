@@ -1,5 +1,6 @@
-using AutoFixture;
+﻿using AutoFixture;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
@@ -46,7 +47,7 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
             
 
         // Act
-        var result = await _sut.Build(command.UpdateLearnerRequest, response, putRequest.Data);
+        var result = await _sut.Build(command.UpdateLearnerRequest, response, putRequest.Data, false);
 
         // Assert
         result.PutUrl.Should().Be($"learning/{response.LearningKey}/on-programme");
@@ -108,7 +109,7 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
                          });
 
         // Act
-        var result = await _sut.Build(command.UpdateLearnerRequest, response, putRequest.Data);
+        var result = await _sut.Build(command.UpdateLearnerRequest, response, putRequest.Data, false);
 
         // Assert
         result.Data.FundingBandMaximum.Should().Be(expectedFundingBand);
@@ -126,7 +127,7 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
                                .Create();
 
         // Act
-        var result = await _sut.Build(command.UpdateLearnerRequest, response, putRequest.Data);
+        var result = await _sut.Build(command.UpdateLearnerRequest, response, putRequest.Data, false);
 
         // Assert
         result.PutUrl.Should().Be($"learning/{response.LearningKey}/on-programme");
@@ -134,6 +135,42 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
         result.Data.Care.IsCareLeaver.Should().Be(putRequest.Data.Learner.Care.IsCareLeaver);
         result.Data.Care.CareLeaverEmployerConsentGiven.Should().Be(putRequest.Data.Learner.Care.CareLeaverEmployerConsentGiven);
 
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task Build_Should_Set_FurtherApprovalRequired(bool furtherApprovalRequired)
+    {
+        // Arrange
+        var command = _fixture.Create<UpdateLearnerCommand>();
+        var putRequest = _fixture.Create<UpdateLearningApiPutRequest>();
+        var response = _fixture.Build<UpdateLearnerApiPutResponse>()
+                               .With(r => r.Changes, new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>())
+                               .Create();
+
+        // Act
+        var result = await _sut.Build(command.UpdateLearnerRequest, response, putRequest.Data, furtherApprovalRequired);
+
+        // Assert
+        result.Data.FurtherApprovalRequired.Should().Be(furtherApprovalRequired);
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task Build_For_A_Created_Learner_Passes_Further_Approval(bool furtherApprovalRequired)
+    {
+        // Arrange: a reinstating POST can need further approval, just as a PUT can
+        var createLearnerRequest = _fixture.Create<CreateLearnerRequest>();
+        var putRequest = _fixture.Create<UpdateLearningApiPutRequest>();
+        var response = _fixture.Build<UpdateLearnerApiPutResponse>()
+                               .With(r => r.Changes, new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>())
+                               .Create();
+
+        // Act
+        var result = await _sut.Build(_fixture.Create<Guid>(), createLearnerRequest, response, putRequest.Data, furtherApprovalRequired);
+
+        // Assert
+        result.Data.FurtherApprovalRequired.Should().Be(furtherApprovalRequired);
     }
 
 }
