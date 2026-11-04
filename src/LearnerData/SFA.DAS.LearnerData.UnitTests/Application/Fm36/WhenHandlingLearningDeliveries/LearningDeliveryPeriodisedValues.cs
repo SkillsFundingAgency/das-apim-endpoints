@@ -1,6 +1,8 @@
-﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+﻿using DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using NUnit.Framework.Internal;
+using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
+using System.Text.Json;
 using SFA.DAS.LearnerData.TestHelpers;
 using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 using static SFA.DAS.LearnerData.Application.Fm36.Common.EarningsFM36Constants;
@@ -60,6 +62,100 @@ public class LearningDeliveryPeriodisedValues
             learningDelivery.LearningDeliveryPeriodisedValues.Should()
                 .Contain(x => x.AttributeName == "ProgrammeAimCompletionPayment" && x.AllValuesAreSetToZero());
         }
+    }
+
+    [Test]
+    public async Task Then_ProgrammeAimBalPayment_IsBalancingInstalmentForCompletionPeriod()
+    {
+        // Arrange
+        var testFixture = new GetFm36QueryTestFixture(TestScenario.SimpleApprenticeship);
+        var priceKey = testFixture.UnpagedLearningsResponse.Single().Episodes.Single().Prices.Last().Key;
+
+        // Completed part way through September 2020, so the balancing instalment is in a period that ends after the completion date
+        testFixture.SldLearnerData.Single().Delivery.OnProgramme.Single().CompletionDate = new DateTime(2020, 9, 15);
+        testFixture.GetEarningEpisode().Instalments.Add(new Instalment
+        {
+            AcademicYear = 2021,
+            DeliveryPeriod = 2,
+            Amount = 750,
+            EpisodePriceKey = priceKey,
+            InstalmentType = "Balancing"
+        });
+
+        // Act
+        await testFixture.CallSubjectUnderTest(collectionYear: 2021);
+
+        // Assert
+        var learningDelivery = testFixture.GetLearningDelivery(TestScenario.SimpleApprenticeship);
+        var result = learningDelivery.LearningDeliveryPeriodisedValues.Single(x => x.AttributeName == "ProgrammeAimBalPayment");
+        result.Period2.Should().Be(750);
+        result.Period1.Should().Be(0);
+        result.Period3.Should().Be(0);
+        result.Period12.Should().Be(0);
+    }
+
+    [Test]
+    public async Task Then_ProgrammeAimCompletionPayment_IsCompletionInstalmentInPeriodItIsDue()
+    {
+        // Arrange
+        var testFixture = new GetFm36QueryTestFixture(TestScenario.SimpleApprenticeship);
+        var priceKey = testFixture.UnpagedLearningsResponse.Single().Episodes.Single().Prices.Last().Key;
+
+        // The completion instalment is due in the period of the achievement date, which is well after the completion date
+        testFixture.SldLearnerData.Single().Delivery.OnProgramme.Single().CompletionDate = new DateTime(2020, 9, 15);
+        testFixture.GetEarningEpisode().Instalments.Add(new Instalment
+        {
+            AcademicYear = 2021,
+            DeliveryPeriod = 6,
+            Amount = 3000,
+            EpisodePriceKey = priceKey,
+            InstalmentType = "Completion"
+        });
+
+        // Act
+        await testFixture.CallSubjectUnderTest(collectionYear: 2021);
+
+        // Assert
+        var learningDelivery = testFixture.GetLearningDelivery(TestScenario.SimpleApprenticeship);
+        var result = learningDelivery.LearningDeliveryPeriodisedValues.Single(x => x.AttributeName == "ProgrammeAimCompletionPayment");
+        result.Period6.Should().Be(3000);
+        result.Period1.Should().Be(0);
+        result.Period5.Should().Be(0);
+        result.Period7.Should().Be(0);
+    }
+
+    [Test]
+    public async Task Then_ProgrammeAimCompletionPayment_IsOnlySetOnTheLatestStartedOnProgrammeDelivery()
+    {
+        // Arrange
+        var testFixture = new GetFm36QueryTestFixture(TestScenario.SimpleApprenticeship);
+        var priceKey = testFixture.UnpagedLearningsResponse.Single().Episodes.Single().Prices.Last().Key;
+
+        var onProgrammes = testFixture.SldLearnerData.Single().Delivery.OnProgramme;
+        var firstDelivery = onProgrammes.Single();
+        firstDelivery.AimSequenceNumber = 1;
+        var secondDelivery = JsonSerializer.Deserialize<OnProgrammeRequestDetails>(JsonSerializer.Serialize(firstDelivery))!;
+        secondDelivery.AimSequenceNumber = 2;
+        secondDelivery.StartDate = new DateTime(2020, 10, 1);
+        onProgrammes.Add(secondDelivery);
+
+        testFixture.GetEarningEpisode().Instalments.Add(new Instalment
+        {
+            AcademicYear = 2021,
+            DeliveryPeriod = 6,
+            Amount = 3000,
+            EpisodePriceKey = priceKey,
+            InstalmentType = "Completion"
+        });
+
+        // Act
+        await testFixture.CallSubjectUnderTest(collectionYear: 2021);
+
+        // Assert
+        testFixture.GetLearningDeliveryByAimSequenceNumber(1).LearningDeliveryPeriodisedValues
+            .Single(x => x.AttributeName == "ProgrammeAimCompletionPayment").AllValuesAreSetToZero().Should().BeTrue();
+        testFixture.GetLearningDeliveryByAimSequenceNumber(2).LearningDeliveryPeriodisedValues
+            .Single(x => x.AttributeName == "ProgrammeAimCompletionPayment").Period6.Should().Be(3000);
     }
 
     [TestCase(TestScenario.SimpleApprenticeship)]
@@ -528,11 +624,10 @@ public class LearningDeliveryPeriodisedValues
 
         if (scenario == TestScenario.ApprenticeshipWithEnglish)
         {
-            expectedLearningSupport = new List<AdditionalPayment>(); // In this test scenario, there are learning support
-                                                                     // payments but they all fall within onprogramme date range
-                                                                     // Learning support should only be recorded against English and maths
-                                                                     // if the payments fall outside of the onprogramme date range.
-                                                                     // this is covered in a seperate test scenario
+            expectedLearningSupport = new List<AdditionalPayment>(); // In this test scenario, the learning support payments have no LearnAimRef
+                                                                     // so they belong to the onprogramme aim, not English and maths.
+                                                                     // Payments belonging to English and maths courses are covered
+                                                                     // in separate test scenarios
         }
         else
         {
@@ -549,8 +644,8 @@ public class LearningDeliveryPeriodisedValues
     }
 
     // First Learning support complex scenario
-    // Onprogramme and English have ended before learning support payments completed
-    // payments assigned to Maths course
+    // Payments without a LearnAimRef are assigned to the onprogramme aim
+    // Payments with Maths' LearnAimRef are assigned to the Maths course
     [Test]
     public async Task Then_ReturnsLearningSupportValues_WhenLearningSupportAfterOnProgrammeAndEnglishDelivery()
     {
@@ -584,20 +679,24 @@ public class LearningDeliveryPeriodisedValues
     }
 
     // Second Learning support complex scenario
-    // Onprogramme ended before learning support payments completed but English and Maths is still active
-    // payments assigned to English as it has a lower AimSequenceNumber than Maths
+    // Payments with English's LearnAimRef are assigned to the English course
     [Test]
     public async Task Then_ReturnsLearningSupportValues_WhenLearningSupportAfterOnProgrammeAndEnglishDelivery_AssignedToEnglish()
     {
         // Arrange
         var testFixture = new GetFm36QueryTestFixture(TestScenario.LearningSupportComplexScenario, textContext =>
         {
-            var learner = textContext.TestLearners.First().UpdateLearnerRequest;
+            var testLearner = textContext.TestLearners.First();
+            var learner = testLearner.UpdateLearnerRequest;
 
             var english = learner.Delivery.EnglishAndMaths.Where(x=>x.AimSequenceNumber == 2).Single();
             english.StartDate = new DateTime(2020, 9, 1);
             english.EndDate = new DateTime(2021, 4, 30);
 
+            foreach (var payment in testLearner.AdditionalPayments.Where(x => x.LearnAimRef == "MAT001"))
+            {
+                payment.LearnAimRef = "ENG001";
+            }
         });
 
         // Act
@@ -626,70 +725,40 @@ public class LearningDeliveryPeriodisedValues
         AssertLearningSupport(mathsLearningDelivery, new List<AdditionalPayment>());
     }
 
-    // Third Learning support complex scenario
-    // Learning support payments are present before start of onprogramme are assigned to english
+    // Learning support for the onprogramme aim and each English and Maths course are shown on their own aim, whereas
+    // PriceEpisodeLSFCash only includes the learning support from the onprogramme aim
     [Test]
-    public async Task Then_ReturnsLearningSupportValues_WhenLearningSupportPaymentsBeforeOnProgrammeStart()
+    public async Task Then_ReturnsLearningSupportValues_PerAim_AndPriceEpisodeLSFCashIncludesOnlyOnProgrammeAim()
     {
         // Arrange
         var testFixture = new GetFm36QueryTestFixture(TestScenario.LearningSupportComplexScenario, textContext =>
         {
-            var learner = textContext.TestLearners.First().UpdateLearnerRequest;
-
-            var onProgramme = learner.Delivery.OnProgramme.Where(x => x.AimSequenceNumber == 1).Single();
-            onProgramme.StartDate = new DateTime(2020, 10, 1);
-            onProgramme.ExpectedEndDate = new DateTime(2021, 4, 30);
-
-            var english = learner.Delivery.EnglishAndMaths.Where(x => x.AimSequenceNumber == 2).Single();
-            english.StartDate = new DateTime(2020, 8, 1);
-            english.EndDate = new DateTime(2021, 4, 30);
-
+            // One learning support payment per period (onprogramme, English, Maths)
             textContext.TestLearners.First().AdditionalPayments = new List<AdditionalPayment>
-                {
-                    // Onprogramme additional payments
-                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 8, 31) },
-                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 2, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 9, 30) },
-                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 10, 31) },
-                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 11, 30) },
-                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 12, 31) },
-                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 6, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2021, 01, 31) },
-                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 7, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2021, 02, 28) },
-                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 8, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2021, 03, 31) },
-                    new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 9, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2021, 04, 30) },
-                };
-            });
+            {
+                new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 10, 30) },
+                new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 11, 30), LearnAimRef = "ENG001" },
+                new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 150, AdditionalPaymentType = "LearningSupport", DueDate = new DateTime(2020, 12, 30), LearnAimRef = "MAT001" },
+            };
+        });
 
         // Act
         await testFixture.CallSubjectUnderTest(collectionYear: 2021);
 
         //Assert
-        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
-        var onPrgrammeLearningDelivery = testFixture.GetLearningDeliveryByAimSequenceNumber(1); //StartDate: 2020-1-1 EndDate: 2021-1-31
-        var englishLearningDelivery = testFixture.GetLearningDeliveryByAimSequenceNumber(2); //StartDate: 2020-9-1 EndDate:2021-4-30
-        var mathsLearningDelivery = testFixture.GetLearningDeliveryByAimSequenceNumber(3); //StartDate: 2020-12-1 EndDate: 2021-4-30
+        AssertLearningSupport(testFixture.GetLearningDeliveryByAimSequenceNumber(1), new List<AdditionalPayment> { new AdditionalPayment { DeliveryPeriod = 3, Amount = 150 } });
+        AssertLearningSupport(testFixture.GetLearningDeliveryByAimSequenceNumber(2), new List<AdditionalPayment> { new AdditionalPayment { DeliveryPeriod = 4, Amount = 150 } });
+        AssertLearningSupport(testFixture.GetLearningDeliveryByAimSequenceNumber(3), new List<AdditionalPayment> { new AdditionalPayment { DeliveryPeriod = 5, Amount = 150 } });
 
-        AssertLearningSupport(onPrgrammeLearningDelivery, new List<AdditionalPayment>
-        {
-            new AdditionalPayment {DeliveryPeriod = 3, Amount = 150 },
-            new AdditionalPayment {DeliveryPeriod = 4, Amount = 150 },
-            new AdditionalPayment {DeliveryPeriod = 5, Amount = 150 },
-            new AdditionalPayment {DeliveryPeriod = 6, Amount = 150 },
-            new AdditionalPayment {DeliveryPeriod = 7, Amount = 150 },
-            new AdditionalPayment {DeliveryPeriod = 8, Amount = 150 },
-            new AdditionalPayment {DeliveryPeriod = 9, Amount = 150 },
-        });
-
-        AssertLearningSupport(englishLearningDelivery, new List<AdditionalPayment>
-        {
-            new AdditionalPayment {DeliveryPeriod = 1, Amount = 150 },
-            new AdditionalPayment {DeliveryPeriod = 2, Amount = 150 }
-        });
-
-        AssertLearningSupport(mathsLearningDelivery, new List<AdditionalPayment>());
+        var priceEpisode = testFixture.Result!.Items!.Single().PriceEpisodes.Single();
+        var priceEpisodeLsfCash = priceEpisode.PriceEpisodePeriodisedValues.Single(x => x.AttributeName == PeriodisedAttributes.PriceEpisodeLSFCash);
+        priceEpisodeLsfCash.Period3.Should().Be(150);
+        priceEpisodeLsfCash.Period4.Should().Be(0);
+        priceEpisodeLsfCash.Period5.Should().Be(0);
     }
 
     private void AssertLearningSupport(
-        ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery learningDelivery, List<AdditionalPayment> expectedLearningSupport)
+        DC.ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery learningDelivery, List<AdditionalPayment> expectedLearningSupport)
     {
 
         var valueResult = learningDelivery.LearningDeliveryPeriodisedValues.Single(x => x.AttributeName == PeriodisedAttributes.LearnSuppFundCash);
