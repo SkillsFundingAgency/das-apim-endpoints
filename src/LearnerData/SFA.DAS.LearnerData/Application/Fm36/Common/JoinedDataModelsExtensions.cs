@@ -71,7 +71,11 @@ internal static class JoinedDataModelsExtensions
         byte collectionPeriod,
         bool hasSubsequentPriceEpisodes)
     {
-        var previousEarnings = GetPreviousEarnings(joinedLearnerData, currentAcademicYear.GetShortAcademicYear(), collectionPeriod);
+        var cappedRemainingTNPAmount = Math.Min(joinedPriceEpisode.TotalPrice, joinedPriceEpisode.FundingBandMaximum);
+        var completionElement = Math.Max(0,
+            Math.Min(
+                (joinedPriceEpisode.TotalPrice - GetUpperLimitAdjustment(joinedPriceEpisode)) * EarningsFM36Constants.CompletionElementMultiplier,
+                cappedRemainingTNPAmount));
 
         //Total earnings are for the entire episode, irrespective of academic year
         var totalEpisodeEarnings = joinedLearnerData.Episodes
@@ -103,7 +107,7 @@ internal static class JoinedDataModelsExtensions
             PriceEpisodeActualInstalments = joinedLearnerData.GetPriceEpisodeActualInstalments(currentAcademicYear, hasSubsequentPriceEpisodes),
             PriceEpisodeInstalmentsThisPeriod = joinedLearnerData.GetPriceEpisodeInstalmentsThisPeriod(joinedPriceEpisode, currentAcademicYear, collectionPeriod),
 
-            PriceEpisodeCompletionElement = joinedPriceEpisode.CompletionPayment,
+            PriceEpisodeCompletionElement = completionElement,
             PriceEpisodePreviousEarnings = EarningsFM36Constants.PriceEpisodePreviousEarnings,
             PriceEpisodeInstalmentValue = joinedPriceEpisode.Instalments.FirstOrDefault()?.Amount ?? 0,
             PriceEpisodeOnProgPayment = EarningsFM36Constants.PriceEpisodeOnProgPayment,
@@ -137,12 +141,10 @@ internal static class JoinedDataModelsExtensions
             PriceEpisodeRedStatusCode = EarningsFM36Constants.PriceEpisodeRedStatusCode,
             PriceEpisodeLDAppIdent = $"{EarningsFM36Constants.ProgType}-{joinedPriceEpisode.TrainingCode.Trim()}",
             PriceEpisodeAugmentedBandLimitFactor = EarningsFM36Constants.PriceEpisodeAugmentedBandLimitFactor,
-            PriceEpisodeRemainingTNPAmount = joinedPriceEpisode.FundingBandMaximum - previousEarnings,
-            PriceEpisodeRemainingAmountWithinUpperLimit = joinedPriceEpisode.FundingBandMaximum - previousEarnings,
-            PriceEpisodeCappedRemainingTNPAmount = joinedPriceEpisode.FundingBandMaximum - previousEarnings,
-            PriceEpisodeExpectedTotalMonthlyValue = joinedPriceEpisode.FundingBandMaximum
-            - GetPreviousEarnings(joinedLearnerData, currentAcademicYear.GetShortAcademicYear(), collectionPeriod)
-                                        - joinedPriceEpisode.CompletionPayment,
+            PriceEpisodeRemainingTNPAmount = joinedPriceEpisode.TotalPrice,
+            PriceEpisodeRemainingAmountWithinUpperLimit = joinedPriceEpisode.FundingBandMaximum,
+            PriceEpisodeCappedRemainingTNPAmount = cappedRemainingTNPAmount,
+            PriceEpisodeExpectedTotalMonthlyValue = cappedRemainingTNPAmount - completionElement,
         };
     }
 
