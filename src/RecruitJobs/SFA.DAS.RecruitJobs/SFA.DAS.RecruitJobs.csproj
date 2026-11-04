@@ -33,6 +33,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="10.0.9" />
-    <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.118-prerelease-13" />
+    <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.122-prerelease-2" />
   </ItemGroup>
 </Project>
