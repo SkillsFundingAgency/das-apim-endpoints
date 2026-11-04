@@ -11,6 +11,8 @@ using WireMock.ResponseBuilders;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps.Fm36;
 
+using Learning = SFA.DAS.LearnerData.Responses.LearningInner.Learning;
+
 [Binding]
 public class MissingEarningsSteps(TestContext testContext, ScenarioContext scenarioContext)
 {

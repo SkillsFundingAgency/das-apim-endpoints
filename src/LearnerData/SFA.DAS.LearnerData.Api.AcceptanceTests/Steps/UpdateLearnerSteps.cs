@@ -1,6 +1,8 @@
-using AutoFixture;
+﻿using AutoFixture;
 using FluentAssertions;
 using Newtonsoft.Json;
+using SFA.DAS.Common.Domain.Types;
+using SFA.DAS.Learning.Types;
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
@@ -18,7 +20,7 @@ using WireMock.ResponseBuilders;
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps;
 
 [Binding]
-internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scenarioContext)
+internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scenarioContext, FurtherApprovalSteps furtherApprovalSteps)
 {
     private readonly Fixture _fixture = new Fixture();
     private const string ChangesKey = "Changes";
@@ -93,6 +95,12 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         scenarioContext.Set(learnerRef, LearnerRefKey);
     }
 
+    [Then(@"no update request is sent to the earnings domain")]
+    public void ThenNoUpdateRequestIsSentToTheEarningsDomain()
+    {
+        testContext.EarningsApi.MockServer.LogEntries.Should().BeEmpty();
+    }
+
     [Then(@"a LearnerDataEvent is published")]
     public void ThenALearnerDataEventIsPublished()
     {
@@ -131,6 +139,18 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
             $"Expected a request to {requestUrl} but found {requests.Count} requests instead.");
     }
 
+    [Then(@"the on-programme update request sent to the earnings domain (requires|does not require) further approval")]
+    public void ThenTheOnProgrammeUpdateRequestSentToTheEarningsDomainRequiresFurtherApproval(string requires)
+    {
+        var requestUrl = GetEarningsRequestUrl("on-programme");
+
+        var entry = testContext.EarningsApi.MockServer.LogEntries
+            .Single(request => request.RequestMessage.Url.Contains(requestUrl));
+
+        var body = JsonConvert.DeserializeObject<UpdateOnProgrammeRequest>(entry.RequestMessage.Body);
+        body!.FurtherApprovalRequired.Should().Be(requires == "requires");
+    }
+
     [Then(@"no changes are made to the learner")]
     public void ThenNoChangesAreMadeToTheLearner()
     {
@@ -156,7 +176,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     public void ThenTheReleaseEarningsRequestHasTheLearnerKeyAndRef(string expectedLearnerRef)
     {
         var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
-        var learningKey = scenarioContext.Get<UpdateLearnerApiPutResponse>().LearningKey;
+        var learningKey = scenarioContext.Get<BaseLearnerApiPutResponse>().LearningKey;
         var requestUrl = $"learning/{learningKey}/release-earnings";
 
         var entry = testContext.EarningsApi.MockServer.LogEntries
@@ -236,6 +256,8 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
             response.Changes.AddRange(changes);
         }
 
+        furtherApprovalSteps.ConfigureApprovalFlowIfNeeded(response);
+
         testContext.ApprenticeshipsApi.MockServer
         .Given(
             Request
@@ -245,7 +267,9 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         .RespondWith(
             Response.Create()
             .WithStatusCode(HttpStatusCode.OK)
-            .WithBodyAsJson(response)
+            .WithHeader("Content-Type", "application/json")
+            // System.Text.Json, not WithBodyAsJson (Newtonsoft): the response holds JsonNode values in its change details
+            .WithBody(System.Text.Json.JsonSerializer.Serialize(response))
         );
 
         var approvalCheckStatusCode = scenarioContext.TryGetValue(ApprovalCheckStatusCodeKey, out HttpStatusCode explicitStatusCode)
@@ -263,7 +287,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
             .WithStatusCode(approvalCheckStatusCode)
         );
 
-        scenarioContext.Set(response);
+        scenarioContext.Set<BaseLearnerApiPutResponse>(response);
     }
 
     private void ConfigureEarningsInnerApiToRespondOkToEverything(bool hasNewEarningsProfileVersionBeenGenerated = false)
@@ -307,7 +331,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
 
     private string GetEarningsRequestUrl(string updateRequestType)
     {
-        var learningKey = scenarioContext.Get<UpdateLearnerApiPutResponse>().LearningKey;
+        var learningKey = scenarioContext.Get<BaseLearnerApiPutResponse>().LearningKey;
 
         switch (updateRequestType)
         {

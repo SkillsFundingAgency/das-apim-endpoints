@@ -1,4 +1,4 @@
-using AutoFixture;
+﻿using AutoFixture;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.Common.Domain.Types;
@@ -9,12 +9,14 @@ using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
+using SFA.DAS.Learning.Types;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using SFA.DAS.Apim.Shared.Models;
 using System.Net;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.LearnerData.Configuration;
+using SFA.DAS.LearnerData.Responses.CommitmentsInner;
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 
@@ -30,6 +32,7 @@ public class WhenHandlingUpdateLearnerCommand
     private Mock<IUpdateLearningPutRequestBuilder> _updateLearningPutRequestBuilder;
     private Mock<IUpdateEarningsOnProgrammeRequestBuilder> _updateEarningsOnProgrammeRequestBuilder;
     private Mock<IUpdateEarningsEnglishAndMathsRequestBuilder> _updateEarningsEnglishAndMathsRequestBuilder;
+    private Mock<IFurtherApprovalService> _furtherApprovalService;
     private Mock<ILearnerDataCacheService> _distributedCache;
     private Mock<ILogger<UpdateLearnerCommandHandler>> _logger;
     private Mock<IMessageSession> _messageSession;
@@ -44,11 +47,15 @@ public class WhenHandlingUpdateLearnerCommand
     public void Setup()
     {
         _fixture = new Fixture();
+        _fixture.Customize(new JsonNodeCustomization());
+        // Otherwise a random true would tell Earnings that further approval is required in tests that are not about it
+        _fixture.Customize<UpdateLearnerApiPutResponse>(x => x.With(r => r.FurtherApprovalNeeded, false));
         _learningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _earningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
         _updateLearningPutRequestBuilder = new Mock<IUpdateLearningPutRequestBuilder>();
         _updateEarningsOnProgrammeRequestBuilder = new Mock<IUpdateEarningsOnProgrammeRequestBuilder>();
         _updateEarningsEnglishAndMathsRequestBuilder = new Mock<IUpdateEarningsEnglishAndMathsRequestBuilder>();
+        _furtherApprovalService = new Mock<IFurtherApprovalService>();
         _distributedCache = new Mock<ILearnerDataCacheService>();
         _logger = new Mock<ILogger<UpdateLearnerCommandHandler>>();
         _messageSession = new Mock<IMessageSession>();
@@ -63,6 +70,7 @@ public class WhenHandlingUpdateLearnerCommand
             _updateLearningPutRequestBuilder.Object,
             _updateEarningsOnProgrammeRequestBuilder.Object,
             _updateEarningsEnglishAndMathsRequestBuilder.Object,
+            _furtherApprovalService.Object,
             _distributedCache.Object,
             _messageSession.Object,
             _approvedApprenticeshipExistsChecker.Object,
@@ -73,6 +81,10 @@ public class WhenHandlingUpdateLearnerCommand
         _approvedApprenticeshipExistsChecker
             .Setup(x => x.Exists(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<DateTime>()))
             .ReturnsAsync(true);
+
+        _furtherApprovalService
+            .Setup(x => x.Resolve(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<BaseLearnerApiPutResponse>()))
+            .ReturnsAsync(false);
     }
 
     [Test]
@@ -198,7 +210,7 @@ public class WhenHandlingUpdateLearnerCommand
         MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
         var apiPutRequest = MockLearningPutRequestBuilder(command);
 
-        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data))
+        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data, false))
             .ReturnsAsync(updateOnProgPutRequest);
 
         _earningsApiClient.Setup(x => x.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
@@ -241,7 +253,7 @@ public class WhenHandlingUpdateLearnerCommand
         MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
         var apiPutRequest = MockLearningPutRequestBuilder(command);
 
-        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data))
+        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data, false))
             .ReturnsAsync(updateOnProgPutRequest);
 
         _earningsApiClient.Setup(x => x.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
@@ -415,7 +427,7 @@ public class WhenHandlingUpdateLearnerCommand
         MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
         var apiPutRequest = MockLearningPutRequestBuilder(command);
 
-        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data))
+        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data, false))
             .ReturnsAsync(updateOnProgPutRequest);
 
         _updateEarningsEnglishAndMathsRequestBuilder.Setup(x => x.Build(command, updateLearningApiResponse, apiPutRequest))
@@ -498,7 +510,7 @@ public class WhenHandlingUpdateLearnerCommand
         MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
         var apiPutRequest = MockLearningPutRequestBuilder(command);
 
-        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data))
+        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data, false))
             .ReturnsAsync(updateOnProgPutRequest);
 
         _earningsApiClient.Setup(x => x.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
@@ -795,6 +807,142 @@ public class WhenHandlingUpdateLearnerCommand
         // Assert - only the genuinely new (StandardCode, AgreementId) combination gets published
         _messageSession.Verify(x => x.Publish(evt, It.IsAny<PublishOptions>()), Times.Once);
         _courseService.Verify(x => x.GetStandardDetailsById("1"), Times.Never);
+    }
+
+    [Test]
+    public async Task Then_Further_Approval_Is_Resolved_For_The_Changes_Learning_Reported()
+    {
+        // Arrange
+        var (command, learningResponse) = ArrangeStartDateChange();
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _furtherApprovalService.Verify(x => x.Resolve(command.Ukprn, command.UpdateLearnerRequest.Learner.Uln, learningResponse), Times.Once);
+    }
+
+    [Test]
+    public async Task Then_Further_Approval_Is_Not_Resolved_If_No_Changes()
+    {
+        // Arrange
+        var command = _fixture.Create<UpdateLearnerCommand>();
+        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse(), HttpStatusCode.OK);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _furtherApprovalService.VerifyNoOtherCalls();
+    }
+
+    [Test]
+    public async Task Then_Further_Approval_Is_Not_Resolved_If_Only_Personal_Details_Changed()
+    {
+        // Arrange
+        var (command, _) = ArrangeStartDateChange(changes: [UpdateLearnerApiPutResponse.LearningUpdateChanges.PersonalDetails]);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _furtherApprovalService.VerifyNoOtherCalls();
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task Then_Earnings_Is_Updated_With_The_Resolved_Further_Approval(bool furtherApprovalRequired)
+    {
+        // Arrange
+        var (command, learningResponse) = ArrangeStartDateChange();
+        _furtherApprovalService
+            .Setup(x => x.Resolve(command.Ukprn, command.UpdateLearnerRequest.Learner.Uln, learningResponse))
+            .ReturnsAsync(furtherApprovalRequired);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        VerifyEarningsUpdated(command, learningResponse, furtherApprovalRequired);
+    }
+
+    [Test]
+    public async Task Then_Further_Approval_Is_Resolved_Before_Earnings_Is_Updated()
+    {
+        // Arrange
+        var (command, _) = ArrangeStartDateChange();
+        var calls = new List<string>();
+
+        _furtherApprovalService
+            .Setup(x => x.Resolve(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<BaseLearnerApiPutResponse>()))
+            .Callback(() => calls.Add("resolve"))
+            .ReturnsAsync(false);
+        _earningsApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
+            .Callback(() => calls.Add("earnings"))
+            .ReturnsAsync(new ApiResponse<UpdateOnProgrammeEarningsApiPutResponse>(new UpdateOnProgrammeEarningsApiPutResponse(), HttpStatusCode.OK, string.Empty));
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        calls.Should().Equal("resolve", "earnings");
+    }
+
+    [Test]
+    public async Task Then_The_Exception_Is_Propagated_And_Earnings_Is_Untouched_If_Resolving_Further_Approval_Fails()
+    {
+        // Arrange
+        var (command, learningResponse) = ArrangeStartDateChange();
+        _furtherApprovalService
+            .Setup(x => x.Resolve(command.Ukprn, command.UpdateLearnerRequest.Learner.Uln, learningResponse))
+            .ThrowsAsync(new HttpRequestException("approvals is down"));
+
+        // Act / Assert
+        Assert.ThrowsAsync<HttpRequestException>(async () => await _sut.Handle(command, CancellationToken.None));
+        _earningsApiClient.VerifyNoOtherCalls();
+    }
+
+    private (UpdateLearnerCommand Command, UpdateLearnerApiPutResponse LearningResponse) ArrangeStartDateChange(
+        UpdateLearnerApiPutResponse.LearningUpdateChanges[]? changes = null)
+    {
+        var command = _fixture.Create<UpdateLearnerCommand>();
+
+        var learningResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
+        learningResponse.ChangeDetails =
+        [
+            new UpdateLearnerApiPutResponse.ChangeDetail
+            {
+                ChangeType = UpdateLearnerApiPutResponse.LearningUpdateChanges.StartDate,
+                RequiresApproval = true
+            }
+        ];
+        learningResponse.FurtherApprovalNeeded = true;
+        learningResponse.Changes.Clear();
+        learningResponse.Changes.AddRange(changes ??
+        [
+            UpdateLearnerApiPutResponse.LearningUpdateChanges.StartDate,
+            UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices
+        ]);
+
+        MockLearningApiResponse(_learningApiClient, learningResponse, HttpStatusCode.OK);
+        var apiPutRequest = MockLearningPutRequestBuilder(command);
+
+        _updateEarningsOnProgrammeRequestBuilder
+            .Setup(x => x.Build(command.UpdateLearnerRequest, learningResponse, apiPutRequest.Data, It.IsAny<bool>()))
+            .ReturnsAsync(_fixture.Create<UpdateOnProgrammeApiPutRequest>());
+
+        _earningsApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateOnProgrammeEarningsApiPutResponse>(new UpdateOnProgrammeEarningsApiPutResponse(), HttpStatusCode.OK, string.Empty));
+
+        return (command, learningResponse);
+    }
+
+    private void VerifyEarningsUpdated(UpdateLearnerCommand command, UpdateLearnerApiPutResponse learningResponse, bool furtherApprovalRequired)
+    {
+        _updateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(command.UpdateLearnerRequest, learningResponse, It.IsAny<UpdateLearningRequestBody>(), furtherApprovalRequired), Times.Once);
+        _earningsApiClient.Verify(x => x.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Once);
     }
 
     private UpdateLearnerCommand BuildCommand(params OnProgrammeRequestDetails[] onProgramme)

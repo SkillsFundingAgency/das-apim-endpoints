@@ -11,6 +11,8 @@ using WireMock.ResponseBuilders;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps;
 
+using Learning = SFA.DAS.LearnerData.Application.GetLearners.Learning;
+
 [Binding]
 public class GetLearnersSteps(TestContext testContext, ScenarioContext scenarioContext)
 {
