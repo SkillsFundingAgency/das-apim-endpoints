@@ -1029,3 +1029,6 @@ Data: the JSON for this service from the das-employer-config repository
 
 Starting the API will then show the swagger definition with the available operations. 
 
+### MSA Brokerage
+
+See the dedicated readme for setup: https://github.com/SkillsFundingAgency/das-apim-endpoints/blob/master/src/MsaBrokerage/ReadMe.md
