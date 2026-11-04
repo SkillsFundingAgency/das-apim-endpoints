@@ -58,7 +58,8 @@ public static class ApprenticeshipModelExtensions
                             Amount = x.Amount,
                             AcademicYear = x.AcademicYear,
                             DueDate = x.DueDate,
-                            DeliveryPeriod = x.DeliveryPeriod
+                            DeliveryPeriod = x.DeliveryPeriod,
+                            LearnAimRef = string.IsNullOrWhiteSpace(x.LearnAimRef) ? null : x.LearnAimRef
                         }).ToList(),
                     EnglishAndMaths = apprenticeshipModel.EnglishAndMaths.Select(x =>
                         new SFA.DAS.LearnerData.Responses.EarningsInner.EnglishAndMaths
