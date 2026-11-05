@@ -395,12 +395,14 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
         EstimatesTimeline estimatesTimeline,
         [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeApiClient,
         [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> projectionApiClient,
+        [Frozen] Mock<ICacheStorageService> cacheStorageService,
         [Greedy] GetLevyProjectionsByAccountIdQueryHandler sut)
     {
         // arrange
         var now = DateTime.UtcNow;
         var startOfMonth = new DateTime(now.Year, now.Month, 1);
         var request = new GetLevyProjectionsByAccountIdQuery(accountId);
+        SetupCacheMisses(cacheStorageService);
         SetupCommonFinanceCalls(financeApiClient, levySummaryByAccountIdResponse);
         SetupProjection(projectionApiClient, estimatesTimeline);
 
@@ -427,12 +429,14 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
         EstimatesTimeline estimatesTimeline,
         [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeApiClient,
         [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> projectionApiClient,
+        [Frozen] Mock<ICacheStorageService> cacheStorageService,
         [Greedy] GetLevyProjectionsByAccountIdQueryHandler sut)
     {
         // arrange
         var now = DateTime.UtcNow;
         var payrollDate = new DateTime(now.Year, now.Month, 1).AddMonths(-13);
         var request = new GetLevyProjectionsByAccountIdQuery(accountId);
+        SetupCacheMisses(cacheStorageService);
 
         // Convert the payroll date to HMRC payroll period
         short payrollMonth = payrollDate.Month >= 4
