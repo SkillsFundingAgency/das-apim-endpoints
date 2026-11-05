@@ -122,3 +122,9 @@ Scenario: Missing LearnerRef is passed through to the learning domain as empty, 
 	And the learner has a LearnerRef of ""
 	When the learner is updated
 	Then the LearnerRef sent to the learning domain is ""
+
+Scenario: Unchanged resubmission with earnings sync forced releases all earnings without recalculating
+	Given there is a learner
+	And the ForceEarningsSync passed is different to the value in the learners domain
+	When the learner is updated
+	Then only a release-earnings request for all earnings is sent to the earnings domain

@@ -12,7 +12,7 @@ public sealed record LevyDeclaration
     public decimal TopUp { get; set; }
     public decimal TotalAmount { get; set; }
 
-    public DateTime? PayrollDate()
+    public DateTime? GetLevyCreationDateFromPayrollDate()
     {
         if (PayrollMonth == null || string.IsNullOrEmpty(PayrollYear))
         {
@@ -33,7 +33,8 @@ public sealed record LevyDeclaration
             month = (short)(PayrollMonth - 9);
         }
 
-        var dateTime = new DateTime(year, month, 1);
+        //Add a month as the payroll date is in arrears
+        var dateTime = new DateTime(year, month, 1).AddMonths(1);
 
         return dateTime;
     }

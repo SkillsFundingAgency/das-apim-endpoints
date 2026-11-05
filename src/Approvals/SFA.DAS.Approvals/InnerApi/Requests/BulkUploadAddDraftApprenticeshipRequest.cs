@@ -38,7 +38,10 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
         public string IsDurationReducedByRPLAsString { get; set; }
         public string DurationReducedByAsString { get; set; }
         public string PriceReducedByAsString { get; set; }
-
+        public int? TrainingPrice { get; set; }
+        public int? EndPointAssessmentPrice { get; set; }
+        public DateTime? ActualStartDate { get; set; }
+        public long? LearnerDataId { get; set; }
         public static implicit operator ReservationRequest(BulkUploadAddDraftApprenticeshipRequest response)
         {
             var legalEntityId = response.LegalEntityId.HasValue ? response.LegalEntityId.Value : 0;

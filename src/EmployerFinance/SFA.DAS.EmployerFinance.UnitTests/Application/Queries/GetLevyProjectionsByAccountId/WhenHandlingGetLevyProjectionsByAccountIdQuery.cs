@@ -62,7 +62,7 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
             .Callback<IPostApiRequest, bool>((r, _) => capturedEmployerFundingProjectionRequest = r as PostEmployerFundingProjectionRequest)
             .ReturnsAsync(new ApiResponse<EstimatesTimeline>(estimatesTimeline, HttpStatusCode.OK, null!));
 
-        List<LevyInMonthSummary> expectedHistoricLevyIn = [new(new DateOnly(now.Year, now.Month, 1), 1100m)];
+        List<LevyInMonthSummary> expectedHistoricLevyIn = [new(new DateOnly(now.Year, now.Month, 1).AddMonths(1), 1100m)];
         
         // act
         var result = await sut.Handle(request, CancellationToken.None);
@@ -125,7 +125,7 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
             .Callback<IPostApiRequest, bool>((r, _) => capturedEmployerFundingProjectionRequest = r as PostEmployerFundingProjectionRequest)
             .ReturnsAsync(new ApiResponse<EstimatesTimeline>(estimatesTimeline, HttpStatusCode.OK, null!));
 
-        List<LevyInMonthSummary> expectedHistoricLevyIn = [new(new DateOnly(now.Year, now.Month, 1), 1000m)];
+        List<LevyInMonthSummary> expectedHistoricLevyIn = [new(new DateOnly(now.Year, now.Month, 1).AddMonths(1), 1000m)];
         
         // act
         await sut.Handle(request, CancellationToken.None);
