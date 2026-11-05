@@ -3,5 +3,5 @@
 public sealed record PostImportLearnersByAccountIdRequest
 {
     public required long AccountId { get; set; }
-    public required DateTime LastSuccessfulImportDate { get; set; }
+    public DateTime? LastSuccessfulImportDate { get; set; }
 }

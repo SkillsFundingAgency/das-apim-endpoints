@@ -41,8 +41,9 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
 
         try
         {
-            var committedLearnersTask = GetAllPagedAsync(request.AccountId, transferSenderId: null, request.LastSuccessfulImportDate, cancellationToken);
-            var committedTransferOutTask = GetAllPagedAsync(accountId: null, transferSenderId: request.AccountId, request.LastSuccessfulImportDate, cancellationToken);
+            var lastUpdated = GetLastUpdatedFilter(request.LastSuccessfulImportDate);
+            var committedLearnersTask = GetAllPagedAsync(request.AccountId, transferSenderId: null, lastUpdated, cancellationToken);
+            var committedTransferOutTask = GetAllPagedAsync(accountId: null, transferSenderId: request.AccountId, lastUpdated, cancellationToken);
 
             await Task.WhenAll(committedLearnersTask, committedTransferOutTask);
 
@@ -117,8 +118,8 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
                 PageNumber: 1, 
                 PageItemCount,
                 transferSenderId,
-                [.. ActiveStatuses], 
-                LastUpdated: lastUpdated.GetValueOrDefault().AddDays(-1))); // added a day to ensure we get all records that were updated on the last successful import date
+                [.. ActiveStatuses],
+                LastUpdated: lastUpdated));
 
         if (firstPage?.Apprenticeships == null || !firstPage.Apprenticeships.Any())
             return [];
@@ -136,12 +137,18 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             {
                 var response = await commitmentsV2ApiClient.Get<GetCommittedLearnersCostByAccountIdResponse>(
                     new GetCommittedLearnersCostByAccountIdRequest(accountId, PageNumber: page, PageItemCount, transferSenderId,
-                        [.. ActiveStatuses]));
+                        [.. ActiveStatuses],
+                        LastUpdated: lastUpdated));
                 remainingPages.Add(response);
             });
 
         return firstPage.Apprenticeships.Concat(remainingPages.SelectMany(p => p.Apprenticeships));
     }
+
+    private static DateTime? GetLastUpdatedFilter(DateTime? lastSuccessfulImportDate) =>
+        lastSuccessfulImportDate is null || lastSuccessfulImportDate.Value <= DateTime.MinValue.AddDays(1)
+            ? null
+            : lastSuccessfulImportDate.Value.AddDays(-1);
 
     private async Task PostApprenticeshipPaymentSummary(
         long accountId,

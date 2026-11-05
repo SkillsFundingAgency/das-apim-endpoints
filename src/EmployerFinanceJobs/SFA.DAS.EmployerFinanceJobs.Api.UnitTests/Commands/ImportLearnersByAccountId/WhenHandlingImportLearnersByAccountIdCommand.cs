@@ -42,6 +42,89 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         fundingProjectionClient.Verify(c => c.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(It.IsAny<PutApprenticeshipPaymentSummaryRequest>()), Times.Never);
     }
 
+    [Test]
+    [MoqInlineAutoData(null)]
+    [MoqInlineAutoData("0001-01-01T00:00:00")]
+    public async Task Then_All_Learners_Are_Requested_When_The_Account_Has_Never_Been_Imported(
+        string? lastSuccessfulImportDate,
+        long accountId,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var command = new ImportLearnersByAccountIdCommand(accountId,
+            lastSuccessfulImportDate is null ? null : DateTime.Parse(lastSuccessfulImportDate));
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, []);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+
+        // Act
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsSuccessful.Should().BeTrue();
+        result.FailureReason.Should().BeNull();
+        commitmentsClient.Verify(c => c.Get<GetCommittedLearnersCostByAccountIdResponse>(
+            It.Is<GetCommittedLearnersCostByAccountIdRequest>(r => r.Statuses != null && r.LastUpdated == null)), Times.Exactly(2));
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Learners_Updated_Since_The_Day_Before_The_Last_Successful_Import_Are_Requested(
+        long accountId,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var lastSuccessfulImportDate = new DateTime(2026, 3, 15, 10, 30, 0, DateTimeKind.Utc);
+        var command = new ImportLearnersByAccountIdCommand(accountId, lastSuccessfulImportDate);
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, []);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+
+        // Act
+        await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        commitmentsClient.Verify(c => c.Get<GetCommittedLearnersCostByAccountIdResponse>(
+            It.Is<GetCommittedLearnersCostByAccountIdRequest>(r => r.LastUpdated == lastSuccessfulImportDate.AddDays(-1))), Times.Exactly(2));
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Every_Page_Is_Requested_With_The_Same_Last_Updated_Filter(
+        long accountId,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var lastSuccessfulImportDate = new DateTime(2026, 3, 15, 0, 0, 0, DateTimeKind.Utc);
+        var command = new ImportLearnersByAccountIdCommand(accountId, lastSuccessfulImportDate);
+        commitmentsClient
+            .Setup(c => c.Get<GetCommittedLearnersCostByAccountIdResponse>(
+                It.Is<GetCommittedLearnersCostByAccountIdRequest>(r => r.AccountId == accountId && r.Statuses != null)))
+            .ReturnsAsync(new GetCommittedLearnersCostByAccountIdResponse
+            {
+                Apprenticeships = [],
+                TotalApprenticeshipsFound = 150
+            });
+        commitmentsClient
+            .Setup(c => c.Get<GetCommittedLearnersCostByAccountIdResponse>(
+                It.Is<GetCommittedLearnersCostByAccountIdRequest>(r => r.AccountId == accountId && r.PageNumber == 1)))
+            .ReturnsAsync(new GetCommittedLearnersCostByAccountIdResponse
+            {
+                Apprenticeships = [CreateApprenticeship(1)],
+                TotalApprenticeshipsFound = 150
+            });
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+
+        // Act
+        await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        commitmentsClient.Verify(c => c.Get<GetCommittedLearnersCostByAccountIdResponse>(
+            It.Is<GetCommittedLearnersCostByAccountIdRequest>(r =>
+                r.AccountId == accountId &&
+                r.PageNumber == 2 &&
+                r.LastUpdated == lastSuccessfulImportDate.AddDays(-1))), Times.Once);
+    }
+
     [Test, MoqAutoData]
     public async Task Then_Imports_Learners_And_Transfers(
         ImportLearnersByAccountIdCommand command,
