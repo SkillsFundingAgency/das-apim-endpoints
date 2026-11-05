@@ -81,8 +81,8 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
     private static List<LevyInMonthSummary> BuildLevyInSummary(List<LevyDeclaration> declarations) =>
     [
         .. declarations
-            .Where(t => t.PayrollDate() != null)
-            .GroupBy(t => t.PayrollDate()!.Value)
+            .Where(t => t.GetLevyCreationDateFromPayrollDate() != null)
+            .GroupBy(t => t.GetLevyCreationDateFromPayrollDate()!.Value)
             .Select(g => new LevyInMonthSummary(
                 new DateOnly(g.Key.Year, g.Key.Month, 1),
                 g.Sum(t => t.TotalAmount - t.TopUp)))

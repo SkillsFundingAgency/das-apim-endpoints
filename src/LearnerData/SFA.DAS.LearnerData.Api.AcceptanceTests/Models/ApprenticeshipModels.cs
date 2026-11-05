@@ -55,6 +55,8 @@ public class AdditionalPaymentModel
     public byte DeliveryPeriod { get; set; }
     public DateTime DueDate { get; set; }
     public decimal Amount { get; set; }
+    /// <summary> The English and maths course the payment belongs to, blank for payments on the onprogramme aim </summary>
+    public string LearnAimRef { get; set; }
 }
 
 public class PeriodisedValuesModel
@@ -75,6 +77,7 @@ public class EnglishAndMathsModel
     public decimal Amount { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
+    public DateTime? WithdrawalDate { get; set; }
 }
 
 #pragma warning restore CS8618
