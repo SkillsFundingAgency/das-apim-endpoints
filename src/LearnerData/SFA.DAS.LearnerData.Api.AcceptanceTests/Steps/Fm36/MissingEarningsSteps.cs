@@ -20,16 +20,16 @@ public class MissingEarningsSteps(TestContext testContext, ScenarioContext scena
     private const string _deliveryPeriod = "6";
     private readonly Fixture _fixture = new();
 
-    [Given(@"there is data in learnings domain but no data in earnings domain")]
-    public void GivenThereIsDataInLearningsDomainButNoDataInEarningsDomain()
+    [Given(@"there is data in earnings domain but no data in learnings domain")]
+    public void GivenThereIsDataInEarningsDomainButNoDataInLearningsDomain()
     {
-        var learnerResponses = new List<Learning>();
         var earningsReponse = new GetFm36DataResponse { Apprenticeships = new List<Apprenticeship>() };
 
         var apprenticeshipModel = GetApprenticeshipModel();
         var apiResponses = apprenticeshipModel.GetInnerApiResponses();
 
-        learnerResponses.Add(apiResponses.UnPagedLearningsInnerApiResponse.Single());
+        earningsReponse.Apprenticeships.Add(apiResponses.EarningsInnerApiResponse.Apprenticeships.Single());
+        earningsReponse.TotalItems = 1;
 
         testContext.EarningsApi.MockServer
             .Given(
@@ -41,13 +41,14 @@ public class MissingEarningsSteps(TestContext testContext, ScenarioContext scena
                     .WithBodyAsJson(earningsReponse)
             );
 
+        // none of the keys returned by earnings match a learning
         testContext.ApprenticeshipsApi.MockServer
             .Given(
-                Request.Create().WithPath($"/{_ukprn}/{_academicYear}/{_deliveryPeriod}")
-                    .UsingGet())
+                Request.Create().WithPath($"/{_ukprn}/learnings/by-keys")
+                    .UsingPost())
             .RespondWith(
                 Response.Create()
-                .WithBodyAsJson(learnerResponses)
+                    .WithStatusCode(HttpStatusCode.NotFound)
             );
     }
 
