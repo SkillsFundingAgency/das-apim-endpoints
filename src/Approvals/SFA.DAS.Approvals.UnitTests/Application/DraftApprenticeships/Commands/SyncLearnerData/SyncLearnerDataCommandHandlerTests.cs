@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.SyncLearnerData;
+using SFA.DAS.Approvals.Exceptions;
 using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
@@ -263,6 +264,56 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands.
             result.StandardUId.Should().Be("");
             trainingProgrammeResolutionService.Verify(x => x.GetTrainingProgrammeAsync("550-2-1", It.IsAny<DateTime?>()), Times.Once);
         }
+        [Test, MoqAutoData]
+        public async Task Handle_Standard_UsesResyncedActualStartDay(
+            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
+            [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
+            SyncLearnerDataCommandHandler handler,
+            SyncLearnerDataCommand request,
+            GetDraftApprenticeshipResponse draft,
+            GetLearnerForProviderResponse learner)
+        {
+            learner.LearningType = LearningType.Apprenticeship;
+            learner.TrainingCode = "123";
+            learner.StartDate = new DateTime(2026, 1, 15);
+            draft.ActualStartDate = new DateTime(2026, 1, 14);
+            draft.LearnerDataId = 123;
+            commitmentsApiClient.Setup(x => x.GetWithResponseCode<GetDraftApprenticeshipResponse>(It.IsAny<GetDraftApprenticeshipRequest>()))
+                .ReturnsAsync(new ApiResponse<GetDraftApprenticeshipResponse>(draft, HttpStatusCode.OK, null));
+            learnerDataClient.Setup(x => x.GetWithResponseCode<GetLearnerForProviderResponse>(It.IsAny<GetLearnerForProviderRequest>()))
+                .ReturnsAsync(new ApiResponse<GetLearnerForProviderResponse>(learner, HttpStatusCode.OK, null));
+
+            var result = await handler.Handle(request, CancellationToken.None);
+
+            result.ActualStartDate.Should().Be(learner.StartDate);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Handle_AppUnitVersionValidation_UsesExistingSyncFailureHandling(
+            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
+            [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
+            [Frozen] Mock<IApprenticeshipUnitVersionService> apprenticeshipUnitVersionService,
+            SyncLearnerDataCommandHandler handler,
+            SyncLearnerDataCommand request,
+            GetDraftApprenticeshipResponse draft,
+            GetLearnerForProviderResponse learner)
+        {
+            learner.TrainingCode = "ZSC00001";
+            learner.LearningType = LearningType.ApprenticeshipUnit;
+            draft.LearnerDataId = 123;
+            commitmentsApiClient.Setup(x => x.GetWithResponseCode<GetDraftApprenticeshipResponse>(It.IsAny<GetDraftApprenticeshipRequest>()))
+                .ReturnsAsync(new ApiResponse<GetDraftApprenticeshipResponse>(draft, HttpStatusCode.OK, null));
+            learnerDataClient.Setup(x => x.GetWithResponseCode<GetLearnerForProviderResponse>(It.IsAny<GetLearnerForProviderRequest>()))
+                .ReturnsAsync(new ApiResponse<GetLearnerForProviderResponse>(learner, HttpStatusCode.OK, null));
+            apprenticeshipUnitVersionService.Setup(x => x.Resolve("ZSC00001", learner.StartDate))
+                .ThrowsAsync(new ApprenticeshipUnitVersionException("No version is available for this actual start date."));
+
+            var act = () => handler.Handle(request, CancellationToken.None);
+
+            await act.Should().ThrowAsync<LearnerDataSyncException>()
+                .WithMessage("No version is available for this actual start date.");
+        }
+
         [Test, MoqAutoData]
         public async Task Handle_AppUnit_UsesResyncedActualStartDayAndKeepsResolvedVersion(
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,

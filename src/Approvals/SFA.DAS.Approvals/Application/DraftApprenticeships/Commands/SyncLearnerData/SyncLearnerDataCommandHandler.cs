@@ -3,8 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Approvals.Exceptions;
 using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
+using SFA.DAS.Approvals.InnerApi.CoursesApi;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
@@ -79,8 +81,7 @@ public class SyncLearnerDataCommandHandler(
             TrainingPrice = learnerData.TrainingPrice,
             EndPointAssessmentPrice = learnerData.EpaoPrice,
             StartDate = learnerData.StartDate,
-            ActualStartDate = learnerData.LearningType == LearningType.ApprenticeshipUnit
-                ? learnerData.StartDate : draftApprenticeship.ActualStartDate,
+            ActualStartDate = learnerData.StartDate,
             EndDate = learnerData.PlannedEndDate,
             DateOfBirth = learnerData.Dob,
             Reference = draftApprenticeship.Reference,
@@ -128,7 +129,15 @@ public class SyncLearnerDataCommandHandler(
 
         if (learnerData.LearningType == LearningType.ApprenticeshipUnit)
         {
-            var unit = await apprenticeshipUnitVersionService.Resolve(courseCode, learnerData.StartDate);
+            GetCourseLookupResponse unit;
+            try
+            {
+                unit = await apprenticeshipUnitVersionService.Resolve(courseCode, learnerData.StartDate);
+            }
+            catch (ApprenticeshipUnitVersionException ex)
+            {
+                throw new LearnerDataSyncException(ex.Message);
+            }
             return (courseCode, !string.IsNullOrWhiteSpace(courseName) ? courseName : unit.Title,
                 unit.Version, string.Empty, unit.StandardUId);
         }

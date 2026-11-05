@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using SFA.DAS.Approvals.Exceptions;
+using SFA.DAS.Approvals.Validation;
 using SFA.DAS.Approvals.InnerApi.CoursesApi;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
@@ -95,7 +98,10 @@ public class ApprenticeshipUnitVersionServiceTests
             LearningType = "ApprenticeshipUnit", IfateReferenceNumber = "AU0001"
         }, new DateTime(2025, 12, 31));
 
-        await act.Should().ThrowAsync<InvalidOperationException>();
+        var error = (await act.Should().ThrowAsync<ApprenticeshipUnitVersionException>()).Which;
+        var response = JsonConvert.DeserializeObject<ErrorResponse>(error.Content);
+        response.Errors.Should().ContainSingle().Which.Field.Should().Be("ActualStartDate");
+        response.Errors[0].Message.Should().Be(error.Message);
     }
 
     [Test]
@@ -105,8 +111,36 @@ public class ApprenticeshipUnitVersionServiceTests
         var service = new ApprenticeshipUnitVersionService(courses.Object);
         var act = () => service.Resolve(new GetCourseLookupResponse { LearningType = "ApprenticeshipUnit" }, null);
 
-        await act.Should().ThrowAsync<InvalidOperationException>();
+        var error = (await act.Should().ThrowAsync<ApprenticeshipUnitVersionException>()).Which;
+        var response = JsonConvert.DeserializeObject<ErrorResponse>(error.Content);
+        response.Errors.Should().ContainSingle().Which.Field.Should().Be("ActualStartDate");
+        response.Errors[0].Message.Should().Be(error.Message);
         courses.VerifyNoOtherCalls();
+    }
+
+    [Test]
+    public async Task FetchesVersionsSeparatelyForDifferentUnitReferences()
+    {
+        var courses = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();
+        courses.Setup(x => x.Get<GetCourseVersionsResponse>(It.IsAny<GetCourseVersionsRequest>()))
+            .ReturnsAsync(new GetCourseVersionsResponse
+            {
+                Courses = [Version("1.0", 0, new DateTime(2026, 1, 1), null)]
+            });
+        var service = new ApprenticeshipUnitVersionService(courses.Object);
+
+        foreach (var reference in new[] { "AU0001", "AU0002", "AU0001" })
+        {
+            await service.Resolve(new GetCourseLookupResponse
+            {
+                LearningType = "ApprenticeshipUnit", IfateReferenceNumber = reference
+            }, new DateTime(2026, 1, 15));
+        }
+
+        courses.Verify(x => x.Get<GetCourseVersionsResponse>(It.Is<GetCourseVersionsRequest>(
+            r => r.GetUrl == "api/courses/lookup/versions/AU0001")), Times.Once);
+        courses.Verify(x => x.Get<GetCourseVersionsResponse>(It.Is<GetCourseVersionsRequest>(
+            r => r.GetUrl == "api/courses/lookup/versions/AU0002")), Times.Once);
     }
 
     private static GetCourseLookupResponse Version(string version, int minor, DateTime from, DateTime? to) => new()
