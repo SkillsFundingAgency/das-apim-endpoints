@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Interfaces;
@@ -150,14 +150,23 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
         bool isTransfer,
         GetProviderPaymentsPriorityResponse? providerPaymentsPriority)
     {
-        // No payments yet is a future committed cost, so still post it with the payment fields left null
-        var payments = apprenticeshipPayments ?? [];
+        // No payments yet is a future committed cost, so still post it with the payment fields left null.
+        // Fully funded SFA payments only apply to non-levy accounts, so they never count towards the cost
+        var payments = (apprenticeshipPayments ?? [])
+            .Where(p => p.FundingSource != FundingSource.FullyFundedSfa)
+            .ToList();
 
         var lastPayment = payments
             .OrderByDescending(p => p.CollectionPeriodYear)
             .ThenByDescending(p => p.CollectionPeriodMonth)
             .ThenByDescending(p => p.LastUpdatedDate)
             .FirstOrDefault();
+
+        // A period can hold more than one payment (e.g. on-programme and completion), so the last payment is the sum of them
+        var lastPeriodPayments = lastPayment is null
+            ? []
+            : payments.Where(p => p.CollectionPeriodYear == lastPayment.CollectionPeriodYear
+                                  && p.CollectionPeriodMonth == lastPayment.CollectionPeriodMonth).ToList();
 
         var providerOrder = providerPaymentsPriority?.ProviderPaymentPriorities
             .FirstOrDefault(p => p.ProviderId == apprenticeDetails.ProviderId)?
@@ -177,8 +186,8 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             TotalCost = apprenticeDetails.TotalAgreedPrice ?? 0,
             TotalPaid = payments.Sum(p => p.Amount),
             Uln = long.Parse(apprenticeDetails.Uln),
-            LastPaymentAmount = lastPayment?.Amount,
-            LastPaymentDate = lastPayment is null ? null : GetCollectionPeriodDate(lastPayment),
+            LastPaymentAmount = lastPayment is null ? null : lastPeriodPayments.Sum(p => p.Amount),
+            LastPaymentDate = lastPayment is null ? null : GetPaymentDate(lastPayment),
             LastUpdatedDate = DateTime.UtcNow,
             ProviderId = apprenticeDetails.ProviderId,
             ProviderOrder = providerOrder,
@@ -192,7 +201,7 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
         result.EnsureSuccessStatusCode();
     }
 
-    private static DateOnly? GetCollectionPeriodDate(GetApprenticeshipPaymentByAccountIdResponse apprenticeshipPayment)
+    private static DateOnly? GetPaymentDate(GetApprenticeshipPaymentByAccountIdResponse apprenticeshipPayment)
     {
         var year = apprenticeshipPayment.CollectionPeriodYear;
         var month = apprenticeshipPayment.CollectionPeriodMonth;
@@ -200,7 +209,8 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
         if (year is < 1 or > 9999 || month is < 1 or > 12)
             return null;
 
-        return new DateOnly(year, month, 1);
+        // Payments land in the account the month after their collection period
+        return new DateOnly(year, month, 1).AddMonths(1);
     }
 
     private async Task<GetProviderPaymentsPriorityResponse?> GetProviderPaymentsPriority(long accountId)

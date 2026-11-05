@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using MediatR;
 using SFA.DAS.EmployerFinance.InnerApi.Requests.Finance;
 using SFA.DAS.EmployerFinance.InnerApi.Responses;
@@ -36,13 +36,17 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
         var fundsOutTask = GetFundsOutAsync(request.AccountId);
         var expiredLevyTask = GetExpiredLevyAsync(request.AccountId);
 
+        // Payments land in the account the month after their collection period, so this month's payments are last month's collection
+        var currentCollectionPeriod = now.AddMonths(-1);
+        var currentPaymentsTask = financeApiClient.Get<CollectionPeriodPayments>(
+            new GetCollectionPeriodPaymentsRequest(request.AccountId, currentCollectionPeriod.Year, currentCollectionPeriod.Month));
+
         var levySummaryTask = financeApiClient.Get<GetLevySummaryByAccountIdResponse>(
             new GetLevySummaryByAccountIdRequest(request.AccountId));
 
         var declarationsTask = FetchHistoricTransactionLinesDataAsync(now, request.AccountId);
 
-        await Task.WhenAll(levySummaryTask, declarationsTask, fundsInTask, fundsOutTask, expiredLevyTask);
-        
+        await Task.WhenAll(levySummaryTask, declarationsTask, fundsInTask, fundsOutTask, expiredLevyTask, currentPaymentsTask);
         var levySummary = levySummaryTask.Result;
         var declarations = declarationsTask.Result;
         var expiredLevy = expiredLevyTask.Result;
@@ -56,7 +60,8 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
                 LevyFundsInForExpiry = fundsInTask.Result ?? [],
                 PaymentFundsOutForExpiry = fundsOutTask.Result ?? [],
                 LongTermExpiredFunds = expiredLevy?.LongTerm ?? [],
-                ShortTermExpiredFunds = expiredLevy?.ShortTerm ?? []
+                ShortTermExpiredFunds = expiredLevy?.ShortTerm ?? [],
+                CurrentPayments = currentPaymentsTask.Result
             }));
 
         var projection = projectionResponse.Body;
@@ -96,7 +101,7 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
     private async Task<List<LevyDeclaration>?> FetchHistoricTransactionLinesDataAsync(DateTime now, long accountId)
     {
         var startOfMonth = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
-        var startDate = startOfMonth.AddYears(-1);
+        var startDate = startOfMonth.AddYears(-1).AddMonths(-1);
         var endDate = startOfMonth.AddMonths(1).AddTicks(-1);
         var cacheExpiry = DateTime.UtcNow.Date.AddDays(1) - DateTime.UtcNow; // Cache expiry set to the end of the current day to ensure we get fresh data for the next day
 
