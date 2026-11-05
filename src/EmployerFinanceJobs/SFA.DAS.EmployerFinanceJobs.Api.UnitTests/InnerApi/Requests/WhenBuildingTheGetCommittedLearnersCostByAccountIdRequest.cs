@@ -15,6 +15,9 @@ internal class WhenBuildingTheGetCommittedLearnersCostByAccountIdRequest
         int pageItemCount,
         long transferSenderId,
         List<ApprenticeshipStatus> statuses,
+        long providerId,
+        string sortField,
+        bool reverseSort,
         DateTime? lastUpdated)
     {
         // Act
@@ -24,12 +27,15 @@ internal class WhenBuildingTheGetCommittedLearnersCostByAccountIdRequest
             pageItemCount,
             transferSenderId,
             statuses,
+            providerId,
+            sortField,
+            reverseSort,
             lastUpdated);
 
         var expectedStatuses = string.Join("&", statuses.Select(s => $"statuses={s}"));
         // Assert
         request.GetUrl.Should().Be(
-            $"api/apprenticeships?accountId={accountId}&transferSenderId={transferSenderId}&{expectedStatuses}&lastUpdated={lastUpdated:yyyy-MM-ddTHH:mm:ss}&pageNumber={pageNumber}&pageItemCount={pageItemCount}");
+            $"api/apprenticeships?accountId={accountId}&transferSenderId={transferSenderId}&{expectedStatuses}&providerId={providerId}&sortField={sortField}&reverseSort={reverseSort}&lastUpdated={lastUpdated:yyyy-MM-ddTHH:mm:ss}&pageNumber={pageNumber}&pageItemCount={pageItemCount}");
     }
 
     [Test, MoqAutoData]

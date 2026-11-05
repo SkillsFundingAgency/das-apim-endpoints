@@ -9,6 +9,9 @@ public sealed record GetCommittedLearnersCostByAccountIdRequest(
     int PageItemCount = 1000,
     long? TransferSenderId = null,
     List<ApprenticeshipStatus>? Statuses = null,
+    long? ProviderId = null,
+    string? SortField = null,
+    bool? ReverseSort = false,
     DateTime? LastUpdated = null) : IGetApiRequest
 {
     public string GetUrl
@@ -27,6 +30,15 @@ public sealed record GetCommittedLearnersCostByAccountIdRequest(
             {
                 queryParams.AddRange(Statuses.Select(status => $"statuses={status}"));
             }
+
+            if (ProviderId.HasValue)
+                queryParams.Add($"providerId={ProviderId.Value}");
+
+            if (!string.IsNullOrEmpty(SortField))
+                queryParams.Add($"sortField={SortField}");
+
+            if (ReverseSort == true)
+                queryParams.Add($"reverseSort={ReverseSort.Value}");
 
             if(LastUpdated.HasValue)
             {
