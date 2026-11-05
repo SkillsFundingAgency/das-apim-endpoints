@@ -179,12 +179,13 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         data.TotalCost.Should().Be(learner.TotalAgreedPrice);
         data.TotalPaid.Should().Be(300);
         data.LastPaymentAmount.Should().Be(150);
-        data.LastPaymentDate.Should().Be(new DateOnly(2025, 3, 1));
+        // Collection period March lands in the account in April
+        data.LastPaymentDate.Should().Be(new DateOnly(2025, 4, 1));
         data.LastUpdatedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Uses_The_Most_Recently_Updated_Payment_When_Collection_Periods_Match(
+    public async Task Then_Sums_All_Payments_In_The_Last_Collection_Period(
         ImportLearnersByAccountIdCommand command,
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
         [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
@@ -197,6 +198,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
         SetupProviderPaymentsPriority(commitmentsClient, command.AccountId);
         SetupPayments(financeClient, learner.Id,
+            CreatePayment(learner.Id, 2025, 2, 100, new DateTime(2025, 3, 1)),
             CreatePayment(learner.Id, 2025, 3, 150, new DateTime(2025, 4, 1)),
             CreatePayment(learner.Id, 2025, 3, 175, new DateTime(2025, 4, 2)));
         var posted = CapturePostedSummaries(fundingProjectionClient);
@@ -206,8 +208,90 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
 
         // Assert
         var data = posted.Should().ContainSingle().Subject;
-        data.TotalPaid.Should().Be(325);
-        data.LastPaymentAmount.Should().Be(175);
+        data.TotalPaid.Should().Be(425);
+        data.LastPaymentAmount.Should().Be(325);
+        // Collection period March lands in the account in April
+        data.LastPaymentDate.Should().Be(new DateOnly(2025, 4, 1));
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Every_Funding_Source_Except_Fully_Funded_Sfa_Counts_Towards_The_Payments(
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var learner = CreateApprenticeship(1);
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupPayments(financeClient, learner.Id,
+            CreatePayment(learner.Id, 2025, 2, 100, new DateTime(2025, 3, 1), FundingSource.Levy),
+            CreatePayment(learner.Id, 2025, 3, 100, new DateTime(2025, 4, 1), FundingSource.Levy),
+            CreatePayment(learner.Id, 2025, 3, 95, new DateTime(2025, 4, 1), FundingSource.CoInvestedSfa),
+            CreatePayment(learner.Id, 2025, 3, 5, new DateTime(2025, 4, 1), FundingSource.CoInvestedEmployer),
+            CreatePayment(learner.Id, 2025, 3, 50, new DateTime(2025, 4, 1), FundingSource.LevyTransfer),
+            CreatePayment(learner.Id, 2025, 3, 1000, new DateTime(2025, 4, 1), FundingSource.FullyFundedSfa));
+        var posted = CapturePostedSummaries(fundingProjectionClient);
+
+        // Act
+        await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        var data = posted.Should().ContainSingle().Subject;
+        data.TotalPaid.Should().Be(350);
+        data.LastPaymentAmount.Should().Be(250);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Only_Fully_Funded_Sfa_Payments_Are_Treated_As_No_Payments(
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var learner = CreateApprenticeship(1);
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupPayments(financeClient, learner.Id,
+            CreatePayment(learner.Id, 2025, 3, 1000, new DateTime(2025, 4, 1), FundingSource.FullyFundedSfa));
+        var posted = CapturePostedSummaries(fundingProjectionClient);
+
+        // Act
+        await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        var data = posted.Should().ContainSingle().Subject;
+        data.TotalPaid.Should().Be(0);
+        data.LastPaymentAmount.Should().BeNull();
+        data.LastPaymentDate.Should().BeNull();
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_A_December_Collection_Period_Is_Paid_In_January_Of_The_Next_Year(
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var learner = CreateApprenticeship(1);
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupPayments(financeClient, learner.Id,
+            CreatePayment(learner.Id, 2025, 12, 100, new DateTime(2026, 1, 6)));
+        var posted = CapturePostedSummaries(fundingProjectionClient);
+
+        // Act
+        await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        var data = posted.Should().ContainSingle().Subject;
+        data.LastPaymentDate.Should().Be(new DateOnly(2026, 1, 1));
     }
 
     [Test]
@@ -391,13 +475,15 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         int collectionPeriodYear,
         int collectionPeriodMonth,
         decimal amount,
-        DateTime lastUpdatedDate)
+        DateTime lastUpdatedDate,
+        FundingSource fundingSource = FundingSource.Levy)
     {
         return new GetApprenticeshipPaymentByAccountIdResponse
         {
             ApprenticeshipId = apprenticeshipId,
             CollectionPeriodYear = collectionPeriodYear,
             CollectionPeriodMonth = collectionPeriodMonth,
+            FundingSource = fundingSource,
             Amount = amount,
             LastUpdatedDate = lastUpdatedDate,
         };

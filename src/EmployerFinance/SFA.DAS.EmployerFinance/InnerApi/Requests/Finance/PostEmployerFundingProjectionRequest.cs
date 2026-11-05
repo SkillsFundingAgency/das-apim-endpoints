@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+using System.Collections.Generic;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.EmployerFinance.InnerApi.Responses;
 using SFA.DAS.EmployerFinance.InnerApi.Responses.Finance;
@@ -20,4 +21,5 @@ public class PostEmployerFundingProjectionRequestData
     public List<CalendarPeriodAmount> PaymentFundsOutForExpiry { get; set; } = [];
     public List<CalendarPeriodAmount> LongTermExpiredFunds { get; set; } = [];
     public List<CalendarPeriodAmount> ShortTermExpiredFunds { get; set; } = [];
+    public CollectionPeriodPayments? CurrentPayments { get; set; }
 }

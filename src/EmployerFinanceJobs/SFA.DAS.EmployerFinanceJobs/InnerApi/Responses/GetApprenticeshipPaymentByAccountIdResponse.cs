@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.EmployerFinanceJobs.InnerApi.Responses;
+﻿using SFA.DAS.EmployerFinanceJobs.Domain.Enums;
+
+namespace SFA.DAS.EmployerFinanceJobs.InnerApi.Responses;
 
 public sealed record GetApprenticeshipPaymentByAccountIdResponse
 {
@@ -11,6 +13,8 @@ public sealed record GetApprenticeshipPaymentByAccountIdResponse
     public int DeliveryPeriodYear { get; set; }
     public int CollectionPeriodMonth { get; set; }
     public int CollectionPeriodYear { get; set; }
+    public FundingSource FundingSource { get; set; }
+    public int TransactionType { get; set; }
     public decimal Amount { get; set; }
     public DateTime LastUpdatedDate { get; set; }
 }
