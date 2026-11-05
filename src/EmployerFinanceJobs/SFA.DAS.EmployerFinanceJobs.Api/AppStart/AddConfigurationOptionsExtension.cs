@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using SFA.DAS.EmployerFinanceJobs.Domain.Configurations;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using System.Diagnostics.CodeAnalysis;
 
@@ -16,5 +17,7 @@ public static class AddConfigurationOptionsExtension
         services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2ApiConfiguration>>()!.Value);
         services.Configure<FinanceApiConfiguration>(configuration.GetSection("FinanceApiConfiguration"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<FinanceApiConfiguration>>()!.Value);
+        services.Configure<RedisConfiguration>(configuration.GetSection(nameof(RedisConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<RedisConfiguration>>()!.Value);
     }
 }

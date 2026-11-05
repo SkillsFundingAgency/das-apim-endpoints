@@ -1,6 +1,4 @@
-﻿using System.Net;
-using AutoFixture;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using SFA.DAS.Apim.Shared.Interfaces;
@@ -12,6 +10,7 @@ using SFA.DAS.EmployerFinanceJobs.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
+using System.Net;
 
 namespace SFA.DAS.EmployerFinanceJobs.UnitTests.Commands.ImportLearnersByAccountId;
 
@@ -56,6 +55,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         var transfer = CreateApprenticeship(2);
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
         SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, [transfer]);
+        SetupProviderPaymentsPriority(commitmentsClient, command.AccountId);
         SetupPayment(financeClient, learner.Id);
         SetupPayment(financeClient, transfer.Id);
         SetupSuccessfulPost(fundingProjectionClient);
@@ -77,6 +77,35 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
                 r.AccountId == command.AccountId &&
                 r.ApprenticeshipId == transfer.Id &&
                 ((PutApprenticeshipPaymentSummaryRequestData)r.Data).IsTransfer)), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Maps_Provider_Order_From_Provider_Payments_Priority(
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var learner = CreateApprenticeship(1);
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupProviderPaymentsPriority(commitmentsClient, command.AccountId,
+            new GetProviderPaymentsPriorityResponse.ProviderPaymentPriorityItem
+            {
+                ProviderId = learner.ProviderId,
+                PriorityOrder = 3
+            });
+        SetupPayment(financeClient, learner.Id);
+        var posted = CapturePostedSummaries(fundingProjectionClient);
+
+        // Act
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsSuccessful.Should().BeTrue();
+        posted.Should().ContainSingle().Which.ProviderOrder.Should().Be(3);
     }
 
     [Test, MoqAutoData]
@@ -133,6 +162,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         var learner = CreateApprenticeship(1);
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
         SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupProviderPaymentsPriority(commitmentsClient, command.AccountId);
         SetupPayments(financeClient, learner.Id,
             CreatePayment(learner.Id, 2025, 1, 100, new DateTime(2025, 2, 1)),
             CreatePayment(learner.Id, 2025, 3, 150, new DateTime(2025, 4, 1)),
@@ -165,6 +195,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         var learner = CreateApprenticeship(1);
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
         SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupProviderPaymentsPriority(commitmentsClient, command.AccountId);
         SetupPayments(financeClient, learner.Id,
             CreatePayment(learner.Id, 2025, 3, 150, new DateTime(2025, 4, 1)),
             CreatePayment(learner.Id, 2025, 3, 175, new DateTime(2025, 4, 2)));
@@ -194,6 +225,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         var learner = CreateApprenticeship(1);
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
         SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupProviderPaymentsPriority(commitmentsClient, command.AccountId);
         financeClient
             .Setup(c => c.Get<List<GetApprenticeshipPaymentByAccountIdResponse>>(It.IsAny<GetApprenticeshipPaymentByAccountIdRequest>()))
             .ReturnsAsync(financeReturnsNull ? null! : []);
@@ -260,6 +292,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         var failedApprenticeship = CreateApprenticeship(2);
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [successfulApprenticeship, failedApprenticeship]);
         SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupProviderPaymentsPriority(commitmentsClient, command.AccountId);
         SetupPayment(financeClient, successfulApprenticeship.Id);
         financeClient
             .Setup(c => c.Get<List<GetApprenticeshipPaymentByAccountIdResponse>>(
@@ -328,6 +361,20 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         SetupPayments(client, apprenticeshipId, CreatePayment(apprenticeshipId, 2025, 1, 100, new DateTime(2025, 1, 1)));
     }
 
+    private static void SetupProviderPaymentsPriority(
+        Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> client,
+        long accountId,
+        params List<GetProviderPaymentsPriorityResponse.ProviderPaymentPriorityItem> priorities)
+    {
+        client
+            .Setup(c => c.Get<GetProviderPaymentsPriorityResponse>(
+                It.IsAny<GetProviderPaymentsPriorityRequest>()))
+            .ReturnsAsync(new GetProviderPaymentsPriorityResponse
+            {
+                ProviderPaymentPriorities = [.. priorities.OrderBy(p => p.PriorityOrder)]
+            });
+    }
+
     private static void SetupPayments(
         Mock<IFinanceApiClient<FinanceApiConfiguration>> client,
         long apprenticeshipId,
@@ -384,6 +431,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         return new GetCommittedLearnersCostByAccountIdResponse.ApprenticeshipDetailsResponse
         {
             Id = id,
+            ProviderId = id,
             Uln = "1234567890",
             DateOfBirth = new DateTime(2000, 1, 1),
             StartDate = new DateTime(2024, 1, 1),
