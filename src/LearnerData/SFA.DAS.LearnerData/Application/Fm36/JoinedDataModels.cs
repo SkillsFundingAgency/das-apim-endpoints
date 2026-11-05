@@ -40,11 +40,14 @@ public class JoinedLearnerData
     public string FundingLineType { get; set; }
     /// <summary> Derived from Apprenticeships API, apprenticeship.CompletionDate </summary>
     public DateTime? CompletionDate { get; set; }
+    /// <summary> Derived from SLD cache, learner.LearnerRef </summary>
+    public string LearnerRef { get; set; }
 
     internal JoinedLearnerData(Learning learning, EarningsApprenticeship earningsApprenticeship, UpdateLearnerRequest sldLearnerData, short academicYear)
     {
         Key = learning.Key;
         Uln = learning.Uln;
+        LearnerRef = sldLearnerData.Learner.LearnerRef;
         StartDate = learning.StartDate;
         PlannedEndDate = learning.PlannedEndDate;
         Episodes = JoinEpisodes(learning, earningsApprenticeship, academicYear);
@@ -177,8 +180,8 @@ public class JoinedPriceEpisode
     /// <summary> Derived from apprenticeship.Episode.EpisodePrice.EndPointAssessmentPrice </summary>
     public decimal? EndPointAssessmentPrice { get; set; }
 
-    /// <summary> Derived from apprenticeship.Episode.EpisodePrice.FundingBandMaximum </summary>
-    public int FundingBandMaximum { get; set; }
+    /// <summary> Derived from earnings.Episode.FundingBandMaximum </summary>
+    public decimal FundingBandMaximum { get; set; }
 
     /// <summary>
     /// Denotes an episode terminated by an "artificial" academic year-end boundary
@@ -212,7 +215,7 @@ public class JoinedPriceEpisode
         TotalPrice = apprenticeshipEpisodePrice.TotalPrice;
         TrainingPrice = apprenticeshipEpisodePrice.TrainingPrice;
         EndPointAssessmentPrice = apprenticeshipEpisodePrice.EndPointAssessmentPrice;
-        FundingBandMaximum = apprenticeshipEpisodePrice.FundingBandMaximum;
+        FundingBandMaximum = earningsEpisode?.FundingBandMaximum ?? 0;
         Instalments = GetInstalments(apprenticeshipEpisodePrice, earningsEpisode?.Instalments ?? []);
 
         var allAdditionalPayments = GetAdditionalPayments(apprenticeshipEpisodePrice, earningsEpisode?.AdditionalPayments ?? []);
@@ -293,7 +296,8 @@ public class JoinedPriceEpisode
             DeliveryPeriod = x.DeliveryPeriod,
             Amount = x.Amount,
             AdditionalPaymentType = x.AdditionalPaymentType,
-            DueDate = x.DueDate
+            DueDate = x.DueDate,
+            LearnAimRef = x.LearnAimRef
         }).ToList();
 
         return allAdditionalPayments;
@@ -337,8 +341,9 @@ public class JoinedOnProgrammeLearningDelivery : JoinedLearningDelivery
             })
             .ToList();
 
-        AdditionalPayments = unassignedAdditionalPayments.TakeMatching(startDate, endDate, 
-            includedTypes: [ 
+        // Payments belonging to an English and maths course (LearnAimRef set) are allocated to that course's delivery instead
+        AdditionalPayments = unassignedAdditionalPayments.TakeMatching(startDate, endDate, learnAimRef: null,
+            includedTypes: [
                 AdditionalPaymentsTypes.ProviderIncentive, 
                 AdditionalPaymentsTypes.EmployerIncentive, 
                 AdditionalPaymentsTypes.LearningSupport
@@ -367,7 +372,7 @@ public class JoinedEnglishAndMathsLearningDelivery : JoinedLearningDelivery
                         x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() <= endDate)
             .ToList();
 
-        AdditionalPayments = unassignedAdditionalPayments.TakeMatching(startDate, endDate,
+        AdditionalPayments = unassignedAdditionalPayments.TakeMatching(startDate, endDate, learnAimRef: englishAndMath.LearnAimRef,
             includedTypes: [ AdditionalPaymentsTypes.LearningSupport ]);
 
         StartDate = englishAndMath.StartDate;
@@ -399,4 +404,7 @@ public class JoinedAdditionalPayment
     public decimal Amount { get; set; }
     public string AdditionalPaymentType { get; set; }
     public DateTime DueDate { get; set; }
+
+    /// <summary> The English and maths course the payment belongs to, or null for payments on the apprenticeship (on-programme) aim </summary>
+    public string? LearnAimRef { get; set; }
 }

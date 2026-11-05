@@ -9,9 +9,11 @@ public class DefaultLearner
     public static string TrainingCode => "274";
     public static int FundingBandMax => 15000; 
     public static string FundingLineType => "19+ Apprenticeship (Employer on App Service)";
+    public static string LearnerRef => "LRN-DEFAULT";
 
     public static LearnerRequestDetails LearnerRequestDetails => new LearnerRequestDetails
     {
+        LearnerRef = LearnerRef,
         FirstName = "Merlin",
         LastName = "Page",
         Email = "merlin.page@example.com",
