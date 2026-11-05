@@ -4,11 +4,9 @@ namespace SFA.DAS.EmployerFinance.Models.Projections;
 
 public sealed record LevyDeclaration
 {
-    public string PayeSchemeReference { get; set; }
     public DateTime? SubmissionDate { get; set; }
     public string PayrollYear { get; set; }
     public short? PayrollMonth { get; set; }
-    public DateTime CreatedDate { get; set; }
     public decimal TopUp { get; set; }
     public decimal TotalAmount { get; set; }
 
@@ -20,7 +18,7 @@ public sealed record LevyDeclaration
         }
 
         var year = 2000;
-        var month = 1;
+        int month;
 
         if (PayrollMonth <= 9)
         {

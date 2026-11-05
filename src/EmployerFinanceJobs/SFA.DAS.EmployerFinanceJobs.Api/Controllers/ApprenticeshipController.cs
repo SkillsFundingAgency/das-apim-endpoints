@@ -20,7 +20,7 @@ public class ApprenticeshipController(ILogger<ApprenticeshipController> logger,
     {
         logger.LogInformation("Initiating import of learners for account ID {AccountId}", request.AccountId);
 
-        var result = await mediator.Send(new ImportLearnersByAccountIdCommand(request.AccountId));
+        var result = await mediator.Send(new ImportLearnersByAccountIdCommand(request.AccountId, request.LastSuccessfulImportDate));
 
         return TypedResults.Ok(result);
     }

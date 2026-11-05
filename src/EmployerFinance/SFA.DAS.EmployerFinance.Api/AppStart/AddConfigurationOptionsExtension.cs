@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.EmployerFinance.Domain.Configurations;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 
@@ -30,6 +31,9 @@ namespace SFA.DAS.EmployerFinance.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<FundingProjectionApiConfiguration>>().Value);
             services.Configure<CommitmentsV2ApiConfiguration>(configuration.GetSection(nameof(CommitmentsV2ApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2ApiConfiguration>>().Value);
+            services.Configure<RedisConfiguration>(configuration.GetSection(nameof(RedisConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<RedisConfiguration>>().Value);
+
         }
     }
 }

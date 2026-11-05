@@ -11,7 +11,8 @@ public sealed record GetCommittedLearnersCostByAccountIdRequest(
     List<ApprenticeshipStatus>? Statuses = null,
     long? ProviderId = null,
     string? SortField = null,
-    bool? ReverseSort = false) : IGetApiRequest
+    bool? ReverseSort = false,
+    DateTime? LastUpdated = null) : IGetApiRequest
 {
     public string GetUrl
     {
@@ -38,6 +39,11 @@ public sealed record GetCommittedLearnersCostByAccountIdRequest(
 
             if (ReverseSort == true)
                 queryParams.Add($"reverseSort={ReverseSort.Value}");
+
+            if(LastUpdated.HasValue)
+            {
+                queryParams.Add($"lastUpdated={LastUpdated.Value:yyyy-MM-ddTHH:mm:ss}");
+            }
 
             queryParams.Add($"pageNumber={PageNumber}");
             queryParams.Add($"pageItemCount={PageItemCount}");

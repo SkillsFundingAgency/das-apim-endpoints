@@ -22,7 +22,8 @@ internal class ApprenticeshipControllerTests
         // Arrange
         mediator
             .Setup(x => x.Send(
-                It.Is<ImportLearnersByAccountIdCommand>(c => c.AccountId == request.AccountId),
+                It.Is<ImportLearnersByAccountIdCommand>(c => c.AccountId == request.AccountId 
+                                                             && c.LastSuccessfulImportDate == request.LastSuccessfulImportDate),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResult);
 
@@ -37,7 +38,8 @@ internal class ApprenticeshipControllerTests
         var okResult = result.Should().BeOfType<Ok<ImportLearnersByAccountIdResult>>().Subject;
         okResult.Value.Should().BeSameAs(expectedResult);
         mediator.Verify(x => x.Send(
-            It.Is<ImportLearnersByAccountIdCommand>(c => c.AccountId == request.AccountId),
+            It.Is<ImportLearnersByAccountIdCommand>(c => c.AccountId == request.AccountId 
+                                                         && c.LastSuccessfulImportDate == request.LastSuccessfulImportDate),
             It.IsAny<CancellationToken>()), Times.Once);
     }
 }
