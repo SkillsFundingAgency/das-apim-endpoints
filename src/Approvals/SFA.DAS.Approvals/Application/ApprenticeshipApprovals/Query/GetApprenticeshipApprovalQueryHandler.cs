@@ -18,22 +18,25 @@ public class GetApprenticeshipApprovalQueryHandler(
 {
     public async Task<GetApprenticeshipApprovalResponse> Handle(GetApprenticeshipApprovalQuery request, CancellationToken cancellationToken)
     {
-        var result = await apiClient.GetWithResponseCode<GetApprenticeshipApprovalResponse>(new GetApprenticeshipApprovalRequest(request.ApprenticeshipId, request.ApprovalRequestId));
+        var result = await apiClient.GetWithResponseCode<GetApprenticeshipApprovalResponse>(new GetApprenticeshipApprovalRequest(request.ApprenticeshipId));
 
-        if (result.StatusCode == HttpStatusCode.NotFound) 
+        if (result.StatusCode == HttpStatusCode.NotFound)
             return null;
 
-        if(result.StatusCode == HttpStatusCode.OK)
+        if (result.StatusCode == HttpStatusCode.OK)
         {
             var response = result.Body;
 
             if (response.AccountId != request.EmployerAccountId)
                 throw new UnauthorizedAccessException("This Employer does not have access to this apprenticeship approval.");
 
+            if (response.Items == null || !response.Items.Any())
+                return response;
+
             var course = await apiClient.Get<GetTrainingProgrammeResponse>(new GetTrainingProgrammeRequest(response.CourseCode));
 
             if (course == null || !response.StartDate.HasValue)
-                return response;    
+                return response;
 
             var fundingCap = MaxFundingOn(course.TrainingProgramme.FundingPeriods, response.StartDate.Value);
 
@@ -64,9 +67,11 @@ public class GetApprenticeshipApprovalQueryHandler(
 
     public static bool IsFundingBandExceeded(GetApprenticeshipApprovalResponse funding, int? fundingBand)
     {
-
         if (fundingBand == null)
             return false;
+        if (funding.Items == null)
+            return false;
+
         var tnp1 = funding.Items.FirstOrDefault(c => c.FieldName == "TNP1");
         var tnp2 = funding.Items.FirstOrDefault(c => c.FieldName == "TNP2");
 
