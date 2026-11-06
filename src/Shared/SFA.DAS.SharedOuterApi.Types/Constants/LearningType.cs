@@ -1,8 +1,8 @@
 namespace SFA.DAS.SharedOuterApi.Types.Constants;
 
-public enum LearningType
+public enum LearningType : byte
 {
-    Apprenticeship,
-    FoundationApprenticeship,
-    ApprenticeshipUnit
+    Apprenticeship = 0,
+    FoundationApprenticeship = 1,
+    ApprenticeshipUnit = 2
 }

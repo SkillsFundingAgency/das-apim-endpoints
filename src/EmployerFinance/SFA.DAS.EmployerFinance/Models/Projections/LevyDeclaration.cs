@@ -1,0 +1,39 @@
+﻿using System;
+
+namespace SFA.DAS.EmployerFinance.Models.Projections;
+
+public sealed record LevyDeclaration
+{
+    public DateTime? SubmissionDate { get; set; }
+    public string PayrollYear { get; set; }
+    public short? PayrollMonth { get; set; }
+    public decimal TopUp { get; set; }
+    public decimal TotalAmount { get; set; }
+
+    public DateTime? GetLevyCreationDateFromPayrollDate()
+    {
+        if (PayrollMonth == null || string.IsNullOrEmpty(PayrollYear))
+        {
+            return null;
+        }
+
+        var year = 2000;
+        int month;
+
+        if (PayrollMonth <= 9)
+        {
+            year += Convert.ToInt32(PayrollYear.Split('-')[0]);
+            month = (short)(PayrollMonth + 3);
+        }
+        else
+        {
+            year += Convert.ToInt32(PayrollYear.Split('-')[1]);
+            month = (short)(PayrollMonth - 9);
+        }
+
+        //Add a month as the payroll date is in arrears
+        var dateTime = new DateTime(year, month, 1).AddMonths(1);
+
+        return dateTime;
+    }
+}
