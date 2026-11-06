@@ -40,6 +40,48 @@ public class ApprenticeshipUnitVersionServiceTests
             r => r.GetUrl == "api/courses/lookup/ZSC00001")), Times.Once);
     }
 
+    [Test]
+    public async Task ReturnsDomainValidationErrorWhenCourseIsNotFound()
+    {
+        var courses = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();
+        courses.Setup(x => x.Get<GetCourseLookupResponse>(It.IsAny<GetCourseLookupByIdRequest>()))
+            .ReturnsAsync((GetCourseLookupResponse)null);
+        var service = new ApprenticeshipUnitVersionService(courses.Object);
+
+        var act = () => service.Resolve("ZSC00001", new DateTime(2026, 1, 15));
+
+        var error = (await act.Should().ThrowAsync<ApprenticeshipUnitVersionException>()).Which;
+        error.Message.Should().Be("Course not found for course ID ZSC00001");
+        var response = JsonConvert.DeserializeObject<ErrorResponse>(error.Content);
+        response.Errors.Should().ContainSingle().Which.Field.Should().Be("ActualStartDate");
+        response.Errors[0].Message.Should().Be(error.Message);
+        courses.Verify(x => x.Get<GetCourseLookupResponse>(It.Is<GetCourseLookupByIdRequest>(
+            r => r.Id == "ZSC00001")), Times.Once);
+        courses.VerifyNoOtherCalls();
+    }
+
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase(" ")]
+    [TestCase("\t")]
+    public async Task RequiresUnitReferenceBeforeLookingUpVersions(string reference)
+    {
+        var courses = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();
+        var service = new ApprenticeshipUnitVersionService(courses.Object);
+
+        var act = () => service.Resolve(new GetCourseLookupResponse
+        {
+            LearningType = "ApprenticeshipUnit", IfateReferenceNumber = reference
+        }, new DateTime(2026, 1, 15));
+
+        var error = (await act.Should().ThrowAsync<ApprenticeshipUnitVersionException>()).Which;
+        error.Message.Should().Be("The apprenticeship unit reference number is missing.");
+        var response = JsonConvert.DeserializeObject<ErrorResponse>(error.Content);
+        response.Errors.Should().ContainSingle().Which.Field.Should().Be("ActualStartDate");
+        response.Errors[0].Message.Should().Be(error.Message);
+        courses.VerifyNoOtherCalls();
+    }
+
     [TestCase(14, "1.0")]
     [TestCase(15, "1.1")]
     [TestCase(31, "1.1")]

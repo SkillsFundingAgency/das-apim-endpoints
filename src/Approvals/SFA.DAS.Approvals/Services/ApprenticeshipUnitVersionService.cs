@@ -19,7 +19,7 @@ public class ApprenticeshipUnitVersionService(ICoursesApiClient<CoursesApiConfig
         var course = await coursesApiClient.Get<GetCourseLookupResponse>(new GetCourseLookupByIdRequest(courseCode));
         if (course == null)
         {
-            throw new InvalidOperationException($"Course not found for course ID {courseCode}");
+            throw new ApprenticeshipUnitVersionException($"Course not found for course ID {courseCode}");
         }
 
         return await Resolve(course, actualStartDate);
@@ -35,6 +35,11 @@ public class ApprenticeshipUnitVersionService(ICoursesApiClient<CoursesApiConfig
         if (!actualStartDate.HasValue)
         {
             throw new ApprenticeshipUnitVersionException("Enter an actual start date for this apprenticeship unit.");
+        }
+
+        if (string.IsNullOrWhiteSpace(course.IfateReferenceNumber))
+        {
+            throw new ApprenticeshipUnitVersionException("The apprenticeship unit reference number is missing.");
         }
 
         if (!_courseVersions.TryGetValue(course.IfateReferenceNumber, out var response))
