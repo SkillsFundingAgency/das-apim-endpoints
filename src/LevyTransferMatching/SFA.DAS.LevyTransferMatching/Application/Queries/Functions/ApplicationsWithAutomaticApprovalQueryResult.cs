@@ -1,6 +1,6 @@
-﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
 {
@@ -20,6 +20,26 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
             public string Status { get; set; }
 
             public static implicit operator Application(GetApplicationsResponse.Application source)
+            {
+                if (source == null)
+                {
+                    return null;
+                }
+
+                return new Application
+                {
+                    Id = source.Id,
+                    EmployerAccountId = source.EmployerAccountId,
+                    PledgeId = source.PledgeId,
+                    MatchPercentage = source.MatchPercentage,
+                    PledgeAutomaticApprovalOption = source.PledgeAutomaticApprovalOption,
+                    Amount = source.Amount,
+                    CreatedOn = source.CreatedOn,
+                    Status = source.Status
+                };
+            }
+
+            public static implicit operator Application(GetApplicationsForAutomaticApprovalResponse.Application source)
             {
                 if (source == null)
                 {

@@ -1,10 +1,10 @@
-﻿using MediatR;
-using SFA.DAS.LevyTransferMatching.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
+using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching;
 using AutomaticApprovalOption = SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching.AutomaticApprovalOption;
@@ -21,27 +21,22 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
         }
 
         public async Task<ApplicationsWithAutomaticApprovalQueryResult> Handle(ApplicationsWithAutomaticApprovalQuery request, CancellationToken cancellationToken)
-        {   
-            var getApplicationsResponse = await _levyTransferMatchingService.GetApplications(new GetApplicationsRequest {
-                ApplicationStatusFilter = ApplicationStatus.Pending,
-                SortOrder = ApplicationSortColumn.ApplicationDate,
-                SortDirection = SortOrder.Ascending
+        {
+            var getApplicationsResponse = await _levyTransferMatchingService.GetApplicationsForAutomaticApproval(new GetApplicationsForAutomaticApprovalRequest
+            {
+                PledgeId = request.PledgeId
             });
 
             var sixWeeksAgo = DateTime.UtcNow.AddDays(-42);
 
-            var applications = new List<GetApplicationsResponse.Application>();
-            if (getApplicationsResponse != null)
-            {
-                applications = getApplicationsResponse.Applications
+            var applications = (getApplicationsResponse?.Applications ?? Enumerable.Empty<GetApplicationsForAutomaticApprovalResponse.Application>())
                 .Where(x => x.MatchPercentage == 100
                     && (x.PledgeAutomaticApprovalOption == AutomaticApprovalOption.ImmediateAutoApproval
                         || (x.PledgeAutomaticApprovalOption == AutomaticApprovalOption.DelayedAutoApproval && x.CreatedOn <= sixWeeksAgo))
                     && (!request.PledgeId.HasValue || x.PledgeId == request.PledgeId))
-                    .OrderBy(x => x.PledgeId)
-                    .ThenBy(x => x.CreatedOn)
+                .OrderBy(x => x.PledgeId)
+                .ThenBy(x => x.CreatedOn)
                 .ToList();
-            }            
 
             var autoApprovals = GetAutoApplicationDataFromApplicationsResponse(applications);
 
@@ -51,7 +46,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
             };
         }
 
-        public List<ApplicationsWithAutomaticApprovalQueryResult.Application> GetAutoApplicationDataFromApplicationsResponse(List<GetApplicationsResponse.Application> applications)
+        public List<ApplicationsWithAutomaticApprovalQueryResult.Application> GetAutoApplicationDataFromApplicationsResponse(List<GetApplicationsForAutomaticApprovalResponse.Application> applications)
         {
             var autoApprovals = new List<ApplicationsWithAutomaticApprovalQueryResult.Application>();
             if (applications == null || applications.Count == 0)
