@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -16,6 +16,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAp
         ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
         IAutoReservationsService autoReservationService,
         ICourseTypeRulesService courseTypeRulesService,
+        IApprenticeshipUnitVersionService apprenticeshipUnitVersionService,
         ILogger<AddDraftApprenticeshipCommandHandler> logger)
         : IRequestHandler<AddDraftApprenticeshipCommand, AddDraftApprenticeshipResult>
     {
@@ -46,6 +47,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAp
             try
             {
                 var courseTypeRules = await courseTypeRulesService.GetCourseTypeRulesAsync(request.CourseCode);
+                var version = await apprenticeshipUnitVersionService.Resolve(courseTypeRules.Course, request.ActualStartDate);
                 
                 var addDraftApprenticeshipRequest = new AddDraftApprenticeshipRequest
                 {
@@ -54,6 +56,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAp
                     TrainingPrice = request.TrainingPrice,
                     EndPointAssessmentPrice = request.EndPointAssessmentPrice,
                     CourseCode = request.CourseCode,
+                    TrainingCourseVersion = version?.Version,
+                    StandardUId = version?.StandardUId,
                     DateOfBirth = request.DateOfBirth,
                     DeliveryModel = request.DeliveryModel,
                     Email = request.Email,

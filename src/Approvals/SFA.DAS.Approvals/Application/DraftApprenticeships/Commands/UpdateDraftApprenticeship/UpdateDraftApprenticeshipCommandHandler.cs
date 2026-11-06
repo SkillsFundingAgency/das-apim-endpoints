@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
+using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.Approvals.InnerApi.CoursesApi;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
@@ -13,12 +15,27 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraf
 
 public class UpdateDraftApprenticeshipCommandHandler(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsApiClient,
-    ICourseTypeRulesService courseTypeRulesService)
+    ICourseTypeRulesService courseTypeRulesService,
+    IApprenticeshipUnitVersionService apprenticeshipUnitVersionService)
     : IRequestHandler<UpdateDraftApprenticeshipCommand, Unit>
 {
     public async Task<Unit> Handle(UpdateDraftApprenticeshipCommand request, CancellationToken cancellationToken)
     {
         var courseTypeRules = await courseTypeRulesService.GetCourseTypeRulesAsync(request.CourseCode);
+        GetCourseLookupResponse version = null;
+        if (courseTypeRules.Course?.LearningType == "ApprenticeshipUnit")
+        {
+            var existing = await commitmentsApiClient.Get<GetDraftApprenticeshipResponse>(
+                new GetDraftApprenticeshipRequest(request.CohortId, request.ApprenticeshipId));
+            var learnerDataResynced = request.LastLearnerDataSync.HasValue
+                && (!existing.LastLearnerDataSync.HasValue || request.LastLearnerDataSync > existing.LastLearnerDataSync);
+            if (existing.CourseCode != request.CourseCode
+                || existing.ActualStartDate?.Date != request.ActualStartDate?.Date
+                || learnerDataResynced)
+            {
+                version = await apprenticeshipUnitVersionService.Resolve(courseTypeRules.Course, request.ActualStartDate);
+            }
+        }
             
         var updateDraftApprenticeshipRequest = new UpdateDraftApprenticeshipRequest
         {
@@ -27,6 +44,8 @@ public class UpdateDraftApprenticeshipCommandHandler(
             TrainingPrice = request.TrainingPrice,
             EndPointAssessmentPrice = request.EndPointAssessmentPrice,
             CourseCode = request.CourseCode,
+            TrainingCourseVersion = version?.Version,
+            StandardUId = version?.StandardUId,
             DateOfBirth = request.DateOfBirth,
             DeliveryModel = request.DeliveryModel,
             Email = request.Email,
