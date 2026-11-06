@@ -13,7 +13,10 @@ public class BulkCourseMetadataService(
 {
     public async Task<Dictionary<string, int?>> GetOtjTrainingHoursForBulkUploadAsync(IEnumerable<string> courseCodes)
     {
-        var uniqueCourseCodes = courseCodes.Distinct().ToList();
+        var uniqueCourseCodes = courseCodes
+            .Where(c => !string.IsNullOrWhiteSpace(c))
+            .Distinct()
+            .ToList();
         var otjTrainingHoursTasks = uniqueCourseCodes.Select(async courseCode =>
         {
             try
