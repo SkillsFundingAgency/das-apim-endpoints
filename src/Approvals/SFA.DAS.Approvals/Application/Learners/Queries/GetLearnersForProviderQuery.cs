@@ -21,5 +21,6 @@ namespace SFA.DAS.Approvals.Application.Learners.Queries
         public List<long> ExcludeUlns { get; set; } = new();
         public string CourseCode { get; set; }
         public LearningType? LearningType { get; set; }
+        public string AgreementId { get; set; }
     }
 }
