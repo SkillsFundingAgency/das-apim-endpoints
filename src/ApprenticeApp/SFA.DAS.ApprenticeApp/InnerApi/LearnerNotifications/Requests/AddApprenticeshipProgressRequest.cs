@@ -3,7 +3,7 @@ using System;
 
 namespace SFA.DAS.ApprenticeApp.InnerApi.LearnerNotifications.Requests
 {
-    internal class AddApprenticeshipProgressRequest : IPostApiRequest
+    public class AddApprenticeshipProgressRequest : IPostApiRequest
     {
         private readonly Guid _apprenticeId;
 
