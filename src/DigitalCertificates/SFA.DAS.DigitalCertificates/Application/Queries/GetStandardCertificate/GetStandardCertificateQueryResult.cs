@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using SFA.DAS.DigitalCertificates.Constants;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
-using SFA.DAS.DigitalCertificates.Models;
-using SFA.DAS.DigitalCertificates.Application.Queries;
 
 namespace SFA.DAS.DigitalCertificates.Application.Queries.GetStandardCertificate
 {
@@ -26,17 +21,21 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetStandardCertificate
         public string EmployerName { get; set; }
         public string AssessorName { get; set; }
         public DateTime? StartDate { get; set; }
+        public string LatestEPAOutcome { get; set; }
+
+        public string Status { get; set; }
         public DateTime? PrintRequestedAt { get; set; }
         public string PrintRequestedBy { get; set; }
-        public List<DeliveryInformation> DeliveryInformation { get; set; }
+        public string PrintStatus { get; set; }
+        public DateTime? PrintStatusAt { get; set; }
+
         public bool CoronationEmblem { get; set; }
 
-        public static implicit operator GetStandardCertificateQueryResult(GetStandardCertificateResponse source)
+        public static implicit operator GetStandardCertificateQueryResult(
+            GetStandardCertificateResponse source)
         {
-            if (source == null) return null;
-
-            var employerName = source.CertificateData?.EmployerName ?? "";
-            var coronationEmblem = source.CertificateData?.CoronationEmblem ?? false;
+            if (source == null)
+                return null;
 
             return new GetStandardCertificateQueryResult
             {
@@ -53,13 +52,16 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetStandardCertificate
                 OverallGrade = source.OverallGrade,
                 ProviderName = source.ProviderName,
                 Ukprn = source.ProviderUkPrn ?? 0,
-                EmployerName = employerName,
+                EmployerName = source.CertificateData?.EmployerName ?? "",
                 AssessorName = "",
                 StartDate = source.LearningStartDate,
-                DeliveryInformation = Models.DeliveryInformation.FromCertificateLogs(source.CertificateLogs),
+                LatestEPAOutcome = source.LatestEPAOutcome,
+                Status = source.Status,
                 PrintRequestedAt = source.PrintRequestedAt,
                 PrintRequestedBy = source.PrintRequestedBy,
-                CoronationEmblem = coronationEmblem
+                PrintStatus = source.PrintStatus,
+                PrintStatusAt = source.PrintStatusAt,
+                CoronationEmblem = source.CertificateData?.CoronationEmblem ?? false
             };
         }
     }
