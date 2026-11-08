@@ -20,8 +20,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.ApprenticeshipApprovals;
 
 public class WhenValidatingAnApprenticeshipApproval
 {
-    private static readonly Guid ApprovalRequestId = Guid.Parse("a59c89ab-9651-4ca4-9a69-9e201963af3b");
-    private static readonly string ApprovalUrl = $"/employers/123/apprenticeships/456/approvals/{ApprovalRequestId}";
+    private static readonly string ApprovalUrl = "/employers/123/apprenticeships/456/approvals";
 
     [TestCaseSource(nameof(InvalidUserInfoCases))]
     public async Task Then_Returns_BadRequest_Without_Sending_A_Command(
@@ -195,7 +194,6 @@ public class WhenValidatingAnApprenticeshipApproval
         api.ReceivedCommand.Should().BeEquivalentTo(new ProcessApprenticeshipApprovalCommand
         {
             ApprenticeshipId = 456,
-            ApprovalRequestId = ApprovalRequestId,
             ApplyChanges = applyChanges,
             UserInfo = expectedUserInfo
         });
