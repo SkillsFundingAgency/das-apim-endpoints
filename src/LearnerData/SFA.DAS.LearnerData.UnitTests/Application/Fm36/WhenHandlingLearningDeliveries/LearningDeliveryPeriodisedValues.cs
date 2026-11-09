@@ -1,9 +1,6 @@
-﻿using DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using NUnit.Framework.Internal;
-using SFA.DAS.LearnerData.Requests;
+﻿using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using System.Text.Json;
-using SFA.DAS.LearnerData.TestHelpers;
 using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 using static SFA.DAS.LearnerData.Application.Fm36.Common.EarningsFM36Constants;
 
@@ -48,9 +45,9 @@ public class LearningDeliveryPeriodisedValues
         learningDelivery.LearningDeliveryPeriodisedValues.Should()
             .Contain(x => x.AttributeName == "LearnDelESFAContribPct" && x.AllValuesAreSetTo(0.95m));
         learningDelivery.LearningDeliveryPeriodisedValues.Should()
-                .Contain(x => x.AttributeName == "ProgrammeAimBalPayment" && x.AllValuesAreSetToZero());
+            .Contain(x => x.AttributeName == "ProgrammeAimBalPayment" && x.AllValuesAreSetToZero());
         learningDelivery.LearningDeliveryPeriodisedValues.Should()
-                .Contain(x => x.AttributeName == "ProgrammeAimCompletionPayment" && x.AllValuesAreSetToZero());
+            .Contain(x => x.AttributeName == "ProgrammeAimCompletionPayment" && x.AllValuesAreSetToZero());
     }
 
     [Test]
@@ -246,6 +243,12 @@ public class LearningDeliveryPeriodisedValues
         var learningDelivery = testFixture.GetLearningDelivery(scenario);
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
 
+        if (scenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            learningDelivery.LearningDeliveryPeriodisedValues.Should().Contain(x => x.AttributeName == "ProgrammeAimOnProgPayment" && x.AllValuesAreSetToZero());
+            return;
+        }
+
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "ProgrammeAimOnProgPayment");
         result.Should().NotBeNull();
         result.Period1.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount).GetValueOrDefault());
@@ -283,6 +286,12 @@ public class LearningDeliveryPeriodisedValues
 
         var learningDelivery = testFixture.GetLearningDelivery(scenario);
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
+
+        if (scenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            learningDelivery.LearningDeliveryPeriodisedValues.Should().Contain(x => x.AttributeName == "ProgrammeAimProgFundIndMaxEmpCont" && x.AllValuesAreSetToZero());
+            return;
+        }
 
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "ProgrammeAimProgFundIndMaxEmpCont");
         result.Should().NotBeNull();
@@ -325,6 +334,12 @@ public class LearningDeliveryPeriodisedValues
         var learningDelivery = testFixture.GetLearningDelivery(scenario);
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
 
+        if (scenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            learningDelivery.LearningDeliveryPeriodisedValues.Should().Contain(x => x.AttributeName == "ProgrammeAimProgFundIndMaxEmpCont" && x.AllValuesAreSetToZero());
+            return;
+        }
+
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "ProgrammeAimProgFundIndMinCoInvest");
         result.Should().NotBeNull();
 
@@ -365,6 +380,12 @@ public class LearningDeliveryPeriodisedValues
 
         var learningDelivery = testFixture.GetLearningDelivery(scenario);
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
+
+        if (scenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            learningDelivery.LearningDeliveryPeriodisedValues.Should().Contain(x => x.AttributeName == "ProgrammeAimTotProgFund" && x.AllValuesAreSetToZero());
+            return;
+        }
 
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "ProgrammeAimTotProgFund");
         result.Should().NotBeNull();
