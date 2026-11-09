@@ -279,6 +279,9 @@ internal static class JoinedDataModelsExtensions
             periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.MathEngBalPayment, joinedLearningDelivery, shortAcademicYear, InstalmentType.Balancing);
             periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.MathEngOnProgPayment, joinedLearningDelivery, shortAcademicYear);
 
+            periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimBalPayment, joinedLearningDelivery, shortAcademicYear, InstalmentType.Balancing);
+            periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimCompletionPayment, joinedLearningDelivery, shortAcademicYear, InstalmentType.Completion);
+
             periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelFirstEmp1618Pay, 0);
             periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelFirstProv1618Pay, 0);
 
@@ -301,14 +304,10 @@ internal static class JoinedDataModelsExtensions
         periodisedValues.AddAdditionalPaymentPerPeriodIndicators(EarningsFM36Constants.PeriodisedAttributes.LearnSuppFund, joinedLearningDelivery, shortAcademicYear, EarningsFM36Constants.AdditionalPaymentsTypes.LearningSupport);
         periodisedValues.AddAdditionalPaymentPerPeriodValues(EarningsFM36Constants.PeriodisedAttributes.LearnSuppFundCash, joinedLearningDelivery, shortAcademicYear, EarningsFM36Constants.AdditionalPaymentsTypes.LearningSupport);
 
-        if (joinedLearningDelivery is not JoinedEnglishAndMathsLearningDelivery)
-        {
-            // Don't set these for English & Maths (FLP-2152)
-            periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimOnProgPayment, joinedLearningDelivery, shortAcademicYear);
-            periodisedValues.AddCoInvestmentValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimProgFundIndMaxEmpCont, joinedLearningDelivery, shortAcademicYear, EarningsFM36Constants.CoInvestEmployerMultiplier);
-            periodisedValues.AddCoInvestmentValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimProgFundIndMinCoInvest, joinedLearningDelivery, shortAcademicYear, EarningsFM36Constants.CoInvestSfaMultiplier);
-            periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimTotProgFund, joinedLearningDelivery, shortAcademicYear);
-        }
+        periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimOnProgPayment, joinedLearningDelivery, shortAcademicYear);
+        periodisedValues.AddCoInvestmentValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimProgFundIndMaxEmpCont, joinedLearningDelivery, shortAcademicYear, EarningsFM36Constants.CoInvestEmployerMultiplier);
+        periodisedValues.AddCoInvestmentValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimProgFundIndMinCoInvest, joinedLearningDelivery, shortAcademicYear, EarningsFM36Constants.CoInvestSfaMultiplier);
+        periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimTotProgFund, joinedLearningDelivery, shortAcademicYear);
 
         return periodisedValues;
     }
