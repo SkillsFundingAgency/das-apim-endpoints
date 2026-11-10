@@ -5,6 +5,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using SFA.DAS.EmployerFinance.Application.Queries.GetLevyProjectionMonthsByAccountId;
 using SFA.DAS.EmployerFinance.Application.Queries.GetLevyProjectionsByAccountId;
 
 namespace SFA.DAS.EmployerFinance.Api.Controllers;
@@ -29,6 +30,24 @@ public class FinanceLevyController(IMediator mediator,
         catch (Exception e)
         {
             logger.LogError(e, "Error getting levy projections for account {AccountId}", accountId);
+            return TypedResults.InternalServerError();
+        }
+    }
+
+    [HttpGet]
+    [Route("projections/download")]
+    public async Task<IResult> GetLevyProjectionsForDownload([FromRoute, Required] long accountId)
+    {
+        try
+        {
+            var projectionMonths = await mediator.Send(new GetLevyProjectionMonthsByAccountIdQuery(accountId));
+            var result = await mediator.Send(new GetLevyProjectionsByAccountIdQuery(accountId, projectionMonths.Months));
+
+            return TypedResults.Ok(result);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error getting levy projections for download for account {AccountId}", accountId);
             return TypedResults.InternalServerError();
         }
     }
