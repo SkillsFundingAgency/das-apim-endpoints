@@ -1,11 +1,8 @@
 ﻿using MediatR;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
-using SFA.DAS.DigitalCertificates.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,7 +19,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetSharingById
 
         public async Task<GetSharingByIdQueryResult> Handle(GetSharingByIdQuery request, CancellationToken cancellationToken)
         {
-            var apiResponse = await _digitalCertificatesApiClient.GetWithResponseCode<GetSharingByIdResponse>(new GetSharingByIdRequest(request.SharingId, request.Limit));
+            var apiResponse = await _digitalCertificatesApiClient.GetWithResponseCode<GetSharingByIdResponse>(new GetSharingByIdApiRequest(request.SharingId, request.Limit));
 
             if (apiResponse?.StatusCode != System.Net.HttpStatusCode.NotFound)
             {
