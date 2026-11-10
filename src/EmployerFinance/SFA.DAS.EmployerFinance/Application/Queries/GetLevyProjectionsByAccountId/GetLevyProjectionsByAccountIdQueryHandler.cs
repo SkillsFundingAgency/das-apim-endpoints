@@ -6,6 +6,7 @@ using SFA.DAS.EmployerFinance.InnerApi.Responses.Finance;
 using SFA.DAS.EmployerFinance.Models.Projections;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,23 +19,24 @@ namespace SFA.DAS.EmployerFinance.Application.Queries.GetLevyProjectionsByAccoun
 public class GetLevyProjectionsByAccountIdQueryHandler(
     IFinanceApiClient<FinanceApiConfiguration> financeApiClient,
     IFundingProjectionApiClient<FundingProjectionApiConfiguration> projectionApiClient,
-    ICacheStorageService cacheStorageService)
+    ICacheStorageService cacheStorageService,
+    ILogger<GetLevyProjectionsByAccountIdQueryHandler> logger)
     : IRequestHandler<GetLevyProjectionsByAccountIdQuery, GetLevyProjectionsByAccountIdQueryResult>
 {
-    private const string LevyFundsInCacheKeyPrefix = "GetLevyFundsIn_{0}";
-    private const string PaymentFundsOutCacheKeyPrefix = "GetPaymentFundsOut_{0}";
-    private const string ExpiredLevyCacheKeyPrefix = "GetExpiredLevy_{0}";
-    private const string LevyDeclarationSummaryCacheKeyPrefix = "GetLevyDeclarationSummaryByDate_{0}";
+    private const string LevyFundsInCacheKey = "GetLevyFundsIn_{0}_{1}";
+    private const string PaymentFundsOutCacheKey = "GetPaymentFundsOut_{0}_{1}";
+    private const string ExpiredLevyCacheKey = "GetExpiredLevy_{0}_{1}";
+    private const string LevyDeclarationSummaryCacheKey = "GetLevyDeclarationSummaryByDate_{0}_{1}";
+    private const string LatestTransactionTypeTransactionIdsCacheKey = "LatestTransactionTypeTransactionIds_{0}";
+    private const string NoTransactionsKeySegment = "none";
 
-    private static readonly TimeSpan CacheExpiration = TimeSpan.FromDays(7); // Cache expiration set to 7 days for all cached data
+    private static readonly TimeSpan CacheExpiration = TimeSpan.FromDays(7);
 
     public async Task<GetLevyProjectionsByAccountIdQueryResult> Handle(GetLevyProjectionsByAccountIdQuery request, CancellationToken cancellationToken)
     {
         var now = DateTime.UtcNow.Date;
 
-        var fundsInTask = GetFundsInAsync(request.AccountId);
-        var fundsOutTask = GetFundsOutAsync(request.AccountId);
-        var expiredLevyTask = GetExpiredLevyAsync(request.AccountId);
+        var latestIds = await GetLatestTransactionTypeTransactionIdsForAccountAsync(request.AccountId);
 
         // Payments land in the account the month after their collection period, so this month's payments are last month's collection
         var currentCollectionPeriod = now.AddMonths(-1);
@@ -44,7 +46,10 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
         var levySummaryTask = financeApiClient.Get<GetLevySummaryByAccountIdResponse>(
             new GetLevySummaryByAccountIdRequest(request.AccountId));
 
-        var declarationsTask = FetchHistoricTransactionLinesDataAsync(now, request.AccountId);
+        var fundsInTask = GetFundsInAsync(request.AccountId, latestIds?.LatestDeclarationId);
+        var fundsOutTask = GetFundsOutAsync(request.AccountId, latestIds?.LatestPaymentId);
+        var expiredLevyTask = GetExpiredLevyAsync(request.AccountId, latestIds?.LatestExpiryId);
+        var declarationsTask = FetchHistoricTransactionLinesDataAsync(now, request.AccountId, latestIds?.LatestDeclarationId);
 
         await Task.WhenAll(levySummaryTask, declarationsTask, fundsInTask, fundsOutTask, expiredLevyTask, currentPaymentsTask);
         var levySummary = levySummaryTask.Result;
@@ -98,42 +103,63 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
             .Where(d => d.TotalAmount > 0)
             .Max(d => d.SubmissionDate);
 
-    private async Task<List<LevyDeclaration>?> FetchHistoricTransactionLinesDataAsync(DateTime now, long accountId)
+    private async Task<GetLatestTransactionTypeTransactionIdsForAccountResponse?> GetLatestTransactionTypeTransactionIdsForAccountAsync(long accountId)
+    {
+        var cacheKey = string.Format(LatestTransactionTypeTransactionIdsCacheKey, accountId);
+
+        GetLatestTransactionTypeTransactionIdsForAccountResponse? latestIds = null;
+        try
+        {
+            latestIds = await financeApiClient.Get<GetLatestTransactionTypeTransactionIdsForAccountResponse>(new GetLatestTransactionTypeTransactionIdsForAccountRequest(accountId));
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Unable to get latest transaction id for each transaction type for account {AccountId}", accountId);
+        }
+
+        if (latestIds is not null)
+        {
+            await cacheStorageService.SaveToCache(cacheKey, latestIds, CacheExpiration);
+            return latestIds;
+        }
+
+        logger.LogWarning("Using last known transaction id for each transaction type for account {AccountId}", accountId);
+        return await cacheStorageService.RetrieveFromCache<GetLatestTransactionTypeTransactionIdsForAccountResponse>(cacheKey);
+    }
+
+    private async Task<List<LevyDeclaration>?> FetchHistoricTransactionLinesDataAsync(DateTime now, long accountId, long? latestDeclarationId)
     {
         var startOfMonth = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
         var startDate = startOfMonth.AddYears(-1).AddMonths(-1);
         var endDate = startOfMonth.AddMonths(1).AddTicks(-1);
-        var cacheExpiry = DateTime.UtcNow.Date.AddDays(1) - DateTime.UtcNow; // Cache expiry set to the end of the current day to ensure we get fresh data for the next day
 
-        return await GetHistoricTransactionLinesDataAsync(accountId, startDate, endDate, cacheExpiry);
+        return await GetOrCacheAsync(
+            string.Format(LevyDeclarationSummaryCacheKey, accountId, ToKeySegment(latestDeclarationId)),
+            async () => await financeApiClient.Get<List<LevyDeclaration>>(
+                new GetLevyDeclarationSummaryByDate(accountId, startDate, endDate)));
     }
 
-    private Task<List<CalendarPeriodAmount>?> GetFundsInAsync(long accountId) =>
+    private Task<List<CalendarPeriodAmount>?> GetFundsInAsync(long accountId, long? latestDeclarationId) =>
         GetOrCacheAsync(
-            string.Format($"{LevyFundsInCacheKeyPrefix}", accountId),
+            string.Format(LevyFundsInCacheKey, accountId, ToKeySegment(latestDeclarationId)),
             async () => await financeApiClient.Get<List<CalendarPeriodAmount>>(new GetLevyFundsInRequest(accountId)));
 
-    private Task<List<CalendarPeriodAmount>?> GetFundsOutAsync(long accountId) =>
+    private Task<List<CalendarPeriodAmount>?> GetFundsOutAsync(long accountId, long? latestPaymentId) =>
         GetOrCacheAsync(
-            string.Format($"{PaymentFundsOutCacheKeyPrefix}", accountId),
+            string.Format(PaymentFundsOutCacheKey, accountId, ToKeySegment(latestPaymentId)),
             async () => await financeApiClient.Get<List<CalendarPeriodAmount>>(new GetPaymentFundsOutRequest(accountId)));
 
-    private async Task<GetExpiredLevyResponse?> GetExpiredLevyAsync(long accountId) =>
-        await GetOrCacheAsync(
-            string.Format($"{ExpiredLevyCacheKeyPrefix}", accountId),
+    private Task<GetExpiredLevyResponse?> GetExpiredLevyAsync(long accountId, long? latestExpiryId) =>
+        GetOrCacheAsync(
+            string.Format(ExpiredLevyCacheKey, accountId, ToKeySegment(latestExpiryId)),
             async () => await financeApiClient.Get<GetExpiredLevyResponse>(new GetExpiredLevyRequest(accountId)));
 
-    private async Task<List<LevyDeclaration>?> GetHistoricTransactionLinesDataAsync(long accountId, DateTime fromDate, DateTime toDate, TimeSpan? cacheExpiration = null) =>
-        await GetOrCacheAsync(
-            string.Format($"{LevyDeclarationSummaryCacheKeyPrefix}", accountId),
-            async () => await financeApiClient.Get<List<LevyDeclaration>>(
-                new GetLevyDeclarationSummaryByDate(accountId, fromDate, toDate)),
-            cacheExpiration);
+    private static string ToKeySegment(long? latestTransactionId) =>
+        latestTransactionId?.ToString() ?? NoTransactionsKeySegment;
 
     private async Task<T?> GetOrCacheAsync<T>(
         string cacheKey,
-        Func<Task<T?>> fetchAsync,
-        TimeSpan? cacheExpiration = null) where T : class
+        Func<Task<T?>> fetchAsync) where T : class
     {
         var cached = await cacheStorageService.RetrieveFromCache<T>(cacheKey);
         if (cached is not null)
@@ -142,7 +168,7 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
         var result = await fetchAsync();
 
         if (result is not null)
-            await cacheStorageService.SaveToCache(cacheKey, result, cacheExpiration ?? CacheExpiration);
+            await cacheStorageService.SaveToCache(cacheKey, result, CacheExpiration);
 
         return result;
     }

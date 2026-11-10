@@ -11,6 +11,7 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 
 namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetLevyProjectionsByAccountId;
@@ -181,7 +182,7 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Funds_In_Funds_Out_And_Expired_Levy_Are_Cached_For_Seven_Days(
+    public async Task Then_Data_Is_Cached_For_Seven_Days_Keyed_On_The_Latest_Transaction_Ids(
         long accountId,
         List<CalendarPeriodAmount> fundsIn,
         List<CalendarPeriodAmount> fundsOut,
@@ -193,9 +194,13 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
         [Frozen] Mock<ICacheStorageService> cacheStorageService,
         [Greedy] GetLevyProjectionsByAccountIdQueryHandler sut)
     {
+        // arrange
         var request = new GetLevyProjectionsByAccountIdQuery(accountId);
+        List<LevyDeclaration> declarations = [new LevyDeclaration { PayrollMonth = 1, PayrollYear = "25-26", TotalAmount = 100m }];
+        var latestIds = SetupLatestTransactionTypeTransactionIds(financeApiClient, accountId);
         SetupCommonFinanceCalls(financeApiClient, levySummaryByAccountIdResponse);
         SetupCacheMisses(cacheStorageService);
+        SetupProjection(projectionApiClient, estimatesTimeline);
 
         financeApiClient
             .Setup(x => x.Get<List<CalendarPeriodAmount>>(It.Is<GetLevyFundsInRequest>(r => r.AccountId == accountId)))
@@ -206,55 +211,155 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
         financeApiClient
             .Setup(x => x.Get<GetExpiredLevyResponse>(It.Is<GetExpiredLevyRequest>(r => r.AccountId == accountId)))
             .ReturnsAsync(expiredLevy);
-        SetupProjection(projectionApiClient, estimatesTimeline);
+        financeApiClient
+            .Setup(x => x.Get<List<LevyDeclaration>>(It.IsAny<GetLevyDeclarationSummaryByDate>()))
+            .ReturnsAsync(declarations);
 
+        // act
         await sut.Handle(request, CancellationToken.None);
 
+        // assert
         cacheStorageService.Verify(x => x.SaveToCache(
-            $"GetLevyFundsIn_{accountId}", fundsIn, TimeSpan.FromDays(7), null), Times.Once);
+            $"GetLevyFundsIn_{accountId}_121", fundsIn, TimeSpan.FromDays(7), null), Times.Once);
         cacheStorageService.Verify(x => x.SaveToCache(
-            $"GetPaymentFundsOut_{accountId}", fundsOut, TimeSpan.FromDays(7), null), Times.Once);
+            $"GetPaymentFundsOut_{accountId}_115", fundsOut, TimeSpan.FromDays(7), null), Times.Once);
         cacheStorageService.Verify(x => x.SaveToCache(
-            $"GetExpiredLevy_{accountId}", expiredLevy, TimeSpan.FromDays(7), null), Times.Once);
+            $"GetExpiredLevy_{accountId}_100", expiredLevy, TimeSpan.FromDays(7), null), Times.Once);
+        cacheStorageService.Verify(x => x.SaveToCache(
+            $"GetLevyDeclarationSummaryByDate_{accountId}_121", declarations, TimeSpan.FromDays(7), null), Times.Once);
+        cacheStorageService.Verify(x => x.SaveToCache(
+            $"LatestTransactionTypeTransactionIds_{accountId}", latestIds, TimeSpan.FromDays(7), null), Times.Once);
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Levy_Declarations_Are_Cached_Until_The_Next_Utc_Midnight(
+    public async Task Then_Cached_Data_Is_Used_When_There_Are_No_New_Transactions(
         long accountId,
+        List<CalendarPeriodAmount> fundsIn,
+        List<CalendarPeriodAmount> fundsOut,
+        GetExpiredLevyResponse expiredLevy,
         GetLevySummaryByAccountIdResponse levySummaryByAccountIdResponse,
         EstimatesTimeline estimatesTimeline,
-        List<LevyDeclaration> declarations,
         [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeApiClient,
         [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> projectionApiClient,
         [Frozen] Mock<ICacheStorageService> cacheStorageService,
         [Greedy] GetLevyProjectionsByAccountIdQueryHandler sut)
     {
+        // arrange
         var request = new GetLevyProjectionsByAccountIdQuery(accountId);
-        declarations =
-        [
-            new LevyDeclaration
-            {
-                PayrollMonth = 1,
-                PayrollYear = "25-26",
-                TotalAmount = 100m
-            }
-        ];
+        SetupLatestTransactionTypeTransactionIds(financeApiClient, accountId);
         SetupCommonFinanceCalls(financeApiClient, levySummaryByAccountIdResponse);
-        SetupCacheMisses(cacheStorageService);
-        financeApiClient
-            .Setup(x => x.Get<List<LevyDeclaration>>(It.IsAny<GetLevyDeclarationSummaryByDate>()))
-            .ReturnsAsync(declarations);
-        SetupProjection(projectionApiClient, estimatesTimeline);
+        var capturedRequest = SetupProjection(projectionApiClient, estimatesTimeline);
+        SetupCachedData(cacheStorageService, accountId, "121", "115", "100", fundsIn, fundsOut, expiredLevy);
 
-        var beforeMidnight = DateTime.UtcNow.Date.AddDays(1) - DateTime.UtcNow;
-
+        // act
         await sut.Handle(request, CancellationToken.None);
 
+        // assert
+        VerifyCachedDataNotFetched(financeApiClient);
+        capturedRequest.Value!.PostData.LevyFundsInForExpiry.Should().BeEquivalentTo(fundsIn);
+        capturedRequest.Value.PostData.PaymentFundsOutForExpiry.Should().BeEquivalentTo(fundsOut);
+        capturedRequest.Value.PostData.LongTermExpiredFunds.Should().BeEquivalentTo(expiredLevy.LongTerm);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_None_Is_Used_In_The_Cache_Key_When_The_Account_Has_No_Transactions(
+        long accountId,
+        GetLevySummaryByAccountIdResponse levySummaryByAccountIdResponse,
+        EstimatesTimeline estimatesTimeline,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeApiClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> projectionApiClient,
+        [Frozen] Mock<ICacheStorageService> cacheStorageService,
+        [Greedy] GetLevyProjectionsByAccountIdQueryHandler sut)
+    {
+        // arrange
+        var request = new GetLevyProjectionsByAccountIdQuery(accountId);
+        financeApiClient
+            .Setup(x => x.Get<GetLatestTransactionTypeTransactionIdsForAccountResponse>(It.Is<GetLatestTransactionTypeTransactionIdsForAccountRequest>(r => r.AccountId == accountId)))
+            .ReturnsAsync(new GetLatestTransactionTypeTransactionIdsForAccountResponse());
+        SetupCommonFinanceCalls(financeApiClient, levySummaryByAccountIdResponse);
+        SetupCacheMisses(cacheStorageService);
+        SetupProjection(projectionApiClient, estimatesTimeline);
+
+        // act
+        await sut.Handle(request, CancellationToken.None);
+
+        // assert
+        cacheStorageService.Verify(x => x.RetrieveFromCache<List<CalendarPeriodAmount>>($"GetLevyFundsIn_{accountId}_none"), Times.Once);
+        cacheStorageService.Verify(x => x.RetrieveFromCache<List<CalendarPeriodAmount>>($"GetPaymentFundsOut_{accountId}_none"), Times.Once);
+        cacheStorageService.Verify(x => x.RetrieveFromCache<GetExpiredLevyResponse>($"GetExpiredLevy_{accountId}_none"), Times.Once);
+        cacheStorageService.Verify(x => x.RetrieveFromCache<List<LevyDeclaration>>($"GetLevyDeclarationSummaryByDate_{accountId}_none"), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_The_Last_Known_Ids_Are_Used_When_The_Latest_Ids_Cannot_Be_Retrieved(
+        long accountId,
+        List<CalendarPeriodAmount> fundsIn,
+        List<CalendarPeriodAmount> fundsOut,
+        GetExpiredLevyResponse expiredLevy,
+        GetLevySummaryByAccountIdResponse levySummaryByAccountIdResponse,
+        EstimatesTimeline estimatesTimeline,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeApiClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> projectionApiClient,
+        [Frozen] Mock<ICacheStorageService> cacheStorageService,
+        [Greedy] GetLevyProjectionsByAccountIdQueryHandler sut)
+    {
+        // arrange
+        var request = new GetLevyProjectionsByAccountIdQuery(accountId);
+        financeApiClient
+            .Setup(x => x.Get<GetLatestTransactionTypeTransactionIdsForAccountResponse>(It.IsAny<GetLatestTransactionTypeTransactionIdsForAccountRequest>()))
+            .ThrowsAsync(new HttpRequestException());
+        cacheStorageService
+            .Setup(x => x.RetrieveFromCache<GetLatestTransactionTypeTransactionIdsForAccountResponse>($"LatestTransactionTypeTransactionIds_{accountId}"))
+            .ReturnsAsync(new GetLatestTransactionTypeTransactionIdsForAccountResponse
+            {
+                LatestDeclarationId = 98,
+                LatestPaymentId = 95,
+                LatestExpiryId = null
+            });
+        SetupCommonFinanceCalls(financeApiClient, levySummaryByAccountIdResponse);
+        var capturedRequest = SetupProjection(projectionApiClient, estimatesTimeline);
+        SetupCachedData(cacheStorageService, accountId, "98", "95", "none", fundsIn, fundsOut, expiredLevy);
+
+        // act
+        await sut.Handle(request, CancellationToken.None);
+
+        // assert
+        VerifyCachedDataNotFetched(financeApiClient);
+        capturedRequest.Value!.PostData.LevyFundsInForExpiry.Should().BeEquivalentTo(fundsIn);
         cacheStorageService.Verify(x => x.SaveToCache(
-            $"GetLevyDeclarationSummaryByDate_{accountId}",
-            declarations,
-            It.Is<TimeSpan>(expiration => expiration > TimeSpan.Zero && expiration <= beforeMidnight),
-            null), Times.Once);
+            It.IsAny<string>(), It.IsAny<GetLatestTransactionTypeTransactionIdsForAccountResponse>(), It.IsAny<TimeSpan>(), null), Times.Never);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_The_Data_Is_Fetched_When_The_Latest_Ids_Cannot_Be_Retrieved_And_There_Are_No_Last_Known_Ids(
+        long accountId,
+        List<CalendarPeriodAmount> fundsIn,
+        GetLevySummaryByAccountIdResponse levySummaryByAccountIdResponse,
+        EstimatesTimeline estimatesTimeline,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeApiClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> projectionApiClient,
+        [Frozen] Mock<ICacheStorageService> cacheStorageService,
+        [Greedy] GetLevyProjectionsByAccountIdQueryHandler sut)
+    {
+        // arrange
+        var request = new GetLevyProjectionsByAccountIdQuery(accountId);
+        financeApiClient
+            .Setup(x => x.Get<GetLatestTransactionTypeTransactionIdsForAccountResponse>(It.IsAny<GetLatestTransactionTypeTransactionIdsForAccountRequest>()))
+            .ReturnsAsync((GetLatestTransactionTypeTransactionIdsForAccountResponse)null!);
+        SetupCommonFinanceCalls(financeApiClient, levySummaryByAccountIdResponse);
+        SetupCacheMisses(cacheStorageService);
+        var capturedRequest = SetupProjection(projectionApiClient, estimatesTimeline);
+        financeApiClient
+            .Setup(x => x.Get<List<CalendarPeriodAmount>>(It.Is<GetLevyFundsInRequest>(r => r.AccountId == accountId)))
+            .ReturnsAsync(fundsIn);
+
+        // act
+        await sut.Handle(request, CancellationToken.None);
+
+        // assert
+        capturedRequest.Value!.PostData.LevyFundsInForExpiry.Should().BeEquivalentTo(fundsIn);
+        cacheStorageService.Verify(x => x.SaveToCache(
+            $"GetLevyFundsIn_{accountId}_none", fundsIn, TimeSpan.FromDays(7), null), Times.Once);
     }
 
     [Test, MoqAutoData]
@@ -546,6 +651,57 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
         cacheStorageService
             .Setup(x => x.RetrieveFromCache<List<LevyDeclaration>>(It.IsAny<string>()))
             .ReturnsAsync((List<LevyDeclaration>)null!);
+        cacheStorageService
+            .Setup(x => x.RetrieveFromCache<GetLatestTransactionTypeTransactionIdsForAccountResponse>(It.IsAny<string>()))
+            .ReturnsAsync((GetLatestTransactionTypeTransactionIdsForAccountResponse)null!);
+    }
+
+    private static GetLatestTransactionTypeTransactionIdsForAccountResponse SetupLatestTransactionTypeTransactionIds(
+        Mock<IFinanceApiClient<FinanceApiConfiguration>> financeApiClient,
+        long accountId)
+    {
+        var latestIds = new GetLatestTransactionTypeTransactionIdsForAccountResponse
+        {
+            LatestDeclarationId = 121,
+            LatestPaymentId = 115,
+            LatestExpiryId = 100
+        };
+        financeApiClient
+            .Setup(x => x.Get<GetLatestTransactionTypeTransactionIdsForAccountResponse>(It.Is<GetLatestTransactionTypeTransactionIdsForAccountRequest>(r => r.AccountId == accountId)))
+            .ReturnsAsync(latestIds);
+        return latestIds;
+    }
+
+    private static void SetupCachedData(
+        Mock<ICacheStorageService> cacheStorageService,
+        long accountId,
+        string declarationKeySegment,
+        string paymentKeySegment,
+        string expiryKeySegment,
+        List<CalendarPeriodAmount> fundsIn,
+        List<CalendarPeriodAmount> fundsOut,
+        GetExpiredLevyResponse expiredLevy)
+    {
+        cacheStorageService
+            .Setup(x => x.RetrieveFromCache<List<CalendarPeriodAmount>>($"GetLevyFundsIn_{accountId}_{declarationKeySegment}"))
+            .ReturnsAsync(fundsIn);
+        cacheStorageService
+            .Setup(x => x.RetrieveFromCache<List<CalendarPeriodAmount>>($"GetPaymentFundsOut_{accountId}_{paymentKeySegment}"))
+            .ReturnsAsync(fundsOut);
+        cacheStorageService
+            .Setup(x => x.RetrieveFromCache<GetExpiredLevyResponse>($"GetExpiredLevy_{accountId}_{expiryKeySegment}"))
+            .ReturnsAsync(expiredLevy);
+        cacheStorageService
+            .Setup(x => x.RetrieveFromCache<List<LevyDeclaration>>($"GetLevyDeclarationSummaryByDate_{accountId}_{declarationKeySegment}"))
+            .ReturnsAsync([]);
+    }
+
+    private static void VerifyCachedDataNotFetched(Mock<IFinanceApiClient<FinanceApiConfiguration>> financeApiClient)
+    {
+        financeApiClient.Verify(x => x.Get<List<CalendarPeriodAmount>>(It.IsAny<GetLevyFundsInRequest>()), Times.Never);
+        financeApiClient.Verify(x => x.Get<List<CalendarPeriodAmount>>(It.IsAny<GetPaymentFundsOutRequest>()), Times.Never);
+        financeApiClient.Verify(x => x.Get<GetExpiredLevyResponse>(It.IsAny<GetExpiredLevyRequest>()), Times.Never);
+        financeApiClient.Verify(x => x.Get<List<LevyDeclaration>>(It.IsAny<GetLevyDeclarationSummaryByDate>()), Times.Never);
     }
 
     private static StrongBox<PostEmployerFundingProjectionRequest?> SetupProjection(
