@@ -37,6 +37,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
                     c.ProviderName == command.ProviderName &&
                     c.Ukprn == command.Ukprn &&
                     c.IsMatched == command.IsMatched &&
+                    c.IsUlnMatched == command.IsUlnMatched &&
                     c.IsFailed == command.IsFailed), CancellationToken.None))
                 .ReturnsAsync(Unit.Value);
 
@@ -53,6 +54,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
                 ProviderName = command.ProviderName,
                 Ukprn = command.Ukprn,
                 IsMatched = command.IsMatched,
+                IsUlnMatched = command.IsUlnMatched,
                 IsFailed = command.IsFailed
             };
 
@@ -89,6 +91,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
                 ProviderName = command.ProviderName,
                 Ukprn = command.Ukprn,
                 IsMatched = command.IsMatched,
+                IsUlnMatched = command.IsUlnMatched,
                 IsFailed = command.IsFailed
             };
 

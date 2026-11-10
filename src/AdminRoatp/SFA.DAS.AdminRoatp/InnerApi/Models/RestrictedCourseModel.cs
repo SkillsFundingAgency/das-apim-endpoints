@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Types.Constants;
+﻿using SFA.DAS.Common.Domain.Types;
 
 namespace SFA.DAS.AdminRoatp.InnerApi.Models;
 

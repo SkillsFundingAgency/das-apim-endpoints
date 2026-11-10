@@ -1,5 +1,5 @@
 ﻿using SFA.DAS.AdminRoatp.InnerApi.Models;
-using SFA.DAS.SharedOuterApi.Types.Constants;
+using SFA.DAS.Common.Domain.Types;
 using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
 namespace SFA.DAS.AdminRoatp.InnerApi.Responses;

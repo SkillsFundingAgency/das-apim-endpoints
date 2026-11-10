@@ -28,7 +28,8 @@ public class UpdateEarningsEnglishAndMathsRequestBuilder : IUpdateEarningsEnglis
                 PauseDate = x.PauseDate,
                 WithdrawalDate = x.WithdrawalDate,
                 CompletionDate = x.CompletionDate,
-                PeriodsInLearning = GetPeriodsInLearning(x.LearnAimRef, command)
+                PeriodsInLearning = GetPeriodsInLearning(x.LearnAimRef, command),
+                LearningSupport = x.LearningSupport
             }).ToList()
         };
             

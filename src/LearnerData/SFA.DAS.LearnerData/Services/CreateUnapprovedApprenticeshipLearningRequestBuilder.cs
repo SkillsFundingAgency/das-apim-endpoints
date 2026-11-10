@@ -57,7 +57,7 @@ public class CreateUnapprovedApprenticeshipLearningRequestBuilder(ICourseService
                 FundingBandMaximum = fundingBandMaximum
             },
             CompletionDate = requestBody.Learner.CompletionDate,
-            WithdrawalDate = requestBody.Delivery.WithdrawalDate,
+            WithdrawalDate = requestBody.OnProgramme.WithdrawalDate,
             PauseDate = requestBody.OnProgramme.PauseDate,
             AchievementDate = requestBody.OnProgramme.AchievementDate,
             Prices = learningApiPutResponse.Prices.Select(x => new LearningEpisodePriceItem
@@ -71,11 +71,13 @@ public class CreateUnapprovedApprenticeshipLearningRequestBuilder(ICourseService
             }).ToList(),
             PeriodsInLearning = GetPeriodsInLearning(matchingOnProgrammes),
             EnglishAndMaths = GetEnglishAndMaths(requestBody.EnglishAndMathsCourses),
-            LearningSupport = requestBody.LearningSupport.Select(x => new ApprenticeshipLearningSupportItem
-            {
-                StartDate = x.StartDate,
-                EndDate = x.EndDate
-            }).ToList()
+            LearningSupport = requestBody.OnProgramme.LearningSupport
+                .Select(x => new ApprenticeshipLearningSupportItem
+                {
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate
+                }).ToList(),
+            IsNewApprenticeshipLearner = learningApiPutResponse.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.NewApprenticeshipLearner)
         };
 
         return new PostCreateUnapprovedApprenticeshipLearningRequest(request);
@@ -110,7 +112,13 @@ public class CreateUnapprovedApprenticeshipLearningRequestBuilder(ICourseService
             PauseDate = course.PauseDate,
             WithdrawalDate = course.WithdrawalDate,
             CompletionDate = course.CompletionDate,
-            PeriodsInLearning = GetEnglishAndMathsPeriods(course)
+            PeriodsInLearning = GetEnglishAndMathsPeriods(course),
+            LearningSupport = course.LearningSupport
+                .Select(x => new ApprenticeshipLearningSupportItem
+                {
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate
+                }).ToList()
         }).ToList();
     }
 

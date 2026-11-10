@@ -6,6 +6,7 @@
         LandingPage = 1,
         Article = 2,
         Hub = 3,
-        Tab = 4
+        Tab = 4,
+        CtaPanel = 5
     }
 }

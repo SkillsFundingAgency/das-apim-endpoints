@@ -2,6 +2,7 @@
 using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.Aodp.InnerApi.AodpApi.FormBuilder.Forms;
 using SFA.DAS.Aodp.Services;
+using System.Net;
 
 namespace SFA.DAS.Aodp.Application.Commands.FormBuilder.Forms;
 
@@ -30,6 +31,14 @@ public class CreateFormVersionCommandHandler : IRequestHandler<CreateFormVersion
                 Data = request
             };
             var result = await _apiClient.PostWithResponseCode<CreateFormVersionCommandResponse>(apiRequest);
+
+            if (result.StatusCode == HttpStatusCode.BadRequest)
+            {
+                response.ErrorCode = ErrorCodes.BadRequest;
+                response.ErrorMessage = result.ErrorContent;
+                return response;
+            }
+
             response.Value.Id = result.Body.Id!;
             response.Success = true;
         }

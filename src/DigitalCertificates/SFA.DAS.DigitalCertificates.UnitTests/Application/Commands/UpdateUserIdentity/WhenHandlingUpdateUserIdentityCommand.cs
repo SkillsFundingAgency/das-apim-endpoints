@@ -83,7 +83,6 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.UpdateUserI
             data.DateOfBirth.Should().Be(command.DateOfBirth);
             data.Names.Should().BeEquivalentTo(command.Names.Select(n => new NameRequest
             {
-                UserIdentityId = n.UserIdentityId,
                 ValidSince = n.ValidSince,
                 ValidUntil = n.ValidUntil,
                 FamilyName = n.FamilyName,

@@ -9,6 +9,7 @@ using SFA.DAS.LearnerData.Api.Controllers;
 using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses;
+using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -74,5 +75,41 @@ public class WhenCreatingLearner
 
         result.StatusCode.Should().Be((int)HttpStatusCode.UnprocessableEntity);
         mockMediator.Verify(x => x.Send(It.IsAny<CreateLearnerCommand>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task And_when_english_and_maths_value_not_found_Then_UnprocessableEntity_returned(
+        CreateLearnerRequest request,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] LearnersController sut)
+    {
+        long ukprn = 12345678;
+
+        request.Learner.Uln = 1234567890;
+
+        mockMediator.Setup(x => x.Send(It.IsAny<CreateLearnerCommand>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new EnglishAndMathsValueNotFoundException("60005105", new DateTime(2025, 8, 1)));
+
+        var result = await sut.CreateLearningRecord(ukprn, request) as StatusCodeResult;
+
+        result.StatusCode.Should().Be((int)HttpStatusCode.UnprocessableEntity);
+    }
+
+    [Test, MoqAutoData]
+    public async Task And_when_english_and_maths_value_unavailable_Then_InternalError_returned(
+        CreateLearnerRequest request,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] LearnersController sut)
+    {
+        long ukprn = 12345678;
+
+        request.Learner.Uln = 1234567890;
+
+        mockMediator.Setup(x => x.Send(It.IsAny<CreateLearnerCommand>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new EnglishAndMathsValueUnavailableException("SLD did not return a value.", HttpStatusCode.ServiceUnavailable));
+
+        var result = await sut.CreateLearningRecord(ukprn, request) as StatusCodeResult;
+
+        result.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }
 }

@@ -9,9 +9,11 @@ public class DefaultLearner
     public static string TrainingCode => "274";
     public static int FundingBandMax => 15000; 
     public static string FundingLineType => "19+ Apprenticeship (Employer on App Service)";
+    public static string LearnerRef => "LRN-DEFAULT";
 
     public static LearnerRequestDetails LearnerRequestDetails => new LearnerRequestDetails
     {
+        LearnerRef = LearnerRef,
         FirstName = "Merlin",
         LastName = "Page",
         Email = "merlin.page@example.com",
@@ -42,11 +44,12 @@ public class DefaultLearner
         LearnAimRef = "ZPROG001"
     };
 
+    public static decimal EnglishAndMathsValue => 1500;
+
     public static MathsAndEnglish EnglishAndMathsLearningDelivery => new MathsAndEnglish
     {
         AimSequenceNumber = 2,
         LearnAimRef = "ENG001",
-        Amount = 1500,
         StartDate = new DateTime(2020, 9, 1),
         EndDate = new DateTime(2021, 1, 31),
         Course = "English",

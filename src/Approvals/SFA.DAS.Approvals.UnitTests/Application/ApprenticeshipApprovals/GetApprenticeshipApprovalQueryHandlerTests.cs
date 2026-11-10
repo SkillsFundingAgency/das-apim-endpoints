@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -55,7 +54,6 @@ public class GetApprenticeshipApprovalQueryHandlerTests
         _apiClient.Setup(x =>
                 x.GetWithResponseCode<GetApprenticeshipApprovalResponse>(It.Is<GetApprenticeshipApprovalRequest>(
                     r => r.ApprenticeshipId == _query.ApprenticeshipId
-                    && r.ApprovalRequestId == _query.ApprovalRequestId
                     )))
             .ReturnsAsync(new ApiResponse<GetApprenticeshipApprovalResponse>(_apprenticeshipApproval, HttpStatusCode.OK, string.Empty));
 
@@ -127,13 +125,24 @@ public class GetApprenticeshipApprovalQueryHandlerTests
         _apiClient.Setup(x =>
                 x.GetWithResponseCode<GetApprenticeshipApprovalResponse>(It.Is<GetApprenticeshipApprovalRequest>(
                     r => r.ApprenticeshipId == _query.ApprenticeshipId
-                    && r.ApprovalRequestId == _query.ApprovalRequestId
                     )))
-            .ReturnsAsync(new ApiResponse<GetApprenticeshipApprovalResponse>(null, HttpStatusCode.NotFound, string.Empty)); 
-        
+            .ReturnsAsync(new ApiResponse<GetApprenticeshipApprovalResponse>(null, HttpStatusCode.NotFound, string.Empty));
+
         var result = await _handler.Handle(_query, CancellationToken.None);
 
         result.Should().BeNull();
+    }
+
+    [Test]
+    public async Task Handle_when_apprenticeshipApproval_has_empty_items_skips_funding_lookup()
+    {
+        _apprenticeshipApproval.Items = new List<ChangeItem>();
+
+        var result = await _handler.Handle(_query, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result.Items.Should().BeEmpty();
+        _apiClient.Verify(x => x.Get<GetTrainingProgrammeResponse>(It.IsAny<GetTrainingProgrammeRequest>()), Times.Never);
     }
 
     [Test]
@@ -151,7 +160,6 @@ public class GetApprenticeshipApprovalQueryHandlerTests
         _apiClient.Setup(x =>
                 x.GetWithResponseCode<GetApprenticeshipApprovalResponse>(It.Is<GetApprenticeshipApprovalRequest>(
                     r => r.ApprenticeshipId == _query.ApprenticeshipId
-                    && r.ApprovalRequestId == _query.ApprovalRequestId
                     )))
             .ReturnsAsync(new ApiResponse<GetApprenticeshipApprovalResponse>(null, HttpStatusCode.BadRequest, string.Empty));
 

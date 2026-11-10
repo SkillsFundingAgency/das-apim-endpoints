@@ -1,4 +1,4 @@
-﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+﻿using DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.LearnerData.Application.Fm36.LearningDeliveryHelper;
 using SFA.DAS.LearnerData.Application.Fm36.PriceEpisodeHelper;
 using SFA.DAS.LearnerData.Extensions;
@@ -71,7 +71,11 @@ internal static class JoinedDataModelsExtensions
         byte collectionPeriod,
         bool hasSubsequentPriceEpisodes)
     {
-        var previousEarnings = GetPreviousEarnings(joinedLearnerData, currentAcademicYear.GetShortAcademicYear(), collectionPeriod);
+        var cappedRemainingTNPAmount = Math.Min(joinedPriceEpisode.TotalPrice, joinedPriceEpisode.FundingBandMaximum);
+        var completionElement = Math.Max(0,
+            Math.Min(
+                (joinedPriceEpisode.TotalPrice - GetUpperLimitAdjustment(joinedPriceEpisode)) * EarningsFM36Constants.CompletionElementMultiplier,
+                cappedRemainingTNPAmount));
 
         //Total earnings are for the entire episode, irrespective of academic year
         var totalEpisodeEarnings = joinedLearnerData.Episodes
@@ -80,39 +84,30 @@ internal static class JoinedDataModelsExtensions
 
         return new PriceEpisodeValues
         {
-            EpisodeStartDate = joinedPriceEpisode.StartDate.LatestOf(currentAcademicYear.StartDate),
+            EpisodeStartDate = joinedPriceEpisode.StartDate.LatestOf(currentAcademicYear.StartDate).ToDateOnly(),
 
             TNP1 = joinedPriceEpisode.TrainingPrice,
             TNP2 = joinedPriceEpisode.EndPointAssessmentPrice,
             TNP3 = EarningsFM36Constants.TNP3,
             TNP4 = EarningsFM36Constants.TNP4,
 
-            PriceEpisodeActualEndDateIncEPA = joinedLearnerData.GetPriceEpisodeActualEndDateIncEPA(joinedPriceEpisode, hasSubsequentPriceEpisodes),
-
-
-
-            PriceEpisode1618FUBalValue = EarningsFM36Constants.PriceEpisode1618FUBalValue,
-            PriceEpisodeApplic1618FrameworkUpliftCompElement = EarningsFM36Constants.PriceEpisodeApplic1618FrameworkUpliftCompElement,
-            PriceEpisode1618FrameworkUpliftTotPrevEarnings = EarningsFM36Constants.PriceEpisode1618FrameworkUpliftTotPrevEarnings,
-            PriceEpisode1618FrameworkUpliftRemainingAmount = EarningsFM36Constants.PriceEpisode1618FrameworkUpliftRemainingAmount,
-            PriceEpisode1618FUMonthInstValue = EarningsFM36Constants.PriceEpisode1618FUMonthInstValue,
-            PriceEpisode1618FUTotEarnings = EarningsFM36Constants.PriceEpisode1618FUTotEarnings,
+            PriceEpisodeActualEndDateIncEPA = joinedLearnerData.GetPriceEpisodeActualEndDateIncEPA(joinedPriceEpisode, hasSubsequentPriceEpisodes).ToDateOnly(),
 
             PriceEpisodeUpperBandLimit = joinedPriceEpisode.FundingBandMaximum,
-            PriceEpisodePlannedEndDate = joinedLearnerData.PlannedEndDate,
+            PriceEpisodePlannedEndDate = joinedLearnerData.PlannedEndDate.ToDateOnly(),
 
 
-            PriceEpisodeActualEndDate = joinedLearnerData.GetActualEndDate(joinedPriceEpisode, hasSubsequentPriceEpisodes),
+            PriceEpisodeActualEndDate = joinedLearnerData.GetActualEndDate(joinedPriceEpisode, hasSubsequentPriceEpisodes).ToDateOnly(),
 
 
             PriceEpisodeTotalTNPPrice = joinedPriceEpisode.TotalPrice,
-            PriceEpisodeUpperLimitAdjustment = EarningsFM36Constants.PriceEpisodeUpperLimitAdjustment,
+            PriceEpisodeUpperLimitAdjustment = GetUpperLimitAdjustment(joinedPriceEpisode),
 
             PriceEpisodePlannedInstalments = joinedPriceEpisode.StartDate.GetNumberOfIncludedCensusDatesUntil(joinedLearnerData.PlannedEndDate),
             PriceEpisodeActualInstalments = joinedLearnerData.GetPriceEpisodeActualInstalments(currentAcademicYear, hasSubsequentPriceEpisodes),
             PriceEpisodeInstalmentsThisPeriod = joinedLearnerData.GetPriceEpisodeInstalmentsThisPeriod(joinedPriceEpisode, currentAcademicYear, collectionPeriod),
 
-            PriceEpisodeCompletionElement = joinedPriceEpisode.CompletionPayment,
+            PriceEpisodeCompletionElement = completionElement,
             PriceEpisodePreviousEarnings = EarningsFM36Constants.PriceEpisodePreviousEarnings,
             PriceEpisodeInstalmentValue = joinedPriceEpisode.Instalments.FirstOrDefault()?.Amount ?? 0,
             PriceEpisodeOnProgPayment = EarningsFM36Constants.PriceEpisodeOnProgPayment,
@@ -122,12 +117,6 @@ internal static class JoinedDataModelsExtensions
             PriceEpisodeCompleted = joinedPriceEpisode.EndDate < DateTime.Now,
             PriceEpisodeCompletionPayment = EarningsFM36Constants.PriceEpisodeCompletionPayment,
             PriceEpisodeAimSeqNumber = EarningsFM36Constants.AimSeqNumber,
-            PriceEpisodeFirstDisadvantagePayment = EarningsFM36Constants.PriceEpisodeFirstDisadvantagePayment,
-            PriceEpisodeSecondDisadvantagePayment = EarningsFM36Constants.PriceEpisodeSecondDisadvantagePayment,
-
-            PriceEpisodeApplic1618FrameworkUpliftBalancing = EarningsFM36Constants.PriceEpisodeApplic1618FrameworkUpliftBalancing,
-            PriceEpisodeApplic1618FrameworkUpliftCompletionPayment = EarningsFM36Constants.PriceEpisodeApplic1618FrameworkUpliftCompletionPayment,
-            PriceEpisodeApplic1618FrameworkUpliftOnProgPayment = EarningsFM36Constants.PriceEpisodeApplic1618FrameworkUpliftOnProgPayment,
 
             PriceEpisodeSecondProv1618Pay = EarningsFM36Constants.PriceEpisodeSecondProv1618Pay,
             PriceEpisodeFirstEmp1618Pay = EarningsFM36Constants.PriceEpisodeFirstEmp1618Pay,
@@ -136,9 +125,9 @@ internal static class JoinedDataModelsExtensions
             PriceEpisodeLSFCash = EarningsFM36Constants.PriceEpisodeLSFCash,
             PriceEpisodeFundLineType = joinedLearnerData.FundingLineType,
             PriceEpisodeLevyNonPayInd = EarningsFM36Constants.PriceEpisodeLevyNonPayInd,
-            EpisodeEffectiveTNPStartDate = joinedPriceEpisode.StartDate,
-            PriceEpisodeFirstAdditionalPaymentThresholdDate = EarningsFM36Constants.PriceEpisodeFirstAdditionalPaymentThresholdDate,
-            PriceEpisodeSecondAdditionalPaymentThresholdDate = EarningsFM36Constants.PriceEpisodeSecondAdditionalPaymentThresholdDate,
+            EpisodeEffectiveTNPStartDate = joinedPriceEpisode.StartDate.ToDateOnly(),
+            PriceEpisodeFirstAdditionalPaymentThresholdDate = EarningsFM36Constants.PriceEpisodeFirstAdditionalPaymentThresholdDate.ToDateOnly(),
+            PriceEpisodeSecondAdditionalPaymentThresholdDate = EarningsFM36Constants.PriceEpisodeSecondAdditionalPaymentThresholdDate.ToDateOnly(),
             PriceEpisodeContractType = EarningsFM36Constants.PriceEpisodeContractType,
             PriceEpisodePreviousEarningsSameProvider = EarningsFM36Constants.PriceEpisodePreviousEarningsSameProvider,
             PriceEpisodeTotProgFunding = joinedPriceEpisode.OnProgramTotal,
@@ -147,17 +136,15 @@ internal static class JoinedDataModelsExtensions
             PriceEpisodeTotalPMRs = EarningsFM36Constants.PriceEpisodeTotalPMRs,
             PriceEpisodeCumulativePMRs = EarningsFM36Constants.PriceEpisodeCumulativePMRs,
             PriceEpisodeCompExemCode = EarningsFM36Constants.PriceEpisodeCompExemCode,
-            PriceEpisodeLearnerAdditionalPaymentThresholdDate = EarningsFM36Constants.PriceEpisodeLearnerAdditionalPaymentThresholdDate,
-            PriceEpisodeRedStartDate = EarningsFM36Constants.PriceEpisodeRedStartDate,
+            PriceEpisodeLearnerAdditionalPaymentThresholdDate = EarningsFM36Constants.PriceEpisodeLearnerAdditionalPaymentThresholdDate.ToDateOnly(),
+            PriceEpisodeRedStartDate = EarningsFM36Constants.PriceEpisodeRedStartDate.ToDateOnly(),
             PriceEpisodeRedStatusCode = EarningsFM36Constants.PriceEpisodeRedStatusCode,
             PriceEpisodeLDAppIdent = $"{EarningsFM36Constants.ProgType}-{joinedPriceEpisode.TrainingCode.Trim()}",
             PriceEpisodeAugmentedBandLimitFactor = EarningsFM36Constants.PriceEpisodeAugmentedBandLimitFactor,
-            PriceEpisodeRemainingTNPAmount = joinedPriceEpisode.FundingBandMaximum - previousEarnings,
-            PriceEpisodeRemainingAmountWithinUpperLimit = joinedPriceEpisode.FundingBandMaximum - previousEarnings,
-            PriceEpisodeCappedRemainingTNPAmount = joinedPriceEpisode.FundingBandMaximum - previousEarnings,
-            PriceEpisodeExpectedTotalMonthlyValue = joinedPriceEpisode.FundingBandMaximum
-            - GetPreviousEarnings(joinedLearnerData, currentAcademicYear.GetShortAcademicYear(), collectionPeriod)
-                                        - joinedPriceEpisode.CompletionPayment,
+            PriceEpisodeRemainingTNPAmount = joinedPriceEpisode.TotalPrice,
+            PriceEpisodeRemainingAmountWithinUpperLimit = joinedPriceEpisode.FundingBandMaximum,
+            PriceEpisodeCappedRemainingTNPAmount = cappedRemainingTNPAmount,
+            PriceEpisodeExpectedTotalMonthlyValue = cappedRemainingTNPAmount - completionElement,
         };
     }
 
@@ -204,15 +191,16 @@ internal static class JoinedDataModelsExtensions
         var ldv = new LearningDeliveryValues();
 
         ldv.ActualDaysIL = daysInLearning;
-        ldv.AdjStartDate = joinedLearnerData.StartDate;
+        ldv.AdjStartDate = joinedLearnerData.StartDate.ToDateOnly();
         ldv.AgeAtProgStart = joinedLearnerData.AgeAtStartOfApprenticeship;
-        ldv.AppAdjLearnStartDate = joinedLearnerData.StartDate;
+        ldv.AppAdjLearnStartDate = joinedLearnerData.StartDate.ToDateOnly();
         ldv.AppAdjLearnStartDateMatchPathway = ldv.AppAdjLearnStartDate;
-        ldv.ApplicCompDate = EarningsFM36Constants.ApplicCompDate;
+        ldv.ApplicCompDate = EarningsFM36Constants.ApplicCompDate.ToDateOnly();
         ldv.CombinedAdjProp = EarningsFM36Constants.CombinedAdjProp;
         ldv.Completed = EarningsFM36Constants.Completed;
-        ldv.FundStart = joinedLearnerData.FundingStart();
-        ldv.LDApplic1618FrameworkUpliftTotalActEarnings = EarningsFM36Constants.LDApplic1618FrameworkUpliftTotalActEarnings;
+        ldv.FundStart = joinedLearningDelivery is JoinedEnglishAndMathsLearningDelivery englishAndMathsForFundStart
+            ? englishAndMathsForFundStart.EnglishAndMathsFundingStart()
+            : joinedLearnerData.OnProgrammeFundingStart();
         ldv.LearnAimRef = joinedLearningDelivery.LearnAimRef;
         ldv.LearnStartDate = joinedLearningDelivery.StartDate;
         ldv.LearnDel1618AtStart = joinedLearnerData.Episodes.Any(episode =>
@@ -221,48 +209,36 @@ internal static class JoinedDataModelsExtensions
                     is EarningsFM36Constants.AdditionalPaymentsTypes.EmployerIncentive
                     or EarningsFM36Constants.AdditionalPaymentsTypes.ProviderIncentive));
         ldv.LearnDelAppAccDaysIL = null;
-        ldv.LearnDelApplicDisadvAmount = EarningsFM36Constants.LearnDelApplicDisadvAmount;
-        ldv.LearnDelApplicProv1618FrameworkUplift = EarningsFM36Constants.LearnDelApplicProv1618FrameworkUplift;
         ldv.LearnDelApplicEmp1618Incentive = null;
         ldv.LearnDelApplicProv1618Incentive = null;
         ldv.LearnDelHistDaysThisApp = null; 
-        ldv.PlannedNumOnProgInstalm = null;
+        ldv.PlannedNumOnProgInstalm = joinedLearningDelivery.StartDate.GetNumberOfIncludedCensusDatesUntil(joinedLearningDelivery.ExpectedEndDate);
         ldv.PlannedTotalDaysIL = null;
         ldv.LearnDelHistProgEarnings = null;
         ldv.LearnDelAppPrevAccDaysIL = null;
-        ldv.LearnDelDisadAmount = EarningsFM36Constants.LearnDelDisadAmount;
-        ldv.LearnDelEligDisadvPayment = EarningsFM36Constants.LearnDelEligDisadvPayment;
         ldv.LearnDelEmpIdFirstAdditionalPaymentThreshold = EarningsFM36Constants.LearnDelEmpIdFirstAdditionalPaymentThreshold;
         ldv.LearnDelEmpIdSecondAdditionalPaymentThreshold = EarningsFM36Constants.LearnDelEmpIdSecondAdditionalPaymentThreshold;
         ldv.LearnDelInitialFundLineType = joinedLearnerData.FundingLineType;
-        ldv.LearnDelProgEarliestACT2Date = EarningsFM36Constants.LearnDelProgEarliestACT2Date;
+        ldv.LearnDelProgEarliestACT2Date = EarningsFM36Constants.LearnDelProgEarliestACT2Date.ToDateOnly();
         ldv.LearnDelNonLevyProcured = EarningsFM36Constants.LearnDelNonLevyProcured;
         ldv.MathEngAimValue = EarningsFM36Constants.MathEngAimValue;
         ldv.OutstandNumOnProgInstalm = EarningsFM36Constants.OutstandNumOnProgInstalm;
         ldv.ProgType = EarningsFM36Constants.ProgType;
-        ldv.PwayCode = EarningsFM36Constants.PwayCode;
-        ldv.SecondIncentiveThresholdDate = GetIncentiveThresholdDate(joinedLearningDelivery, secondAdditionalPaymentDate);
+        ldv.SecondIncentiveThresholdDate = GetIncentiveThresholdDate(joinedLearningDelivery, secondAdditionalPaymentDate).ToDateOnly();
         ldv.StdCode = int.TryParse(joinedLearnerData.Episodes.MinBy(x => x.StartDate)?.TrainingCode, out int parsedTrainingCode) ? parsedTrainingCode : null;
-        ldv.ThresholdDays = joinedLearnerData.QualifyingPeriod();
+        ldv.ThresholdDays = joinedLearningDelivery is JoinedEnglishAndMathsLearningDelivery englishAndMathsForThreshold
+            ? englishAndMathsForThreshold.EnglishAndMathsQualifyingPeriod()
+            : joinedLearnerData.OnProgrammeQualifyingPeriod();
         ldv.LearnDelApplicCareLeaverIncentive = EarningsFM36Constants.LearnDelApplicCareLeaverIncentive;
         ldv.LearnDelHistDaysCareLeavers = EarningsFM36Constants.LearnDelHistDaysCareLeavers;
         ldv.LearnDelAccDaysILCareLeavers = EarningsFM36Constants.LearnDelAccDaysILCareLeavers;
         ldv.LearnDelPrevAccDaysILCareLeavers = EarningsFM36Constants.LearnDelPrevAccDaysILCareLeavers;
-        ldv.LearnDelLearnerAddPayThresholdDate = EarningsFM36Constants.LearnDelLearnerAddPayThresholdDate;
+        ldv.LearnDelLearnerAddPayThresholdDate = EarningsFM36Constants.LearnDelLearnerAddPayThresholdDate.ToDateOnly();
         ldv.LearnDelRedCode = EarningsFM36Constants.LearnDelRedCode;
-        ldv.LearnDelRedStartDate = EarningsFM36Constants.LearnDelRedStartDate;
-        ldv.FirstIncentiveThresholdDate = GetIncentiveThresholdDate(joinedLearningDelivery, firstAdditionalPaymentDate);
+        ldv.LearnDelRedStartDate = EarningsFM36Constants.LearnDelRedStartDate.ToDateOnly();
+        ldv.FirstIncentiveThresholdDate = GetIncentiveThresholdDate(joinedLearningDelivery, firstAdditionalPaymentDate).ToDateOnly();
 
-        if (joinedLearningDelivery.LearningDeliveryType == LearningDeliveryType.EnglishAndMaths)
-        {
-            // English and Maths
-            ldv.LearnDelMathEng = true;
-        }
-        else
-        {
-            // On Programme
-            ldv.LearnDelMathEng = false;
-        }
+        ldv.LearnDelMathEng = joinedLearningDelivery is JoinedEnglishAndMathsLearningDelivery;
 
         return ldv;
     }
@@ -282,11 +258,14 @@ internal static class JoinedDataModelsExtensions
         var shortAcademicYear = currentAcademicYear.GetShortAcademicYear();
         var periodisedValues = new List<LearningDeliveryPeriodisedValues>();
 
-        if (joinedLearningDelivery.LearningDeliveryType != LearningDeliveryType.EnglishAndMaths)
+        if (joinedLearningDelivery is not JoinedEnglishAndMathsLearningDelivery)
         {
             // On Programme
             periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.MathEngBalPayment, 0);
             periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.MathEngOnProgPayment, 0);
+
+            periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimBalPayment, joinedLearningDelivery, shortAcademicYear, InstalmentType.Balancing);
+            periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimCompletionPayment, joinedLearningDelivery, shortAcademicYear, InstalmentType.Completion);
 
             periodisedValues.AddNthIncentivePaymentValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelFirstEmp1618Pay, joinedLearningDelivery, shortAcademicYear, "EmployerIncentive", 1);
             periodisedValues.AddNthIncentivePaymentValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelFirstProv1618Pay, joinedLearningDelivery, shortAcademicYear, "ProviderIncentive", 1);
@@ -299,6 +278,9 @@ internal static class JoinedDataModelsExtensions
             // English And Maths
             periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.MathEngBalPayment, joinedLearningDelivery, shortAcademicYear, InstalmentType.Balancing);
             periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.MathEngOnProgPayment, joinedLearningDelivery, shortAcademicYear);
+
+            periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimBalPayment, 0);
+            periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimCompletionPayment, 0);
 
             periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelFirstEmp1618Pay, 0);
             periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelFirstProv1618Pay, 0);
@@ -321,12 +303,23 @@ internal static class JoinedDataModelsExtensions
         periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelESFAContribPct, 0.95m);
         periodisedValues.AddAdditionalPaymentPerPeriodIndicators(EarningsFM36Constants.PeriodisedAttributes.LearnSuppFund, joinedLearningDelivery, shortAcademicYear, EarningsFM36Constants.AdditionalPaymentsTypes.LearningSupport);
         periodisedValues.AddAdditionalPaymentPerPeriodValues(EarningsFM36Constants.PeriodisedAttributes.LearnSuppFundCash, joinedLearningDelivery, shortAcademicYear, EarningsFM36Constants.AdditionalPaymentsTypes.LearningSupport);
-        periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimBalPayment, 0);
-        periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimCompletionPayment, 0);
-        periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimOnProgPayment, joinedLearningDelivery, shortAcademicYear);
-        periodisedValues.AddCoInvestmentValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimProgFundIndMaxEmpCont, joinedLearningDelivery, shortAcademicYear, EarningsFM36Constants.CoInvestEmployerMultiplier);
-        periodisedValues.AddCoInvestmentValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimProgFundIndMinCoInvest, joinedLearningDelivery, shortAcademicYear, EarningsFM36Constants.CoInvestSfaMultiplier);
-        periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimTotProgFund, joinedLearningDelivery, shortAcademicYear);
+
+        if (joinedLearningDelivery is JoinedEnglishAndMathsLearningDelivery)
+        {
+            // Default to 0 for E&M
+            periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimOnProgPayment, 0);
+            periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimProgFundIndMaxEmpCont, 0);
+            periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimProgFundIndMinCoInvest, 0);
+            periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimTotProgFund, 0);
+        }
+        else
+        {
+            // Set these to the real values for where its on prog
+            periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimOnProgPayment, joinedLearningDelivery, shortAcademicYear);
+            periodisedValues.AddCoInvestmentValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimProgFundIndMaxEmpCont, joinedLearningDelivery, shortAcademicYear, EarningsFM36Constants.CoInvestEmployerMultiplier);
+            periodisedValues.AddCoInvestmentValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimProgFundIndMinCoInvest, joinedLearningDelivery, shortAcademicYear, EarningsFM36Constants.CoInvestSfaMultiplier);
+            periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimTotProgFund, joinedLearningDelivery, shortAcademicYear);
+        }
 
         return periodisedValues;
     }
@@ -353,7 +346,7 @@ internal static class JoinedDataModelsExtensions
         return 0;// Default to zero if still in learning
     }
 
-    private static bool FundingStart(this JoinedLearnerData joinedLearnerData)
+    private static bool OnProgrammeFundingStart(this JoinedLearnerData joinedLearnerData)
     {
         var daysInLearning = joinedLearnerData.DaysInLearning();
 
@@ -364,14 +357,36 @@ internal static class JoinedDataModelsExtensions
             return true;
         }
 
-        var qualifyingPeriod = joinedLearnerData.QualifyingPeriod();
+        var qualifyingPeriod = joinedLearnerData.OnProgrammeQualifyingPeriod();
 
         return daysInLearning >= qualifyingPeriod;
     }
 
-    private static int QualifyingPeriod(this JoinedLearnerData joinedLearnerData)
+    private static bool EnglishAndMathsFundingStart(this JoinedEnglishAndMathsLearningDelivery englishAndMaths)
     {
-        var plannedDuration = joinedLearnerData.PlannedDuration();
+        if (!englishAndMaths.WithdrawalDate.HasValue)
+        {
+            return true;
+        }
+
+        var daysInLearning = englishAndMaths.StartDate.GetNumberOfDaysUntil(englishAndMaths.WithdrawalDate.Value);
+
+        return daysInLearning >= englishAndMaths.EnglishAndMathsQualifyingPeriod();
+    }
+
+    private static int EnglishAndMathsQualifyingPeriod(this JoinedEnglishAndMathsLearningDelivery englishAndMaths)
+    {
+        return GetQualifyingPeriod(englishAndMaths.StartDate, englishAndMaths.ExpectedEndDate);
+    }
+
+    private static int OnProgrammeQualifyingPeriod(this JoinedLearnerData joinedLearnerData)
+    {
+        return GetQualifyingPeriod(joinedLearnerData.StartDate, joinedLearnerData.PlannedEndDate);
+    }
+
+    private static int GetQualifyingPeriod(DateTime startDate, DateTime plannedEndDate)
+    {
+        var plannedDuration = startDate.GetNumberOfDaysUntil(plannedEndDate);
 
         switch (plannedDuration)
         {
@@ -381,9 +396,11 @@ internal static class JoinedDataModelsExtensions
         }
     }
 
-    private static int PlannedDuration(this JoinedLearnerData joinedLearnerData)
+    private static decimal GetUpperLimitAdjustment(JoinedPriceEpisode joinedPriceEpisode)
     {
-        return joinedLearnerData.StartDate.GetNumberOfDaysUntil(joinedLearnerData.PlannedEndDate);
+        return joinedPriceEpisode.TotalPrice > joinedPriceEpisode.FundingBandMaximum
+            ? joinedPriceEpisode.TotalPrice - joinedPriceEpisode.FundingBandMaximum
+            : 0;
     }
 
     private static decimal GetPreviousEarnings(JoinedLearnerData? joinedLearnerData, short academicYear, short collectionPeriod)
@@ -446,6 +463,7 @@ internal static class JoinedDataModelsExtensions
         this List<JoinedAdditionalPayment> payments,
         DateTime startDate,
         DateTime endDate,
+        string? learnAimRef,
         params string[] includedTypes)
     {
         var matches = payments
@@ -455,8 +473,12 @@ internal static class JoinedDataModelsExtensions
                     .GetDateTime(x.DeliveryPeriod)
                     .EndOfMonth();
 
-                return paymentDate >= startDate &&
-                       paymentDate <= endDate &&
+                // A payment belonging to an English and maths course (LearnAimRef set) is assigned to that course whatever its dates.
+                // Otherwise (onprogramme payments) the dates are used to choose between onprogramme deliveries
+                var isInDateRange = learnAimRef != null || (paymentDate >= startDate && paymentDate <= endDate);
+
+                return isInDateRange &&
+                       x.LearnAimRef == learnAimRef &&
                        includedTypes.Contains(x.AdditionalPaymentType);
             })
             .ToList();

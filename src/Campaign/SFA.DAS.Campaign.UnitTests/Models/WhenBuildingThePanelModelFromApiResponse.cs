@@ -30,6 +30,18 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
 
         [Test, RecursiveMoqAutoData]
+        public void Then_If_The_Panel_Has_No_Content_Then_The_Panel_Is_Built_With_No_Items(CmsContent source)
+        {
+            source.Items.FirstOrDefault().Fields.Content = null;
+
+            var actual = new PanelModel().Build(source);
+
+            actual.MainContent.Should().NotBeNull();
+            actual.MainContent.Title.Should().NotBeNullOrWhiteSpace();
+            actual.MainContent.Items.Should().BeEmpty();
+        }
+
+        [Test, RecursiveMoqAutoData]
         public void Then_The_Panel_Is_Built(CmsContent source, string contentValue)
         {
             foreach (var subContentItems in source.Items.FirstOrDefault().Fields.Content.Content)

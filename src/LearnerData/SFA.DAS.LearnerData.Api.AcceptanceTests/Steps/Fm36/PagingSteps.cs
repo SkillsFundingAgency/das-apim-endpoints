@@ -38,25 +38,25 @@ public class PagingSteps(TestContext testContext, ScenarioContext scenarioContex
             earningsReponse.Apprenticeships.Add(apiResponses.EarningsInnerApiResponse.Apprenticeships.Single());
         }
 
+        // Earnings is called first and does the paging
         testContext.EarningsApi.MockServer
             .Given(
                 Request.Create().WithPath($"/{10005077}/fm36/{_academicYear}/{_deliveryPeriod}")
                     .UsingPost())
             .RespondWith(
                 Response.Create()
-                    .WithStatusCode(HttpStatusCode.OK)
-                    .WithBodyAsJson(earningsReponse)
+                    .WithCallback(request => GetPagedEarningsResponse(request, earningsReponse))
             );
 
+        // Learning is then called with the keys of the learnings on the page
         testContext.ApprenticeshipsApi.MockServer
             .Given(
-                Request.Create().WithPath($"/{_ukprn}/{_academicYear}/{_deliveryPeriod}")
-                    .UsingGet())
+                Request.Create().WithPath($"/{_ukprn}/learnings/by-keys")
+                    .UsingPost())
             .RespondWith(
                 Response.Create()
-                .WithCallback(request => GetPagedResponse(request, learnerResponses))
+                    .WithCallback(request => GetLearningsByKeysResponse(request, learnerResponses))
             );
-
     }
 
     [When(@"I call the API with page size (.*) and page number (.*)")]
@@ -142,14 +142,14 @@ public class PagingSteps(TestContext testContext, ScenarioContext scenarioContex
         };
     }
 
-    private ResponseMessage GetPagedResponse(IRequestMessage request, List<Learning> learnings)
+    private ResponseMessage GetPagedEarningsResponse(IRequestMessage request, GetFm36DataResponse earnings)
     {
         var query = request.Query;
 
         var page = int.Parse(query!["page"].Single());
         var pageSize = int.Parse(query!["pageSize"].Single());
 
-        var paged = learnings
+        var paged = earnings.Apprenticeships
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
@@ -157,11 +157,25 @@ public class PagingSteps(TestContext testContext, ScenarioContext scenarioContex
         var responseBody = JsonConvert.SerializeObject(new
         {
             Page = page,
-            TotalItems = learnings.Count,
             PageSize = pageSize,
-            Items = paged
+            TotalItems = earnings.Apprenticeships.Count,
+            Apprenticeships = paged
         });
 
+        return JsonResponse(responseBody);
+    }
+
+    private ResponseMessage GetLearningsByKeysResponse(IRequestMessage request, List<Learning> learnings)
+    {
+        var requestedKeys = JsonConvert.DeserializeObject<List<Guid>>(request.Body!) ?? [];
+
+        var responseBody = JsonConvert.SerializeObject(learnings.Where(x => requestedKeys.Contains(x.Key)).ToList());
+
+        return JsonResponse(responseBody);
+    }
+
+    private static ResponseMessage JsonResponse(string responseBody)
+    {
         return new ResponseMessage
         {
             StatusCode = (int)HttpStatusCode.OK,

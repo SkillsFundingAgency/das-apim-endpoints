@@ -24,7 +24,6 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.UpdateUserIdentity
             {
                 Names = command.Names?.Select(n => new NameRequest
                 {
-                    UserIdentityId = n.UserIdentityId,
                     ValidSince = n.ValidSince,
                     ValidUntil = n.ValidUntil,
                     FamilyName = n.FamilyName,

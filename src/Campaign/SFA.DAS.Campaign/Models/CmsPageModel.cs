@@ -40,6 +40,8 @@ namespace SFA.DAS.Campaign.Models
                 contentItem.ProcessListNodeTypes(contentItems);
                 article.ProcessEmbeddedAssetBlockNodeTypes(contentItem, contentItems);
                 article.ProcessEmbeddedEntryInlineNodeTypes(contentItem, contentItems);
+                article.ProcessEmbeddedEntryBlockNodeTypes(contentItem, contentItems);
+                contentItem.ProcessTableNodeTypes(contentItems);
             }
 
             return GenerateCmsPageModel(article, item, pageTypeResult, contentItems, menu, banners);
@@ -132,6 +134,7 @@ namespace SFA.DAS.Campaign.Models
                     {
                         Slug = parentPage.Fields.Slug,
                         Title = parentPage.Fields.Title,
+                        ShortPageTitle = parentPage.Fields.ShortPageTitle,
                         Summary = parentPage.Fields.Summary,
                         HubType = parentPage.Fields.HubType,
                         MetaDescription = parentPage.Fields.MetaDescription
@@ -209,6 +212,8 @@ namespace SFA.DAS.Campaign.Models
                         ProcessContentNodeTypes(article, contentItem, contentItems);
                         ProcessListNodeTypes(contentItem, contentItems);
                         ProcessEmbeddedAssetBlockNodeTypes(article, contentItem, contentItems);
+                        article.ProcessEmbeddedEntryBlockNodeTypes(contentItem, contentItems);
+                        contentItem.ProcessTableNodeTypes(contentItems);
                     }
                 }
                 
@@ -241,7 +246,9 @@ namespace SFA.DAS.Campaign.Models
                     Type = contentItem.NodeType,
                     Values = contentItem.BuildParagraph(),
                     TableValue = contentItem.BuildTable(article),
-                    VideoTranscripts = contentItem.BuildVideoTranscripts(article)
+                    VideoTranscripts = contentItem.BuildVideoTranscripts(article),
+                    CtaPanel = contentItem.BuildCtaPanel(article),
+                    StatsSection = contentItem.BuildStatsSection(article)
                 });
             }
         }

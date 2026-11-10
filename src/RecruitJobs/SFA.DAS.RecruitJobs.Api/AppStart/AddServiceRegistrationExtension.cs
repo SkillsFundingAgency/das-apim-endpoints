@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.RecruitJobs.Ai;
+using SFA.DAS.RecruitJobs.Api.Core.BackgroundWork;
 using SFA.DAS.RecruitJobs.Api.Models.Mappers;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.RecruitJobs.Handlers;
@@ -23,7 +24,8 @@ public static class AddServiceRegistrationExtension
 {
     public static void AddServiceRegistration(this IServiceCollection services)
     {
-        services.AddHttpClient();
+        services.AddHttpClient(string.Empty)
+            .ConfigureHttpClient(c => c.Timeout = TimeSpan.FromMinutes(5));
         services.AddTransient<ICacheStorageService, CacheStorageService>();
         services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
@@ -46,5 +48,9 @@ public static class AddServiceRegistrationExtension
         services.AddTransient<IVacancyReviewService, VacancyReviewService>();
         services.AddTransient<ILocationLookupService, LocationLookupService>();
         services.AddTransient<SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>, SFA.DAS.Recruit.Contracts.Client.RecruitApiClient>();
+        services.AddTransient<ICandidateApiClient<CandidateApiConfiguration>, CandidateApiClient>();
+        services.AddTransient<IGenerateReportHandler, GenerateReportHandler>();
+        services.AddSingleton<IBackgroundWorkQueue, BackgroundWorkQueue>();
+        services.AddHostedService<BackgroundWorkHostedService>();
     }
 }

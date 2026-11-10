@@ -1,9 +1,11 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.AdminRoatp.Api.Controllers;
+using SFA.DAS.AdminRoatp.Application.Queries.GetAllCourses;
 using SFA.DAS.AdminRoatp.Application.Queries.GetProvidersAllowedToDeliverCourse;
 using SFA.DAS.AdminRoatp.Application.Queries.GetProvidersNotAllowedToDeliverCourse;
 using SFA.DAS.AdminRoatp.InnerApi.Responses;
@@ -13,6 +15,24 @@ namespace SFA.DAS.AdminRoatp.Api.UnitTests.Controllers.CourseControllerTests;
 
 public class CourseControllerGetTests
 {
+    [Test, MoqAutoData]
+    public async Task WhenGetAllCoursesIsInvoked_ThenReturnsOkResult(
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] CourseController sut,
+        GetAllCoursesQueryResult expected)
+    {
+        mediatorMock.Setup(m => m.Send(It.IsAny<GetAllCoursesQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expected);
+
+        var result = await sut.GetAllCourses(CancellationToken.None);
+
+        using (new AssertionScope())
+        {
+            result.As<OkObjectResult>().Value.Should().Be(expected);
+            mediatorMock.Verify(m => m.Send(It.IsAny<GetAllCoursesQuery>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+    }
+
     [Test, MoqAutoData]
     public async Task WhenGetAllowedProvidersByCourseIsInvoked_ThenReturnsOkResult(
         [Frozen] Mock<IMediator> mediatorMock,

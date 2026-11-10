@@ -246,5 +246,34 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Controllers
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         }
+
+        [Test, MoqAutoData]
+        public async Task AddApprenticeshipProgress_Returns_Ok_And_Sends_Command(
+       [Frozen] Mock<IMediator> mediatorMock,
+       [Greedy] LearnerNotificationsController controller)
+        {
+            // Arrange
+            controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() };
+
+            var accountIdentifier = Guid.NewGuid();
+
+            mediatorMock
+                .Setup(m => m.Send(
+                    It.IsAny<AddApprenticeshipProgressCommand>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Unit.Value);
+
+            // Act
+            var actionResult = await controller.AddApprenticeshipProgress(accountIdentifier);
+
+            // Assert
+            actionResult.Should().BeOfType<OkResult>();
+
+            mediatorMock.Verify(m => m.Send(
+                    It.Is<AddApprenticeshipProgressCommand>(c => c.ApprenticeId == accountIdentifier),
+                    It.IsAny<CancellationToken>()),
+                Times.Once);
+        }
+    
     }
 }

@@ -13,7 +13,7 @@ namespace SFA.DAS.Campaign.Models
         public MenuPageModel.MenuPageContent MenuContent { get; set; }
         public BannerPageModel BannerModels { get; set; }
 
-        public HubPageModel Build(CmsContent hub, MenuPageModel.MenuPageContent menu, BannerPageModel banners)
+        public HubPageModel Build(HubCmsContent hub, MenuPageModel.MenuPageContent menu, BannerPageModel banners)
         {
             if (hub.ContentItemsAreNullOrEmpty())
             {
@@ -28,12 +28,14 @@ namespace SFA.DAS.Campaign.Models
                 ProcessCards(hub, item.Fields.Cards),
                 ProcessCards(hub, item.Fields.Cards2),
                 ProcessCards(hub, item.Fields.Cards3),
-                ProcessHeaderImage(hub, item), menu, banners);
+                ProcessSections(hub, item.Fields.Sections),
+                ProcessHeaderImage(hub, item),
+                ProcessCarousel(hub, item.Fields.Carousel), menu, banners);
         }
 
         private static readonly PageType[] CardPageTypes = { PageType.Article, PageType.LandingPage };
 
-        private static List<CardPageModel> ProcessCards(CmsContent hub, List<CardItem> cardItems)
+        private static List<CardPageModel> ProcessCards(HubCmsContent hub, List<HubLink> cardItems)
         {
             if (cardItems == null)
             {
@@ -79,14 +81,14 @@ namespace SFA.DAS.Campaign.Models
             return cards;
         }
 
-        private static PageType GetPageType(Entry entry)
+        private static PageType GetPageType(HubEntry entry)
         {
             Enum.TryParse<PageType>(entry.Sys.ContentType.Sys.Id, true, out var pageType);
 
             return pageType;
         }
 
-        private static UrlDetails SetLandingPageDetails(CmsContent hub, Entry entry)
+        private static UrlDetails SetLandingPageDetails(HubCmsContent hub, HubEntry entry)
         {
             if (entry.Fields.LandingPage?.Sys?.Id == null)
             {
@@ -103,7 +105,137 @@ namespace SFA.DAS.Campaign.Models
             };
         }
 
-        private static ContentItem ProcessHeaderImage(CmsContent hub, Item item)
+        private static List<HubSectionModel> ProcessSections(HubCmsContent hub, List<HubLink> sectionItems)
+        {
+            if (sectionItems == null || hub.Includes?.Entry == null)
+            {
+                return new List<HubSectionModel>();
+            }
+
+            return sectionItems
+                .Select(section => FindEntry(hub, section?.Sys?.Id))
+                .Where(entry => entry != null
+                                && ContentfulConstants.HubSectionContentTypeId.Equals(entry.Sys.ContentType?.Sys?.Id,
+                                    StringComparison.CurrentCultureIgnoreCase))
+                .Select(entry => new HubSectionModel
+                {
+                    SectionType = entry.Fields.SectionType,
+                    Heading = entry.Fields.Heading,
+                    Introduction = entry.Fields.Introduction,
+                    Image = ProcessSectionImage(hub, entry),
+                    StepperLinks = ProcessSectionLinks(hub, entry.Fields.StepperLinks),
+                    StandardLinks = ProcessSectionLinks(hub, entry.Fields.StandardLinks),
+                    CtaPanel = ProcessCtaPanel(hub, entry.Fields.CtaPanel),
+                    StatisticsSections = ProcessStatisticsSections(hub, entry.Fields.StatisticsSections)
+                })
+                .ToList();
+        }
+
+        private static List<HubSectionLinkModel> ProcessSectionLinks(HubCmsContent hub, List<HubLink> linkItems)
+        {
+            if (linkItems == null || hub.Includes?.Entry == null)
+            {
+                return new List<HubSectionLinkModel>();
+            }
+
+            return linkItems
+                .Select(link => FindEntry(hub, link?.Sys?.Id))
+                .Where(entry => entry?.Sys?.ContentType?.Sys?.Id != null)
+                .Select(entry => new HubSectionLinkModel
+                {
+                    Id = entry.Sys.Id,
+                    PageType = GetPageType(entry),
+                    Title = entry.Fields.Title,
+                    Slug = entry.Fields.Slug,
+                    Summary = entry.Fields.Summary,
+                    MetaDescription = entry.Fields.MetaDescription,
+                    LandingPage = SetLandingPageDetails(hub, entry),
+                    CtaPanel = GetPageType(entry) == PageType.CtaPanel ? BuildCtaPanel(entry) : null
+                })
+                .ToList();
+        }
+
+        private static List<StatsSectionModel> ProcessStatisticsSections(HubCmsContent hub, List<HubLink> statisticsSections)
+        {
+            if (statisticsSections == null || hub.Includes?.Entry == null)
+            {
+                return new List<StatsSectionModel>();
+            }
+
+            return statisticsSections
+                .Select(statistic => FindEntry(hub, statistic?.Sys?.Id))
+                .Where(entry => entry != null
+                                && ContentfulConstants.StatsSectionContentTypeId.Equals(entry.Sys.ContentType?.Sys?.Id,
+                                    StringComparison.CurrentCultureIgnoreCase))
+                .Select(entry => new StatsSectionModel
+                {
+                    Text = entry.Fields.Text,
+                    HighlightValue = entry.Fields.HighlightValue,
+                    QuoteName = entry.Fields.QuoteName,
+                    QuoteRole = entry.Fields.QuoteRole,
+                    ReferenceText = entry.Fields.ReferenceText
+                })
+                .ToList();
+        }
+
+        private static CtaPanelModel ProcessCtaPanel(HubCmsContent hub, HubLink ctaPanel)
+        {
+            var entry = FindEntry(hub, ctaPanel?.Sys?.Id);
+
+            return entry == null ? null : BuildCtaPanel(entry);
+        }
+
+        private static CtaPanelModel BuildCtaPanel(HubEntry entry)
+        {
+            return new CtaPanelModel
+            {
+                Heading = entry.Fields.Heading,
+                Description = entry.Fields.Description,
+                Icon = entry.Fields.Icon,
+                ButtonText = entry.Fields.ButtonText,
+                Url = entry.Fields.Url
+            };
+        }
+
+        private static ContentItem ProcessSectionImage(HubCmsContent hub, HubEntry entry)
+        {
+            if (entry.Fields.Image?.Sys?.Id == null || hub.Includes?.Asset == null)
+            {
+                return null;
+            }
+
+            return new ContentItem
+            {
+                Type = entry.Fields.Image.Sys.LinkType,
+                EmbeddedResource = hub.GetEmbeddedResource(entry.Fields.Image.Sys.Id)
+            };
+        }
+
+        private static HubEntry FindEntry(HubCmsContent hub, string id)
+        {
+            return id == null
+                ? null
+                : hub.Includes?.Entry?.FirstOrDefault(entry => id.Equals(entry.Sys?.Id));
+        }
+
+        private static List<ContentItem> ProcessCarousel(HubCmsContent hub, List<HubLink> carouselItems)
+        {
+            if (carouselItems == null || hub.Includes?.Asset == null)
+            {
+                return new List<ContentItem>();
+            }
+
+            return carouselItems
+                .Where(image => image?.Sys?.Id != null)
+                .Select(image => new ContentItem
+                {
+                    Type = image.Sys.LinkType,
+                    EmbeddedResource = hub.GetEmbeddedResource(image.Sys.Id)
+                })
+                .ToList();
+        }
+
+        private static ContentItem ProcessHeaderImage(HubCmsContent hub, HubItem item)
         {
             if (item.Fields.HeaderImage == null)
             {
@@ -117,7 +249,7 @@ namespace SFA.DAS.Campaign.Models
             };
         }
 
-        private static HubPageModel GenerateHubPageModel(Item item, PageType pageTypeResult, List<CardPageModel> cards, List<CardPageModel> cards2, List<CardPageModel> cards3, ContentItem headerImage, MenuPageModel.MenuPageContent menu, BannerPageModel banners)
+        private static HubPageModel GenerateHubPageModel(HubItem item, PageType pageTypeResult, List<CardPageModel> cards, List<CardPageModel> cards2, List<CardPageModel> cards3, List<HubSectionModel> sections, ContentItem headerImage, List<ContentItem> carousel, MenuPageModel.MenuPageContent menu, BannerPageModel banners)
         {
             return new HubPageModel()
             {
@@ -138,7 +270,9 @@ namespace SFA.DAS.Campaign.Models
                     CardsTitle = item.Fields.CardsTitle,
                     CardsTitle2 = item.Fields.CardsTitle2,
                     CardsTitle3 = item.Fields.CardsTitle3,
-                    HeaderImage = headerImage
+                    Sections = sections,
+                    HeaderImage = headerImage,
+                    Carousel = carousel
                 },
                 MenuContent = menu,
                 BannerModels = banners
@@ -154,6 +288,8 @@ namespace SFA.DAS.Campaign.Models
             public List<CardPageModel> Cards2 { get; set; }
             public string CardsTitle3 { get; set; }
             public List<CardPageModel> Cards3 { get; set; }
+            public List<HubSectionModel> Sections { get; set; }
+            public List<ContentItem> Carousel { get; set; }
         }
     }
 }

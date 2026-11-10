@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.Approvals.Enums;
 
 namespace SFA.DAS.Approvals.Application.ApprenticeshipApprovals.Query;
 
 public class GetApprenticeshipApprovalResponse
 {
     public long ApprenticeshipId { get; set; }
-    public Guid ApprovalRequestId { get; set; }
+    public ApprenticeshipStatus ApprenticeshipStatus { get; set; }
+    public Guid? ApprovalRequestId { get; set; }
     public int? ApprovalRequestStatus { get; set; }
     public virtual ICollection<ChangeItem> Items { get; set; }
     public string Name { get; set; }

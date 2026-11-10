@@ -13,4 +13,5 @@ public record Report
     public string? CreatedBy { get; set; }
     public int DownloadCount { get; set; } = 0;
     public string DynamicCriteria { get; set; } = null!;
+    public ReportStatus Status { get; set; }
 }

@@ -61,7 +61,8 @@ public class UpdateEarningsEnglishAndMathsRequestBuilderTests
                     OriginalExpectedEndDate = y.EndDate
                 })
                 .OrderBy(p => p.StartDate)
-                .ToList()
+                .ToList(),
+            LearningSupport = x.LearningSupport
         }).ToList();
 
         result.PutUrl.Should().Be($"learning/{response.LearningKey}/english-and-maths");

@@ -53,7 +53,7 @@ namespace SFA.DAS.Campaign.Api.Controllers
                 Id = panelId
             }, cancellationToken);
 
-            if (result == null)
+            if (result?.PanelModel == null)
             {
                 return new NotFoundObjectResult(new NotFoundResponse
                 {

@@ -16,7 +16,7 @@ namespace SFA.DAS.Campaign.ExternalApi.Requests
 
         private string BuildUrl()
         {
-            var getUrl = $"entries?content_type=hub&include=2";
+            var getUrl = $"entries?content_type=hub&include=3";
 
             if (!string.IsNullOrEmpty(_hubType))
             {
