@@ -19,7 +19,7 @@ namespace SFA.DAS.DigitalCertificates.Api.Models.Sharing
                 {
                     UserId = source.Response.UserId,
                     CertificateId = source.Response.CertificateId,
-                    CertificateType = source.Response.CertificateType,
+                    CertificateType = source.Response.CertificateType.ToString(),
                     CourseName = source.Response.CourseName,
                     SharingId = source.Response.SharingId,
                     SharingNumber = source.Response.SharingNumber,
