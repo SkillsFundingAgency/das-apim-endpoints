@@ -51,6 +51,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateUserMatch
                 ProviderName = command.ProviderName,
                 Ukprn = command.Ukprn,
                 IsMatched = command.IsMatched,
+                IsUlnMatched = command.IsUlnMatched,
                 IsFailed = command.IsFailed
             })
             {

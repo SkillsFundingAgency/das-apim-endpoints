@@ -21,14 +21,18 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
 {
     public class WhenHandlingCreateUserMatchCommand
     {
-        [Test, MoqAutoData]
+        [Test]
+        [MoqInlineAutoData(true)]
+        [MoqInlineAutoData(false)]
         public async Task Then_The_Match_Attempt_Is_Forwarded_To_Inner_Api(
+            bool isUlnMatched,
             CreateUserMatchCommand command,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
             CreateUserMatchCommandHandler _sut)
         {
             // Arrange
             command.CertificateType = "Standard";
+            command.IsUlnMatched = isUlnMatched;
 
             var dateOfBirth = new DateTime(1999, 1, 1, 0, 0, 0, DateTimeKind.Unspecified);
             var identityResponse = new ApiResponse<GetUserIdentityResponse>(
@@ -87,6 +91,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
                         ((CreateUserMatchRequest)r.Data).ProviderName == command.ProviderName &&
                         ((CreateUserMatchRequest)r.Data).Ukprn == command.Ukprn &&
                         ((CreateUserMatchRequest)r.Data).IsMatched == command.IsMatched &&
+                        ((CreateUserMatchRequest)r.Data).IsUlnMatched == command.IsUlnMatched &&
                         ((CreateUserMatchRequest)r.Data).IsFailed == command.IsFailed &&
                         r.PostUrl == $"api/users/{command.UserId}/match"), false),
                 Times.Once);
