@@ -1,9 +1,6 @@
-﻿using DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using NUnit.Framework.Internal;
-using SFA.DAS.LearnerData.Requests;
+﻿using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using System.Text.Json;
-using SFA.DAS.LearnerData.TestHelpers;
 using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 using static SFA.DAS.LearnerData.Application.Fm36.Common.EarningsFM36Constants;
 
@@ -47,21 +44,10 @@ public class LearningDeliveryPeriodisedValues
             .Contain(x => x.AttributeName == "LearnDelSEMContWaiver" && x.AllValuesAreSetToZero());
         learningDelivery.LearningDeliveryPeriodisedValues.Should()
             .Contain(x => x.AttributeName == "LearnDelESFAContribPct" && x.AllValuesAreSetTo(0.95m));
-
-        if (scenario == TestScenario.ApprenticeshipWithEnglish)
-        {
-            learningDelivery.LearningDeliveryPeriodisedValues.Should()
-                .NotContain(x => x.AttributeName == "ProgrammeAimBalPayment");
-            learningDelivery.LearningDeliveryPeriodisedValues.Should()
-                .NotContain(x => x.AttributeName == "ProgrammeAimCompletionPayment");
-        }
-        else
-        {
-            learningDelivery.LearningDeliveryPeriodisedValues.Should()
-                .Contain(x => x.AttributeName == "ProgrammeAimBalPayment" && x.AllValuesAreSetToZero());
-            learningDelivery.LearningDeliveryPeriodisedValues.Should()
-                .Contain(x => x.AttributeName == "ProgrammeAimCompletionPayment" && x.AllValuesAreSetToZero());
-        }
+        learningDelivery.LearningDeliveryPeriodisedValues.Should()
+            .Contain(x => x.AttributeName == "ProgrammeAimBalPayment" && x.AllValuesAreSetToZero());
+        learningDelivery.LearningDeliveryPeriodisedValues.Should()
+            .Contain(x => x.AttributeName == "ProgrammeAimCompletionPayment" && x.AllValuesAreSetToZero());
     }
 
     [Test]
@@ -259,7 +245,7 @@ public class LearningDeliveryPeriodisedValues
 
         if (scenario == TestScenario.ApprenticeshipWithEnglish)
         {
-            learningDelivery.LearningDeliveryPeriodisedValues.Should().NotContain(x => x.AttributeName == "ProgrammeAimOnProgPayment");
+            learningDelivery.LearningDeliveryPeriodisedValues.Should().Contain(x => x.AttributeName == "ProgrammeAimOnProgPayment" && x.AllValuesAreSetToZero());
             return;
         }
 
@@ -303,7 +289,7 @@ public class LearningDeliveryPeriodisedValues
 
         if (scenario == TestScenario.ApprenticeshipWithEnglish)
         {
-            learningDelivery.LearningDeliveryPeriodisedValues.Should().NotContain(x => x.AttributeName == "ProgrammeAimProgFundIndMaxEmpCont");
+            learningDelivery.LearningDeliveryPeriodisedValues.Should().Contain(x => x.AttributeName == "ProgrammeAimProgFundIndMaxEmpCont" && x.AllValuesAreSetToZero());
             return;
         }
 
@@ -350,7 +336,7 @@ public class LearningDeliveryPeriodisedValues
 
         if (scenario == TestScenario.ApprenticeshipWithEnglish)
         {
-            learningDelivery.LearningDeliveryPeriodisedValues.Should().NotContain(x => x.AttributeName == "ProgrammeAimProgFundIndMinCoInvest");
+            learningDelivery.LearningDeliveryPeriodisedValues.Should().Contain(x => x.AttributeName == "ProgrammeAimProgFundIndMaxEmpCont" && x.AllValuesAreSetToZero());
             return;
         }
 
@@ -397,7 +383,7 @@ public class LearningDeliveryPeriodisedValues
 
         if (scenario == TestScenario.ApprenticeshipWithEnglish)
         {
-            learningDelivery.LearningDeliveryPeriodisedValues.Should().NotContain(x => x.AttributeName == "ProgrammeAimTotProgFund");
+            learningDelivery.LearningDeliveryPeriodisedValues.Should().Contain(x => x.AttributeName == "ProgrammeAimTotProgFund" && x.AllValuesAreSetToZero());
             return;
         }
 

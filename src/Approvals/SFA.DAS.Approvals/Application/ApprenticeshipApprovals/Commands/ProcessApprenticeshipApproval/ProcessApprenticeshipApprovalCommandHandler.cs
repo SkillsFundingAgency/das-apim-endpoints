@@ -22,7 +22,7 @@ public class ProcessApprenticeshipApprovalCommandHandler(
         };
 
         var response = await commitmentsApiClient.PostWithResponseCode<NullResponse>(
-            new ProcessApprenticeshipApprovalRequest(request.ApprenticeshipId, request.ApprovalRequestId, body),
+            new ProcessApprenticeshipApprovalRequest(request.ApprenticeshipId, body),
             false);
 
         response.EnsureSuccessStatusCode();

@@ -12,7 +12,6 @@ public class WhenProcessingAnApprenticeshipApproval
 {
     [Test, MoqAutoData]
     public async Task Then_Sends_ApprovalDetails_To_Mediator(
-        Guid approvalRequestId,
         long apprenticeId,
         long accountId,
         ProcessApprenticeshipApprovalRequest request,
@@ -24,14 +23,13 @@ public class WhenProcessingAnApprenticeshipApproval
                 It.IsAny<ProcessApprenticeshipApprovalCommand>(),
                 It.IsAny<CancellationToken>()));
 
-        var controllerResult = await controller.PostApprenticeshipApproval(accountId, apprenticeId, approvalRequestId, request) as OkResult;
+        var controllerResult = await controller.PostApprenticeshipApproval(accountId, apprenticeId, request) as OkResult;
 
         controllerResult.Should().NotBeNull();
         controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
         mockMediator.Verify(x=>x.Send(
             It.Is<ProcessApprenticeshipApprovalCommand>(c =>
                 c.ApprenticeshipId == apprenticeId &&
-                c.ApprovalRequestId == approvalRequestId &&
                 c.ApplyChanges == request.ApplyChanges &&
                 c.UserInfo.UserId == request.UserInfo.UserId &&
                 c.UserInfo.UserEmail == request.UserInfo.UserEmail &&
@@ -41,7 +39,6 @@ public class WhenProcessingAnApprenticeshipApproval
 
     [Test, MoqAutoData]
     public async Task And_UnhandledException_Then_Returns_InternalServerError(
-        Guid approvalRequestId,
         long apprenticeId,
         long accountId,
         ProcessApprenticeshipApprovalRequest request,
@@ -54,7 +51,7 @@ public class WhenProcessingAnApprenticeshipApproval
                 It.IsAny<CancellationToken>()))
             .Throws<ApplicationException>();
 
-        var controllerResult = await controller.PostApprenticeshipApproval(accountId, apprenticeId, approvalRequestId, request) as StatusCodeResult;
+        var controllerResult = await controller.PostApprenticeshipApproval(accountId, apprenticeId, request) as StatusCodeResult;
 
         controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }
