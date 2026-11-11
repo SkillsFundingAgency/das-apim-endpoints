@@ -10,19 +10,25 @@ public interface IApprovedLearningUpdatedEventBuilder
 }
 
 /// <summary>
-/// The event is an echo of what Approvals responded with: every change it returned is passed back, with its old and
-/// new values, under the change type name Approvals used. Only the identity of the learning comes from our own response.
+/// The event echoes back to Approvals the changes it auto-approved, so that it applies them. Field changes are copied from
+/// Approvals' response. Auto-approved prices are sent as the price list from our own response, which is the list we asked about.
 /// </summary>
 public class ApprovedLearningUpdatedEventBuilder : IApprovedLearningUpdatedEventBuilder
 {
+    private const string PricesChangeType = "Prices";
+
     public ApprovedLearningUpdatedEvent Build(BaseLearnerApiPutResponse learningApiPutResponse, ApprovalsResponse approvalsResponse)
     {
+        var autoApproved = approvalsResponse.Changes.Where(x => x.IsAutoApproved).ToList();
+        var pricesAutoApproved = autoApproved.Any(IsPrices);
+
         return new ApprovedLearningUpdatedEvent
         {
             LearningKey = learningApiPutResponse.LearningKey,
             ApprenticeshipId = learningApiPutResponse.ApprovalsApprenticeshipId,
             LearningType = learningApiPutResponse.LearningType.ToString(),
-            Changes = approvalsResponse.Changes
+            Changes = autoApproved
+                .Where(x => !IsPrices(x))
                 .Select(x => new ApprenticeshipFieldChange
                 {
                     ChangeType = x.ChangeType,
@@ -32,7 +38,20 @@ public class ApprovedLearningUpdatedEventBuilder : IApprovedLearningUpdatedEvent
                         New = x.Data?.New ?? string.Empty
                     }
                 })
-                .ToList()
+                .ToList(),
+            Prices = pricesAutoApproved
+                ? learningApiPutResponse.Prices
+                    .Select(x => new PriceEpisode
+                    {
+                        EffectiveFrom = x.StartDate,
+                        TrainingPrice = x.TrainingPrice,
+                        AssessmentPrice = x.EndPointAssessmentPrice ?? 0
+                    })
+                    .ToList()
+                : []
         };
     }
+
+    private static bool IsPrices(ApprovalsChangeResult change) =>
+        string.Equals(change.ChangeType, PricesChangeType, StringComparison.OrdinalIgnoreCase);
 }

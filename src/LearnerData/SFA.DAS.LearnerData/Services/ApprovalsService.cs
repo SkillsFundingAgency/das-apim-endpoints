@@ -37,7 +37,6 @@ public record ApprovalsOutcome(bool AllAutoApproved, ApprovalsResponse Response)
 public class ApprovalsService : IApprovalsService
 {
     private const int MaxRetries = 3;
-    private const string AutoApprovedStatus = "autoApproved";
 
     private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsApiClient;
     private readonly IApprovalsRequestBuilder _requestBuilder;
@@ -121,7 +120,7 @@ public class ApprovalsService : IApprovalsService
         var verdicts = response?.Changes ?? [];
 
         return verdicts.Count > 0
-               && verdicts.All(v => string.Equals(v.ApprovalStatus, AutoApprovedStatus, StringComparison.OrdinalIgnoreCase));
+               && verdicts.All(v => v.IsAutoApproved);
     }
 
     private void LogRequest(ApprovalsRequestBody body)
