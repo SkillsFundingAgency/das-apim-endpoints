@@ -17,4 +17,5 @@ public class GetLearnersForProviderRequest
     public List<long> ExcludeUlns { get; set; }
     public string CourseCode { get; set; }
     public LearningType? LearningType { get; set; }
+    public string AgreementId { get; set; }
 }

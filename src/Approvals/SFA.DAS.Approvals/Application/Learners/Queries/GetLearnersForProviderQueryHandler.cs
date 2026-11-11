@@ -128,7 +128,8 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
             MaxStartDate = request.MaxStartDate,
             ExcludeUlns = request.ExcludeUlns,
             CourseCode = request.CourseCode,
-            LearningType = request.LearningType
+            LearningType = request.LearningType,
+            AgreementId = request.AgreementId
         };
 
         var response = await learnerDataClient.PostWithResponseCode<GetLearnersForProviderResponse>(
