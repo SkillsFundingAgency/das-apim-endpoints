@@ -2,7 +2,6 @@ using System.Net;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
-using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Requests.CommitmentsInner;
 using SFA.DAS.LearnerData.Responses.CommitmentsInner;
@@ -21,7 +20,7 @@ public interface IApprovalsService
     /// anything else came back (pending, rejected, unrecognised, or no verdicts at all).
     /// Pending and rejected are deliberately not distinguished: both are simply a lack of approval.
     /// The response is returned as well so that the caller can echo it back as an event.
-    /// Throws if Approvals could not be reached or returned an error.
+    /// If no verdict can be obtained from Approvals, the failure is logged and the change is treated as not approved.
     /// </summary>
     Task<ApprovalsOutcome> RequestApproval(long ukprn, long uln, BaseLearnerApiPutResponse learningApiPutResponse);
 }
@@ -93,20 +92,16 @@ public class ApprovalsService : IApprovalsService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Approvals request failed for learning {LearningKey} (apprenticeship {ApprenticeshipId}). No approval decision was obtained.",
+            _logger.LogError(ex, "Approvals request failed for learning {LearningKey} (apprenticeship {ApprenticeshipId}). No approval decision was obtained, so treating it as not approved and payments will be withheld.",
                 request.Data.LearningKey, request.Data.ApprenticeshipId);
-            throw;
+            return NotApproved;
         }
 
         if (!IsSuccess(apiResponse.StatusCode))
         {
-            _logger.LogError("Approvals responded {StatusCode} for learning {LearningKey} (apprenticeship {ApprenticeshipId}). No approval decision was obtained. Response body: {ErrorContent}",
+            _logger.LogError("Approvals responded {StatusCode} for learning {LearningKey} (apprenticeship {ApprenticeshipId}). No approval decision was obtained, so treating it as not approved and payments will be withheld. Response body: {ErrorContent}",
                 (int)apiResponse.StatusCode, request.Data.LearningKey, request.Data.ApprenticeshipId, apiResponse.ErrorContent);
-
-            throw new HttpRequestContentException(
-                $"Approvals responded {(int)apiResponse.StatusCode} ({apiResponse.StatusCode}) for learning {request.Data.LearningKey}.",
-                apiResponse.StatusCode,
-                apiResponse.ErrorContent);
+            return NotApproved;
         }
 
         var allAutoApproved = AreAllAutoApproved(apiResponse.Body);
@@ -114,6 +109,8 @@ public class ApprovalsService : IApprovalsService
 
         return new ApprovalsOutcome(allAutoApproved, apiResponse.Body ?? new ApprovalsResponse());
     }
+
+    private static ApprovalsOutcome NotApproved => new(false, new ApprovalsResponse());
 
     private static bool AreAllAutoApproved(ApprovalsResponse? response)
     {

@@ -129,23 +129,6 @@ public class FurtherApprovalServiceTests
     }
 
     [Test]
-    public async Task Then_The_Exception_Is_Propagated_And_Nothing_Is_Cleared_If_Approvals_Fails()
-    {
-        // Arrange
-        var learningResponse = ArrangeStartDateChange();
-        _approvalsService
-            .Setup(x => x.RequestApproval(Ukprn, Uln, learningResponse))
-            .ThrowsAsync(new HttpRequestException("approvals is down"));
-
-        // Act
-        Func<Task> act = async () => await _sut.Resolve(Ukprn, Uln, learningResponse);
-
-        // Assert
-        await act.Should().ThrowAsync<HttpRequestException>();
-        VerifyNotCleared();
-    }
-
-    [Test]
     public async Task Then_ApprovedLearningUpdatedEvent_Is_Published_After_FurtherApprovalNeeded_Is_Cleared()
     {
         // Arrange
