@@ -61,11 +61,12 @@ public class FurtherApprovalServiceTests
             .ReturnsAsync(new ApiResponse<object>(null!, HttpStatusCode.NoContent, string.Empty));
     }
 
-    [Test]
-    public async Task Then_Approval_Is_Requested_For_The_Changes_Learning_Reported()
+    [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.StartDate)]
+    [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices)]
+    public async Task Then_Approval_Is_Requested_For_The_Changes_Learning_Reported(UpdateLearnerApiPutResponse.LearningUpdateChanges changeType)
     {
         // Arrange
-        var learningResponse = ArrangeStartDateChange();
+        var learningResponse = ArrangeChange(changeType);
 
         // Act
         await _sut.Resolve(Ukprn, Uln, learningResponse);
@@ -327,14 +328,17 @@ public class FurtherApprovalServiceTests
         VerifyNotPublished();
     }
 
-    private UpdateLearnerApiPutResponse ArrangeStartDateChange(bool needsFurtherApproval = true)
+    private UpdateLearnerApiPutResponse ArrangeStartDateChange(bool needsFurtherApproval = true) =>
+        ArrangeChange(UpdateLearnerApiPutResponse.LearningUpdateChanges.StartDate, needsFurtherApproval);
+
+    private UpdateLearnerApiPutResponse ArrangeChange(UpdateLearnerApiPutResponse.LearningUpdateChanges changeType, bool needsFurtherApproval = true)
     {
         var learningResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
         learningResponse.ChangeDetails =
         [
             new UpdateLearnerApiPutResponse.ChangeDetail
             {
-                ChangeType = UpdateLearnerApiPutResponse.LearningUpdateChanges.StartDate,
+                ChangeType = changeType,
                 RequiresApproval = needsFurtherApproval
             }
         ];
