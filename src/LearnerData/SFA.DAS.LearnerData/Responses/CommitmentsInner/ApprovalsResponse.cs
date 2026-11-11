@@ -5,7 +5,6 @@ namespace SFA.DAS.LearnerData.Responses.CommitmentsInner;
 public class ApprovalsResponse
 {
     public List<ApprovalsChangeResult> Changes { get; set; } = [];
-    public List<ApprovalsPrice> Prices { get; set; } = [];
 }
 
 public class ApprovalsChangeResult

@@ -1,3 +1,4 @@
+using SFA.DAS.LearnerData.Requests.CommitmentsInner;
 using SFA.DAS.LearnerData.Responses.CommitmentsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.Learning.Types;
@@ -15,8 +16,6 @@ public interface IApprovedLearningUpdatedEventBuilder
 /// </summary>
 public class ApprovedLearningUpdatedEventBuilder : IApprovedLearningUpdatedEventBuilder
 {
-    private const string PricesChangeType = "Prices";
-
     public ApprovedLearningUpdatedEvent Build(BaseLearnerApiPutResponse learningApiPutResponse, ApprovalsResponse approvalsResponse)
     {
         var autoApproved = approvalsResponse.Changes.Where(x => x.IsAutoApproved).ToList();
@@ -53,5 +52,5 @@ public class ApprovedLearningUpdatedEventBuilder : IApprovedLearningUpdatedEvent
     }
 
     private static bool IsPrices(ApprovalsChangeResult change) =>
-        string.Equals(change.ChangeType, PricesChangeType, StringComparison.OrdinalIgnoreCase);
+        string.Equals(change.ChangeType, nameof(CocChangeField.Prices), StringComparison.OrdinalIgnoreCase);
 }

@@ -154,8 +154,8 @@ public class ApprovalsService : IApprovalsService
                 body.LearningKey, body.ApprenticeshipId);
         }
 
-        _logger.LogInformation("Approvals result for learning {LearningKey} (apprenticeship {ApprenticeshipId}): all changes auto-approved = {AllAutoApproved}, {PriceCount} price(s) echoed back",
-            body.LearningKey, body.ApprenticeshipId, allAutoApproved, response?.Prices.Count ?? 0);
+        _logger.LogInformation("Approvals result for learning {LearningKey} (apprenticeship {ApprenticeshipId}): all changes auto-approved = {AllAutoApproved}",
+            body.LearningKey, body.ApprenticeshipId, allAutoApproved);
     }
 
     private static bool IsSuccess(HttpStatusCode statusCode) => (int)statusCode is >= 200 and < 300;

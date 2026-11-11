@@ -48,7 +48,7 @@ public class ApprovalsServiceTests
     }
 
     [Test]
-    public async Task Should_Return_The_Changes_And_Prices_Approvals_Responded_With()
+    public async Task Should_Return_The_Changes_Approvals_Responded_With()
     {
         var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
         var approvalsResponse = new ApprovalsResponse
@@ -61,8 +61,7 @@ public class ApprovalsServiceTests
                     ApprovalStatus = "autoApproved",
                     Data = new ApprovalsChangeData { Old = "2026-09-01", New = "2026-09-15" }
                 }
-            ],
-            Prices = [new ApprovalsPrice { TrainingPrice = "15000.00", AssessmentPrice = "2000.00", EffectiveFrom = new DateTime(2026, 9, 15) }]
+            ]
         };
         SetupResponses(Reply(HttpStatusCode.Created, approvalsResponse));
 
