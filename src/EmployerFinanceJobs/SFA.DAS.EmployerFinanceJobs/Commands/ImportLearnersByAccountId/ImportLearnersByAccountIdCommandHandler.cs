@@ -44,8 +44,11 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             var lastUpdated = GetLastUpdatedFilter(request.LastSuccessfulImportDate);
             var committedLearnersTask = GetAllPagedAsync(request.AccountId, transferSenderId: null, lastUpdated, cancellationToken);
             var committedTransferOutTask = GetAllPagedAsync(accountId: null, transferSenderId: request.AccountId, lastUpdated, cancellationToken);
+            var periodEndsTask = financeApiClient.Get<List<GetPeriodEndResponse>>(new GetPeriodEndsRequest());
 
-            await Task.WhenAll(committedLearnersTask, committedTransferOutTask);
+            await Task.WhenAll(committedLearnersTask, committedTransferOutTask, periodEndsTask);
+
+            var periodEndPaymentDate = GetLatestPeriodEndPaymentDate(periodEndsTask.Result);
 
             var committedLearners = committedLearnersTask.Result;
             var committedTransferOut = committedTransferOutTask.Result;
@@ -75,7 +78,7 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
                 {
                     var payments = await GetApprenticeshipPaymentByAccountId(request.AccountId, item.a.Id);
                     await PostApprenticeshipPaymentSummary(request.AccountId, item.a, payments, item.isTransfer,
-                        providerPaymentsPriority);
+                        providerPaymentsPriority, periodEndPaymentDate);
                 }
                 catch (Exception ex)
                 {
@@ -83,6 +86,31 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
                     Interlocked.Increment(ref failedRecords);
                 }
             });
+
+            if (periodEndPaymentDate is { } paymentDate)
+            {
+                var importedApprenticeshipIds = allApprenticeships.Select(item => item.a.Id).ToHashSet();
+                var summaries = await GetApprenticeshipPaymentSummaries(request.AccountId);
+                var summariesAwaitingPayment = summaries
+                    .Where(s => !importedApprenticeshipIds.Contains(s.ApprenticeshipId) && IsAwaitingPeriodEndPayment(s, paymentDate))
+                    .ToList();
+
+                totalRecords += summariesAwaitingPayment.Count;
+
+                await Parallel.ForEachAsync(summariesAwaitingPayment, parallelOptions, async (summary, ct) =>
+                {
+                    try
+                    {
+                        var payments = await GetApprenticeshipPaymentByAccountId(request.AccountId, summary.ApprenticeshipId);
+                        await PutPeriodEndPaymentSummary(request.AccountId, summary, payments, paymentDate);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, "Failed to update period end payment for apprenticeship {Id}", summary.ApprenticeshipId);
+                        Interlocked.Increment(ref failedRecords);
+                    }
+                });
+            }
 
             return new ImportLearnersByAccountIdResult
             {
@@ -155,25 +183,15 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
         GetCommittedLearnersCostByAccountIdResponse.ApprenticeshipDetailsResponse apprenticeDetails,
         List<GetApprenticeshipPaymentByAccountIdResponse>? apprenticeshipPayments,
         bool isTransfer,
-        GetProviderPaymentsPriorityResponse? providerPaymentsPriority)
+        GetProviderPaymentsPriorityResponse? providerPaymentsPriority,
+        DateOnly? periodEndPaymentDate)
     {
-        // No payments yet is a future committed cost, so still post it with the payment fields left null.
-        // Fully funded SFA payments only apply to non-levy accounts, so they never count towards the cost
-        var payments = (apprenticeshipPayments ?? [])
-            .Where(p => p.FundingSource != FundingSource.FullyFundedSfa)
-            .ToList();
-
-        var lastPayment = payments
-            .OrderByDescending(p => p.CollectionPeriodYear)
-            .ThenByDescending(p => p.CollectionPeriodMonth)
-            .ThenByDescending(p => p.LastUpdatedDate)
-            .FirstOrDefault();
-
-        // A period can hold more than one payment (e.g. on-programme and completion), so the last payment is the sum of them
-        var lastPeriodPayments = lastPayment is null
-            ? []
-            : payments.Where(p => p.CollectionPeriodYear == lastPayment.CollectionPeriodYear
-                                  && p.CollectionPeriodMonth == lastPayment.CollectionPeriodMonth).ToList();
+        var paymentDetails = GetPaymentDetails(
+            apprenticeshipPayments,
+            DateOnly.FromDateTime(apprenticeDetails.StartDate),
+            DateOnly.FromDateTime(apprenticeDetails.EndDate),
+            apprenticeDetails.TotalAgreedPrice ?? 0,
+            periodEndPaymentDate);
 
         var providerOrder = providerPaymentsPriority?.ProviderPaymentPriorities
             .FirstOrDefault(p => p.ProviderId == apprenticeDetails.ProviderId)?
@@ -191,10 +209,10 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             IsTransfer = isTransfer,
             Status = apprenticeDetails.FreezedDate == null ? apprenticeDetails.ApprenticeshipStatus : ApprenticeshipStatus.Paused,
             TotalCost = apprenticeDetails.TotalAgreedPrice ?? 0,
-            TotalPaid = payments.Sum(p => p.Amount),
+            TotalPaid = paymentDetails.TotalPaid,
             Uln = long.Parse(apprenticeDetails.Uln),
-            LastPaymentAmount = lastPayment is null ? null : lastPeriodPayments.Sum(p => p.Amount),
-            LastPaymentDate = lastPayment is null ? null : GetPaymentDate(lastPayment),
+            LastPaymentAmount = paymentDetails.LastPaymentAmount,
+            LastPaymentDate = paymentDetails.LastPaymentDate,
             LastUpdatedDate = DateTime.UtcNow,
             ProviderId = apprenticeDetails.ProviderId,
             ProviderOrder = providerOrder,
@@ -208,6 +226,117 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
         result.EnsureSuccessStatusCode();
     }
 
+    private async Task PutPeriodEndPaymentSummary(
+        long accountId,
+        ApprenticeshipPaymentSummaryResponse summary,
+        List<GetApprenticeshipPaymentByAccountIdResponse>? apprenticeshipPayments,
+        DateOnly periodEndPaymentDate)
+    {
+        var paymentDetails = GetPaymentDetails(apprenticeshipPayments, summary.StartDate, summary.EndDate, summary.TotalCost, periodEndPaymentDate);
+
+        // Only the payments have changed, so everything else is put back as it was
+        var request = new PutApprenticeshipPaymentSummaryRequest(accountId, summary.ApprenticeshipId, new PutApprenticeshipPaymentSummaryRequestData
+        {
+            Dob = summary.Dob ?? default,
+            StartDate = summary.StartDate,
+            EndDate = summary.EndDate,
+            IsTransfer = summary.IsTransfer,
+            Status = summary.Status,
+            TotalCost = summary.TotalCost,
+            TotalPaid = paymentDetails.TotalPaid,
+            Uln = summary.Uln,
+            LastPaymentAmount = paymentDetails.LastPaymentAmount,
+            LastPaymentDate = paymentDetails.LastPaymentDate,
+            LastUpdatedDate = DateTime.UtcNow,
+            ProviderId = summary.ProviderId,
+            ProviderOrder = summary.ProviderOrder ?? 0,
+            LearningType = summary.LearningType,
+            ApprovalDate = summary.ApprovalDate,
+            FirstApprovalDate = summary.FirstApprovalDate,
+        });
+
+        var result = await fundingProjectionApiClient.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(request);
+
+        result.EnsureSuccessStatusCode();
+    }
+
+    private static PaymentDetails GetPaymentDetails(
+        List<GetApprenticeshipPaymentByAccountIdResponse>? apprenticeshipPayments,
+        DateOnly startDate,
+        DateOnly endDate,
+        decimal totalCost,
+        DateOnly? periodEndPaymentDate)
+    {
+        // No payments yet is a future committed cost, so the payment fields are left null.
+        // Fully funded SFA payments only apply to non-levy accounts, so they never count towards the cost
+        var payments = (apprenticeshipPayments ?? [])
+            .Where(p => p.FundingSource != FundingSource.FullyFundedSfa)
+            .ToList();
+
+        var totalPaid = payments.Sum(p => p.Amount);
+
+        var lastPayment = payments
+            .OrderByDescending(p => p.CollectionPeriodYear)
+            .ThenByDescending(p => p.CollectionPeriodMonth)
+            .ThenByDescending(p => p.LastUpdatedDate)
+            .FirstOrDefault();
+
+        var lastPaymentDate = lastPayment is null ? null : GetPaymentDate(lastPayment);
+
+        // A period end that should have paid the apprenticeship but did not is recorded as a zero payment for that month,
+        // so the projection moves the missed amount onto the remaining months
+        if (periodEndPaymentDate is { } dueDate
+            && totalPaid < totalCost
+            && IsInPaymentSchedule(startDate, endDate, dueDate)
+            && (lastPayment is null || lastPaymentDate < dueDate))
+        {
+            return new PaymentDetails(totalPaid, 0, dueDate);
+        }
+
+        if (lastPayment is null)
+            return new PaymentDetails(totalPaid, null, null);
+
+        // A period can hold more than one payment (e.g. on-programme and completion), so the last payment is the sum of them
+        var lastPaymentAmount = payments
+            .Where(p => p.CollectionPeriodYear == lastPayment.CollectionPeriodYear
+                        && p.CollectionPeriodMonth == lastPayment.CollectionPeriodMonth)
+            .Sum(p => p.Amount);
+
+        return new PaymentDetails(totalPaid, lastPaymentAmount, lastPaymentDate);
+    }
+
+    // Matches the projection, which schedules payments from the month after the start date to the month after the end date
+    private static bool IsInPaymentSchedule(DateOnly startDate, DateOnly endDate, DateOnly paymentDate) =>
+        paymentDate >= ToMonth(startDate).AddMonths(1) && paymentDate <= ToMonth(endDate).AddMonths(1);
+
+    private static bool IsAwaitingPeriodEndPayment(ApprenticeshipPaymentSummaryResponse summary, DateOnly periodEndPaymentDate)
+    {
+        // Already holds a payment from this period end. Zeros are checked again, as the period end can be recorded before its payments are imported
+        if (summary.LastPaymentDate >= periodEndPaymentDate && summary.LastPaymentAmount is not null and not 0)
+            return false;
+
+        // Not-yet-started apprenticeships are included as early payments can happen, and an extra month past the
+        // schedule picks up completion payments that arrive late
+        return summary.TotalPaid < summary.TotalCost
+               && periodEndPaymentDate <= ToMonth(summary.EndDate).AddMonths(2);
+    }
+
+    private static DateOnly? GetLatestPeriodEndPaymentDate(List<GetPeriodEndResponse>? periodEnds)
+    {
+        var latestPeriodEnd = (periodEnds ?? [])
+            .Where(p => p.CalendarPeriodYear is >= 1 and <= 9999 && p.CalendarPeriodMonth is >= 1 and <= 12)
+            .OrderByDescending(p => p.CalendarPeriodYear)
+            .ThenByDescending(p => p.CalendarPeriodMonth)
+            .FirstOrDefault();
+
+        // Payments land in the account the month after their collection period
+        return latestPeriodEnd is null
+            ? null
+            : new DateOnly(latestPeriodEnd.CalendarPeriodYear, latestPeriodEnd.CalendarPeriodMonth, 1).AddMonths(1);
+    }
+
+    private static DateOnly ToMonth(DateOnly date) => new(date.Year, date.Month, 1);
+
     private static DateOnly? GetPaymentDate(GetApprenticeshipPaymentByAccountIdResponse apprenticeshipPayment)
     {
         var year = apprenticeshipPayment.CollectionPeriodYear;
@@ -219,6 +348,10 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
         // Payments land in the account the month after their collection period
         return new DateOnly(year, month, 1).AddMonths(1);
     }
+
+    private async Task<List<ApprenticeshipPaymentSummaryResponse>> GetApprenticeshipPaymentSummaries(long accountId) =>
+        await fundingProjectionApiClient.Get<List<ApprenticeshipPaymentSummaryResponse>>(
+            new GetApprenticeshipPaymentSummariesRequest(accountId)) ?? [];
 
     private async Task<GetProviderPaymentsPriorityResponse?> GetProviderPaymentsPriority(long accountId)
     {
@@ -269,4 +402,6 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
 
         return result;
     }
+
+    private sealed record PaymentDetails(decimal TotalPaid, decimal? LastPaymentAmount, DateOnly? LastPaymentDate);
 }

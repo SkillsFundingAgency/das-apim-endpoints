@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.EmployerFinanceJobs.Domain.Enums;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.EmployerFinanceJobs.InnerApi.Responses;
 
@@ -14,6 +15,11 @@ public sealed record ApprenticeshipPaymentSummaryResponse
     public decimal TotalPaid { get; set; }
     public DateOnly StartDate { get; set; }
     public DateOnly EndDate { get; set; }
+    public long ProviderId { get; set; }
+    public int? ProviderOrder { get; set; }
+    public DateTime ApprovalDate { get; set; }
+    public DateOnly? FirstApprovalDate { get; set; }
+    public LearningType LearningType { get; set; }
     public DateOnly? LastPaymentDate { get; set; }
     public decimal? LastPaymentAmount { get; set; }
     public DateTime? LastUpdatedDate { get; set; }
