@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.ApprenticeFeedback.Application.Commands.CreateFeedbackTransaction;
+using SFA.DAS.ApprenticeFeedback.Application.Commands.CreateOutcomeRecordedFeedbackTransaction;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.GenerateEmailTransaction;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.PatchApprenticeFeedbackTarget;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.ProcessEmailTransaction;
@@ -33,8 +33,8 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
             _logger = logger;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateFeedbackTransaction([FromBody] CreateFeedbackTransactionCommand command)
+        [HttpPost("outcome-recorded")]
+        public async Task<IActionResult> CreateOutcomeRecordedFeedbackTransaction([FromBody] CreateOutcomeRecordedFeedbackTransactionCommand command)
         {
             try
             {
