@@ -239,6 +239,21 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
 
         [JsonPropertyName("referenceText")]
         public string ReferenceText { get; set; }
+
+        [JsonPropertyName("audience")]
+        public string Audience { get; set; }
+
+        [JsonPropertyName("linkType")]
+        public string LinkType { get; set; }
+
+        [JsonPropertyName("internalPage")]
+        public LandingPage InternalPage { get; set; }
+
+        [JsonPropertyName("externalUrl")]
+        public string ExternalUrl { get; set; }
+
+        [JsonPropertyName("order")]
+        public int? Order { get; set; }
     }
 
     public class PurpleContent
@@ -410,6 +425,36 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
 
         [JsonPropertyName("permanent")]
         public bool? Permanent { get; set; }
+
+        [JsonPropertyName("headline")]
+        public string Headline { get; set; }
+
+        [JsonPropertyName("intro")]
+        public string Intro { get; set; }
+
+        [JsonPropertyName("date")]
+        public DateTime? Date { get; set; }
+
+        [JsonPropertyName("updatedDate")]
+        public DateTime? UpdatedDate { get; set; }
+
+        [JsonPropertyName("audience")]
+        public string Audience { get; set; }
+
+        [JsonPropertyName("category")]
+        public LandingPage Category { get; set; }
+
+        [JsonPropertyName("sections")]
+        public List<TabbedContent> Sections { get; set; }
+
+        [JsonPropertyName("browserTitle")]
+        public string BrowserTitle { get; set; }
+
+        [JsonPropertyName("introText")]
+        public string IntroText { get; set; }
+
+        [JsonPropertyName("featureCards")]
+        public List<CardItem> FeatureCards { get; set; }
     }
 
     public class MainContent
