@@ -14,4 +14,6 @@ public class GetAvailableCourseForProviderQueryResult
     public DateTime? LastDateStarts { get; set; }
     public string IfateReferenceNumber { get; set; }
     public LearningType LearningType { get; set; }
+    public int Duration { get; set; }
+    public SharedOuterApi.Types.Constants.DurationUnits DurationUnits { get; set; }
 }
