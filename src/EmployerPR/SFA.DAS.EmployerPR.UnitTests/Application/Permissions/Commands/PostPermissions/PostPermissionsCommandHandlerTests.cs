@@ -58,6 +58,7 @@ public class PostPermissionsCommandHandlerTests
                 It.IsAny<Guid>(), 
                 It.IsAny<long>(), 
                 It.IsAny<long>(),
+                It.IsAny<string>(),
                 It.IsAny<CancellationToken>()
             ), 
         Times.Never);
@@ -109,6 +110,7 @@ public class PostPermissionsCommandHandlerTests
                 It.IsAny<Guid>(),
                 It.IsAny<long>(),
                 It.IsAny<long>(),
+                It.IsAny<string>(),
                 It.IsAny<CancellationToken>()
             ),
         Times.Never);
@@ -154,6 +156,7 @@ public class PostPermissionsCommandHandlerTests
                 It.IsAny<Guid>(),
                 It.IsAny<long>(),
                 It.IsAny<long>(),
+                It.IsAny<string>(),
                 It.IsAny<CancellationToken>()
             ),
         Times.Never);
@@ -176,6 +179,7 @@ public class PostPermissionsCommandHandlerTests
     )
     {
         command.Operations = [];
+        command.Email = "test+user@example.com";
 
         var responseObject = new GetPermissionsResponse()
         {
@@ -203,9 +207,10 @@ public class PostPermissionsCommandHandlerTests
 
         providerRelationshipsApiRestClient.Verify(x =>
             x.RemovePermissions(
-                It.IsAny<Guid>(),
-                It.IsAny<long>(),
-                It.IsAny<long>(),
+                command.UserRef,
+                command.Ukprn!.Value,
+                command.AccountLegalEntityId,
+                command.Email,
                 It.IsAny<CancellationToken>()
             ),
         Times.Once);
@@ -281,6 +286,7 @@ public class PostPermissionsCommandHandlerTests
                 It.IsAny<Guid>(),
                 It.IsAny<long>(),
                 It.IsAny<long>(),
+                It.IsAny<string>(),
                 It.IsAny<CancellationToken>()
             ),
         Times.Never);
@@ -349,6 +355,7 @@ public class PostPermissionsCommandHandlerTests
                 It.IsAny<Guid>(),
                 It.IsAny<long>(),
                 It.IsAny<long>(),
+                It.IsAny<string>(),
                 It.IsAny<CancellationToken>()
             ),
         Times.Never);
@@ -417,6 +424,7 @@ public class PostPermissionsCommandHandlerTests
                 It.IsAny<Guid>(),
                 It.IsAny<long>(),
                 It.IsAny<long>(),
+                It.IsAny<string>(),
                 It.IsAny<CancellationToken>()
             ),
         Times.Never);
