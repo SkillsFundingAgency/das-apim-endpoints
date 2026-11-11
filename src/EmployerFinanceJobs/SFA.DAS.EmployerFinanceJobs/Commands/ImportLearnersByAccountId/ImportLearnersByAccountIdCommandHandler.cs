@@ -90,9 +90,9 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
             if (periodEndPaymentDate is { } paymentDate)
             {
                 var importedApprenticeshipIds = allApprenticeships.Select(item => item.a.Id).ToHashSet();
-                var summaries = await GetApprenticeshipPaymentSummaries(request.AccountId);
+                var summaries = await GetApprenticeshipPaymentSummariesAwaitingPayment(request.AccountId, paymentDate);
                 var summariesAwaitingPayment = summaries
-                    .Where(s => !importedApprenticeshipIds.Contains(s.ApprenticeshipId) && IsAwaitingPeriodEndPayment(s, paymentDate))
+                    .Where(s => !importedApprenticeshipIds.Contains(s.ApprenticeshipId))
                     .ToList();
 
                 totalRecords += summariesAwaitingPayment.Count;
@@ -309,18 +309,6 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
     private static bool IsInPaymentSchedule(DateOnly startDate, DateOnly endDate, DateOnly paymentDate) =>
         paymentDate >= ToMonth(startDate).AddMonths(1) && paymentDate <= ToMonth(endDate).AddMonths(1);
 
-    private static bool IsAwaitingPeriodEndPayment(ApprenticeshipPaymentSummaryResponse summary, DateOnly periodEndPaymentDate)
-    {
-        // Already holds a payment from this period end. Zeros are checked again, as the period end can be recorded before its payments are imported
-        if (summary.LastPaymentDate >= periodEndPaymentDate && summary.LastPaymentAmount is not null and not 0)
-            return false;
-
-        // Not-yet-started apprenticeships are included as early payments can happen, and an extra month past the
-        // schedule picks up completion payments that arrive late
-        return summary.TotalPaid < summary.TotalCost
-               && periodEndPaymentDate <= ToMonth(summary.EndDate).AddMonths(2);
-    }
-
     private static DateOnly? GetLatestPeriodEndPaymentDate(List<GetPeriodEndResponse>? periodEnds)
     {
         var latestPeriodEnd = (periodEnds ?? [])
@@ -349,9 +337,10 @@ public class ImportLearnersByAccountIdCommandHandler(ILogger<ImportLearnersByAcc
         return new DateOnly(year, month, 1).AddMonths(1);
     }
 
-    private async Task<List<ApprenticeshipPaymentSummaryResponse>> GetApprenticeshipPaymentSummaries(long accountId) =>
+    // The funding projection api only returns those with money still to be paid that do not already hold a payment for the period
+    private async Task<List<ApprenticeshipPaymentSummaryResponse>> GetApprenticeshipPaymentSummariesAwaitingPayment(long accountId, DateOnly paymentDate) =>
         await fundingProjectionApiClient.Get<List<ApprenticeshipPaymentSummaryResponse>>(
-            new GetApprenticeshipPaymentSummariesRequest(accountId)) ?? [];
+            new GetApprenticeshipPaymentSummariesRequest(accountId, paymentDate)) ?? [];
 
     private async Task<GetProviderPaymentsPriorityResponse?> GetProviderPaymentsPriority(long accountId)
     {

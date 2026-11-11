@@ -726,7 +726,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Summaries_That_Do_Not_Need_Checking_Are_Skipped(
+    public async Task Then_Summaries_Awaiting_The_Period_End_Payment_Are_Requested_And_Those_Just_Imported_Are_Skipped(
         ImportLearnersByAccountIdCommand command,
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
         [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
@@ -736,32 +736,32 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         // Arrange
         var importedLearner = CreateApprenticeship(1);
         var importedSummary = CreateSummary(command.AccountId, importedLearner.Id);
-        var alreadyPaid = CreateSummary(command.AccountId, 20);
-        alreadyPaid.LastPaymentDate = new DateOnly(2025, 11, 1);
-        alreadyPaid.LastPaymentAmount = 100;
-        var fullyPaid = CreateSummary(command.AccountId, 21);
-        fullyPaid.TotalPaid = fullyPaid.TotalCost;
-        var endedTooLongAgo = CreateSummary(command.AccountId, 22);
-        endedTooLongAgo.EndDate = new DateOnly(2025, 8, 31);
-
+        var awaitingSummary = CreateSummary(command.AccountId, 20);
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [importedLearner]);
         SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
         SetupProviderPaymentsPriority(commitmentsClient, command.AccountId);
         SetupPeriodEnds(financeClient, (2025, 10));
-        SetupSummaries(fundingProjectionClient, command.AccountId, importedSummary, alreadyPaid, fullyPaid, endedTooLongAgo);
+        SetupSummaries(fundingProjectionClient, command.AccountId, importedSummary, awaitingSummary);
         SetupPayment(financeClient, importedLearner.Id);
+        SetupPayment(financeClient, awaitingSummary.ApprenticeshipId);
         SetupSuccessfulPost(fundingProjectionClient);
 
         // Act
         var result = await handler.Handle(command, CancellationToken.None);
 
         // Assert
-        result.TotalRecordsProcessed.Should().Be(1);
+        result.TotalRecordsProcessed.Should().Be(2);
+        fundingProjectionClient.Verify(c => c.Get<List<ApprenticeshipPaymentSummaryResponse>>(
+            It.Is<GetApprenticeshipPaymentSummariesRequest>(r =>
+                r.AccountId == command.AccountId &&
+                r.AwaitingPaymentFor == new DateOnly(2025, 11, 1) &&
+                r.GetUrl == $"api/employer/{command.AccountId}/apprenticeship-payment-summary?awaitingPaymentFor=2025-11-01")), Times.Once);
         financeClient.Verify(c => c.Get<List<GetApprenticeshipPaymentByAccountIdResponse>>(
             It.Is<GetApprenticeshipPaymentByAccountIdRequest>(r => r.ApprenticeshipId == importedLearner.Id)), Times.Once);
-        financeClient.Verify(c => c.Get<List<GetApprenticeshipPaymentByAccountIdResponse>>(
-            It.Is<GetApprenticeshipPaymentByAccountIdRequest>(r => r.ApprenticeshipId != importedLearner.Id)), Times.Never);
-        fundingProjectionClient.Verify(c => c.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(It.IsAny<PutApprenticeshipPaymentSummaryRequest>()), Times.Once);
+        fundingProjectionClient.Verify(c => c.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
+            It.Is<PutApprenticeshipPaymentSummaryRequest>(r => r.ApprenticeshipId == importedLearner.Id)), Times.Once);
+        fundingProjectionClient.Verify(c => c.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
+            It.Is<PutApprenticeshipPaymentSummaryRequest>(r => r.ApprenticeshipId == awaitingSummary.ApprenticeshipId)), Times.Once);
     }
 
     [Test, MoqAutoData]
