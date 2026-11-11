@@ -3,5 +3,6 @@
     public class GetTransferValidityQueryResult
     {
         public bool IsValid { get; set; }
+        public string PledgeApplicationStatus { get; set; }
     }
 }
