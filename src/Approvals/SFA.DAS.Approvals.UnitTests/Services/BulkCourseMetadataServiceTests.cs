@@ -132,4 +132,28 @@ public class BulkCourseMetadataServiceTests
         result[courseCode1].Should().BeNull();
         result[courseCode2].Should().BeNull();
     }
+
+    [Test, MoqAutoData]
+    public async Task GetOtjTrainingHoursForBulkUploadAsync_WhenCourseCodesAreBlank_SkipsThem(
+        [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
+        [Frozen] Mock<ILogger<BulkCourseMetadataService>> logger,
+        BulkCourseMetadataService service,
+        string courseCode,
+        int otjHours)
+    {
+        var courseCodes = new[] { courseCode, null, "", "  " };
+        var rplResponse = new GetRecognitionOfPriorLearningResponse { OffTheJobTrainingMinimumHours = otjHours };
+        var course = new GetCourseLookupResponse();
+
+        courseTypeRulesService
+            .Setup(x => x.GetRplRulesAsync(courseCode))
+            .ReturnsAsync(new RplRulesResult { Course = course, RplRules = rplResponse });
+
+        var result = await service.GetOtjTrainingHoursForBulkUploadAsync(courseCodes);
+
+        result.Should().HaveCount(1);
+        result[courseCode].Should().Be(otjHours);
+        courseTypeRulesService.Verify(x => x.GetRplRulesAsync(It.IsAny<string>()), Times.Once);
+        courseTypeRulesService.Verify(x => x.GetRplRulesAsync(courseCode), Times.Once);
+    }
 }
