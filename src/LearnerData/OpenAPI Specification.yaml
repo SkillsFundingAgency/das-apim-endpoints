@@ -96,7 +96,7 @@ paths:
         '401':
           $ref: '#/components/responses/unauthorized'  
   
-  /providers/{ukprn}/apprenticeships/{learningKey}:
+  /providers/{ukprn}/apprenticeships/{learnerKey}:
     delete:
       summary: Deletes a learning record identified by this request for this provider
       security:
@@ -108,7 +108,7 @@ paths:
           description: The UK Provider Reference Number for the provider entering this learner
           schema:
             type: string
-        - name: learningKey
+        - name: learnerKey
           in: path
           required: true
           description: The internal key for this learner on the AS
@@ -134,7 +134,7 @@ paths:
           description: The UK Provider Reference Number for the provider entering this learner
           schema:
             type: string
-        - name: learningKey
+        - name: learnerKey
           in: path
           required: true
           description: The internal key for this learner on the AS
@@ -612,7 +612,7 @@ components:
     shortCourseLearnerAndEarnings:
       type: object
       properties:
-        learningKey:
+        learnerKey:
           type: string
           format: uuid
         learnerRef:
