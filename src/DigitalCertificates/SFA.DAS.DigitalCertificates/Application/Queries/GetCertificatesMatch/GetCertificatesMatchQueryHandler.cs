@@ -4,9 +4,8 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor;
-using SFA.DAS.DigitalCertificates.InnerApi.Responses;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
 using SFA.DAS.DigitalCertificates.Enums;
 using System;
@@ -14,6 +13,8 @@ using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.Apim.Shared.Extensions;
+using GetUserIdentityResponse = SFA.DAS.DigitalCertificates.Contracts.ApiResponses.GetUserIdentityResponse;
+using GetUsersByUserIdIdentityApiRequest = SFA.DAS.DigitalCertificates.Contracts.ApiRequests.GetUsersByUserIdIdentityApiRequest;
 
 namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
 {
@@ -37,7 +38,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
         {
             // lookup user identity from Digi Certs Inner API
             var identityResponse = await _digitalCertificatesApiClient
-                .GetWithResponseCode<GetUserIdentityResponse>(new GetUserIdentityRequest(request.UserId));
+                .GetWithResponseCode<GetUserIdentityResponse>(new GetUsersByUserIdIdentityApiRequest(request.UserId));
 
             if (identityResponse == null || identityResponse.StatusCode == HttpStatusCode.NotFound)
             {

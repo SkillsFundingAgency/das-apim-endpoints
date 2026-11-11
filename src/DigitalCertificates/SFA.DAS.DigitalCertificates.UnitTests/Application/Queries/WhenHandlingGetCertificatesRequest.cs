@@ -7,9 +7,11 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificates;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor;
-using SFA.DAS.DigitalCertificates.InnerApi.Responses;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
+using GetCertificatesResponse = SFA.DAS.DigitalCertificates.InnerApi.Responses.GetCertificatesResponse;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.Apim.Shared.Exceptions;
@@ -27,7 +29,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries
         public async Task Then_Authorisation_And_Certificates_Are_Retrieved_Successfully(
             Guid userId,
             GetCertificatesQuery query,
-            GetAuthorisationResponse authorisationResponseBody,
+            GetUserAuthorisationResponse authorisationResponseBody,
             GetCertificatesResponse certificatesResponseBody,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
@@ -36,15 +38,15 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries
             // Arrange
             query.UserId = userId;
 
-            var authorisationResponse = new ApiResponse<GetAuthorisationResponse>(
+            var authorisationResponse = new ApiResponse<GetUserAuthorisationResponse>(
                 authorisationResponseBody, HttpStatusCode.OK, string.Empty);
 
             var certificatesResponse = new ApiResponse<GetCertificatesResponse>(
                 certificatesResponseBody, HttpStatusCode.OK, string.Empty);
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.GetWithResponseCode<GetAuthorisationResponse>(
-                    It.Is<GetAuthorisationRequest>(r => r.UserId == userId)))
+                .Setup(c => c.GetWithResponseCode<GetUserAuthorisationResponse>(
+                    It.Is<GetUsersByUserIdAuthorisationApiRequest>(r => r.UserId == userId)))
                 .ReturnsAsync(authorisationResponse);
 
             mockAssessorsApiClient
@@ -71,12 +73,12 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries
             // Arrange
             query.UserId = userId;
 
-            var authorisationResponse = new ApiResponse<GetAuthorisationResponse>(
+            var authorisationResponse = new ApiResponse<GetUserAuthorisationResponse>(
                 null, HttpStatusCode.NotFound, string.Empty);
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.GetWithResponseCode<GetAuthorisationResponse>(
-                    It.IsAny<GetAuthorisationRequest>()))
+                .Setup(c => c.GetWithResponseCode<GetUserAuthorisationResponse>(
+                    It.IsAny<GetUsersByUserIdAuthorisationApiRequest>()))
                 .ReturnsAsync(authorisationResponse);
 
             // Act
@@ -94,7 +96,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries
         public async Task Then_Empty_Certificates_Returned_If_Certificates_Not_Found(
             Guid userId,
             GetCertificatesQuery query,
-            GetAuthorisationResponse authorisationResponseBody,
+            GetUserAuthorisationResponse authorisationResponseBody,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
             GetCertificatesQueryHandler handler)
@@ -102,15 +104,15 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries
             // Arrange
             query.UserId = userId;
 
-            var authorisationResponse = new ApiResponse<GetAuthorisationResponse>(
+            var authorisationResponse = new ApiResponse<GetUserAuthorisationResponse>(
                 authorisationResponseBody, HttpStatusCode.OK, string.Empty);
 
             var certificatesResponse = new ApiResponse<GetCertificatesResponse>(
                 null, HttpStatusCode.NotFound, string.Empty);
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.GetWithResponseCode<GetAuthorisationResponse>(
-                    It.Is<GetAuthorisationRequest>(r => r.UserId == userId)))
+                .Setup(c => c.GetWithResponseCode<GetUserAuthorisationResponse>(
+                    It.Is<GetUsersByUserIdAuthorisationApiRequest>(r => r.UserId == userId)))
                 .ReturnsAsync(authorisationResponse);
 
             mockAssessorsApiClient
@@ -135,7 +137,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries
         {
             // Arrange
             mockDigitalCertificatesApiClient
-                .Setup(c => c.GetWithResponseCode<GetAuthorisationResponse>(It.IsAny<GetAuthorisationRequest>()))
+                .Setup(c => c.GetWithResponseCode<GetUserAuthorisationResponse>(It.IsAny<GetUsersByUserIdAuthorisationApiRequest>()))
                 .ThrowsAsync(new ApiResponseException(HttpStatusCode.BadRequest, "Bad request"));
 
             // Act & Assert
