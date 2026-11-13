@@ -10,14 +10,20 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.EmployerFinance.InnerApi.Requests.EmployerAccounts;
 
 namespace SFA.DAS.EmployerFinance.Application.Queries.GetLevyProjectionsByAccountId;
 
 public class GetLevyProjectionsByAccountIdQueryHandler(
     IFinanceApiClient<FinanceApiConfiguration> financeApiClient,
+    IAccountsApiClient<AccountsConfiguration> accountsApiClient,
     IFundingProjectionApiClient<FundingProjectionApiConfiguration> projectionApiClient,
     ICacheStorageService cacheStorageService,
     ILogger<GetLevyProjectionsByAccountIdQueryHandler> logger)
@@ -26,7 +32,7 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
     private const string LevyFundsInCacheKey = "GetLevyFundsIn_{0}_{1}";
     private const string PaymentFundsOutCacheKey = "GetPaymentFundsOut_{0}_{1}";
     private const string ExpiredLevyCacheKey = "GetExpiredLevy_{0}_{1}";
-    private const string LevyDeclarationSummaryCacheKey = "GetLevyDeclarationSummaryByDate_{0}_{1}";
+    private const string LevyDeclarationSummaryCacheKey = "GetLevyDeclarationSummaryByDate_{0}_{1}_{2}";
     private const string LatestTransactionTypeTransactionIdsCacheKey = "LatestTransactionTypeTransactionIds_{0}";
     private const string NoTransactionsKeySegment = "none";
 
@@ -36,7 +42,8 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
     {
         var now = DateTime.UtcNow.Date;
 
-        var latestIds = await GetLatestTransactionTypeTransactionIdsForAccountAsync(request.AccountId);
+        var latestIdsTask = GetLatestTransactionTypeTransactionIdsForAccountAsync(request.AccountId);
+        var accountPayeSchemesTask = GetAccountPayeSchemesAsync(request.AccountId);
 
         // Payments land in the account the month after their collection period, so this month's payments are last month's collection
         var currentCollectionPeriod = now.AddMonths(-1);
@@ -46,10 +53,14 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
         var levySummaryTask = financeApiClient.Get<GetLevySummaryByAccountIdResponse>(
             new GetLevySummaryByAccountIdRequest(request.AccountId));
 
+        await Task.WhenAll(latestIdsTask, accountPayeSchemesTask);
+        var latestIds = latestIdsTask.Result;
+        var accountPayeSchemes = accountPayeSchemesTask.Result;
+
         var fundsInTask = GetFundsInAsync(request.AccountId, latestIds?.LatestDeclarationId);
         var fundsOutTask = GetFundsOutAsync(request.AccountId, latestIds?.LatestPaymentId);
         var expiredLevyTask = GetExpiredLevyAsync(request.AccountId, latestIds?.LatestExpiryId);
-        var declarationsTask = FetchHistoricTransactionLinesDataAsync(now, request.AccountId, latestIds?.LatestDeclarationId);
+        var declarationsTask = FetchHistoricTransactionLinesDataAsync(now, request.AccountId, latestIds?.LatestDeclarationId, accountPayeSchemes);
 
         await Task.WhenAll(levySummaryTask, declarationsTask, fundsInTask, fundsOutTask, expiredLevyTask, currentPaymentsTask);
         var levySummary = levySummaryTask.Result;
@@ -126,17 +137,31 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
         logger.LogWarning("Using last known transaction id for each transaction type for account {AccountId}", accountId);
         return await cacheStorageService.RetrieveFromCache<GetLatestTransactionTypeTransactionIdsForAccountResponse>(cacheKey);
     }
-
-    private async Task<List<LevyDeclaration>?> FetchHistoricTransactionLinesDataAsync(DateTime now, long accountId, long? latestDeclarationId)
+    
+    private async Task<List<string>> GetAccountPayeSchemesAsync(long accountId)
     {
+        var response = await accountsApiClient.GetWithResponseCode<List<Resource>>(new GetAccountPayeSchemesRequest(accountId));
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return [];
+
+        response.EnsureSuccessStatusCode();
+        return [.. (response.Body ?? []).Select(p => p.Id)];
+    }
+
+    private async Task<List<LevyDeclaration>?> FetchHistoricTransactionLinesDataAsync(DateTime now, long accountId, long? latestDeclarationId, List<string> emprefs)
+    {
+        if (emprefs.Count == 0)
+            return [];
+
         var startOfMonth = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
         var startDate = startOfMonth.AddYears(-1).AddMonths(-1);
         var endDate = startOfMonth.AddMonths(1).AddTicks(-1);
 
         return await GetOrCacheAsync(
-            string.Format(LevyDeclarationSummaryCacheKey, accountId, ToKeySegment(latestDeclarationId)),
-            async () => await financeApiClient.Get<List<LevyDeclaration>>(
-                new GetLevyDeclarationSummaryByDate(accountId, startDate, endDate)));
+            string.Format(LevyDeclarationSummaryCacheKey, accountId, ToKeySegment(latestDeclarationId), ToPayeSchemesKeySegment(emprefs)),
+            async () => (await financeApiClient.PostWithResponseCode<List<LevyDeclaration>>(
+                new PostLevyDeclarationSummaryByDate(accountId, startDate, endDate, emprefs))).Body);
     }
 
     private Task<List<CalendarPeriodAmount>?> GetFundsInAsync(long accountId, long? latestDeclarationId) =>
@@ -156,6 +181,12 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
 
     private static string ToKeySegment(long? latestTransactionId) =>
         latestTransactionId?.ToString() ?? NoTransactionsKeySegment;
+
+    private static string ToPayeSchemesKeySegment(List<string> emprefs)
+    {
+        var normalised = string.Join('|', emprefs.Select(e => e.Trim().ToUpperInvariant()).Distinct().Order(StringComparer.Ordinal));
+        return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(normalised)))[..16];
+    }
 
     private async Task<T?> GetOrCacheAsync<T>(
         string cacheKey,
