@@ -7,7 +7,8 @@ public sealed record MonthlyFundingBreakdown
     public int Month { get; init; }
     public int Year { get; init; }
     public decimal ClosingBalance { get; set; } = 0m;
-    public decimal CoInvestmentCosts { get; set; } = 0m;
+    public decimal? CoInvestmentCosts { get; set; }
+    public decimal DfeCoInvestmentCost { get; set; } = 0m;
     public required LevyInSummary LevyInSummary { get; init; }
     public required LevyOutSummary LevyOutSummary { get; init; }
 }

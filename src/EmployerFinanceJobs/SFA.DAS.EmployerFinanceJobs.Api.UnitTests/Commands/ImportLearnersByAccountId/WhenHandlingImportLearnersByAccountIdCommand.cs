@@ -8,6 +8,7 @@ using SFA.DAS.EmployerFinanceJobs.Domain.Enums;
 using SFA.DAS.EmployerFinanceJobs.InnerApi.Requests;
 using SFA.DAS.EmployerFinanceJobs.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
@@ -26,6 +27,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         [Greedy] ImportLearnersByAccountIdCommandHandler handler)
     {
         // Arrange
+        SetupNoPeriodEnd(financeClient);
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, []);
         SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
 
@@ -49,9 +51,11 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         string? lastSuccessfulImportDate,
         long accountId,
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
         [Greedy] ImportLearnersByAccountIdCommandHandler handler)
     {
         // Arrange
+        SetupNoPeriodEnd(financeClient);
         var command = new ImportLearnersByAccountIdCommand(accountId,
             lastSuccessfulImportDate is null ? null : DateTime.Parse(lastSuccessfulImportDate));
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, []);
@@ -71,9 +75,11 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
     public async Task Then_Learners_Updated_Since_The_Day_Before_The_Last_Successful_Import_Are_Requested(
         long accountId,
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
         [Greedy] ImportLearnersByAccountIdCommandHandler handler)
     {
         // Arrange
+        SetupNoPeriodEnd(financeClient);
         var lastSuccessfulImportDate = new DateTime(2026, 3, 15, 10, 30, 0, DateTimeKind.Utc);
         var command = new ImportLearnersByAccountIdCommand(accountId, lastSuccessfulImportDate);
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, []);
@@ -91,9 +97,11 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
     public async Task Then_Every_Page_Is_Requested_With_The_Same_Last_Updated_Filter(
         long accountId,
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
         [Greedy] ImportLearnersByAccountIdCommandHandler handler)
     {
         // Arrange
+        SetupNoPeriodEnd(financeClient);
         var lastSuccessfulImportDate = new DateTime(2026, 3, 15, 0, 0, 0, DateTimeKind.Utc);
         var command = new ImportLearnersByAccountIdCommand(accountId, lastSuccessfulImportDate);
         commitmentsClient
@@ -134,6 +142,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         [Greedy] ImportLearnersByAccountIdCommandHandler handler)
     {
         // Arrange
+        SetupNoPeriodEnd(financeClient);
         var learner = CreateApprenticeship(1);
         var transfer = CreateApprenticeship(2);
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
@@ -171,6 +180,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         [Greedy] ImportLearnersByAccountIdCommandHandler handler)
     {
         // Arrange
+        SetupNoPeriodEnd(financeClient);
         var learner = CreateApprenticeship(1);
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
         SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
@@ -200,6 +210,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         [Greedy] ImportLearnersByAccountIdCommandHandler handler)
     {
         // Arrange
+        SetupNoPeriodEnd(financeClient);
         var learner = CreateApprenticeship(1);
         var transferFundedLearner = CreateApprenticeship(2);
         transferFundedLearner.TransferSenderId = command.AccountId + 1;
@@ -242,6 +253,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         [Greedy] ImportLearnersByAccountIdCommandHandler handler)
     {
         // Arrange
+        SetupNoPeriodEnd(financeClient);
         var learner = CreateApprenticeship(1);
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
         SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
@@ -276,6 +288,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         [Greedy] ImportLearnersByAccountIdCommandHandler handler)
     {
         // Arrange
+        SetupNoPeriodEnd(financeClient);
         var learner = CreateApprenticeship(1);
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
         SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
@@ -306,6 +319,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         [Greedy] ImportLearnersByAccountIdCommandHandler handler)
     {
         // Arrange
+        SetupNoPeriodEnd(financeClient);
         var learner = CreateApprenticeship(1);
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
         SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
@@ -336,6 +350,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         [Greedy] ImportLearnersByAccountIdCommandHandler handler)
     {
         // Arrange
+        SetupNoPeriodEnd(financeClient);
         var learner = CreateApprenticeship(1);
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
         SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
@@ -362,6 +377,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         [Greedy] ImportLearnersByAccountIdCommandHandler handler)
     {
         // Arrange
+        SetupNoPeriodEnd(financeClient);
         var learner = CreateApprenticeship(1);
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
         SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
@@ -389,6 +405,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         [Greedy] ImportLearnersByAccountIdCommandHandler handler)
     {
         // Arrange
+        SetupNoPeriodEnd(financeClient);
         var learner = CreateApprenticeship(1);
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
         SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
@@ -427,6 +444,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         [Greedy] ImportLearnersByAccountIdCommandHandler handler)
     {
         // Arrange
+        SetupNoPeriodEnd(financeClient);
         var learner = CreateApprenticeship(1);
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
         SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
@@ -455,6 +473,7 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         [Greedy] ImportLearnersByAccountIdCommandHandler handler)
     {
         // Arrange
+        SetupNoPeriodEnd(financeClient);
         var successfulApprenticeship = CreateApprenticeship(1);
         var failedApprenticeship = CreateApprenticeship(2);
         SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [successfulApprenticeship, failedApprenticeship]);
@@ -482,9 +501,11 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
     public async Task Then_Returns_Failure_When_Commitments_Cannot_Be_Read(
         ImportLearnersByAccountIdCommand command,
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
         [Greedy] ImportLearnersByAccountIdCommandHandler handler)
     {
         // Arrange
+        SetupNoPeriodEnd(financeClient);
         commitmentsClient
             .Setup(c => c.Get<GetCommittedLearnersCostByAccountIdResponse>(It.IsAny<GetCommittedLearnersCostByAccountIdRequest>()))
             .ThrowsAsync(new InvalidOperationException("Commitments unavailable"));
@@ -498,6 +519,461 @@ internal class WhenHandlingImportLearnersByAccountIdCommand
         result.FailedRecordsCount.Should().Be(0);
         result.FailureReason.Should().Be("Commitments unavailable");
         result.LastSuccessfulImportDate.Should().BeNull();
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_A_Zero_Payment_Is_Recorded_When_The_Latest_Period_End_Did_Not_Pay_A_Learner(
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var learner = CreateApprenticeship(1);
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupPeriodEnds(financeClient, (2025, 9), (2025, 10));
+        SetupSummaries(fundingProjectionClient, command.AccountId);
+        SetupPayments(financeClient, learner.Id,
+            CreatePayment(learner.Id, 2025, 8, 100, new DateTime(2025, 9, 6)),
+            CreatePayment(learner.Id, 2025, 9, 100, new DateTime(2025, 10, 6)));
+        var posted = CapturePostedSummaries(fundingProjectionClient);
+
+        // Act
+        await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        var data = posted.Should().ContainSingle().Subject;
+        data.TotalPaid.Should().Be(200);
+        data.LastPaymentAmount.Should().Be(0);
+        // The October period end pays in November
+        data.LastPaymentDate.Should().Be(new DateOnly(2025, 11, 1));
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_The_Payment_Is_Recorded_When_The_Latest_Period_End_Paid_A_Learner(
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var learner = CreateApprenticeship(1);
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupPeriodEnds(financeClient, (2025, 10));
+        SetupSummaries(fundingProjectionClient, command.AccountId);
+        SetupPayments(financeClient, learner.Id,
+            CreatePayment(learner.Id, 2025, 9, 100, new DateTime(2025, 10, 6)),
+            CreatePayment(learner.Id, 2025, 10, 120, new DateTime(2025, 11, 6)));
+        var posted = CapturePostedSummaries(fundingProjectionClient);
+
+        // Act
+        await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        var data = posted.Should().ContainSingle().Subject;
+        data.TotalPaid.Should().Be(220);
+        data.LastPaymentAmount.Should().Be(120);
+        data.LastPaymentDate.Should().Be(new DateOnly(2025, 11, 1));
+    }
+
+    [Test]
+    [MoqInlineAutoData("2025-11-15", "2027-01-01", 1200, "starts after the period end, so its first payment is not due yet")]
+    [MoqInlineAutoData("2024-01-01", "2025-09-15", 1200, "ended before the period end's payment month")]
+    [MoqInlineAutoData("2024-01-01", "2026-01-01", 100, "has been paid in full")]
+    public async Task Then_No_Zero_Payment_Is_Recorded_When_The_Learner_Was_Not_Due_A_Payment(
+        string startDate,
+        string endDate,
+        int totalAgreedPrice,
+        string because,
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var learner = CreateApprenticeship(1);
+        learner.StartDate = DateTime.Parse(startDate);
+        learner.EndDate = DateTime.Parse(endDate);
+        learner.TotalAgreedPrice = totalAgreedPrice;
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [learner]);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupPeriodEnds(financeClient, (2025, 10));
+        SetupSummaries(fundingProjectionClient, command.AccountId);
+        SetupPayments(financeClient, learner.Id,
+            CreatePayment(learner.Id, 2025, 7, 100, new DateTime(2025, 8, 6)));
+        var posted = CapturePostedSummaries(fundingProjectionClient);
+
+        // Act
+        await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        var data = posted.Should().ContainSingle().Subject;
+        data.LastPaymentAmount.Should().Be(100, because);
+        data.LastPaymentDate.Should().Be(new DateOnly(2025, 8, 1), because);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Summaries_Not_In_The_Import_Are_Updated_With_The_Latest_Period_End_Payment(
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var summary = CreateSummary(command.AccountId, 10);
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, []);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupPeriodEnds(financeClient, (2025, 10));
+        SetupSummaries(fundingProjectionClient, command.AccountId, summary);
+        SetupPayments(financeClient, summary.ApprenticeshipId,
+            CreatePayment(summary.ApprenticeshipId, 2025, 9, 100, new DateTime(2025, 10, 6)),
+            CreatePayment(summary.ApprenticeshipId, 2025, 10, 120, new DateTime(2025, 11, 6)));
+        var putRequests = CapturePutRequests(fundingProjectionClient);
+
+        // Act
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsSuccessful.Should().BeTrue();
+        result.TotalRecordsProcessed.Should().Be(1);
+        var put = putRequests.Should().ContainSingle().Subject;
+        put.AccountId.Should().Be(command.AccountId);
+        put.ApprenticeshipId.Should().Be(summary.ApprenticeshipId);
+        var data = (PutApprenticeshipPaymentSummaryRequestData)put.Data;
+        data.Should().BeEquivalentTo(new PutApprenticeshipPaymentSummaryRequestData
+        {
+            Dob = summary.Dob!.Value,
+            StartDate = summary.StartDate,
+            EndDate = summary.EndDate,
+            IsTransfer = summary.IsTransfer,
+            Status = summary.Status,
+            TotalCost = summary.TotalCost,
+            TotalPaid = 220,
+            Uln = summary.Uln,
+            LastPaymentAmount = 120,
+            LastPaymentDate = new DateOnly(2025, 11, 1),
+            ProviderId = summary.ProviderId,
+            ProviderOrder = summary.ProviderOrder!.Value,
+            LearningType = summary.LearningType,
+            ApprovalDate = summary.ApprovalDate,
+            FirstApprovalDate = summary.FirstApprovalDate,
+        }, options => options.Excluding(d => d.LastUpdatedDate));
+        data.LastUpdatedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_A_Zero_Payment_Is_Recorded_For_A_Summary_The_Latest_Period_End_Did_Not_Pay(
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var summary = CreateSummary(command.AccountId, 10);
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, []);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupPeriodEnds(financeClient, (2025, 10));
+        SetupSummaries(fundingProjectionClient, command.AccountId, summary);
+        SetupPayments(financeClient, summary.ApprenticeshipId,
+            CreatePayment(summary.ApprenticeshipId, 2025, 9, 100, new DateTime(2025, 10, 6)));
+        var posted = CapturePostedSummaries(fundingProjectionClient);
+
+        // Act
+        await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        var data = posted.Should().ContainSingle().Subject;
+        data.TotalPaid.Should().Be(100);
+        data.LastPaymentAmount.Should().Be(0);
+        data.LastPaymentDate.Should().Be(new DateOnly(2025, 11, 1));
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_A_Zero_Already_Recorded_For_The_Latest_Period_End_Is_Checked_Again(
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var summary = CreateSummary(command.AccountId, 10);
+        summary.LastPaymentDate = new DateOnly(2025, 11, 1);
+        summary.LastPaymentAmount = 0;
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, []);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupPeriodEnds(financeClient, (2025, 10));
+        SetupSummaries(fundingProjectionClient, command.AccountId, summary);
+        // The period end's payments have been imported since the zero was recorded
+        SetupPayments(financeClient, summary.ApprenticeshipId,
+            CreatePayment(summary.ApprenticeshipId, 2025, 10, 120, new DateTime(2025, 11, 6)));
+        var posted = CapturePostedSummaries(fundingProjectionClient);
+
+        // Act
+        await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        var data = posted.Should().ContainSingle().Subject;
+        data.LastPaymentAmount.Should().Be(120);
+        data.LastPaymentDate.Should().Be(new DateOnly(2025, 11, 1));
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Summaries_Awaiting_The_Period_End_Payment_Are_Requested_And_Those_Just_Imported_Are_Skipped(
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var importedLearner = CreateApprenticeship(1);
+        var importedSummary = CreateSummary(command.AccountId, importedLearner.Id);
+        var awaitingSummary = CreateSummary(command.AccountId, 20);
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, [importedLearner]);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupProviderPaymentsPriority(commitmentsClient, command.AccountId);
+        SetupPeriodEnds(financeClient, (2025, 10));
+        SetupSummaries(fundingProjectionClient, command.AccountId, importedSummary, awaitingSummary);
+        SetupPayment(financeClient, importedLearner.Id);
+        SetupPayment(financeClient, awaitingSummary.ApprenticeshipId);
+        SetupSuccessfulPost(fundingProjectionClient);
+
+        // Act
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.TotalRecordsProcessed.Should().Be(2);
+        fundingProjectionClient.Verify(c => c.Get<List<ApprenticeshipPaymentSummaryResponse>>(
+            It.Is<GetApprenticeshipPaymentSummariesRequest>(r =>
+                r.AccountId == command.AccountId &&
+                r.AwaitingPaymentFor == new DateOnly(2025, 11, 1) &&
+                r.GetUrl == $"api/employer/{command.AccountId}/apprenticeship-payment-summary?awaitingPaymentFor=2025-11-01")), Times.Once);
+        financeClient.Verify(c => c.Get<List<GetApprenticeshipPaymentByAccountIdResponse>>(
+            It.Is<GetApprenticeshipPaymentByAccountIdRequest>(r => r.ApprenticeshipId == importedLearner.Id)), Times.Once);
+        fundingProjectionClient.Verify(c => c.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
+            It.Is<PutApprenticeshipPaymentSummaryRequest>(r => r.ApprenticeshipId == importedLearner.Id)), Times.Once);
+        fundingProjectionClient.Verify(c => c.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
+            It.Is<PutApprenticeshipPaymentSummaryRequest>(r => r.ApprenticeshipId == awaitingSummary.ApprenticeshipId)), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_A_Summary_Is_Checked_For_A_Late_Completion_Payment_The_Month_After_Its_Schedule_Ends(
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        // Ends in September, so the schedule's last payment is October and November is the extra month
+        var summary = CreateSummary(command.AccountId, 10);
+        summary.EndDate = new DateOnly(2025, 9, 30);
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, []);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupPeriodEnds(financeClient, (2025, 10));
+        SetupSummaries(fundingProjectionClient, command.AccountId, summary);
+        SetupPayments(financeClient, summary.ApprenticeshipId,
+            CreatePayment(summary.ApprenticeshipId, 2025, 9, 100, new DateTime(2025, 10, 6)),
+            CreatePayment(summary.ApprenticeshipId, 2025, 10, 240, new DateTime(2025, 11, 6)));
+        var posted = CapturePostedSummaries(fundingProjectionClient);
+
+        // Act
+        await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        var data = posted.Should().ContainSingle().Subject;
+        data.LastPaymentAmount.Should().Be(240);
+        data.LastPaymentDate.Should().Be(new DateOnly(2025, 11, 1));
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_A_Summary_Missing_The_Month_After_Its_Schedule_Ends_Is_Not_Given_A_Zero(
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var summary = CreateSummary(command.AccountId, 10);
+        summary.EndDate = new DateOnly(2025, 9, 30);
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, []);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupPeriodEnds(financeClient, (2025, 10));
+        SetupSummaries(fundingProjectionClient, command.AccountId, summary);
+        SetupPayments(financeClient, summary.ApprenticeshipId,
+            CreatePayment(summary.ApprenticeshipId, 2025, 9, 100, new DateTime(2025, 10, 6)));
+        var posted = CapturePostedSummaries(fundingProjectionClient);
+
+        // Act
+        await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        var data = posted.Should().ContainSingle().Subject;
+        data.LastPaymentAmount.Should().Be(100);
+        data.LastPaymentDate.Should().Be(new DateOnly(2025, 10, 1));
+    }
+
+    [Test]
+    [MoqInlineAutoData(true)]
+    [MoqInlineAutoData(false)]
+    public async Task Then_A_Summary_That_Has_Not_Started_Is_Checked_For_Early_Payments(
+        bool hasEarlyPayment,
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var summary = CreateSummary(command.AccountId, 10);
+        summary.StartDate = new DateOnly(2025, 12, 1);
+        summary.TotalPaid = 0;
+        summary.LastPaymentDate = null;
+        summary.LastPaymentAmount = null;
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, []);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupPeriodEnds(financeClient, (2025, 10));
+        SetupSummaries(fundingProjectionClient, command.AccountId, summary);
+        SetupPayments(financeClient, summary.ApprenticeshipId,
+            hasEarlyPayment ? [CreatePayment(summary.ApprenticeshipId, 2025, 10, 50, new DateTime(2025, 11, 6))] : []);
+        var posted = CapturePostedSummaries(fundingProjectionClient);
+
+        // Act
+        await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        var data = posted.Should().ContainSingle().Subject;
+        if (hasEarlyPayment)
+        {
+            data.LastPaymentAmount.Should().Be(50);
+            data.LastPaymentDate.Should().Be(new DateOnly(2025, 11, 1));
+        }
+        else
+        {
+            // No payment is due before it starts, so there is no zero to record
+            data.LastPaymentAmount.Should().BeNull();
+            data.LastPaymentDate.Should().BeNull();
+        }
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Summaries_Are_Not_Checked_When_There_Is_No_Period_End(
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        SetupNoPeriodEnd(financeClient);
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, []);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+
+        // Act
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsSuccessful.Should().BeTrue();
+        fundingProjectionClient.Verify(c => c.Get<List<ApprenticeshipPaymentSummaryResponse>>(It.IsAny<GetApprenticeshipPaymentSummariesRequest>()), Times.Never);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_A_Summary_That_Fails_To_Update_Is_Reported_As_A_Failed_Record(
+        ImportLearnersByAccountIdCommand command,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeClient,
+        [Frozen] Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> fundingProjectionClient,
+        [Greedy] ImportLearnersByAccountIdCommandHandler handler)
+    {
+        // Arrange
+        var summary = CreateSummary(command.AccountId, 10);
+        SetupCommitmentsResponse(commitmentsClient, command.AccountId, null, []);
+        SetupCommitmentsResponse(commitmentsClient, null, command.AccountId, []);
+        SetupPeriodEnds(financeClient, (2025, 10));
+        SetupSummaries(fundingProjectionClient, command.AccountId, summary);
+        financeClient
+            .Setup(c => c.Get<List<GetApprenticeshipPaymentByAccountIdResponse>>(It.IsAny<GetApprenticeshipPaymentByAccountIdRequest>()))
+            .ThrowsAsync(new InvalidOperationException("Payment lookup failed"));
+
+        // Act
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsSuccessful.Should().BeFalse();
+        result.TotalRecordsProcessed.Should().Be(1);
+        result.FailedRecordsCount.Should().Be(1);
+        result.LastSuccessfulImportDate.Should().BeNull();
+    }
+
+    private static void SetupNoPeriodEnd(Mock<IFinanceApiClient<FinanceApiConfiguration>> client) =>
+        SetupPeriodEnds(client);
+
+    private static void SetupPeriodEnds(
+        Mock<IFinanceApiClient<FinanceApiConfiguration>> client,
+        params (int Year, int Month)[] calendarPeriods)
+    {
+        client
+            .Setup(c => c.Get<List<GetPeriodEndResponse>>(It.IsAny<GetPeriodEndsRequest>()))
+            .ReturnsAsync(calendarPeriods
+                .Select(p => new GetPeriodEndResponse { CalendarPeriodYear = p.Year, CalendarPeriodMonth = p.Month })
+                .ToList());
+    }
+
+    private static void SetupSummaries(
+        Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> client,
+        long accountId,
+        params ApprenticeshipPaymentSummaryResponse[] summaries)
+    {
+        client
+            .Setup(c => c.Get<List<ApprenticeshipPaymentSummaryResponse>>(
+                It.Is<GetApprenticeshipPaymentSummariesRequest>(r => r.AccountId == accountId)))
+            .ReturnsAsync(summaries.ToList());
+    }
+
+    private static ApprenticeshipPaymentSummaryResponse CreateSummary(long accountId, long apprenticeshipId)
+    {
+        return new ApprenticeshipPaymentSummaryResponse
+        {
+            ApprenticeshipId = apprenticeshipId,
+            AccountId = accountId,
+            IsTransfer = true,
+            Uln = 1234567890,
+            Dob = new DateOnly(2000, 1, 1),
+            Status = ApprenticeshipStatus.Live,
+            TotalCost = 1200,
+            TotalPaid = 100,
+            StartDate = new DateOnly(2024, 1, 1),
+            EndDate = new DateOnly(2026, 1, 1),
+            ProviderId = 5,
+            ProviderOrder = 2,
+            ApprovalDate = new DateTime(2023, 12, 1),
+            FirstApprovalDate = new DateOnly(2023, 6, 1),
+            LearningType = LearningType.Apprenticeship,
+            LastPaymentDate = new DateOnly(2025, 10, 1),
+            LastPaymentAmount = 100,
+        };
+    }
+
+    private static List<PutApprenticeshipPaymentSummaryRequest> CapturePutRequests(
+        Mock<IFundingProjectionApiClient<FundingProjectionApiConfiguration>> client)
+    {
+        var requests = new List<PutApprenticeshipPaymentSummaryRequest>();
+        client
+            .Setup(c => c.PutWithResponseCode<ApprenticeshipPaymentSummaryResponse>(
+                It.IsAny<PutApprenticeshipPaymentSummaryRequest>()))
+            .Callback<IPutApiRequest>(r => requests.Add((PutApprenticeshipPaymentSummaryRequest)r))
+            .ReturnsAsync(new ApiResponse<ApprenticeshipPaymentSummaryResponse>(
+                new ApprenticeshipPaymentSummaryResponse(), HttpStatusCode.OK, string.Empty));
+        return requests;
     }
 
     private static void SetupCommitmentsResponse(

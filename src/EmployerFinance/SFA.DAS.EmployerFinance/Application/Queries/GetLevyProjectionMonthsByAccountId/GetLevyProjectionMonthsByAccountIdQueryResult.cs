@@ -1,0 +1,3 @@
+namespace SFA.DAS.EmployerFinance.Application.Queries.GetLevyProjectionMonthsByAccountId;
+
+public sealed record GetLevyProjectionMonthsByAccountIdQueryResult(int Months);
