@@ -34,6 +34,7 @@ public class EarningsFM36Constants
     public const decimal CoInvestSfaMultiplier = 0.95m;
 
     //PriceEpisodeValues
+    public const decimal CompletionElementMultiplier = 0.2m;
     public const decimal TNP3 = 0;
     public const decimal TNP4 = 0;
     public static DateTime? PriceEpisodeActualEndDateIncEPA = null;

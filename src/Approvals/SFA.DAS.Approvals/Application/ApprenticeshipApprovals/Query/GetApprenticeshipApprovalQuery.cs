@@ -1,5 +1,4 @@
-﻿using System;
-using MediatR;
+﻿using MediatR;
 
 namespace SFA.DAS.Approvals.Application.ApprenticeshipApprovals.Query;
 
@@ -7,5 +6,4 @@ public class GetApprenticeshipApprovalQuery : IRequest<GetApprenticeshipApproval
 {
     public long EmployerAccountId { get; set; }
     public long ApprenticeshipId { get; set; }
-    public Guid ApprovalRequestId { get; set; }
 }
