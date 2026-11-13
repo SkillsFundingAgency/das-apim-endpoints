@@ -1,10 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSearches;
-using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using System.Net;
 using SFA.DAS.FindApprenticeshipJobs.Api.Models;
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSearchVacancies;
+using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers;
 
@@ -37,10 +39,12 @@ public class SavedSearchesController(
         
     [HttpPost]
     [Route("GetSavedSearchResult")]
-    public async Task<IActionResult> GetSavedSearchResult([FromBody] GetCandidateSavedVacanciesRequest request, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetSavedSearchResult(
+        [FromServices] IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> faaInnerClient,
+        [FromBody] GetCandidateSavedVacanciesRequest request,
+        CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Get Saved Searches invoked");
-
         try
         {
             var result = await mediator.Send(new GetSavedSearchVacanciesQuery(
@@ -63,11 +67,14 @@ public class SavedSearchesController(
                     request.SelectedApprenticeshipTypes),
                     cancellationToken);
             
-            if (result == null)
+            if (result is not null)
             {
-                return NotFound();
+                return Ok(result);
             }
-            return Ok(result);
+            
+            // user is either dormant, deleted
+            await faaInnerClient.Delete(new DeleteSavedSearchesRequest([request.Id]));
+            return NotFound();
         }
         catch (Exception ex)
         {
@@ -75,7 +82,6 @@ public class SavedSearchesController(
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
-        
 
     [HttpPost]
     [Route("sendNotification")]
@@ -98,5 +104,17 @@ public class SavedSearchesController(
             logger.LogError(ex, "Error invoking Post Send saved Search notification");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
+    }
+
+    [HttpPost]
+    [Route("delete-many")]
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
+    public async Task<IActionResult> DeleteMany(
+        [FromBody] List<Guid> ids,
+        [FromServices] IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> faaInnerClient,
+        CancellationToken cancellationToken)
+    {
+        await faaInnerClient.Delete(new DeleteSavedSearchesRequest(ids));
+        return NoContent();
     }
 }
