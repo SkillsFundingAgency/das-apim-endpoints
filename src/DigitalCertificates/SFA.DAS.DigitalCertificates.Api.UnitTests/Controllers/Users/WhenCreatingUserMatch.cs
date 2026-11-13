@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Api.Controllers;
+using SFA.DAS.DigitalCertificates.Api.Models.Users;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserMatch;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -41,7 +42,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
                 .ReturnsAsync(Unit.Value);
 
             // Act
-            var apiRequest = new Models.Users.CreateUserMatchRequest
+            var apiRequest = new CreateUserMatchRequest
             {
                 Uln = command.Uln,
                 UserIdentityId = command.UserIdentityId,
@@ -78,7 +79,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
                 .ThrowsAsync(new Exception());
 
             // Act
-            var apiRequest = new Models.Users.CreateUserMatchRequest
+            var apiRequest = new CreateUserMatchRequest
             {
                 Uln = command.Uln,
                 UserIdentityId = command.UserIdentityId,
