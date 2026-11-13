@@ -19,20 +19,13 @@ public class SavedSearchesController(
         [FromQuery] DateTime lastRunDateTime, 
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10,
-        [FromQuery] int maxApprenticeshipSearchResultCount = 5,
-        [FromQuery] VacancySort sortOrder = VacancySort.AgeDesc, 
         CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Get Candidates for Saved Searches invoked");
 
         try
         {
-            var result = await mediator.Send(new GetSavedSearchesQuery(lastRunDateTime,
-                    pageNumber,
-                    pageSize,
-                    maxApprenticeshipSearchResultCount,
-                    sortOrder),
-                cancellationToken);
+            var result = await mediator.Send(new GetSavedSearchesQuery(lastRunDateTime, pageNumber, pageSize), cancellationToken);
             return Ok(result);
         }
         catch (Exception ex)

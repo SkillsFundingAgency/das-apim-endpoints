@@ -34,6 +34,7 @@ public class GetSavedSearchVacanciesQueryHandler(
         
         return await GetSavedSearchResults(request, routesList, levelsList, candidate);
     }
+    
     private async Task<GetSavedSearchVacanciesQueryResult?> GetSavedSearchResults(
         GetSavedSearchVacanciesQuery request,
         GetRoutesListResponse routesList,
