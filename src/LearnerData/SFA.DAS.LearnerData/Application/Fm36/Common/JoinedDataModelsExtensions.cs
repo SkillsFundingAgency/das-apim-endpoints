@@ -469,9 +469,13 @@ internal static class JoinedDataModelsExtensions
         var matches = payments
             .Where(x =>
             {
-                var paymentDate = x.AcademicYear
-                    .GetDateTime(x.DeliveryPeriod)
-                    .EndOfMonth();
+                // Incentives are earned on their due date, which can fall before a delivery that ends part way through the
+                // same month, so they are matched on that date rather than the end of their period (as the price episode does)
+                var paymentDate = x.IsIncentive()
+                    ? x.DueDate
+                    : x.AcademicYear
+                        .GetDateTime(x.DeliveryPeriod)
+                        .EndOfMonth();
 
                 // A payment belonging to an English and maths course (LearnAimRef set) is assigned to that course whatever its dates.
                 // Otherwise (onprogramme payments) the dates are used to choose between onprogramme deliveries
