@@ -51,7 +51,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetFramework
             var apiResponse = new ApiResponse<GetFrameworkCertificateResponse>(responseBody, HttpStatusCode.OK, string.Empty);
 
             mockAssessorsApiClient
-                .Setup(c => c.GetWithResponseCode<GetFrameworkCertificateResponse>(It.Is<GetFrameworkCertificateRequest>(r => r.Id == id && r.IncludeLogs)))
+                .Setup(c => c.GetWithResponseCode<GetFrameworkCertificateResponse>(It.Is<GetFrameworkCertificateRequest>(r => r.Id == id && !r.IncludeLogs)))
                 .ReturnsAsync(apiResponse);
 
             // Act
@@ -72,9 +72,11 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetFramework
             actual.QualificationsAndAwardingBodies.Should().NotBeNull();
             actual.QualificationsAndAwardingBodies.Should().HaveCount(1);
             actual.QualificationsAndAwardingBodies[0].Name.Should().Be("Qual1");
-            actual.PrintRequestedAt.Should().Be(responseBody.PrintRequestedAt);
-            actual.PrintRequestedBy.Should().Be(responseBody.PrintRequestedBy);
-            actual.DeliveryInformation.Should().NotBeNull();
+            actual.Status.Should().Be(responseBody.CertificateStatus);
+            actual.PrintRequestedAt.Should().Be(responseBody.CertificatePrintRequestedAt);
+            actual.PrintRequestedBy.Should().Be(responseBody.CertificatePrintRequestedBy);
+            actual.PrintStatus.Should().Be(responseBody.CertificatePrintStatus);
+            actual.PrintStatusAt.Should().Be(responseBody.CertificatePrintStatusAt);
         }
 
         [Test, MoqAutoData]

@@ -43,8 +43,8 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Responses
                 ProviderName = "Provider",
                 EmployerName = "Employer",
                 ApprenticeStartdate = apprenticeStartdate,
-                PrintRequestedAt = printRequestedAt,
-                PrintRequestedBy = printRequestedBy,
+                CertificatePrintRequestedAt = printRequestedAt,
+                CertificatePrintRequestedBy = printRequestedBy,
                 CertificationDate = certificationDate,
                 CertificateReference = certificateReference
             };
@@ -65,8 +65,8 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Responses
             response.ProviderName.Should().Be("Provider");
             response.EmployerName.Should().Be("Employer");
             response.ApprenticeStartdate.Should().Be(apprenticeStartdate);
-            response.PrintRequestedAt.Should().Be(printRequestedAt);
-            response.PrintRequestedBy.Should().Be(printRequestedBy);
+            response.CertificatePrintRequestedAt.Should().Be(printRequestedAt);
+            response.CertificatePrintRequestedBy.Should().Be(printRequestedBy);
             response.CertificationDate.Should().Be(certificationDate);
             response.CertificateReference.Should().Be(certificateReference);
         }
