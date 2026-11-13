@@ -1,4 +1,4 @@
-﻿using SFA.DAS.EmployerFinance.InnerApi.Requests;
+﻿using SFA.DAS.EmployerFinance.InnerApi.Requests.Finance;
 
 namespace SFA.DAS.EmployerFinance.UnitTests.Application.InnerApi.Requests;
 
