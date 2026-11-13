@@ -93,7 +93,8 @@ public class AddLearnerDataCommandHandler(IInternalApiClient<LearnerDataInnerApi
             CorrelationId = request.CorrelationId,
             ReceivedDate = request.ReceivedDate,
             AcademicYear = request.AcademicYear,
-            ConsumerReference = request.ConsumerReference
+            ConsumerReference = request.ConsumerReference,
+            OnServicePayments = request.OnServicePayments
         };
 
         return learnerDataRequest;
