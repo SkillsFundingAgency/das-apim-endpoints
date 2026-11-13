@@ -5,7 +5,6 @@ namespace SFA.DAS.LearnerData.Responses.CommitmentsInner;
 public class ApprovalsResponse
 {
     public List<ApprovalsChangeResult> Changes { get; set; } = [];
-    public List<ApprovalsPrice> Prices { get; set; } = [];
 }
 
 public class ApprovalsChangeResult
@@ -14,4 +13,6 @@ public class ApprovalsChangeResult
     public string ApprovalStatus { get; set; } = string.Empty;
     public string? Reason { get; set; }
     public ApprovalsChangeData? Data { get; set; }
+
+    public bool IsAutoApproved => string.Equals(ApprovalStatus, "autoApproved", StringComparison.OrdinalIgnoreCase);
 }

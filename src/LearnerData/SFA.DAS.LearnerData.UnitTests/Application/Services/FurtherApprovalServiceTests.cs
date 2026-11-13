@@ -50,7 +50,10 @@ public class FurtherApprovalServiceTests
 
         _approvalsService
             .Setup(x => x.RequestApproval(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<BaseLearnerApiPutResponse>()))
-            .ReturnsAsync(new ApprovalsOutcome(true, new ApprovalsResponse()));
+            .ReturnsAsync(new ApprovalsOutcome(true, new ApprovalsResponse
+            {
+                Changes = [new ApprovalsChangeResult { ChangeType = "StartDate", ApprovalStatus = "autoApproved" }]
+            }));
 
         _approvedLearningUpdatedEventBuilder
             .Setup(x => x.Build(It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<ApprovalsResponse>()))
@@ -61,11 +64,12 @@ public class FurtherApprovalServiceTests
             .ReturnsAsync(new ApiResponse<object>(null!, HttpStatusCode.NoContent, string.Empty));
     }
 
-    [Test]
-    public async Task Then_Approval_Is_Requested_For_The_Changes_Learning_Reported()
+    [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.StartDate)]
+    [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices)]
+    public async Task Then_Approval_Is_Requested_For_The_Changes_Learning_Reported(UpdateLearnerApiPutResponse.LearningUpdateChanges changeType)
     {
         // Arrange
-        var learningResponse = ArrangeStartDateChange();
+        var learningResponse = ArrangeChange(changeType);
 
         // Act
         await _sut.Resolve(Ukprn, Uln, learningResponse);
@@ -122,23 +126,6 @@ public class FurtherApprovalServiceTests
 
         // Assert
         result.Should().BeTrue();
-    }
-
-    [Test]
-    public async Task Then_The_Exception_Is_Propagated_And_Nothing_Is_Cleared_If_Approvals_Fails()
-    {
-        // Arrange
-        var learningResponse = ArrangeStartDateChange();
-        _approvalsService
-            .Setup(x => x.RequestApproval(Ukprn, Uln, learningResponse))
-            .ThrowsAsync(new HttpRequestException("approvals is down"));
-
-        // Act
-        Func<Task> act = async () => await _sut.Resolve(Ukprn, Uln, learningResponse);
-
-        // Assert
-        await act.Should().ThrowAsync<HttpRequestException>();
-        VerifyNotCleared();
     }
 
     [Test]
@@ -296,7 +283,7 @@ public class FurtherApprovalServiceTests
     }
 
     [Test]
-    public async Task Then_ApprovedLearningUpdatedEvent_Is_Not_Published_If_Clearing_FurtherApprovalNeeded_Throws()
+    public async Task Then_ApprovedLearningUpdatedEvent_Is_Still_Published_If_Clearing_FurtherApprovalNeeded_Throws()
     {
         // Arrange
         var learningResponse = ArrangeStartDateChange();
@@ -305,14 +292,15 @@ public class FurtherApprovalServiceTests
             .ThrowsAsync(new HttpRequestException("learning is down"));
 
         // Act
-        await _sut.Resolve(Ukprn, Uln, learningResponse);
+        var result = await _sut.Resolve(Ukprn, Uln, learningResponse);
 
         // Assert
-        VerifyNotPublished();
+        result.Should().BeTrue();
+        VerifyPublishedOnce();
     }
 
     [Test]
-    public async Task Then_ApprovedLearningUpdatedEvent_Is_Not_Published_If_Clearing_FurtherApprovalNeeded_Returns_An_Error_Status()
+    public async Task Then_ApprovedLearningUpdatedEvent_Is_Still_Published_If_Clearing_FurtherApprovalNeeded_Returns_An_Error_Status()
     {
         // Arrange
         var learningResponse = ArrangeStartDateChange();
@@ -321,20 +309,81 @@ public class FurtherApprovalServiceTests
             .ReturnsAsync(new ApiResponse<object>(null!, HttpStatusCode.NotFound, "not found"));
 
         // Act
-        await _sut.Resolve(Ukprn, Uln, learningResponse);
+        var result = await _sut.Resolve(Ukprn, Uln, learningResponse);
 
         // Assert
+        result.Should().BeTrue();
+        VerifyPublishedOnce();
+    }
+
+    [TestCase("pending")]
+    [TestCase("employerApprovalRequested")]
+    [TestCase("autoRejected")]
+    public async Task Then_The_Auto_Approved_Changes_Are_Echoed_But_Not_Cleared_When_Others_Are_Not_Auto_Approved(string otherStatus)
+    {
+        // Arrange
+        var learningResponse = ArrangeStartDateChange();
+        var evt = _fixture.Create<ApprovedLearningUpdatedEvent>();
+        var approvalsResponse = new ApprovalsResponse
+        {
+            Changes =
+            [
+                new ApprovalsChangeResult { ChangeType = "StartDate", ApprovalStatus = "autoApproved" },
+                new ApprovalsChangeResult { ChangeType = "Prices", ApprovalStatus = otherStatus }
+            ]
+        };
+        _approvalsService
+            .Setup(x => x.RequestApproval(Ukprn, Uln, learningResponse))
+            .ReturnsAsync(new ApprovalsOutcome(false, approvalsResponse));
+        _approvedLearningUpdatedEventBuilder.Setup(x => x.Build(learningResponse, approvalsResponse)).Returns(evt);
+
+        // Act
+        var result = await _sut.Resolve(Ukprn, Uln, learningResponse);
+
+        // Assert
+        result.Should().BeTrue();
+        VerifyNotCleared();
+        _messageSession.Verify(x => x.Publish(evt, It.IsAny<PublishOptions>()), Times.Once);
+    }
+
+    [TestCase("pending")]
+    [TestCase("employerApprovalRequested")]
+    [TestCase("autoRejected")]
+    public async Task Then_ApprovedLearningUpdatedEvent_Is_Not_Published_If_Nothing_Is_Auto_Approved(string status)
+    {
+        // Arrange
+        var learningResponse = ArrangeStartDateChange();
+        _approvalsService
+            .Setup(x => x.RequestApproval(Ukprn, Uln, learningResponse))
+            .ReturnsAsync(new ApprovalsOutcome(false, new ApprovalsResponse
+            {
+                Changes =
+                [
+                    new ApprovalsChangeResult { ChangeType = "StartDate", ApprovalStatus = status },
+                    new ApprovalsChangeResult { ChangeType = "Prices", ApprovalStatus = status }
+                ]
+            }));
+
+        // Act
+        var result = await _sut.Resolve(Ukprn, Uln, learningResponse);
+
+        // Assert
+        result.Should().BeTrue();
+        VerifyNotCleared();
         VerifyNotPublished();
     }
 
-    private UpdateLearnerApiPutResponse ArrangeStartDateChange(bool needsFurtherApproval = true)
+    private UpdateLearnerApiPutResponse ArrangeStartDateChange(bool needsFurtherApproval = true) =>
+        ArrangeChange(UpdateLearnerApiPutResponse.LearningUpdateChanges.StartDate, needsFurtherApproval);
+
+    private UpdateLearnerApiPutResponse ArrangeChange(UpdateLearnerApiPutResponse.LearningUpdateChanges changeType, bool needsFurtherApproval = true)
     {
         var learningResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
         learningResponse.ChangeDetails =
         [
             new UpdateLearnerApiPutResponse.ChangeDetail
             {
-                ChangeType = UpdateLearnerApiPutResponse.LearningUpdateChanges.StartDate,
+                ChangeType = changeType,
                 RequiresApproval = needsFurtherApproval
             }
         ];
@@ -351,6 +400,11 @@ public class FurtherApprovalServiceTests
     private void VerifyNotPublished()
     {
         _messageSession.Verify(x => x.Publish(It.IsAny<ApprovedLearningUpdatedEvent>(), It.IsAny<PublishOptions>()), Times.Never);
+    }
+
+    private void VerifyPublishedOnce()
+    {
+        _messageSession.Verify(x => x.Publish(It.IsAny<ApprovedLearningUpdatedEvent>(), It.IsAny<PublishOptions>()), Times.Once);
     }
 
     private void VerifyErrorLogged(UpdateLearnerApiPutResponse learningResponse)

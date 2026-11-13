@@ -31,9 +31,14 @@ public class FurtherApprovalService(
         if (learningResponse.ChangeDetails.Any(x => x.RequiresApproval))
         {
             var approval = await approvalsService.RequestApproval(ukprn, uln, learningResponse);
-            if (approval.AllAutoApproved && await ClearFurtherApprovalNeeded(learningResponse))
+            if (approval.AllAutoApproved)
             {
-                cleared = true;
+                cleared = await ClearFurtherApprovalNeeded(learningResponse);
+            }
+
+            // Echo back the auto-approved changes to Approvals so that it applies them
+            if (approval.Response.Changes.Any(x => x.IsAutoApproved))
+            {
                 await PublishApprovedLearningUpdatedEvent(learningResponse, approval.Response);
             }
         }
@@ -79,7 +84,7 @@ public class FurtherApprovalService(
     }
 
     /// <summary>
-    /// Echoes the approved changes back as an ApprovedLearningUpdatedEvent.
+    /// Echoes the auto-approved changes back as an ApprovedLearningUpdatedEvent
     /// Failures are logged and swallowed so that Earnings is still updated
     /// </summary>
     private async Task PublishApprovedLearningUpdatedEvent(BaseLearnerApiPutResponse learningResponse, ApprovalsResponse approvalsResponse)
