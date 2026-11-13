@@ -42,17 +42,10 @@ namespace SFA.DAS.DigitalCertificates.Api.Models.Sharing
             };
         }
     }
+
     public class QualificationDetailsDto
     {
         public string Name { get; set; }
         public string AwardingBody { get; set; }
-    }
-
-    public class DeliveryInformationDto
-    {
-        public Guid Id { get; set; }
-        public string Action { get; set; }
-        public string Status { get; set; }
-        public DateTime EventTime { get; set; }
     }
 }
