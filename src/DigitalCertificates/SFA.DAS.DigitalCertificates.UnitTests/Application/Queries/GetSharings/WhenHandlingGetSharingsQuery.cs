@@ -7,12 +7,11 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetSharings;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
-using SFA.DAS.DigitalCertificates.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
 
 using SFA.DAS.Apim.Shared.Exceptions;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
@@ -38,7 +37,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharings
 
             mockDigitalCertificatesApiClient
                 .Setup(c => c.GetWithResponseCode<GetSharingsResponse>(
-                    It.Is<GetSharingsRequest>(r =>
+                    It.Is<GetUsersByUserIdSharingsApiRequest>(r =>
                         r.UserId == userId &&
                         r.CertificateId == responseBody.CertificateId &&
                         r.Limit == query.Limit)))
@@ -64,7 +63,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharings
             var apiResponse = new ApiResponse<GetSharingsResponse>(null, HttpStatusCode.NotFound, string.Empty);
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.GetWithResponseCode<GetSharingsResponse>(It.IsAny<GetSharingsRequest>()))
+                .Setup(c => c.GetWithResponseCode<GetSharingsResponse>(It.IsAny<GetUsersByUserIdSharingsApiRequest>()))
                 .ReturnsAsync(apiResponse);
 
             // Act
@@ -82,7 +81,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharings
         {
             // Arrange
             mockDigitalCertificatesApiClient
-                .Setup(c => c.GetWithResponseCode<GetSharingsResponse>(It.IsAny<GetSharingsRequest>()))
+                .Setup(c => c.GetWithResponseCode<GetSharingsResponse>(It.IsAny<GetUsersByUserIdSharingsApiRequest>()))
                 .ThrowsAsync(new ApiResponseException(HttpStatusCode.BadRequest, "Bad request"));
 
             // Act

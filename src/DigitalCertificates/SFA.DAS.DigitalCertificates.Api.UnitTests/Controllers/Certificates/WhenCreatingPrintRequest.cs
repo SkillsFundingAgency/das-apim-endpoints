@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Api.Controllers;
+using SFA.DAS.DigitalCertificates.Api.Models.Certificates;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateCertificatePrintRequest;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -19,7 +20,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Certificates
         [Test, MoqAutoData]
         public async Task Then_Returns_NoContent_And_Mediator_Send_Called(
             Guid id,
-            Models.Certificates.CreatePrintRequest request,
+            CreatePrintRequest request,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] CertificatesController controller)
         {
@@ -41,7 +42,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Certificates
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             Guid id,
-            Models.Certificates.CreatePrintRequest request,
+            CreatePrintRequest request,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] CertificatesController controller)
         {
@@ -62,7 +63,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Certificates
         [Test, MoqAutoData]
         public async Task Then_BadRequest_Returned_If_ArgumentException_Thrown(
             Guid id,
-            Models.Certificates.CreatePrintRequest request,
+            CreatePrintRequest request,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] CertificatesController controller)
         {

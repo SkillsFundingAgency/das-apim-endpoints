@@ -1,19 +1,15 @@
-﻿using SFA.DAS.Approvals.Enums;
-using SFA.DAS.Apim.Shared.Interfaces;
-using System;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 
 public class GetApprenticeshipApprovalRequest : IGetApiRequest
 {
     public readonly long ApprenticeshipId;
-    public readonly Guid ApprovalRequestId; 
 
-    public GetApprenticeshipApprovalRequest(long apprenticeshipId, Guid approvalRequestId)
+    public GetApprenticeshipApprovalRequest(long apprenticeshipId)
     {
         ApprenticeshipId = apprenticeshipId;
-        ApprovalRequestId = approvalRequestId;
     }
 
-    public string GetUrl => $"api/apprenticeships/{ApprenticeshipId}/approvals/{ApprovalRequestId}";
+    public string GetUrl => $"api/apprenticeships/{ApprenticeshipId}/approvals";
 }
