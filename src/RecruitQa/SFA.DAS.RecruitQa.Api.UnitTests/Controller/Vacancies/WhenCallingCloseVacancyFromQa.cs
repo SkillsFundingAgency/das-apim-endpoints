@@ -49,7 +49,11 @@ public class WhenCallingCloseVacancyFromQa
         await sut.CloseVacancyFromQa(id, recruitApiClient.Object, request, CancellationToken.None);
 
         capturedRequest.Should().NotBeNull();
+        
         capturedRequest!.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/status", null, VacancyStatus.Closed));
         capturedRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/closureReason", null, ClosureReason.WithdrawnByQa));
+        var closedDateOp = capturedRequest.Data.Operations.Single(x => x.path == "/closedDate");
+        closedDateOp.op.Should().Be("replace");
+        closedDateOp.value.Should().BeOfType<DateTime>().Which.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
     }
 }

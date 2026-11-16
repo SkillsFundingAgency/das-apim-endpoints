@@ -120,9 +120,12 @@ public class VacanciesController: ControllerBase
         [FromBody] CloseVacancyRequest request,
         CancellationToken cancellationToken)
     {
+        var now = DateTime.UtcNow;
+        
         var data = new JsonPatchDocument<Recruit.Contracts.ApiResponses.Vacancy>();
         data.Replace(x => x.Status, Recruit.Contracts.ApiResponses.VacancyStatus.Closed);
-        data.Replace(x => x.LastUpdatedDate, DateTime.UtcNow);
+        data.Replace(x => x.ClosedDate, now);
+        data.Replace(x => x.LastUpdatedDate, now);
         data.Replace(x => x.ClosureReason, Enum.Parse<Recruit.Contracts.ApiResponses.ClosureReason>(request.ClosureReason));
         
         await recruitApiClient.PatchWithResponseCode(new Recruit.Contracts.ApiRequests.PatchVacanciesByVacancyIdApiRequest
