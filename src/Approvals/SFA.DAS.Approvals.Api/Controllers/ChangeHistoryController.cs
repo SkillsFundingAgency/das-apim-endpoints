@@ -32,11 +32,23 @@ public class ChangeHistoryController(IMediator mediator, ILogger<ChangeHistoryCo
 
     [HttpGet]
     [Route("/provider/{providerId}/apprentices/change-history")]
-    public async Task<IActionResult> GetChangeHistoryForAllLearnersOfProvider(long providerId)
+    public async Task<IActionResult> GetChangeHistoryForAllLearnersOfProvider(
+        long providerId,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 50)
     {
+        if (pageNumber < 1 || pageSize < 1 || pageSize > 100)
+        {
+            return BadRequest();
+        }
+
         try
         {
-            var queryResult = await mediator.Send(new GetAllChangeHistoryForProviderQuery(providerId));
+            var queryResult = await mediator.Send(new GetAllChangeHistoryForProviderQuery(providerId)
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            });
 
             var model = queryResult;
             return Ok(model);

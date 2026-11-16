@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
@@ -15,9 +17,19 @@ public class GetAllChangeHistoryForProviderQueryHandler(ICommitmentsV2ApiClient<
     {
         var changeHistory = await commitmentsV2ApiClient.Get<GetAllChangeHistoryForProviderResponse>(new GetAllChangeHistoryForProviderRequest(query.ProviderId));
 
+        var allChangeHistory = changeHistory?.ChangeHistory?.ToList() ?? [];
+
+        var offset = Math.Min((long)(query.PageNumber - 1) * query.PageSize, allChangeHistory.Count);
+
+        var page = allChangeHistory
+            .Skip((int)offset)
+            .Take(query.PageSize)
+            .ToList();
+
         return new GetAllChangeHistoryForProviderQueryResult
         {
-            ChangeHistory = changeHistory?.ChangeHistory ?? []
+            ChangeHistory = page,
+            TotalCount = allChangeHistory.Count
         };
     }
 }
