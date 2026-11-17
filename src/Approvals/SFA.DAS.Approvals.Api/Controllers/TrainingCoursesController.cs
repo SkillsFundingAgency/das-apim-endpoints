@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.Courses.Queries;
 using SFA.DAS.Approvals.Application.TrainingCourses.Queries;
+using SFA.DAS.Approvals.Exceptions;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -82,6 +85,22 @@ namespace SFA.DAS.Approvals.Api.Controllers
             {
                 logger.LogError(e, "Error attempting to get list of standards");
                 return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("apprenticeship-units/{courseCode}/version")]
+        public async Task<ActionResult<GetApprenticeshipUnitVersionResult>> GetApprenticeshipUnitVersion(
+            string courseCode, [FromQuery, BindRequired] DateTime startDate, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await mediator.Send(new GetApprenticeshipUnitVersionQuery(courseCode, startDate), cancellationToken);
+                return result == null ? NotFound() : Ok(result);
+            }
+            catch (ApprenticeshipUnitVersionException)
+            {
+                return NotFound();
             }
         }
 
