@@ -35,4 +35,5 @@ public class CreateCohortCommand : IRequest<CreateCohortResult>
     public bool IgnoreStartDateOverlap { get; set; }
     public bool? IsOnFlexiPaymentPilot { get; set; }
     public long? LearnerDataId { get; set; }
+    public bool? OnServicePayments { get; set; }
 }

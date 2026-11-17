@@ -70,6 +70,7 @@ public class CreateCohortCommandHandler(
                 IgnoreStartDateOverlap = request.IgnoreStartDateOverlap,
                 IsOnFlexiPaymentPilot = request.IsOnFlexiPaymentPilot,
                 LearnerDataId = request.LearnerDataId,
+                OnServicePayments = request.OnServicePayments,
                 MinimumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MinimumAge,
                 MaximumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MaximumAge,
                 UserInfo = request.UserInfo,

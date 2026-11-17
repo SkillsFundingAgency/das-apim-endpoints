@@ -244,7 +244,8 @@ public class CohortController(
             Uln = request.Uln,
             UserInfo = request.UserInfo,
             RequestingParty = request.RequestingParty,
-            LearnerDataId = request.LearnerDataId
+            LearnerDataId = request.LearnerDataId,
+            OnServicePayments = request.OnServicePayments
         };
 
         var result = await mediator.Send(command);
