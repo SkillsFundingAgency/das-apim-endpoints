@@ -1,20 +1,21 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.Assessors.Api.AppStart;
 using SFA.DAS.Assessors.Application.Queries.GetTrainingCourses;
 using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
-using Microsoft.Extensions.Logging;
-using SFA.DAS.Apim.Shared.AppStart;
 
 namespace SFA.DAS.Assessors.Api
 {
@@ -52,32 +53,34 @@ namespace SFA.DAS.Assessors.Api
             services.AddServiceRegistration();
 
             services.Configure<RouteOptions>(options =>
-                {
-                    options.LowercaseUrls = true;
-                    options.LowercaseQueryStrings = true;
-                }).AddMvc(o =>
+            {
+                options.LowercaseUrls = true;
+                options.LowercaseQueryStrings = true;
+            });
+
+            services
+                .AddControllers(o =>
                 {
                     if (!_configuration.IsLocalOrDev())
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
                 })
-                .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
+                .AddJsonOptions(options =>
+                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
 
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
                     .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription);
             }
-            
-            services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+
+            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AssessorsOuterApi", Version = "v1" });
             });
-
-            services.AddLogging();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -96,7 +99,7 @@ namespace SFA.DAS.Assessors.Api
             {
                 app.UseHealthChecks();
             }
-            
+
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
@@ -104,7 +107,7 @@ namespace SFA.DAS.Assessors.Api
                     name: "default",
                     pattern: "api/{controller=Courses}/{action=index}/{id?}");
             });
-        
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
