@@ -15,7 +15,6 @@ public class ProcessApprenticeshipApprovalCommandHandlerTests
 {
     private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _apiClient;
     private ProcessApprenticeshipApprovalCommandHandler _handler;
-    private ProcessApprenticeshipApprovalRequest _request;
 
     [SetUp]
     public void SetUp()
@@ -41,7 +40,7 @@ public class ProcessApprenticeshipApprovalCommandHandlerTests
 
         _apiClient.Verify(x => x.PostWithResponseCode<NullResponse>(
             It.Is<ProcessApprenticeshipApprovalRequest>(r =>
-                r.PostUrl == $"api/apprenticeships/{command.ApprenticeshipId}/approvals/{command.ApprovalRequestId}" &&
+                r.PostUrl == $"api/apprenticeships/{command.ApprenticeshipId}/approvals" &&
                 ((ProcessApprenticeshipApprovalRequest.Body)r.Data).UserInfo == command.UserInfo &&
                 ((ProcessApprenticeshipApprovalRequest.Body)r.Data).ApplyChanges == command.ApplyChanges),
             false), Times.Once);

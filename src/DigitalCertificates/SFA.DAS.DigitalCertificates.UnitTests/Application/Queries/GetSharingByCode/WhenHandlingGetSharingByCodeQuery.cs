@@ -7,11 +7,10 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetSharingByCode;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
-using SFA.DAS.DigitalCertificates.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
 
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
@@ -35,11 +34,11 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharingBy
             var apiLinkResponse = new ApiResponse<GetSharingByLinkCodeResponse>(null, HttpStatusCode.NotFound, string.Empty);
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.GetWithResponseCode<GetSharingByEmailLinkCodeResponse>(It.IsAny<GetSharingByEmailLinkCodeRequest>()))
+                .Setup(c => c.GetWithResponseCode<GetSharingByEmailLinkCodeResponse>(It.IsAny<GetSharingSharingemailEmaillinkcodeByEmailLinkCodeApiRequest>()))
                 .ReturnsAsync(apiEmailResponse);
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.GetWithResponseCode<GetSharingByLinkCodeResponse>(It.IsAny<GetSharingByLinkCodeRequest>()))
+                .Setup(c => c.GetWithResponseCode<GetSharingByLinkCodeResponse>(It.IsAny<GetSharingLinkcodeByLinkCodeApiRequest>()))
                 .ReturnsAsync(apiLinkResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
@@ -47,6 +46,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharingBy
             actual.Response.Should().NotBeNull();
             actual.Response.CertificateId.Should().Be(emailResponseBody.CertificateId);
             actual.Response.SharingEmailId.Should().Be(emailResponseBody.SharingEmailId);
+            actual.Response.CertificateType.Should().Be(emailResponseBody.CertificateType.ToString());
             actual.BothFound.Should().BeFalse();
         }
 
@@ -64,11 +64,11 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharingBy
             var apiLinkResponse = new ApiResponse<GetSharingByLinkCodeResponse>(linkResponseBody, HttpStatusCode.OK, string.Empty);
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.GetWithResponseCode<GetSharingByEmailLinkCodeResponse>(It.IsAny<GetSharingByEmailLinkCodeRequest>()))
+                .Setup(c => c.GetWithResponseCode<GetSharingByEmailLinkCodeResponse>(It.IsAny<GetSharingSharingemailEmaillinkcodeByEmailLinkCodeApiRequest>()))
                 .ReturnsAsync(apiEmailResponse);
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.GetWithResponseCode<GetSharingByLinkCodeResponse>(It.IsAny<GetSharingByLinkCodeRequest>()))
+                .Setup(c => c.GetWithResponseCode<GetSharingByLinkCodeResponse>(It.IsAny<GetSharingLinkcodeByLinkCodeApiRequest>()))
                 .ReturnsAsync(apiLinkResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
@@ -76,6 +76,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharingBy
             actual.Response.Should().NotBeNull();
             actual.Response.CertificateId.Should().Be(linkResponseBody.CertificateId);
             actual.Response.SharingId.Should().Be(linkResponseBody.SharingId);
+            actual.Response.CertificateType.Should().Be(linkResponseBody.CertificateType.ToString());
             actual.BothFound.Should().BeFalse();
         }
 
@@ -92,11 +93,11 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharingBy
             var apiLinkResponse = new ApiResponse<GetSharingByLinkCodeResponse>(null, HttpStatusCode.NotFound, string.Empty);
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.GetWithResponseCode<GetSharingByEmailLinkCodeResponse>(It.IsAny<GetSharingByEmailLinkCodeRequest>()))
+                .Setup(c => c.GetWithResponseCode<GetSharingByEmailLinkCodeResponse>(It.IsAny<GetSharingSharingemailEmaillinkcodeByEmailLinkCodeApiRequest>()))
                 .ReturnsAsync(apiEmailResponse);
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.GetWithResponseCode<GetSharingByLinkCodeResponse>(It.IsAny<GetSharingByLinkCodeRequest>()))
+                .Setup(c => c.GetWithResponseCode<GetSharingByLinkCodeResponse>(It.IsAny<GetSharingLinkcodeByLinkCodeApiRequest>()))
                 .ReturnsAsync(apiLinkResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
@@ -120,11 +121,11 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharingBy
             var apiLinkResponse = new ApiResponse<GetSharingByLinkCodeResponse>(linkResponseBody, HttpStatusCode.OK, string.Empty);
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.GetWithResponseCode<GetSharingByEmailLinkCodeResponse>(It.IsAny<GetSharingByEmailLinkCodeRequest>()))
+                .Setup(c => c.GetWithResponseCode<GetSharingByEmailLinkCodeResponse>(It.IsAny<GetSharingSharingemailEmaillinkcodeByEmailLinkCodeApiRequest>()))
                 .ReturnsAsync(apiEmailResponse);
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.GetWithResponseCode<GetSharingByLinkCodeResponse>(It.IsAny<GetSharingByLinkCodeRequest>()))
+                .Setup(c => c.GetWithResponseCode<GetSharingByLinkCodeResponse>(It.IsAny<GetSharingLinkcodeByLinkCodeApiRequest>()))
                 .ReturnsAsync(apiLinkResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);

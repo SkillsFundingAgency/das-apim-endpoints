@@ -1,7 +1,7 @@
 ﻿using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 using static SFA.DAS.LearnerData.Application.Fm36.Common.EarningsFM36Constants;
-using PeriodTextValues = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDeliveryPeriodisedTextValues;
+using PeriodTextValues = DC.ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDeliveryPeriodisedTextValues;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36.WhenHandlingLearningDeliveries;
 

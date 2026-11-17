@@ -31,6 +31,7 @@ public class Episode
     public List<AdditionalPayment> AdditionalPayments { get; set; }
     public decimal CompletionPayment { get; set; }
     public decimal OnProgramTotal { get; set; }
+    public decimal FundingBandMaximum { get; set; }
     public List<EnglishAndMaths> EnglishAndMaths { get; set; }
 }
 
@@ -53,6 +54,9 @@ public class AdditionalPayment
     public decimal Amount { get; set; }
     public string AdditionalPaymentType { get; set; }
     public DateTime DueDate { get; set; }
+
+    /// <summary> The English and maths course the payment belongs to, or null for payments on the apprenticeship (on-programme) aim </summary>
+    public string? LearnAimRef { get; set; }
 }
 
 public class EnglishAndMaths

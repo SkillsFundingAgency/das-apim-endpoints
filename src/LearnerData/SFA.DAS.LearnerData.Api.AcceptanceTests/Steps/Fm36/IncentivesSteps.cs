@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 using System.Net;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
 using TechTalk.SpecFlow;

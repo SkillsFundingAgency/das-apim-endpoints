@@ -11,18 +11,18 @@ using SFA.DAS.Approvals.Exceptions;
 namespace SFA.DAS.Approvals.Api.Controllers;
 
 [ApiController]
-[Route("[controller]/")]
+[Route("[controller]")]
 public class ApprenticeshipApprovalsController(
     ILogger<ApprenticeshipApprovalsController> logger,
     IMediator mediator) : ControllerBase
 {
     [HttpGet]
-    [Route("/employers/{accountId:long}/apprenticeships/{apprenticeshipId:long}/approvals/{approvalRequestId:guid}")]
-    public async Task<IActionResult> GetApprenticeshipApproval(long accountId, long apprenticeshipId, Guid approvalRequestId)
+    [Route("/employers/{accountId:long}/apprenticeships/{apprenticeshipId:long}/approvals")]
+    public async Task<IActionResult> GetApprenticeshipApproval(long accountId, long apprenticeshipId)
     {
         try
         {
-            var result = await mediator.Send(new GetApprenticeshipApprovalQuery { EmployerAccountId = accountId, ApprovalRequestId = approvalRequestId, ApprenticeshipId = apprenticeshipId });
+            var result = await mediator.Send(new GetApprenticeshipApprovalQuery { EmployerAccountId = accountId, ApprenticeshipId = apprenticeshipId });
 
             if (result == null)
             {
@@ -44,14 +44,13 @@ public class ApprenticeshipApprovalsController(
 
 
     [HttpPost]
-    [Route("/employers/{accountId:long}/apprenticeships/{apprenticeshipId:long}/approvals/{approvalRequestId:guid}")]
-    public async Task<IActionResult> PostApprenticeshipApproval(long accountId, long apprenticeshipId, Guid approvalRequestId, ProcessApprenticeshipApprovalRequest request)
+    [Route("/employers/{accountId:long}/apprenticeships/{apprenticeshipId:long}/approvals")]
+    public async Task<IActionResult> PostApprenticeshipApproval(long accountId, long apprenticeshipId, ProcessApprenticeshipApprovalRequest request)
     {
         try
         {
             await mediator.Send(new ProcessApprenticeshipApprovalCommand
             {
-                ApprovalRequestId = approvalRequestId,
                 ApprenticeshipId = apprenticeshipId,
                 ApplyChanges = request.ApplyChanges,
                 UserInfo = request.UserInfo

@@ -1,21 +1,16 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
-using SFA.DAS.DigitalCertificates.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
-using static SFA.DAS.DigitalCertificates.InnerApi.Requests.PostCreateOrUpdateUserRequest;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
 
 namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser
 {
     public class CreateOrUpdateUserCommandHandler : IRequestHandler<CreateOrUpdateUserCommand, CreateOrUpdateUserResult>
     {
         private readonly IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration> _digitalCertificatesApiClient;
-
 
         public CreateOrUpdateUserCommandHandler(IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration> digitalCertificatesApiClient)
         {
@@ -24,7 +19,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser
 
         public async Task<CreateOrUpdateUserResult> Handle(CreateOrUpdateUserCommand command, CancellationToken cancellationToken)
         {
-            var request = new PostCreateOrUpdateUserRequest(new PostCreateOrUpdateUserRequestData
+            var request = new PostUsersApiRequest(new CreateOrUpdateUserRequest
             {
                 GovUkIdentifier = command.GovUkIdentifier,
                 EmailAddress = command.EmailAddress,
@@ -32,7 +27,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser
             });
 
             var response = await _digitalCertificatesApiClient
-                .PostWithResponseCode<PostCreateOrUpdateUserRequestData, PostCreateOrUpdateUserResponse>(request);
+                .PostWithResponseCode<CreateOrUpdateUserResponse>(request);
 
             response.EnsureSuccessStatusCode();
 

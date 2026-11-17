@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProviderCourses;
+using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAvailableCourseForProvider;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAvailableCoursesForProvider;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourse;
 using SFA.DAS.SharedOuterApi.Types.InnerApi;
@@ -84,5 +85,14 @@ public class ProviderCoursesController : ControllerBase
         var result = await _mediator.Send(new GetAvailableCoursesForProviderQuery(ukprn, courseType));
         _logger.LogInformation("Total {AvailableCoursesCount} courses are available for ukprn: {Ukprn}", result.AvailableCourses.Count(), ukprn);
         return Ok(result);
+    }
+
+    [HttpGet]
+    [Route("available-courses/{courseType}/{larsCode}")]
+    public async Task<IActionResult> GetAvailableCourse([FromRoute] int ukprn, [FromRoute] CourseType courseType, [FromRoute] string larsCode)
+    {
+        var result = await _mediator.Send(new GetAvailableCourseForProviderQuery(ukprn, courseType, larsCode));
+        _logger.LogInformation("Request to get available course for ukprn: {Ukprn} and larCode: {LarsCode}", ukprn, larsCode);
+        return result is null ? NotFound() : Ok(result);
     }
 }

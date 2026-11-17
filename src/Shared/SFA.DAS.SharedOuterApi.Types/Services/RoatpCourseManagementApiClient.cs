@@ -70,6 +70,10 @@ public class RoatpCourseManagementApiClient(IInternalApiClient<RoatpV2ApiConfigu
     {
         return apiClient.PatchWithResponseCode(request);
     }
+    public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
+    {
+        return apiClient.PutWithResponseCode<TResponse>(request);
+    }
 
     public Task<TResponse> Post<TResponse>(IPostApiRequest request)
     {
@@ -77,10 +81,6 @@ public class RoatpCourseManagementApiClient(IInternalApiClient<RoatpV2ApiConfigu
     }
 
     public Task Post<TData>(IPostApiRequest<TData> request)
-    {
-        throw new NotImplementedException();
-    }
-    public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
     {
         throw new NotImplementedException();
     }

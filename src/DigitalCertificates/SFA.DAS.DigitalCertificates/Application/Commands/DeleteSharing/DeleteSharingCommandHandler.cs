@@ -1,10 +1,7 @@
 ﻿using MediatR;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,13 +18,11 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.DeleteSharing
 
         public async Task Handle(DeleteSharingCommand command, CancellationToken cancellationToken)
         {
-            var request = new DeleteSharingRequest(command.SharingId);
+            var request = new DeleteSharingByIdApiRequest(command.SharingId);
 
             var response = await _digitalCertificatesApiClient.DeleteWithResponseCode<object>(request);
 
             response.EnsureSuccessStatusCode();
-
-            return;
         }
     }
 }

@@ -10,10 +10,9 @@ using NUnit.Framework;
 using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetUserActions;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
-using SFA.DAS.DigitalCertificates.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetUserActions
@@ -35,7 +34,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetUserActio
 
             mockDigitalCertificatesApiClient
                 .Setup(c => c.GetWithResponseCode<GetUserActionsResponse>(
-                    It.Is<GetUserActionsRequest>(r => r.UserId == userId)))
+                    It.Is<GetUsersByUserIdUserActionsApiRequest>(r => r.UserId == userId)))
                 .ReturnsAsync(apiResponse);
 
             // Act
@@ -44,7 +43,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetUserActio
             // Assert
             actual.Should().NotBeNull();
             actual.UserActions.Should().HaveCount(responseBody.UserActions.Count);
-            var expected = responseBody.UserActions[0];
+            var expected = responseBody.UserActions.First();
             var actualFirst = Enumerable.First(actual.UserActions);
             actualFirst.Id.Should().Be(expected.Id);
             actualFirst.UserId.Should().Be(expected.UserId);
@@ -65,7 +64,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetUserActio
             var apiResponse = new ApiResponse<GetUserActionsResponse>(null, HttpStatusCode.NotFound, string.Empty);
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.GetWithResponseCode<GetUserActionsResponse>(It.IsAny<GetUserActionsRequest>()))
+                .Setup(c => c.GetWithResponseCode<GetUserActionsResponse>(It.IsAny<GetUsersByUserIdUserActionsApiRequest>()))
                 .ReturnsAsync(apiResponse);
 
             // Act
@@ -84,7 +83,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetUserActio
         {
             // Arrange
             mockDigitalCertificatesApiClient
-                .Setup(c => c.GetWithResponseCode<GetUserActionsResponse>(It.IsAny<GetUserActionsRequest>()))
+                .Setup(c => c.GetWithResponseCode<GetUserActionsResponse>(It.IsAny<GetUsersByUserIdUserActionsApiRequest>()))
                 .ThrowsAsync(new ApiResponseException(HttpStatusCode.BadRequest, "Bad request"));
 
             // Act
