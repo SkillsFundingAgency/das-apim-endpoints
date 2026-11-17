@@ -6,6 +6,7 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 
+[Obsolete("The misnamed Assessors health check is being replaced with Assessor during the rewrite of the Assessor service")]
 public class AssessorsApiHealthCheck(
     IAssessorsApiClient<AssessorsApiConfiguration> client,
     ILogger<AssessorsApiHealthCheck> logger)

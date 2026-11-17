@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
+  </ItemGroup>
+
+  <!--These packages are required to override transient package vulnerabilities-->
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="10.0.15" />
+  </ItemGroup>
+
+  <!--These packages are retained at the latest version which is licensed for open source projects -->
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="InnerApi\Requests\" />
+  </ItemGroup>
+
+</Project>

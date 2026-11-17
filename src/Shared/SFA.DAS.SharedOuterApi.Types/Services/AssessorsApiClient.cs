@@ -6,7 +6,8 @@ using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Types.Services;
-    
+
+[Obsolete("The misnamed Assessors api client is being replaced with Assessor during the rewrite of the Assessor service")]
 [ExcludeFromCodeCoverage]
 public class AssessorsApiClient : IAssessorsApiClient<AssessorsApiConfiguration>
 {
