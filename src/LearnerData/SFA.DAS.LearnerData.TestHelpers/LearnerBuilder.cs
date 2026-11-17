@@ -160,10 +160,11 @@ public static class LearnerBuilder
     {
         var instalments = new List<Instalment>();
 
-        foreach (var program in testLearner.UpdateLearnerRequest.Delivery.OnProgramme)
+        // Learning inner only creates the episode from onProgrammes for the episode's standard, so onProgrammes for other standards have no prices
+        foreach (var program in testLearner.UpdateLearnerRequest.Delivery.OnProgramme.Where(x => x.StandardCode.ToString() == learningEpisode.TrainingCode))
         {
             var periodInLearningKey = Guid.NewGuid();
-            var programEndDate = (new []{program.WithdrawalDate, program.ExpectedEndDate, program.ExpectedEndDate}).Min();
+            var programEndDate = (new []{program.WithdrawalDate, program.PauseDate, program.ExpectedEndDate}).Min();
             var numberOfCosts = program.Costs?.Count ?? 0;
 
             for (var costIndex = 0; costIndex < numberOfCosts; costIndex++)

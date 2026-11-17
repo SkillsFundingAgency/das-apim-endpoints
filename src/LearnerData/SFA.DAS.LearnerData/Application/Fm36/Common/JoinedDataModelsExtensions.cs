@@ -116,7 +116,7 @@ internal static class JoinedDataModelsExtensions
             PriceEpisodeBalancePayment = EarningsFM36Constants.PriceEpisodeBalancePayment,
             PriceEpisodeCompleted = joinedPriceEpisode.EndDate < DateTime.Now,
             PriceEpisodeCompletionPayment = EarningsFM36Constants.PriceEpisodeCompletionPayment,
-            PriceEpisodeAimSeqNumber = EarningsFM36Constants.AimSeqNumber,
+            PriceEpisodeAimSeqNumber = joinedPriceEpisode.AimSequenceNumber,
 
             PriceEpisodeSecondProv1618Pay = EarningsFM36Constants.PriceEpisodeSecondProv1618Pay,
             PriceEpisodeFirstEmp1618Pay = EarningsFM36Constants.PriceEpisodeFirstEmp1618Pay,

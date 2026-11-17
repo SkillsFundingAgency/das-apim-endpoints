@@ -103,6 +103,12 @@ internal class GetFm36QueryTestFixture
             case TestScenario.LearningSupportComplexScenario:
                 AddLearningSupportComplexScenario();
                 break;
+            case TestScenario.ApprenticeshipWithBreakInLearning:
+                AddApprenticeshipWithBreakInLearning();
+                break;
+            case TestScenario.ApprenticeshipWithChangeOfStandard:
+                AddApprenticeshipWithChangeOfStandard();
+                break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -270,6 +276,74 @@ internal class GetFm36QueryTestFixture
                     new LearningSupport{ StartDate = new DateTime(2021, 2, 1), EndDate = new DateTime(2021, 04, 30) },
                 }
             );
+
+        _fm36TestContext.TestLearners.Add(testLearner);
+    }
+
+    private void AddApprenticeshipWithBreakInLearning()
+    {
+        var testLearner = DefaultLearner.CreateNew;
+        testLearner.Ukprn = (int)Ukprn;
+        testLearner.FundingBandMax = 19000;
+        testLearner.ClearProgrammes();
+
+        testLearner.AddProgramme(
+            ageAtStart: 19,
+            startDate: new DateTime(2020, 8, 1),
+            endDate: new DateTime(2021, 7, 31),
+            trainingPrice: 14000,
+            endpointAssessmentPrice: 1000,
+            aimSequenceNumber: 1);
+
+        testLearner.UpdateLearnerRequest.Delivery.OnProgramme.Single().PauseDate = new DateTime(2020, 12, 31);
+
+        testLearner.AddProgramme(
+            ageAtStart: 19,
+            startDate: new DateTime(2021, 3, 1),
+            endDate: new DateTime(2021, 7, 31),
+            trainingPrice: 16000,
+            endpointAssessmentPrice: 1000,
+            aimSequenceNumber: 2);
+
+        _fm36TestContext.TestLearners.Add(testLearner);
+    }
+
+    private void AddApprenticeshipWithChangeOfStandard()
+    {
+        var testLearner = DefaultLearner.CreateNew;
+        testLearner.Ukprn = (int)Ukprn;
+        testLearner.FundingBandMax = 19000;
+        testLearner.ClearProgrammes();
+
+        var costs = new List<CostDetails> { new CostDetails
+            {
+                FromDate = new DateTime(2020, 8, 1),
+                TrainingPrice = 14000,
+                EpaoPrice = 1000
+            },
+            new CostDetails
+            {
+                FromDate = new DateTime(2021, 3, 1),
+                TrainingPrice = 16000,
+                EpaoPrice = 1000
+            }
+        };
+
+        testLearner.AddProgramme(
+            ageAtStart: 19,
+            startDate: new DateTime(2020, 8, 1),
+            endDate: new DateTime(2021, 7, 31),
+            costs: costs,
+            aimSequenceNumber: 1);
+
+        testLearner.AddProgramme(
+            ageAtStart: 19,
+            startDate: new DateTime(2021, 1, 1),
+            endDate: new DateTime(2021, 7, 31),
+            trainingPrice: 9000,
+            endpointAssessmentPrice: 500,
+            aimSequenceNumber: 2,
+            standardCode: 999);
 
         _fm36TestContext.TestLearners.Add(testLearner);
     }

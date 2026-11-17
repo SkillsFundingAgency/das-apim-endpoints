@@ -49,9 +49,16 @@ public static class TestLearnerExtensions
         testLearner.UpdateLearnerRequest.Delivery.OnProgramme.Clear();
     }
     public static void AddProgramme(this TestLearner testLearner,
-        int ageAtStart, DateTime startDate, DateTime endDate, int? trainingPrice = null, int? endpointAssessmentPrice = null, List<CostDetails>? costs = null)
+        int ageAtStart, DateTime startDate, DateTime endDate, int? trainingPrice = null, int? endpointAssessmentPrice = null, List<CostDetails>? costs = null,
+        int? aimSequenceNumber = null, int? standardCode = null)
     {
         var programme = DefaultLearner.OnProgramme;
+
+        if (aimSequenceNumber != null)
+            programme.AimSequenceNumber = aimSequenceNumber.Value;
+
+        if (standardCode != null)
+            programme.StandardCode = standardCode.Value;
 
         if(trainingPrice == null && endpointAssessmentPrice == null && costs == null)
             throw new ArgumentException("Either trainingPrice and endpointAssessmentPrice, or costs must be provided");
