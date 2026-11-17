@@ -8,6 +8,7 @@ using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.Approvals.Application.SelectMultiple.Queries;
+using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
@@ -88,6 +89,7 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
                 DateOfBirthAsString = learner.Dob.ToString("yyyy-MM-dd"),
                 Email = learner.Email,
                 CourseCode = learner.TrainingCode,
+                DeliveryModel = learner.IsFlexiJob ? DeliveryModel.FlexiJobAgency : DeliveryModel.Regular,
                 StartDateAsString = learner.StartDate.ToString("yyyy-MM-dd"),
                 EndDateAsString = learner.PlannedEndDate.ToString("yyyy-MM"),
                 ProviderId = command.ProviderId,
