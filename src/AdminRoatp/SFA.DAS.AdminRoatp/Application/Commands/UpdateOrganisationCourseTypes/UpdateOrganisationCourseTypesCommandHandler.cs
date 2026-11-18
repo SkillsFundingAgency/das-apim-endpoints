@@ -32,13 +32,13 @@ public class UpdateOrganisationCourseTypesCommandHandler(IRoatpServiceApiClient<
         if (response.Body.ProviderType == ProviderType.Supporting) return;
 
         var courseTypeNames = command.CourseTypeIds.Select(x => (CourseType)x).ToArray();
-        var addCourseTypesCommand = new AddCourseTypesModel()
+        var putCourseTypesCommand = new AddCourseTypesModel()
         {
             CourseTypes = courseTypeNames,
             UserId = command.UserId,
             UserDisplayName = command.UserDisplayName
         };
-        var cmResponse = await _roatpCMApiClient.PostWithResponseCode<NullResponse>(new AddCourseTypesRequest(command.Ukprn, addCourseTypesCommand));
+        var cmResponse = await _roatpCMApiClient.PutWithResponseCode<NullResponse>(new PutCourseTypesRequest(command.Ukprn, putCourseTypesCommand));
         cmResponse.EnsureSuccessStatusCode();
     }
 
