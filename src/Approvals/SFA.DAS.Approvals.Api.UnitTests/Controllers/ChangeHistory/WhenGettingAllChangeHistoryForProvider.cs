@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -28,8 +27,62 @@ public class WhenGettingAllChangeHistoryForProvider
         controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
         var model = controllerResult.Value as GetAllChangeHistoryForProviderQueryResult;
         model.Should().NotBeNull();
-        model.ChangeHistory.Count().Should().Be(mediatorResult.ChangeHistory.Count());
+        model.ChangeHistory.Count.Should().Be(mediatorResult.ChangeHistory.Count);
         model.ChangeHistory.Should().BeEquivalentTo(mediatorResult.ChangeHistory);
+        model.TotalCount.Should().Be(mediatorResult.TotalCount);
+        model.AvailableFrom.Should().Be(mediatorResult.AvailableFrom);
+    }
+
+    [Test, MoqAutoData]
+    public async Task And_No_Paging_Values_Are_Supplied_Then_Defaults_Are_Passed_To_Mediator(
+         long providerId,
+         GetAllChangeHistoryForProviderQueryResult mediatorResult,
+         [Frozen] Mock<IMediator> mockMediator,
+         [Greedy] ChangeHistoryController controller)
+    {
+        mockMediator
+            .Setup(mediator => mediator.Send(
+                It.Is<GetAllChangeHistoryForProviderQuery>(q => q.ProviderId == providerId && q.PageNumber == 1 && q.PageSize == 50),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatorResult);
+
+        var controllerResult = await controller.GetChangeHistoryForAllLearnersOfProvider(providerId) as ObjectResult;
+
+        controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+        mockMediator.Verify(mediator => mediator.Send(
+            It.Is<GetAllChangeHistoryForProviderQuery>(q => q.PageNumber == 1 && q.PageSize == 50),
+            It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task And_Page_Size_Is_Maximum_Then_Request_Is_Accepted_Without_Mediator_Error(
+         long providerId,
+         [Frozen] Mock<IMediator> mockMediator,
+         [Greedy] ChangeHistoryController controller)
+    {
+        mockMediator
+            .Setup(mediator => mediator.Send(It.IsAny<GetAllChangeHistoryForProviderQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new GetAllChangeHistoryForProviderQueryResult());
+
+        var controllerResult = await controller.GetChangeHistoryForAllLearnersOfProvider(providerId, 1, 100) as ObjectResult;
+
+        controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+    }
+
+    [Test, MoqAutoData]
+    public async Task And_Mediator_Returns_Null_Then_Returns_Empty_Result(
+         long providerId,
+         [Frozen] Mock<IMediator> mockMediator,
+         [Greedy] ChangeHistoryController controller)
+    {
+        mockMediator
+            .Setup(mediator => mediator.Send(It.IsAny<GetAllChangeHistoryForProviderQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((GetAllChangeHistoryForProviderQueryResult)null);
+
+        var controllerResult = await controller.GetChangeHistoryForAllLearnersOfProvider(providerId) as ObjectResult;
+
+        controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+        controllerResult.Value.Should().BeNull();
     }
 
     [Test, MoqAutoData]
