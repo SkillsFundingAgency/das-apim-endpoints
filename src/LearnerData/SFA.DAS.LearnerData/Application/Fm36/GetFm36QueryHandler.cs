@@ -55,7 +55,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
 
         var sldLearners = await _distributedCache.GetLearners<UpdateLearnerRequest>(request.Ukprn, learnings.Select(x => x.Uln), cancellationToken);
 
-        var joinedLearnerData = JoinDataSources(learnings, earnings, sldLearners, currentAcademicYear);
+        var joinedLearnerData = JoinDataSources(learnings, earnings, sldLearners);
 
         var fm36Learners = TransformToFm36Learners(joinedLearnerData, currentAcademicYear, request.CollectionPeriod);
 
@@ -117,7 +117,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
         return result.Body;
     }
 
-    private List<JoinedLearnerData> JoinDataSources(List<Learning> learnings, List<Apprenticeship> earnings, List<UpdateLearnerRequest> sldData, GetAcademicYearsResponse currentAcademicYear)
+    private List<JoinedLearnerData> JoinDataSources(List<Learning> learnings, List<Apprenticeship> earnings, List<UpdateLearnerRequest> sldData)
     {
         var joinedApprenticeships = new List<JoinedLearnerData>();
 
@@ -141,7 +141,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
 
             _logger.LogInformation($"Processing learning with key: {matchingLearning.Key}");
 
-            joinedApprenticeships.Add(new JoinedLearnerData(matchingLearning, earning, matchingSld, currentAcademicYear.GetShortAcademicYear()));
+            joinedApprenticeships.Add(new JoinedLearnerData(matchingLearning, earning, matchingSld));
         }
 
         return joinedApprenticeships;
