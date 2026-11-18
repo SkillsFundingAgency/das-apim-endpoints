@@ -2,6 +2,7 @@ using System.Text.Json;
 using SFA.DAS.Recruit.GraphQL;
 using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 using SFA.DAS.SharedOuterApi.Types.Models;
+using ClosureReason = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.ClosureReason;
 
 namespace SFA.DAS.RecruitQa.GraphQL.RecruitInner.Mappers;
 
@@ -46,7 +47,7 @@ public static class GqlVacancyMapper
             CreatedDate = source.CreatedDate?.UtcDateTime,
             ClosedDate = source.ClosedDate?.UtcDateTime,
             ClosingDate = source.ClosingDate?.UtcDateTime,
-            ClosureReason = NullOrEnum<Domain.ClosureReason>(source.ClosureReason?.ToString()),
+            ClosureReason = NullOrEnum<ClosureReason>(source.ClosureReason?.ToString()),
             Contact = source is { ContactName: null, ContactEmail: null, ContactPhone: null }
                 ? null
                 : new ContactDetail
