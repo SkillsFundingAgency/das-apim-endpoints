@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.Approvals.Application.SelectMultiple.Commands;
 using SFA.DAS.Approvals.Application.SelectMultiple.Queries;
+using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
@@ -197,6 +199,7 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandlerTests
                     records[0].DateOfBirthAsString == "2000-01-02" &&
                     records[0].CostAsString == "1500" &&
                     records[0].CohortRef == cohort.CohortReference &&
+                    records[0].DeliveryModel == DeliveryModel.Regular &&
                     records[0].ReservationId == reservationId
                     )),
             Times.Once);
@@ -208,6 +211,80 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandlerTests
         apiClient.Verify(
             x => x.PostWithResponseCode<GetBulkUploadAddDraftApprenticeshipsResponse>(
                 It.IsAny<IPostApiRequest>(), true),
+            Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Maps_FlexiJob_Learner_To_FlexiJobAgency_DeliveryModel(
+        SelectMultipleAddDraftApprenticeshipsCommand command,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
+        [Frozen] Mock<IReservationApiClient<ReservationApiConfiguration>> reservationApiClient,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
+        [Frozen] Mock<IAddCourseTypeFromRulesService> courseTypeService,
+        Guid reservationId,
+        SelectMultipleAddDraftApprenticeshipsCommandHandler handler)
+    {
+        var learner = Learner(1);
+        learner.IsFlexiJob = true;
+        command.LearnerIds = [learner.Id];
+        SetupValidationSuccess(mediator);
+
+        learnerDataClient
+            .Setup(x => x.PostWithResponseCode<List<LearnerDataRecord>>(
+                It.IsAny<IPostApiRequest>(), true))
+            .ReturnsAsync(new ApiResponse<List<LearnerDataRecord>>(
+                [learner], HttpStatusCode.OK, string.Empty));
+
+        reservationApiClient
+            .Setup(x => x.PostWithResponseCode<BulkCreateReservationsWithNonLevyResult>(
+                It.IsAny<IPostApiRequest>(), true))
+            .ReturnsAsync(new ApiResponse<BulkCreateReservationsWithNonLevyResult>(
+                new BulkCreateReservationsWithNonLevyResult
+                {
+                    BulkCreateResults =
+                    [
+                        new()
+                        {
+                            ULN = learner.Uln.ToString(),
+                            ReservationId = reservationId
+                        }
+                    ]
+                },
+                HttpStatusCode.OK,
+                string.Empty));
+
+        apiClient
+            .Setup(x => x.PostWithResponseCode<CreateCohortResponse>(
+                It.IsAny<IPostApiRequest>(), true))
+            .ReturnsAsync(new ApiResponse<CreateCohortResponse>(
+                new CreateCohortResponse { CohortId = 123, CohortReference = "COHORT-123" },
+                HttpStatusCode.OK,
+                string.Empty));
+
+        apiClient
+            .Setup(x => x.PostWithResponseCode<GetBulkUploadAddDraftApprenticeshipsResponse>(
+                It.IsAny<IPostApiRequest>(), true))
+            .ReturnsAsync(new ApiResponse<GetBulkUploadAddDraftApprenticeshipsResponse>(
+                new GetBulkUploadAddDraftApprenticeshipsResponse(),
+                HttpStatusCode.OK,
+                string.Empty));
+
+        courseTypeService
+            .Setup(x => x.MapAndAddCourseTypeData(
+                It.IsAny<List<BulkUploadAddDraftApprenticeshipRequest>>()))
+            .ReturnsAsync((List<BulkUploadAddDraftApprenticeshipRequest> records) =>
+                records.Select(x => new BulkUploadAddDraftApprenticeshipExtendedRequest
+                {
+                    Uln = x.Uln,
+                    DeliveryModel = x.DeliveryModel
+                }).ToList());
+
+        await handler.Handle(command, CancellationToken.None);
+
+        courseTypeService.Verify(
+            x => x.MapAndAddCourseTypeData(It.Is<List<BulkUploadAddDraftApprenticeshipRequest>>(
+                records => records.Single().DeliveryModel == DeliveryModel.FlexiJobAgency)),
             Times.Once);
     }
 
