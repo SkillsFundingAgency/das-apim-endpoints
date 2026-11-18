@@ -45,14 +45,14 @@ public class JoinedLearnerData
     /// <summary> Derived from SLD cache, learner.LearnerRef </summary>
     public string LearnerRef { get; set; }
 
-    internal JoinedLearnerData(Learning learning, EarningsApprenticeship earningsApprenticeship, UpdateLearnerRequest sldLearnerData, short academicYear)
+    internal JoinedLearnerData(Learning learning, EarningsApprenticeship earningsApprenticeship, UpdateLearnerRequest sldLearnerData)
     {
         Key = learning.Key;
         Uln = learning.Uln;
         LearnerRef = sldLearnerData.Learner.LearnerRef;
         StartDate = learning.StartDate;
         PlannedEndDate = learning.PlannedEndDate;
-        Episodes = JoinEpisodes(learning, earningsApprenticeship, academicYear);
+        Episodes = JoinEpisodes(learning, earningsApprenticeship, sldLearnerData);
         LearningDeliveries = JoinLearningDeliveries(sldLearnerData, Episodes, earningsApprenticeship);
         AgeAtStartOfApprenticeship = learning.AgeAtStartOfApprenticeship;
         WithdrawnDate = learning.WithdrawnDate;
@@ -63,7 +63,7 @@ public class JoinedLearnerData
             .ToDictionary(g => g.Key, g => g.ToList()); 
     }
 
-    private static List<JoinedPriceEpisode> JoinEpisodes(Learning learning, EarningsApprenticeship earningsApprenticeship, short academicYear)
+    private static List<JoinedPriceEpisode> JoinEpisodes(Learning learning, EarningsApprenticeship earningsApprenticeship, UpdateLearnerRequest sldLearnerData)
     {
         var joinedEpisodes = new List<JoinedPriceEpisode>();
 
@@ -73,7 +73,9 @@ public class JoinedLearnerData
             {
                 var earningEpisode = earningsApprenticeship.Episodes.SingleOrDefault(x => x.Instalments.Any(y => y.EpisodePriceKey == apprenticeshipEpisodePrice.Key));
 
-                var joinedEpisode = new JoinedPriceEpisode(apprenticeshipEpisode, apprenticeshipEpisodePrice, earningEpisode);
+                var aimSequenceNumber = GetPriceEpisodeAimSequenceNumber(apprenticeshipEpisode, apprenticeshipEpisodePrice, sldLearnerData.Delivery.OnProgramme);
+
+                var joinedEpisode = new JoinedPriceEpisode(apprenticeshipEpisode, apprenticeshipEpisodePrice, earningEpisode, aimSequenceNumber);
 
                 joinedEpisodes.Add(joinedEpisode);
             }
@@ -81,6 +83,27 @@ public class JoinedLearnerData
         }
 
         return joinedEpisodes.OrderBy(x => x.StartDate).ToList();
+    }
+
+    /// <summary>
+    /// A price episode belongs to the latest starting on programme delivery for the same standard that started on or before the price start date.
+    /// If no such delivery exists (e.g. the price starts before the delivery) the earliest delivery for the standard is used.
+    /// </summary>
+    private static int GetPriceEpisodeAimSequenceNumber(Episode apprenticeshipEpisode, EpisodePrice apprenticeshipEpisodePrice, List<OnProgrammeRequestDetails> allOnProgrammes)
+    {
+        var onProgrammesForStandard = allOnProgrammes
+            .Where(x => x.StandardCode.ToString() == apprenticeshipEpisode.TrainingCode.Trim())
+            .ToList();
+
+        var owner = onProgrammesForStandard
+            .Where(x => x.StartDate <= apprenticeshipEpisodePrice.StartDate)
+            .OrderByDescending(x => x.StartDate)
+            .FirstOrDefault()
+            ?? onProgrammesForStandard
+                .OrderBy(x => x.StartDate)
+                .FirstOrDefault();
+
+        return owner?.AimSequenceNumber ?? AimSeqNumber;
     }
 
     private static List<JoinedLearningDelivery> JoinLearningDeliveries(UpdateLearnerRequest sldLearnerData, List<JoinedPriceEpisode> joinedPriceEpisodes, EarningsApprenticeship earningsApprenticeship)
@@ -194,6 +217,9 @@ public class JoinedPriceEpisode
     /// <summary> Derived from Apprenticeships API, apprenticeship.Episodes.LastDayOfLearning </summary>
     public DateTime? ActualEndDate { get; set; }
 
+    /// <summary> Derived from SLD cache, the AimSequenceNumber of the onProgramme delivery the price belongs to </summary>
+    public int AimSequenceNumber { get; set; }
+
     public JoinedPriceEpisode()
     {
 
@@ -205,10 +231,11 @@ public class JoinedPriceEpisode
     /// <param name="apprenticeshipEpisode"></param>
     /// <param name="apprenticeshipEpisodePrice"></param>
     /// <param name="earningsEpisode"></param>
-    /// <param name="academicYear"></param>
-    public JoinedPriceEpisode(Episode apprenticeshipEpisode, EpisodePrice apprenticeshipEpisodePrice, EarningsEpisode? earningsEpisode)
+    /// <param name="aimSequenceNumber"></param>
+    public JoinedPriceEpisode(Episode apprenticeshipEpisode, EpisodePrice apprenticeshipEpisodePrice, EarningsEpisode? earningsEpisode, int aimSequenceNumber)
     {
         EpisodePriceKey = apprenticeshipEpisodePrice.Key;
+        AimSequenceNumber = aimSequenceNumber;
         TrainingCode = apprenticeshipEpisode.TrainingCode;
         StartDate = apprenticeshipEpisodePrice.StartDate;
         EndDate = apprenticeshipEpisodePrice.EndDate;
@@ -238,6 +265,7 @@ public class JoinedPriceEpisode
     public JoinedPriceEpisode(JoinedPriceEpisode existingEpisode, DateTime newStartDate, DateTime newEndDate, short academicYear, bool isTerminatedByAcademicYearEnd)
     {
         EpisodePriceKey = existingEpisode.EpisodePriceKey;
+        AimSequenceNumber = existingEpisode.AimSequenceNumber;
         StartDate = newStartDate;
         EndDate = newEndDate;
         TrainingCode = existingEpisode.TrainingCode;
