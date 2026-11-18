@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.Recruit.GraphQL;
 using SFA.DAS.RecruitQa.Api.Models;
 using SFA.DAS.RecruitQa.Data.Models;
-using SFA.DAS.RecruitQa.Domain;
 using SFA.DAS.RecruitQa.GraphQL.RecruitInner.Mappers;
 using StrawberryShake;
 using VacancyStatus = SFA.DAS.Recruit.GraphQL.VacancyStatus;
@@ -119,7 +119,7 @@ public class VacanciesController: ControllerBase
         [FromBody] CloseVacancyRequest request,
         CancellationToken cancellationToken)
     {
-        var data = new JsonPatchDocument<Recruit.Contracts.ApiResponses.Vacancy>();
+        var data = new JsonPatchDocument<Vacancy>();
         data.Replace(x => x.Status, Recruit.Contracts.ApiResponses.VacancyStatus.Closed);
         data.Replace(x => x.LastUpdatedDate, DateTime.UtcNow);
         data.Replace(x => x.ClosureReason, request.ClosureReason);
@@ -138,7 +138,7 @@ public class VacanciesController: ControllerBase
         [FromServices] IRecruitApiClient recruitApiClient,
         CancellationToken cancellationToken)
     {
-        var data = new JsonPatchDocument<Recruit.Contracts.ApiResponses.Vacancy>();
+        var data = new JsonPatchDocument<Vacancy>();
         data.Replace(x => x.Status, Recruit.Contracts.ApiResponses.VacancyStatus.Live);
         data.Replace(x => x.LastUpdatedDate, DateTime.UtcNow);
         
