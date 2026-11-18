@@ -121,6 +121,7 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandlerTests
     {
         var learner = Learner(1);
         command.LearnerIds = [learner.Id, learner.Id]; // Handler should deduplicate IDs.
+        command.ReservationAssignments = null;
         SetupValidationSuccess(mediator);
 
         learnerDataClient

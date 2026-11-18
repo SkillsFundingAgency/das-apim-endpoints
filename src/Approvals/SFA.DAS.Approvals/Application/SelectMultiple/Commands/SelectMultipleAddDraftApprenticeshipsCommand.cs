@@ -11,5 +11,6 @@ public class SelectMultipleAddDraftApprenticeshipsCommand : IRequest<SelectMulti
     public string AgreementId { get; set; }
     public IEnumerable<long> LearnerIds { get; set; }
     public long AccountId { get; set; }
+    public IEnumerable<SelectMultipleReservationAssignment> ReservationAssignments { get; set; }
     public UserInfo UserInfo { get; set; }
 }

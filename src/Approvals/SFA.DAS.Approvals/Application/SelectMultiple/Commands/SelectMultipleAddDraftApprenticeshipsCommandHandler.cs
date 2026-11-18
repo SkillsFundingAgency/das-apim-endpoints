@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Interfaces;
-using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.Approvals.Application.SelectMultiple.Queries;
 using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
@@ -23,6 +22,7 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
     IReservationApiClient<ReservationApiConfiguration> reservationApiClient,
     IInternalApiClient<LearnerDataInnerApiConfiguration> learnerDataClient,
     IMediator mediator,
+    IAutoReservationsService autoReservationsService,
     IAddCourseTypeFromRulesService addCourseTypeFromRulesService = null)
     : IRequestHandler<SelectMultipleAddDraftApprenticeshipsCommand, SelectMultipleAddDraftApprenticeshipsResult>
 {
@@ -37,27 +37,43 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
 
         await Validate(command, cancellationToken);
         var learnerDetails = await GetLearnerDetails(command, learnerIds);
-        ApiResponse<BulkCreateReservationsWithNonLevyResult> reservationResult = await GetReservations(command, learnerDetails);
-        var cohort = await CreateCohort(command);
-        var bulkUploadAddDraftApprenticeships = FormatDataToBulkUpload(command, learnerDetails, cohort);
-        MergeReservationWithDraftApprenticeships(bulkUploadAddDraftApprenticeships, reservationResult);
+        var reservationResult = await GetReservations(command, learnerDetails);
+        var createdReservationIds = reservationResult.BulkCreateResults?
+            .Select(x => x.ReservationId)
+            .ToList() ?? [];
 
-        var dataToSend = new BulkUploadAddDraftApprenticeshipsRequest
+        try
         {
-            BulkUploadDraftApprenticeships = await addCourseTypeFromRulesService.MapAndAddCourseTypeData(bulkUploadAddDraftApprenticeships),
-            ProviderId = command.ProviderId,
-            UserInfo = command.UserInfo
-        };
+            var cohort = await CreateCohort(command);
+            var bulkUploadAddDraftApprenticeships = FormatDataToBulkUpload(command, learnerDetails, cohort);
+            MergeReservationWithDraftApprenticeships(bulkUploadAddDraftApprenticeships, reservationResult);
 
-        var result = await apiClient.PostWithResponseCode<GetBulkUploadAddDraftApprenticeshipsResponse>(
-            new PostAddDraftApprenticeshipsRequest(command.ProviderId, dataToSend));
+            var dataToSend = new BulkUploadAddDraftApprenticeshipsRequest
+            {
+                BulkUploadDraftApprenticeships = await addCourseTypeFromRulesService.MapAndAddCourseTypeData(bulkUploadAddDraftApprenticeships),
+                ProviderId = command.ProviderId,
+                UserInfo = command.UserInfo
+            };
 
-        result.EnsureSuccessStatusCode();
+            var result = await apiClient.PostWithResponseCode<GetBulkUploadAddDraftApprenticeshipsResponse>(
+                new PostAddDraftApprenticeshipsRequest(command.ProviderId, dataToSend));
 
-        return new SelectMultipleAddDraftApprenticeshipsResult
+            result.EnsureSuccessStatusCode();
+
+            return new SelectMultipleAddDraftApprenticeshipsResult
+            {
+                CohortReference = cohort.CohortReference
+            };
+        }
+        catch
         {
-            CohortReference = cohort.CohortReference
-        };
+            foreach (var reservationId in createdReservationIds)
+            {
+                await autoReservationsService.DeleteReservation(reservationId);
+            }
+
+            throw;
+        }
     }
 
     private async Task<CreateCohortResponse> CreateCohort(SelectMultipleAddDraftApprenticeshipsCommand command)
@@ -102,7 +118,10 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
                 TrainingPrice = learner.TrainingPrice,
                 EndPointAssessmentPrice = learner.EpaoPrice,
                 ActualStartDate = learner.StartDate,
-                LearnerDataId = learner.Id
+                LearnerDataId = learner.Id,
+                ReservationId = command.ReservationAssignments?
+                    .SingleOrDefault(x => x.LearnerId == learner.Id && !x.UseNewReservation)?
+                    .ReservationId
             };
         }).ToList();
     }
@@ -138,6 +157,8 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
             ProviderId = command.ProviderId,
             AccountLegalEntityId = command.AccountLegalEntityId,
             AgreementId = command.AgreementId,
+            AccountId = command.AccountId,
+            ReservationAssignments = command.ReservationAssignments,
             UserInfo = command.UserInfo
         };
 
@@ -149,14 +170,30 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
         }
     }
 
-    private void MergeReservationWithDraftApprenticeships(IEnumerable<BulkUploadAddDraftApprenticeshipRequest> bulkUploadAddDraftApprenticeshipRequests, ApiResponse<BulkCreateReservationsWithNonLevyResult> reservationResult)
+    private void MergeReservationWithDraftApprenticeships(IEnumerable<BulkUploadAddDraftApprenticeshipRequest> bulkUploadAddDraftApprenticeshipRequests, BulkCreateReservationsWithNonLevyResult reservationResult)
     {
-        reservationResult.Body.BulkCreateResults.ForEach(x => bulkUploadAddDraftApprenticeshipRequests.First(y => y.Uln.ToString() == x.ULN).ReservationId = x.ReservationId);
+        reservationResult.BulkCreateResults?.ForEach(x =>
+        {
+            var draft = bulkUploadAddDraftApprenticeshipRequests.FirstOrDefault(y => y.Uln.ToString() == x.ULN);
+            if (draft != null)
+            {
+                draft.ReservationId = x.ReservationId;
+            }
+        });
     }
 
-    private async Task<ApiResponse<BulkCreateReservationsWithNonLevyResult>> GetReservations(SelectMultipleAddDraftApprenticeshipsCommand command, List<LearnerDataRecord> learnerDetails)
+    private async Task<BulkCreateReservationsWithNonLevyResult> GetReservations(SelectMultipleAddDraftApprenticeshipsCommand command, List<LearnerDataRecord> learnerDetails)
     {
-        var reservationRequests = learnerDetails.Select((learner, index) =>
+        var assignmentMap = command.ReservationAssignments?
+            .Where(x => x.UseNewReservation)
+            .Select(x => x.LearnerId)
+            .ToHashSet();
+
+        var learnersRequiringNewReservations = command.ReservationAssignments == null
+            ? learnerDetails
+            : learnerDetails.Where(x => assignmentMap.Contains(x.Id)).ToList();
+
+        var reservationRequests = learnersRequiringNewReservations.Select((learner, index) =>
         {
             Guid.TryParse(command.UserInfo.UserId, out var parsedUserId);
             return new BulkCreateReservations
@@ -172,8 +209,14 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
             };
         }).ToList();
 
-        var reservationResult = await reservationApiClient.PostWithResponseCode<BulkCreateReservationsWithNonLevyResult>(new PostBulkCreateReservationRequest(command.ProviderId, reservationRequests));
+        if (reservationRequests.Count == 0)
+        {
+            return new BulkCreateReservationsWithNonLevyResult();
+        }
+
+        var reservationResult = await reservationApiClient.PostWithResponseCode<BulkCreateReservationsWithNonLevyResult>(
+            new PostBulkCreateReservationRequest(command.ProviderId, reservationRequests));
         reservationResult.EnsureSuccessStatusCode();
-        return reservationResult;
+        return reservationResult.Body ?? new BulkCreateReservationsWithNonLevyResult();
     }
 }

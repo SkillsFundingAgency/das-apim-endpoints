@@ -81,6 +81,7 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandlerTests
     {
         var learner = Learner(1);
         query.LearnerIds = [learner.Id];
+        query.ReservationAssignments = null;
         SetupLearnerData(learnerDataClient, learner);
         reservationApiClient
             .Setup(x => x.PostWithResponseCode<BulkReservationValidationResults>(It.IsAny<IPostApiRequest>(), true))
@@ -107,6 +108,7 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandlerTests
     {
         var learner = Learner(1);
         query.LearnerIds = [learner.Id];
+        query.ReservationAssignments = null;
         SetupLearnerData(learnerDataClient, learner);
         SetupReservation(reservationApiClient);
         SetupCourseData(providerCoursesService, bulkCourseMetadataService, courseTypesToCsvService, query.ProviderId, csvRecords);
@@ -135,6 +137,7 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandlerTests
     {
         var learner = Learner(1);
         query.LearnerIds = [learner.Id];
+        query.ReservationAssignments = null;
         SetupLearnerData(learnerDataClient, learner);
         SetupReservation(reservationApiClient);
         SetupCourseData(providerCoursesService, bulkCourseMetadataService, courseTypesToCsvService, query.ProviderId, csvRecords);

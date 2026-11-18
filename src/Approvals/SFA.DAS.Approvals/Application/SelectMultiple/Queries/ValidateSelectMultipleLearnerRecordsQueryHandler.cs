@@ -50,7 +50,32 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandler(
             throw new InvalidOperationException($"Getting Learner Data Failed, expected {learnerIds.Count} learners but received {learnerDataResponse.Body?.Count ?? 0}");
         }
 
-        var reservationRequests = learnerDataResponse.Body.Select((learner, index) =>
+        var assignments = command.ReservationAssignments?.ToList();
+        var newLearnerIds = assignments != null && assignments.Count == 0
+            ? []
+            : assignments == null
+            ? learnerIds
+            : assignments.Where(x => x.UseNewReservation).Select(x => x.LearnerId).ToList();
+
+        if (!command.IsLevyEmployer && assignments?.Count > 0)
+        {
+            var reservationStatus = await reservationApiClient.Get<GetAccountReservationsStatusResponse>(
+                new GetAccountReservationsStatusRequest(command.AccountId));
+            if (newLearnerIds.Count > reservationStatus.RemainingReservationsCount)
+            {
+                throw new InvalidOperationException(
+                    $"You can reserve new funds for {reservationStatus.RemainingReservationsCount} learners. Remove learners or assign existing reservations.");
+            }
+        }
+
+        if (assignments != null && assignments.Count > 0)
+        {
+            await ValidateExistingReservations(command, learnerDataResponse.Body, assignments);
+        }
+
+        var reservationRequests = learnerDataResponse.Body
+            .Where(learner => newLearnerIds.Contains(learner.Id))
+            .Select((learner, index) =>
         {
             return new ReservationRequest
             {
@@ -63,18 +88,23 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandler(
             };
 
         }).ToList();
-        var reservationValidationResult =
-            await reservationApiClient.PostWithResponseCode<BulkReservationValidationResults>(
+        BulkReservationValidationResults reservationValidationResult;
+        if (reservationRequests.Count == 0)
+        {
+            reservationValidationResult = new BulkReservationValidationResults { ValidationErrors = [] };
+        }
+        else
+        {
+            var reservationResponse = await reservationApiClient.PostWithResponseCode<BulkReservationValidationResults>(
                 new PostValidateReservationRequest(command.ProviderId, reservationRequests));
 
-        if (!string.IsNullOrEmpty(reservationValidationResult.ErrorContent))
-        {
-            throw new InvalidOperationException($"Validating Reservations Failed, Status Code {reservationValidationResult.StatusCode} Error : {reservationValidationResult.ErrorContent}");
-        }
+            if (!string.IsNullOrEmpty(reservationResponse.ErrorContent))
+            {
+                throw new InvalidOperationException($"Validating Reservations Failed, Status Code {reservationResponse.StatusCode} Error : {reservationResponse.ErrorContent}");
+            }
 
-        if (reservationValidationResult.Body == null)
-        {
-            throw new InvalidOperationException("Validating Reservations Failed, response body was null");
+            reservationValidationResult = reservationResponse.Body
+                ?? throw new InvalidOperationException("Validating Reservations Failed, response body was null");
         }
 
         var providerStandardResults = await providerCoursesService.GetCoursesData(command.ProviderId);
@@ -107,7 +137,7 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandler(
             CsvRecords = await courseTypesToCsvService.MapAndAddCourseTypeData(csvRecords),
             ProviderId = command.ProviderId,
             UserInfo = command.UserInfo,
-            BulkReservationValidationResults = reservationValidationResult.Body,
+            BulkReservationValidationResults = reservationValidationResult,
             ProviderStandardsData = providerStandardResults,
             OtjTrainingHours = otjTrainingHours
         };
@@ -134,5 +164,58 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandler(
         {
             ValidationErrors = validationResponse.Body.ValidationErrors ?? []
         };
+    }
+
+    private async Task ValidateExistingReservations(
+        ValidateSelectMultipleLearnerRecordsQuery command,
+        List<LearnerDataRecord> learners,
+        List<SelectMultipleReservationAssignment> assignments)
+    {
+        if (assignments.Count != learners.Count ||
+            assignments.Select(x => x.LearnerId).Distinct().Count() != learners.Count ||
+            assignments.Any(x => !learners.Any(learner => learner.Id == x.LearnerId)))
+        {
+            throw new InvalidOperationException("Every selected learner must have one reservation assignment.");
+        }
+
+        var existingAssignments = assignments
+            .Where(x => !x.UseNewReservation)
+            .ToList();
+
+        if (existingAssignments.Any(x => !x.ReservationId.HasValue) ||
+            existingAssignments.Select(x => x.ReservationId).Distinct().Count() != existingAssignments.Count)
+        {
+            throw new InvalidOperationException("Each existing reservation can only be assigned once.");
+        }
+
+        var reservations = await reservationApiClient.Get<List<GetAccountReservationsResponse>>(
+            new GetAccountReservationsRequest(command.AccountId));
+
+        var availableReservations = reservations
+            .Where(x => x.AccountLegalEntityId == command.AccountLegalEntityId &&
+                        x.Status == 0 &&
+                        x.TransferSenderAccountId == null &&
+                        (!x.ExpiryDate.HasValue || x.ExpiryDate.Value >= DateTime.UtcNow))
+            .ToDictionary(x => x.Id);
+
+        foreach (var assignment in existingAssignments)
+        {
+            if (!availableReservations.TryGetValue(assignment.ReservationId.Value, out _))
+            {
+                throw new InvalidOperationException("The selected reservation is no longer available.");
+            }
+
+            var learner = learners.Single(x => x.Id == assignment.LearnerId);
+            var result = await reservationApiClient.Get<ValidateReservationResponse>(
+                new GetValidateReservationRequest(
+                    assignment.ReservationId.Value,
+                    learner.TrainingCode,
+                    learner.StartDate));
+
+            if (result.ValidationErrors.Any())
+            {
+                throw new InvalidOperationException(string.Join(" ", result.ValidationErrors.Select(x => x.Reason)));
+            }
+        }
     }
 }
