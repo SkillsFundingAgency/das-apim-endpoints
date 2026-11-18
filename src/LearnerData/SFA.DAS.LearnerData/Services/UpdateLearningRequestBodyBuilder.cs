@@ -122,10 +122,7 @@ public class UpdateLearningRequestBodyBuilder(
 
         var firstOnProgramme = orderedOnProgrammes.First();
 
-        var allMatchingOnProgrammes = orderedOnProgrammes
-            .Where(x => x.StandardCode == firstOnProgramme.StandardCode &&
-                        x.AgreementId == firstOnProgramme.AgreementId)
-            .ToList();
+        var allMatchingOnProgrammes = onProgramme.GetFirstApprenticeshipOnProgrammes();
 
         var latestOnProgramme = allMatchingOnProgrammes.Last();
 
