@@ -78,7 +78,8 @@ public class GetProviderCourseQueryHandler : IRequestHandler<GetProviderCourseQu
             HasOnlineDeliveryOption = course.HasOnlineDeliveryOption,
             CourseType = standard.CourseType,
             Duration = standard.Duration,
-            DurationUnits = standard.DurationUnits
+            DurationUnits = standard.DurationUnits,
+            LastDateStarts = course.LastDateStarts
         };
     }
 }

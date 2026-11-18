@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
+﻿using System;
+
+namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
 {
     public class GetProviderCourseResponse
     {
@@ -17,6 +19,7 @@
         public bool IsRegulatedForProvider { get; set; }
         public bool HasLocations { get; set; }
         public bool HasOnlineDeliveryOption { get; set; }
+        public DateTime? LastDateStarts { get; set; }
 
     }
 }

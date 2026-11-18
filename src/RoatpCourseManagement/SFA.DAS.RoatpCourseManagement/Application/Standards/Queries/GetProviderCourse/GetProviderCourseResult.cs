@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.InnerApi;
@@ -25,5 +26,6 @@ public class GetProviderCourseResult
     public CourseType CourseType { get; set; }
     public int Duration { get; set; }
     public DurationUnits DurationUnits { get; set; }
+    public DateTime? LastDateStarts { get; set; }
 
 }
