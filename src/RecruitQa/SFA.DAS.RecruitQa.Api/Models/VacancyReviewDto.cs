@@ -1,8 +1,5 @@
-using SFA.DAS.RecruitQa.InnerApi.Responses;
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.SharedOuterApi.Types.Domain;
-using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
-using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 
 namespace SFA.DAS.RecruitQa.Api.Models;
 
@@ -15,30 +12,30 @@ public class VacancyReviewDto
     public required DateTime SlaDeadLine { get; init; }
     public DateTime? ReviewedDate { get; init; }
     public required string Status { get; init; }
-    public byte SubmissionCount { get; init; }
+    public int SubmissionCount { get; init; }
     public string? ReviewedByUserEmail { get; init; }
     public required string SubmittedByUserEmail { get; init; }
     public DateTime? ClosedDate { get; init; }
     public string? ManualOutcome { get; set; }
     public string? ManualQaComment { get; init; }
-    public required List<string> ManualQaFieldIndicators { get; init; }
-    public required List<ManualQaEditFieldIndicator> ManualQaEditFieldIndicators { get; init; }
+    public required ICollection<string> ManualQaFieldIndicators { get; init; }
+    public required ICollection<ManualQaEditFieldIndicator> ManualQaEditFieldIndicators { get; init; }
     public string? AutomatedQaOutcome { get; set; }
-    public List<RuleOutcome> AutomatedQaOutcomeIndicators { get; init; } = [];
-    public required List<string> DismissedAutomatedQaOutcomeIndicators { get; init; }
-    public required List<string> UpdatedFieldIdentifiers { get; init; }
+    public ICollection<RuleOutcome> AutomatedQaOutcomeIndicators { get; init; } = [];
+    public required ICollection<string> DismissedAutomatedQaOutcomeIndicators { get; init; }
+    public required ICollection<string> UpdatedFieldIdentifiers { get; init; }
     public required string VacancySnapshot { get; set; }
     public long AccountLegalEntityId { get; set; }
-    public string OwnerType { get; set; }
+    public OwnerType OwnerType { get; set; }
     public long AccountId { get; set; }
     public int Ukprn { get; set; }
-    public string HashedAccountId { get; set; }
-    public string EmployerName { get; set; }
+    public string? HashedAccountId { get; set; }
+    public string? EmployerName { get; set; }
     public Guid VacancyId { get; set; }
-    public List<Address> EmployerLocations { get; set; }
+    private List<Address> EmployerLocations { get; set; } = [];
     public AvailableWhere EmployerLocationOption { get; set; }
     
-    public static explicit operator VacancyReviewDto(GetVacancyReviewResponse source)
+    public static explicit operator VacancyReviewDto(VacancyReview source)
     {
         return new VacancyReviewDto
         {
@@ -48,7 +45,7 @@ public class VacancyReviewDto
             CreatedDate = source.CreatedDate,
             SlaDeadLine = source.SlaDeadLine,
             ReviewedDate = source.ReviewedDate,
-            Status = source.Status,
+            Status = source.Status.ToString(),
             SubmissionCount = source.SubmissionCount,
             ReviewedByUserEmail = source.ReviewedByUserEmail,
             SubmittedByUserEmail = source.SubmittedByUserEmail,
@@ -63,7 +60,7 @@ public class VacancyReviewDto
             UpdatedFieldIdentifiers = source.UpdatedFieldIdentifiers,
             VacancySnapshot = source.VacancySnapshot,
             OwnerType = source.OwnerType,
-            VacancyId = source.VacancyId
+            VacancyId = source.Id
         };
     }
 
@@ -83,12 +80,12 @@ public class VacancyReviewDto
             ClosedDate = source.ClosedDate,
             ManualOutcome = source.ManualOutcome,
             ManualQaComment = source.ManualQaComment,
-            ManualQaFieldIndicators = source.ManualQaFieldIndicators.ToList(),
-            ManualQaEditFieldIndicators = source.ManualQaEditFieldIndicators,
+            ManualQaFieldIndicators = [.. source.ManualQaFieldIndicators],
+            ManualQaEditFieldIndicators = [.. source.ManualQaEditFieldIndicators],
             AutomatedQaOutcome = source.AutomatedQaOutcome,
-            AutomatedQaOutcomeIndicators = source.AutomatedQaOutcomeIndicators,
-            DismissedAutomatedQaOutcomeIndicators = source.DismissedAutomatedQaOutcomeIndicators,
-            UpdatedFieldIdentifiers = source.UpdatedFieldIdentifiers,
+            AutomatedQaOutcomeIndicators = [.. source.AutomatedQaOutcomeIndicators],
+            DismissedAutomatedQaOutcomeIndicators = [.. source.DismissedAutomatedQaOutcomeIndicators],
+            UpdatedFieldIdentifiers = [.. source.UpdatedFieldIdentifiers],
             VacancySnapshot = source.VacancySnapshot,
             Ukprn = source.Ukprn,
             AccountId = source.AccountId,

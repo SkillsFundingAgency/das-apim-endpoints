@@ -1,9 +1,7 @@
-﻿using SFA.DAS.RecruitQa.Application.Profanity.GetProfanity;
-using SFA.DAS.RecruitQa.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
+﻿using SFA.DAS.Recruit.Contracts.ApiRequests;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
+using SFA.DAS.RecruitQa.Application.Profanity.GetProfanity;
+using IRecruitApiClient = SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>;
 
 namespace SFA.DAS.RecruitQa.UnitTests.Application.GetProfanityWords;
 
@@ -14,14 +12,14 @@ internal class WhenHandingGetProfanity
     public async Task Then_The_Query_Is_Handled_And_Data_Returned(
         GetProfanityListQuery query,
         List<string> apiResponse,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient> recruitApiClient,
         [Greedy] GetProfanityListQueryHandler handler)
     {
         //Arrange
-        var expectedGetUrl = new GetProfanityListApiRequest();
+        var expectedGetUrl = new GetProhibitedcontentByContentTypeApiRequest(ProhibitedContentType.Profanity);
         recruitApiClient
             .Setup(x => x.Get<List<string>>(
-                It.Is<GetProfanityListApiRequest>(r => r.GetUrl == expectedGetUrl.GetUrl)))
+                It.Is<GetProhibitedcontentByContentTypeApiRequest>(r => r.GetUrl == expectedGetUrl.GetUrl)))
             .ReturnsAsync(apiResponse);
 
         //Act
@@ -29,6 +27,6 @@ internal class WhenHandingGetProfanity
 
         //Assert
         actual.ProfanityList.Should().BeEquivalentTo(apiResponse, options => options.ExcludingMissingMembers());
-        recruitApiClient.Verify(x => x.Get<List<string>>(It.IsAny<GetProfanityListApiRequest>()), Times.Once);
+        recruitApiClient.Verify(x => x.Get<List<string>>(It.IsAny<GetProhibitedcontentByContentTypeApiRequest>()), Times.Once);
     }
 }

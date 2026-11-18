@@ -1,10 +1,10 @@
-using System.Net;
 using AutoFixture;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitQa.Api.Controllers;
 using SFA.DAS.RecruitQa.Api.Models;
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByVacancyReference;
-using SFA.DAS.RecruitQa.InnerApi.Responses;
+using System.Net;
 
 namespace SFA.DAS.RecruitQa.Api.UnitTests.Controller.VacancyReview;
 
@@ -14,9 +14,9 @@ public class WhenCallingGetVacancyReviewsByVacancyReference
     public async Task Then_The_Mediator_Query_Is_Handled_And_Data_Returned(
         bool includeNoStatus,
         long vacancyReference,
-        string status,
+        List<ReviewStatus> status,
         List<string> manualOutcome,
-        List<GetVacancyReviewResponse> innerResponses,
+        List<Recruit.Contracts.ApiResponses.VacancyReview> innerResponses,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] VacancyReviewController controller)
     {
@@ -47,17 +47,19 @@ public class WhenCallingGetVacancyReviewsByVacancyReference
     public async Task Then_The_Mediator_Query_Is_Handled_And_Empty_List_Returned_When_No_Data(
         bool includeNoStatus,
         long vacancyReference,
-        string status,
+        List<ReviewStatus> status,
         List<string> manualOutcome,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] VacancyReviewController controller)
     {
         mediator.Setup(x => x.Send(
-                It.Is<GetVacancyReviewsByVacancyReferenceQuery>(c => c.VacancyReference == vacancyReference && c.Status == status && c.ManualOutcome == manualOutcome),
+                It.Is<GetVacancyReviewsByVacancyReferenceQuery>(c => c.VacancyReference == vacancyReference && c.Status == status
+                    && c.ManualOutcome == manualOutcome
+                    && c.IncludeNoStatus == includeNoStatus),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new GetVacancyReviewsByVacancyReferenceQueryResult
             {
-                VacancyReviews = new List<GetVacancyReviewResponse>()
+                VacancyReviews = []
             });
 
         var actual = await controller.GetByVacancyReference(vacancyReference, status, manualOutcome, includeNoStatus) as OkObjectResult;
@@ -72,7 +74,7 @@ public class WhenCallingGetVacancyReviewsByVacancyReference
     public async Task Then_If_Exception_Internal_Server_Error_Returned(
         bool includeNoStatus,
         long vacancyReference,
-        string status,
+        List<ReviewStatus> status,
         List<string> manualOutcome,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] VacancyReviewController controller)

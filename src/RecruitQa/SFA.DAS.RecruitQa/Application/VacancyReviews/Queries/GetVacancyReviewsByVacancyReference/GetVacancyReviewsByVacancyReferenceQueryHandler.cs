@@ -1,25 +1,23 @@
+using SFA.DAS.Recruit.Contracts.ApiRequests;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using System.Net;
-using SFA.DAS.RecruitQa.InnerApi.Requests;
-using SFA.DAS.RecruitQa.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using IRecruitApiClient = SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>;
 
 namespace SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByVacancyReference;
 
-public class GetVacancyReviewsByVacancyReferenceQueryHandler(IRecruitApiClient<RecruitApiConfiguration> recruitApiClient)
+public class GetVacancyReviewsByVacancyReferenceQueryHandler(IRecruitApiClient recruitApiClient)
     : IRequestHandler<GetVacancyReviewsByVacancyReferenceQuery, GetVacancyReviewsByVacancyReferenceQueryResult>
 {
     public async Task<GetVacancyReviewsByVacancyReferenceQueryResult> Handle(GetVacancyReviewsByVacancyReferenceQuery request, CancellationToken cancellationToken)
     {
-        var response = await recruitApiClient.GetWithResponseCode<List<GetVacancyReviewResponse>>(
-            new GetVacancyReviewsByVacancyReferenceRequest(request.VacancyReference, request.Status, request.IncludeNoStatus, request.ManualOutcome));
+        var response = await recruitApiClient.GetWithResponseCode<List<VacancyReview>>(
+            new GetVacanciesByVacancyReferenceReviewsApiRequest(request.VacancyReference.ToString(), request.Status, request.ManualOutcome, request.IncludeNoStatus));
 
-        if (response.StatusCode == HttpStatusCode.NotFound || response.Body == null)
+        if (response.StatusCode == HttpStatusCode.NotFound)
         {
             return new GetVacancyReviewsByVacancyReferenceQueryResult
             {
-                VacancyReviews = new List<GetVacancyReviewResponse>()
+                VacancyReviews = []
             };
         }
 

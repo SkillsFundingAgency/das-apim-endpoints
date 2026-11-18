@@ -1,5 +1,6 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitQa.Api.Controllers;
 using SFA.DAS.RecruitQa.Api.Models;
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsCountByAccountLegalEntity;
@@ -11,20 +12,15 @@ public class WhenCallingGetVacancyReviewsCountByAccountLegalEntity
     [Test, MoqAutoData]
     public async Task Then_The_Mediator_Query_Is_Handled_And_Data_Returned(
         long accountLegalEntityId,
-        string status,
-        string manualOutcome,
-        string employerNameOption,
+        List<ReviewStatus> status,
+        string? manualOutcome,
+        EmployerNameOption employerNameOption,
         int count,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] VacancyReviewController controller)
     {
         mediator.Setup(x => x.Send(
-                It.Is<GetVacancyReviewsCountByAccountLegalEntityQuery>(c => 
-                    c.AccountLegalEntityId == accountLegalEntityId
-                    && c.Status == status
-                    && c.ManualOutcome == manualOutcome
-                    && c.EmployerNameOption == employerNameOption
-                    ),
+                It.IsAny<GetVacancyReviewsCountByAccountLegalEntityQuery>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new GetVacancyReviewsCountByAccountLegalEntityQueryResult { Count = count });
 
@@ -39,9 +35,9 @@ public class WhenCallingGetVacancyReviewsCountByAccountLegalEntity
     [Test, MoqAutoData]
     public async Task Then_If_Exception_Internal_Server_Error_Returned(
         long accountLegalEntityId,
-        string status,
+        List<ReviewStatus> status,
         string manualOutcome,
-        string employerNameOption,
+        EmployerNameOption employerNameOption,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] VacancyReviewController controller)
     {

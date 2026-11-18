@@ -2,13 +2,11 @@
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.RecruitQa.Domain;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Infrastructure.Services;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Services;
-using SFA.DAS.RecruitQa.Api.Models;
 using SFA.DAS.SharedOuterApi.Types.Services;
 
 namespace SFA.DAS.RecruitQa.Api.AppStart;
@@ -22,11 +20,12 @@ public static class AddServiceRegistrationExtension
 
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
+        services.AddTransient<SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>, SFA.DAS.Recruit.Contracts.Client.RecruitApiClient>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
         services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
         services.AddTransient<ICourseService, CourseService>();
         services.AddTransient<ICacheStorageService, CacheStorageService>();
         services.AddTransient<INotificationService, NotificationService>();
-        services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]));
+        services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]!));
     }
 }

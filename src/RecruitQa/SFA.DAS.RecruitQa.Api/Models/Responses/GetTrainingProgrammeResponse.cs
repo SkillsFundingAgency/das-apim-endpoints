@@ -4,9 +4,9 @@ namespace SFA.DAS.RecruitQa.Api.Models.Responses
 {
     public class GetTrainingProgrammeResponse
     {
-        public string Id { get; set; }
+        public string? Id { get; set; }
         public GetTrainingProgrammeTrainingType ApprenticeshipType { get; set; }
-        public string Title { get; set; }
+        public string? Title { get; set; }
         public DateTime? EffectiveFrom { get; set; }
         public DateTime? EffectiveTo { get; set; }
         public DateTime? LastDateStarts { get; set; }

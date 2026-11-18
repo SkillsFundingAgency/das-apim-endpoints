@@ -1,6 +1,6 @@
 namespace SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsCountByUser;
 
-public class GetVacancyReviewsCountByUserQueryResult
+public sealed record GetVacancyReviewsCountByUserQueryResult
 {
-    public int Count { get; set; }
+    public int Count { get; init; }
 }

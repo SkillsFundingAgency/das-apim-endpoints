@@ -8,10 +8,9 @@ using SFA.DAS.Recruit.Contracts.ApiRequests;
 using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.Recruit.GraphQL;
 using SFA.DAS.RecruitQa.Api.Controllers;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using StrawberryShake;
 using VacancyStatus = SFA.DAS.Recruit.GraphQL.VacancyStatus;
+using IRecruitApiClient = SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>;
 
 namespace SFA.DAS.RecruitQa.Api.UnitTests.Controller.Vacancies;
 
@@ -40,7 +39,7 @@ public class WhenReferringVacancy
     public async Task Vacancy_Is_Referred(
         long vacancyReference,
         Mock<IRecruitGqlClient> recruitGqlClient,
-        Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        Mock<IRecruitApiClient> recruitApiClient,
         Mock<IOperationResult<IGetVacancyByReferenceResult>> operationResult)
     {
         // arrange
@@ -80,7 +79,7 @@ public class WhenReferringVacancy
     public async Task Vacancy_Is_Not_Found(
         long vacancyReference,
         Mock<IRecruitGqlClient> recruitGqlClient,
-        Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        Mock<IRecruitApiClient> recruitApiClient,
         Mock<IOperationResult<IGetVacancyByReferenceResult>> operationResult)
     {
         // arrange
@@ -118,7 +117,7 @@ public class WhenReferringVacancy
         bool isClosed,
         long vacancyReference,
         Mock<IRecruitGqlClient> recruitGqlClient,
-        Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        Mock<IRecruitApiClient> recruitApiClient,
         Mock<IOperationResult<IGetVacancyByReferenceResult>> operationResult)
     {
         // arrange

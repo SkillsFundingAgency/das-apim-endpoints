@@ -1,4 +1,3 @@
-using SFA.DAS.SharedOuterApi.Types.Domain;
 using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.RecruitQa.Domain;

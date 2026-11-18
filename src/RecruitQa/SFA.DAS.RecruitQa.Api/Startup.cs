@@ -61,13 +61,14 @@ public static class Startup
         services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "RecruitQaOuterApi", Version = "v1" });
+            c.CustomSchemaIds(type => type.FullName);
         });
 
         services
             .AddRecruitGqlClient()
             .ConfigureHttpClient((sp, x) =>
             {
-                var clientConfig = sp.GetService<RecruitApiConfiguration>();
+                var clientConfig = sp.GetService<Recruit.Contracts.Client.RecruitApiConfiguration>();
                 x.BaseAddress = new Uri($"{clientConfig.Url.TrimEnd('/')}/graphql");
 
                 if (string.IsNullOrEmpty(clientConfig.Identifier))

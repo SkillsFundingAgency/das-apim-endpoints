@@ -1,3 +1,5 @@
+using SFA.DAS.Recruit.Contracts.ApiResponses;
+
 namespace SFA.DAS.RecruitQa.Domain.Reports;
 
 public class QaReportProjected
@@ -48,7 +50,7 @@ public class QaReportProjected
             VacancyPostcode = qaReport.VacancyPostcode,
             CourseName = courseName,
             CourseLevel = courseLevel,
-            ReferredFields = qaReport.ReferredFields,
+            ReferredFields = qaReport.ReferredFields?.ToList() ?? [],
             ReviewedBy = qaReport.ReviewedBy,
             ReviewerComment = qaReport.ReviewerComment,
         };

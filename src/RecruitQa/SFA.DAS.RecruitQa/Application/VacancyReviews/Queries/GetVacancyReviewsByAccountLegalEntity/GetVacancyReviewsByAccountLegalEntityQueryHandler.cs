@@ -1,26 +1,23 @@
+using SFA.DAS.Recruit.Contracts.ApiRequests;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using System.Net;
-using MediatR;
-using SFA.DAS.RecruitQa.InnerApi.Requests;
-using SFA.DAS.RecruitQa.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using IRecruitApiClient = SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>;
 
 namespace SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByAccountLegalEntity;
 
-public class GetVacancyReviewsByAccountLegalEntityQueryHandler(IRecruitApiClient<RecruitApiConfiguration> recruitApiClient)
+public class GetVacancyReviewsByAccountLegalEntityQueryHandler(IRecruitApiClient recruitApiClient)
     : IRequestHandler<GetVacancyReviewsByAccountLegalEntityQuery, GetVacancyReviewsByAccountLegalEntityQueryResult>
 {
     public async Task<GetVacancyReviewsByAccountLegalEntityQueryResult> Handle(GetVacancyReviewsByAccountLegalEntityQuery request, CancellationToken cancellationToken)
     {
-        var response = await recruitApiClient.GetWithResponseCode<List<GetVacancyReviewResponse>>(
-            new GetVacancyReviewsByAccountLegalEntityRequest(request.AccountLegalEntityId));
+        var response = await recruitApiClient.GetWithResponseCode<List<VacancyReview>>(
+            new GetAccountsByAccountLegalEntityIdVacancyreviewsApiRequest(request.AccountLegalEntityId));
 
-        if (response.StatusCode == HttpStatusCode.NotFound || response.Body == null)
+        if (response.StatusCode == HttpStatusCode.NotFound)
         {
             return new GetVacancyReviewsByAccountLegalEntityQueryResult
             {
-                VacancyReviews = new List<GetVacancyReviewResponse>()
+                VacancyReviews = []
             };
         }
 

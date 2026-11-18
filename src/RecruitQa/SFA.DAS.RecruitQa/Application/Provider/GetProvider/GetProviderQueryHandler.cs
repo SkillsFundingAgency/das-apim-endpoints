@@ -6,8 +6,7 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.RecruitQa.Application.Provider.GetProvider;
 
-public class GetProviderQueryHandler(
-    IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient)
+public class GetProviderQueryHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient)
     : IRequestHandler<GetProviderQuery, GetProviderQueryResult>
 {
     public async Task<GetProviderQueryResult> Handle(GetProviderQuery request, CancellationToken cancellationToken)

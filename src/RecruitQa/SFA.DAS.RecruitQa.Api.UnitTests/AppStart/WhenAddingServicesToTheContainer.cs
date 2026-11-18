@@ -15,6 +15,7 @@ namespace SFA.DAS.RecruitQa.Api.UnitTests.AppStart
     {
         [TestCase(typeof(IAzureClientCredentialHelper))]
         [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
+        [TestCase(typeof(SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>))]
         [TestCase(typeof(IRecruitApiClient<RecruitApiConfiguration>))]
         [TestCase(typeof(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>))]
         [TestCase(typeof(ICourseService))]
@@ -36,17 +37,17 @@ namespace SFA.DAS.RecruitQa.Api.UnitTests.AppStart
             var type = provider.GetService(toResolve);
             Assert.That(type, Is.Not.Null);
         }
-        
+
         private static IConfigurationRoot GenerateConfiguration()
         {
             var configSource = new MemoryConfigurationSource
             {
-                InitialData = new List<KeyValuePair<string, string>>
+                InitialData = new Dictionary<string, string?>
                 {
-                    new KeyValuePair<string, string>("CoursesApiConfiguration:url", "http://localhost:1"),
-                    new KeyValuePair<string, string>("RecruitAltApiConfiguration:url", "http://localhost:2"),
-                    new KeyValuePair<string, string>("RoatpV2ApiConfiguration:url", "http://localhost:3"),
-                    new KeyValuePair<string, string>("ResourceEnvironmentName", "DEV")
+                    ["CoursesApiConfiguration:url"] = "http://localhost:1",
+                    ["RecruitAltApiConfiguration:url"] = "http://localhost:2",
+                    ["RoatpV2ApiConfiguration:url"] = "http://localhost:3",
+                    ["ResourceEnvironmentName"] = "DEV"
                 }
             };
 

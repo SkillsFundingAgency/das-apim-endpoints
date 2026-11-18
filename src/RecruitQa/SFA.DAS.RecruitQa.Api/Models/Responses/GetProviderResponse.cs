@@ -6,13 +6,13 @@ namespace SFA.DAS.RecruitQa.Api.Models.Responses;
 public record GetProviderResponse
 {
     public int Ukprn { get; set; }
-    public string Name { get; set; }
-    public string ContactUrl { get; set; }
-    public string Email { get; set; }
-    public string Phone { get; set; }
+    public string? Name { get; set; }
+    public string? ContactUrl { get; set; }
+    public string? Email { get; set; }
+    public string? Phone { get; set; }
     public int ProviderTypeId { get; set; }
     public int StatusId { get; set; }
-    public GetProviderAddress Address { get; set; }
+    public GetProviderAddress? Address { get; set; }
 
     public static implicit operator GetProviderResponse(GetProvidersListItem source)
     {

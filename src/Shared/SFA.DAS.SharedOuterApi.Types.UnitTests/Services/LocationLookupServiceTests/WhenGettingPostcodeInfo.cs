@@ -21,7 +21,7 @@ public class WhenGettingPostcodeInfo
     {
         // arrange
         var primaryApiResponse = new ApiResponse<GetLookupPostcodeResponse>(null, HttpStatusCode.NotFound, string.Empty);
-        GetLookupPostcodeRequest? primaryCapturedRequest = null;
+        GetLookupPostcodeRequest primaryCapturedRequest = null;
         client
             .Setup(x => x.GetWithResponseCode<GetLookupPostcodeResponse>(It.IsAny<GetLookupPostcodeRequest>()))
             .Callback<IGetApiRequest>(x => primaryCapturedRequest = x as GetLookupPostcodeRequest)
@@ -54,7 +54,7 @@ public class WhenGettingPostcodeInfo
     {
         // arrange
         var apiResponse = new ApiResponse<GetLookupPostcodeResponse>(response, HttpStatusCode.OK, string.Empty);
-        GetLookupPostcodeRequest? capturedRequest = null;
+        GetLookupPostcodeRequest capturedRequest = null;
         client
             .Setup(x => x.GetWithResponseCode<GetLookupPostcodeResponse>(It.IsAny<GetLookupPostcodeRequest>()))
             .Callback<IGetApiRequest>(x => capturedRequest = x as GetLookupPostcodeRequest)
@@ -79,7 +79,7 @@ public class WhenGettingPostcodeInfo
     {
         // arrange
         var primaryApiResponse = new ApiResponse<GetLookupPostcodeResponse>(null, HttpStatusCode.NotFound, string.Empty);
-        GetLookupPostcodeRequest? primaryCapturedRequest = null;
+        GetLookupPostcodeRequest primaryCapturedRequest = null;
         client
             .Setup(x => x.GetWithResponseCode<GetLookupPostcodeResponse>(It.IsAny<GetLookupPostcodeRequest>()))
             .Callback<IGetApiRequest>(x => primaryCapturedRequest = x as GetLookupPostcodeRequest)

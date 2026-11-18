@@ -1,5 +1,3 @@
-using MediatR;
-
 namespace SFA.DAS.RecruitQa.Application.Report.Commands.PostCreateReport;
 
 public record PostCreateReportCommand : IRequest

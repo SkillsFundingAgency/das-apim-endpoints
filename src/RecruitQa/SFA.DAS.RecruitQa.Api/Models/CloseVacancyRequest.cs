@@ -1,6 +1,8 @@
+using SFA.DAS.Recruit.Contracts.ApiResponses;
+
 namespace SFA.DAS.RecruitQa.Api.Models;
 
 public class CloseVacancyRequest
 {
-    public string ClosureReason { get; set; }
+    public required ClosureReason ClosureReason { get; set; }
 }

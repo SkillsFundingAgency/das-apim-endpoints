@@ -1,24 +1,19 @@
+using SFA.DAS.Recruit.Contracts.ApiRequests;
 using System.Net;
-using SFA.DAS.RecruitQa.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using IRecruitApiClient = SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>;
 
 namespace SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsCountByUser;
 
-public class GetVacancyReviewsCountByUserQueryHandler(IRecruitApiClient<RecruitApiConfiguration> recruitApiClient)
+public class GetVacancyReviewsCountByUserQueryHandler(IRecruitApiClient recruitApiClient)
     : IRequestHandler<GetVacancyReviewsCountByUserQuery, GetVacancyReviewsCountByUserQueryResult>
 {
     public async Task<GetVacancyReviewsCountByUserQueryResult> Handle(GetVacancyReviewsCountByUserQuery request, CancellationToken cancellationToken)
     {
         var response = await recruitApiClient.GetWithResponseCode<int>(
-            new GetVacancyReviewsCountByUserRequest(request.UserEmail, request.ApprovedFirstTime, request.AssignationExpiry));
+            new GetUsersVacancyreviewsCountApiRequest(request.UserEmail, request.ApprovedFirstTime, request.AssignationExpiry));
 
-        if (response.StatusCode == HttpStatusCode.NotFound)
-        {
-            return new GetVacancyReviewsCountByUserQueryResult { Count = 0 };
-        }
-
-        return new GetVacancyReviewsCountByUserQueryResult { Count = response.Body };
+        return response.StatusCode == HttpStatusCode.NotFound 
+            ? new GetVacancyReviewsCountByUserQueryResult { Count = 0 } 
+            : new GetVacancyReviewsCountByUserQueryResult { Count = response.Body };
     }
 }
