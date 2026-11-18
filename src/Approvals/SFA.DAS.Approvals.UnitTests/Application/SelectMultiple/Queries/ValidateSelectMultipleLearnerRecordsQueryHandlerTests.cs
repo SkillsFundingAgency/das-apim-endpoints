@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.Approvals.Application.SelectMultiple.Queries;
+using SFA.DAS.Approvals.Exceptions;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
@@ -151,6 +152,60 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandlerTests
         var result = await handler.Handle(query, CancellationToken.None);
 
         result.ValidationErrors.Should().BeEquivalentTo(validationErrors);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Reservation_Validation_Reasons_Are_Domain_Errors_For_The_Learner_Field(
+        ValidateSelectMultipleLearnerRecordsQuery query,
+        [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
+        [Frozen] Mock<IReservationApiClient<ReservationApiConfiguration>> reservationApiClient,
+        ValidateSelectMultipleLearnerRecordsQueryHandler handler)
+    {
+        var learner = Learner(1);
+        var reservationId = Guid.NewGuid();
+        query.IsLevyEmployer = true;
+        query.LearnerIds = [learner.Id];
+        query.AccountLegalEntityId = 35701;
+        query.ReservationAssignments =
+        [
+            new SelectMultipleReservationAssignment
+            {
+                LearnerId = learner.Id,
+                ReservationId = reservationId,
+                UseNewReservation = false
+            }
+        ];
+        SetupLearnerData(learnerDataClient, learner);
+        reservationApiClient
+            .Setup(x => x.Get<List<GetAccountReservationsResponse>>(It.IsAny<GetAccountReservationsRequest>()))
+            .ReturnsAsync(
+            [
+                new GetAccountReservationsResponse
+                {
+                    Id = reservationId,
+                    AccountLegalEntityId = 35701,
+                    Status = 0,
+                    ExpiryDate = DateTime.UtcNow.AddMonths(6)
+                }
+            ]);
+        reservationApiClient
+            .Setup(x => x.Get<ValidateReservationResponse>(It.IsAny<GetValidateReservationRequest>()))
+            .ReturnsAsync(new ValidateReservationResponse
+            {
+                ValidationErrors =
+                [
+                    new ReservationValidationError
+                    {
+                        Reason = "Choose a learner doing an apprenticeship to use this reservation"
+                    }
+                ]
+            });
+
+        var act = () => handler.Handle(query, CancellationToken.None);
+
+        var exception = await act.Should().ThrowAsync<DomainApimException>();
+        exception.Which.Content.Should().Contain("Assignments[0].ReservationId");
+        exception.Which.Content.Should().Contain("Choose a learner doing an apprenticeship to use this reservation");
     }
 
     private static void SetupLearnerData(

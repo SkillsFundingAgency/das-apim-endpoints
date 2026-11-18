@@ -4,11 +4,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Newtonsoft.Json;
 using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Approvals.Exceptions;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
+using SFA.DAS.Approvals.Validation;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
@@ -63,8 +66,12 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandler(
                 new GetAccountReservationsStatusRequest(command.AccountId));
             if (newLearnerIds.Count > reservationStatus.RemainingReservationsCount)
             {
-                throw new InvalidOperationException(
-                    $"You can reserve new funds for {reservationStatus.RemainingReservationsCount} learners. Remove learners or assign existing reservations.");
+                var message = $"You can reserve new funds for {reservationStatus.RemainingReservationsCount} learners. Remove learners or assign existing reservations.";
+                ThrowDomainErrors(
+                [
+                    new ErrorDetail("Selection", message),
+                    new ErrorDetail("Assignments", message)
+                ]);
             }
         }
 
@@ -171,21 +178,25 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandler(
         List<LearnerDataRecord> learners,
         List<SelectMultipleReservationAssignment> assignments)
     {
+        var errors = new List<ErrorDetail>();
         if (assignments.Count != learners.Count ||
             assignments.Select(x => x.LearnerId).Distinct().Count() != learners.Count ||
             assignments.Any(x => !learners.Any(learner => learner.Id == x.LearnerId)))
         {
-            throw new InvalidOperationException("Every selected learner must have one reservation assignment.");
+            errors.Add(new ErrorDetail("Assignments", "Every selected learner must have one reservation assignment."));
+            ThrowDomainErrors(errors);
         }
 
         var existingAssignments = assignments
-            .Where(x => !x.UseNewReservation)
+            .Select((assignment, index) => new { assignment, index })
+            .Where(x => !x.assignment.UseNewReservation)
             .ToList();
 
-        if (existingAssignments.Any(x => !x.ReservationId.HasValue) ||
-            existingAssignments.Select(x => x.ReservationId).Distinct().Count() != existingAssignments.Count)
+        if (existingAssignments.Any(x => !x.assignment.ReservationId.HasValue) ||
+            existingAssignments.Select(x => x.assignment.ReservationId).Distinct().Count() != existingAssignments.Count)
         {
-            throw new InvalidOperationException("Each existing reservation can only be assigned once.");
+            errors.Add(new ErrorDetail("Assignments", "Each existing reservation can only be assigned once."));
+            ThrowDomainErrors(errors);
         }
 
         var reservations = await reservationApiClient.Get<List<GetAccountReservationsResponse>>(
@@ -198,24 +209,38 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandler(
                         (!x.ExpiryDate.HasValue || x.ExpiryDate.Value >= DateTime.UtcNow))
             .ToDictionary(x => x.Id);
 
-        foreach (var assignment in existingAssignments)
+        foreach (var existingAssignment in existingAssignments)
         {
-            if (!availableReservations.TryGetValue(assignment.ReservationId.Value, out _))
+            var field = $"Assignments[{existingAssignment.index}].ReservationId";
+            if (!availableReservations.TryGetValue(existingAssignment.assignment.ReservationId.Value, out _))
             {
-                throw new InvalidOperationException("The selected reservation is no longer available.");
+                errors.Add(new ErrorDetail(field, "The selected reservation is no longer available."));
+                continue;
             }
 
-            var learner = learners.Single(x => x.Id == assignment.LearnerId);
+            var learner = learners.Single(x => x.Id == existingAssignment.assignment.LearnerId);
             var result = await reservationApiClient.Get<ValidateReservationResponse>(
                 new GetValidateReservationRequest(
-                    assignment.ReservationId.Value,
+                    existingAssignment.assignment.ReservationId.Value,
                     learner.TrainingCode,
                     learner.StartDate));
 
-            if (result.ValidationErrors.Any())
+            foreach (var validationError in result.ValidationErrors ?? [])
             {
-                throw new InvalidOperationException(string.Join(" ", result.ValidationErrors.Select(x => x.Reason)));
+                errors.Add(new ErrorDetail(field, validationError.Reason));
             }
         }
+
+        ThrowDomainErrors(errors);
+    }
+
+    private static void ThrowDomainErrors(List<ErrorDetail> errors)
+    {
+        if (errors.Count == 0)
+        {
+            return;
+        }
+
+        throw new DomainApimException(JsonConvert.SerializeObject(new ErrorResponse(errors)));
     }
 }
