@@ -33,6 +33,7 @@ public class GetStandardsListItem : StandardApiResponseBase
     public List<string> CoreDuties { get; set; }
     public LearningType LearningType { get; set; }
     public CourseType CourseType { get; set; }
+    public StandardDate CourseDates { get; set; }
 
     private List<string> GetCoreSkills()
     {
