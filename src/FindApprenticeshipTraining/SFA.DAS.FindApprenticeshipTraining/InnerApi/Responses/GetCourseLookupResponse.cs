@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using SFA.DAS.SharedOuterApi.Types.Constants;
@@ -56,15 +55,5 @@ public class GetCourseLookupResponse : StandardApiResponseBase
     public int VersionMinor { get; set; }
     public bool EpaoMustBeApprovedByRegulatorBody { get; set; }
     public StandardDate CourseDates { get; set; }
-    public bool IsActiveAvailable => IsStandardActiveAvailable();
-
-    private bool IsStandardActiveAvailable()
-    {
-        if (CourseDates == null) return false;
-
-        return (CourseDates.LastDateStarts == null || CourseDates.LastDateStarts >= DateTime.UtcNow.Date)
-                && CourseDates.LastDateStarts != CourseDates.EffectiveFrom
-                && CourseDates.EffectiveFrom <= DateTime.UtcNow.Date;
-    }
 }
 

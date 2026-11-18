@@ -1,4 +1,6 @@
 ﻿using System;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
@@ -14,23 +16,48 @@ public sealed class GetCourseByLarsCodeQueryResultTests
     public void WhenImplicitConversionFromStandardDetailsLookupResponse_ThenMapsAllProperties(GetCourseLookupResponse response)
     {
         GetCourseByLarsCodeQueryResult sut = response;
-        Assert.Multiple(() =>
+
+        using (new AssertionScope())
         {
-            Assert.That(sut.StandardUId, Is.EqualTo(response.StandardUId));
-            Assert.That(sut.IFateReferenceNumber, Is.EqualTo(response.IfateReferenceNumber));
-            Assert.That(sut.LarsCode, Is.EqualTo(response.LarsCode));
-            Assert.That(sut.Title, Is.EqualTo(response.Title));
-            Assert.That(sut.Level, Is.EqualTo(response.Level));
-            Assert.That(sut.Version, Is.EqualTo(response.Version));
-            Assert.That(sut.OverviewOfRole, Is.EqualTo(response.OverviewOfRole));
-            Assert.That(sut.Route, Is.EqualTo(response.Route));
-            Assert.That(sut.RouteCode, Is.EqualTo(response.RouteCode));
-            Assert.That(sut.TypicalJobTitles, Is.EqualTo(response.TypicalJobTitles));
-            Assert.That(sut.StandardPageUrl, Is.EqualTo(response.StandardPageUrl));
-            Assert.That(sut.CourseType, Is.EqualTo(response.CourseType));
-            Assert.That(sut.LearningType, Is.EqualTo(response.LearningType));
-            Assert.That(sut.IsActiveAvailable, Is.EqualTo(response.IsActiveAvailable));
-        });
+            sut.StandardUId.Should().Be(response.StandardUId);
+            sut.IFateReferenceNumber.Should().Be(response.IfateReferenceNumber);
+            sut.LarsCode.Should().Be(response.LarsCode);
+            sut.Title.Should().Be(response.Title);
+            sut.Level.Should().Be(response.Level);
+            sut.Version.Should().Be(response.Version);
+            sut.OverviewOfRole.Should().Be(response.OverviewOfRole);
+            sut.Route.Should().Be(response.Route);
+            sut.RouteCode.Should().Be(response.RouteCode);
+            sut.TypicalJobTitles.Should().Be(response.TypicalJobTitles);
+            sut.StandardPageUrl.Should().Be(response.StandardPageUrl);
+            sut.CourseType.Should().Be(response.CourseType);
+            sut.LearningType.Should().Be(response.LearningType);
+            sut.CourseDates.Should().Be(response.CourseDates);
+        }
+    }
+
+    [Test]
+    public void WhenImplicitConversionFromLookupResponse_AndCourseDatesProvided_ThenMapsCourseDates()
+    {
+        var courseDates = new StandardDate
+        {
+            LastDateStarts = new DateTime(2027, 7, 16, 0, 0, 0, DateTimeKind.Utc),
+            EffectiveFrom = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+        };
+
+        var response = new GetCourseLookupResponse
+        {
+            CourseDates = courseDates
+        };
+
+        GetCourseByLarsCodeQueryResult sut = response;
+
+        using (new AssertionScope())
+        {
+            sut.CourseDates.Should().NotBeNull();
+            sut.CourseDates.LastDateStarts.Should().Be(courseDates.LastDateStarts);
+            sut.CourseDates.EffectiveFrom.Should().Be(courseDates.EffectiveFrom);
+        }
     }
 
     [Test]
@@ -52,14 +79,13 @@ public sealed class GetCourseByLarsCodeQueryResultTests
 
         GetCourseByLarsCodeQueryResult sut = response;
 
-        Assert.Multiple(() =>
+        using (new AssertionScope())
         {
-            Assert.That(sut.IsActiveAvailable, Is.True);
-            Assert.That(sut.RelatedOccupations.Count, Is.EqualTo(2));
-            Assert.That(sut.RelatedOccupations[0].Title, Is.EqualTo("Occupation 1"));
-            Assert.That(sut.RelatedOccupations[0].Level, Is.EqualTo(2));
-            Assert.That(sut.RelatedOccupations[1].Title, Is.EqualTo("Occupation 2"));
-            Assert.That(sut.RelatedOccupations[1].Level, Is.EqualTo(3));
-        });
+            sut.RelatedOccupations.Should().HaveCount(2);
+            sut.RelatedOccupations[0].Title.Should().Be("Occupation 1");
+            sut.RelatedOccupations[0].Level.Should().Be(2);
+            sut.RelatedOccupations[1].Title.Should().Be("Occupation 2");
+            sut.RelatedOccupations[1].Level.Should().Be(3);
+        }
     }
 }
