@@ -71,6 +71,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
                             ((AddDraftApprenticeshipRequest)r.Data).UserId == request.UserId &&
                             ((AddDraftApprenticeshipRequest)r.Data).RequestingParty == request.RequestingParty &&
                             ((AddDraftApprenticeshipRequest)r.Data).LearnerDataId == request.LearnerDataId &&
+                            ((AddDraftApprenticeshipRequest)r.Data).OnServicePayments == request.OnServicePayments &&
                             ((AddDraftApprenticeshipRequest)r.Data).MinimumAgeAtApprenticeshipStart == learnerAgeResponse.MinimumAge &&
                             ((AddDraftApprenticeshipRequest)r.Data).MaximumAgeAtApprenticeshipStart == learnerAgeResponse.MaximumAge
                         ), true

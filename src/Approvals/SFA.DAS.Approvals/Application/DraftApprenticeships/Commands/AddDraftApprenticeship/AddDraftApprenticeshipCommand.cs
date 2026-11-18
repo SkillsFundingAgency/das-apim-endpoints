@@ -33,5 +33,6 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAp
         public int? TrainingPrice { get; set; }
         public int? EndPointAssessmentPrice { get; set; }
         public long? LearnerDataId { get; set; }
+        public bool? OnServicePayments { get; set; }
     }
 }

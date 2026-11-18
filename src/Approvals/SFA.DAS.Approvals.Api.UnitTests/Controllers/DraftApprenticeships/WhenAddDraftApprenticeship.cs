@@ -56,7 +56,8 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
                         y.RequestingParty == _request.RequestingParty && 
                         y.TrainingPrice == _request.TrainingPrice &&
                         y.EndPointAssessmentPrice == _request.EndPointAssessmentPrice &&
-                        y.LearnerDataId == _request.LearnerDataId
+                        y.LearnerDataId == _request.LearnerDataId &&
+                        y.OnServicePayments == _request.OnServicePayments
                         ), It.IsAny<CancellationToken>())).ReturnsAsync(expectedResult);
 
             var result = await _controller.AddDraftApprenticeship(cohortId, _request);
