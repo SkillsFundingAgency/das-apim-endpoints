@@ -14,6 +14,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.Assessor.Api.AppStart;
+using SFA.DAS.Assessor.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.Assessor.Api
@@ -48,7 +49,7 @@ namespace SFA.DAS.Assessor.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetTrainingCoursesExportQuery).Assembly));
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(AssessorConfiguration).Assembly));
             services.AddServiceRegistration();
 
             services.Configure<RouteOptions>(options =>
@@ -71,7 +72,8 @@ namespace SFA.DAS.Assessor.Api
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription);
+                    .AddCheck<AssessorApiHealthCheck>(
+                        AssessorApiHealthCheck.HealthCheckResultDescription);
             }
 
             services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
@@ -124,11 +126,9 @@ namespace SFA.DAS.Assessor.Api
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "api/{controller=Courses}/{action=index}/{id?}");
+                endpoints.MapControllers();
             });
-        
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {

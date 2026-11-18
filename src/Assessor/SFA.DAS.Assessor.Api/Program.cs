@@ -13,7 +13,9 @@ namespace SFA.DAS.Assessor.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                .Build()
+                .Run();
         }
     }
  }
