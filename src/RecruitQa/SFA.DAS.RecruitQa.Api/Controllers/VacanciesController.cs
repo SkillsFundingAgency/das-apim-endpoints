@@ -60,7 +60,7 @@ public class VacanciesController: ControllerBase
         [FromBody] UpdateVacancyRequest request,
         CancellationToken cancellationToken)
     {
-        var data = new JsonPatchDocument<Recruit.Contracts.ApiResponses.Vacancy>();
+        var data = new JsonPatchDocument<Vacancy>();
         data.Replace(x => x.Status, Enum.Parse<Recruit.Contracts.ApiResponses.VacancyStatus>(request.Status));
         data.Replace(x => x.LastUpdatedDate, DateTime.UtcNow);
         if (!string.IsNullOrEmpty(request.CompanyBenefitsInformation))
@@ -178,7 +178,7 @@ public class VacanciesController: ControllerBase
             return TypedResults.BadRequest($"Vacancy must submitted and active to be referred, vacancy is in status '{vacancy.Status}'{closedState}");
         }
 
-        var data = new JsonPatchDocument<Recruit.Contracts.ApiResponses.Vacancy>();
+        var data = new JsonPatchDocument<Vacancy>();
         data.Replace(x => x.Status, Recruit.Contracts.ApiResponses.VacancyStatus.Referred);
         data.Replace(x => x.LastUpdatedDate, DateTime.UtcNow);
         await recruitApiClient.PatchWithResponseCode(new Recruit.Contracts.ApiRequests.PatchVacanciesByVacancyIdApiRequest

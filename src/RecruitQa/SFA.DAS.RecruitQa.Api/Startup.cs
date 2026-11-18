@@ -61,7 +61,6 @@ public static class Startup
         services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "RecruitQaOuterApi", Version = "v1" });
-            c.CustomSchemaIds(type => type.FullName);
         });
 
         services
