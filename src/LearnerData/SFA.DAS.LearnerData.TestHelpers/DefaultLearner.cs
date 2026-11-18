@@ -6,7 +6,8 @@ namespace SFA.DAS.LearnerData.TestHelpers;
 public class DefaultLearner
 {
     public static int Ukprn => 10000001;
-    public static string TrainingCode => "274";
+    // Learning inner derives the TrainingCode from the StandardCode of the onProgramme
+    public static string TrainingCode => OnProgramme.StandardCode.ToString();
     public static int FundingBandMax => 15000; 
     public static string FundingLineType => "19+ Apprenticeship (Employer on App Service)";
     public static string LearnerRef => "LRN-DEFAULT";
