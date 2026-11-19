@@ -11,7 +11,10 @@ public class GetVacancyReviewsByVacancyReferenceQueryHandler(IRecruitApiClient r
     public async Task<GetVacancyReviewsByVacancyReferenceQueryResult> Handle(GetVacancyReviewsByVacancyReferenceQuery request, CancellationToken cancellationToken)
     {
         var response = await recruitApiClient.GetWithResponseCode<List<VacancyReview>>(
-            new GetVacanciesByVacancyReferenceReviewsApiRequest(request.VacancyReference.ToString(), request.Status, request.ManualOutcome, request.IncludeNoStatus));
+            new GetVacanciesByVacancyReferenceReviewsApiRequest(request.VacancyReference.ToString(),
+                request.Status,
+                [.. request.ManualOutcome?.Select(x => x.ToString()) ?? []],
+                request.IncludeNoStatus));
 
         if (response.StatusCode == HttpStatusCode.NotFound)
         {

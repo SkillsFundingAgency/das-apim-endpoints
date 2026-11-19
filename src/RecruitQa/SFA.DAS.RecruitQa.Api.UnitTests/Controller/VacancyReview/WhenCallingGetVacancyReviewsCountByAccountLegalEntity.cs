@@ -4,6 +4,7 @@ using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitQa.Api.Controllers;
 using SFA.DAS.RecruitQa.Api.Models;
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsCountByAccountLegalEntity;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit.Reviews;
 
 namespace SFA.DAS.RecruitQa.Api.UnitTests.Controller.VacancyReview;
 
@@ -13,7 +14,7 @@ public class WhenCallingGetVacancyReviewsCountByAccountLegalEntity
     public async Task Then_The_Mediator_Query_Is_Handled_And_Data_Returned(
         long accountLegalEntityId,
         List<ReviewStatus> status,
-        string? manualOutcome,
+        List<ManualQaOutcome>? manualOutcome,
         EmployerNameOption employerNameOption,
         int count,
         [Frozen] Mock<IMediator> mediator,
@@ -36,7 +37,7 @@ public class WhenCallingGetVacancyReviewsCountByAccountLegalEntity
     public async Task Then_If_Exception_Internal_Server_Error_Returned(
         long accountLegalEntityId,
         List<ReviewStatus> status,
-        string manualOutcome,
+        List<ManualQaOutcome>? manualOutcome,
         EmployerNameOption employerNameOption,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] VacancyReviewController controller)

@@ -5,6 +5,7 @@ using SFA.DAS.RecruitQa.Api.Controllers;
 using SFA.DAS.RecruitQa.Api.Models;
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByVacancyReference;
 using System.Net;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit.Reviews;
 
 namespace SFA.DAS.RecruitQa.Api.UnitTests.Controller.VacancyReview;
 
@@ -15,7 +16,7 @@ public class WhenCallingGetVacancyReviewsByVacancyReference
         bool includeNoStatus,
         long vacancyReference,
         List<ReviewStatus> status,
-        List<string> manualOutcome,
+        List<ManualQaOutcome> manualOutcome,
         List<Recruit.Contracts.ApiResponses.VacancyReview> innerResponses,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] VacancyReviewController controller)
@@ -48,7 +49,7 @@ public class WhenCallingGetVacancyReviewsByVacancyReference
         bool includeNoStatus,
         long vacancyReference,
         List<ReviewStatus> status,
-        List<string> manualOutcome,
+        List<ManualQaOutcome> manualOutcome,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] VacancyReviewController controller)
     {
@@ -75,7 +76,7 @@ public class WhenCallingGetVacancyReviewsByVacancyReference
         bool includeNoStatus,
         long vacancyReference,
         List<ReviewStatus> status,
-        List<string> manualOutcome,
+        List<ManualQaOutcome> manualOutcome,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] VacancyReviewController controller)
     {

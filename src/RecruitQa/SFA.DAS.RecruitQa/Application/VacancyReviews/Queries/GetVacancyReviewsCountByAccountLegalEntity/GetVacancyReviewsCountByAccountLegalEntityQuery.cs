@@ -1,4 +1,5 @@
 using SFA.DAS.Recruit.Contracts.ApiResponses;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit.Reviews;
 
 namespace SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsCountByAccountLegalEntity;
 
@@ -6,7 +7,7 @@ public class GetVacancyReviewsCountByAccountLegalEntityQuery : IRequest<GetVacan
 {
     public long AccountLegalEntityId { get; set; }
     public List<ReviewStatus>? Status { get; set; }
-    public List<string>? ManualOutcome { get; set; }
+    public List<ManualQaOutcome>? ManualOutcome { get; set; }
     public EmployerNameOption? EmployerNameOption { get; set; }
 }
 

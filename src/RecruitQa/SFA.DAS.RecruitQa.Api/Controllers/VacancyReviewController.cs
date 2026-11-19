@@ -11,6 +11,7 @@ using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByVa
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsCountByAccountLegalEntity;
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsCountByUser;
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewSummary;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit.Reviews;
 
 namespace SFA.DAS.RecruitQa.Api.Controllers;
 
@@ -108,7 +109,7 @@ public class VacancyReviewController(IMediator mediator, ILogger<VacancyReviewCo
     public async Task<IActionResult> GetByVacancyReference(
         [FromRoute] long vacancyReference, 
         [FromQuery] List<ReviewStatus>? status, 
-        [FromQuery] List<string>? manualOutcome,
+        [FromQuery] List<ManualQaOutcome>? manualOutcome,
         [FromQuery] bool includeNoStatus)
     {
         try
@@ -206,7 +207,7 @@ public class VacancyReviewController(IMediator mediator, ILogger<VacancyReviewCo
     public async Task<IActionResult> GetCountByAccountLegalEntity(
         [FromRoute] long accountLegalEntityId,
         [FromQuery] List<ReviewStatus>? status,
-        [FromQuery] string? manualOutcome,
+        [FromQuery] List<ManualQaOutcome>? manualOutcome,
         [FromQuery] EmployerNameOption? employerNameOption)
     {
         try
@@ -215,7 +216,7 @@ public class VacancyReviewController(IMediator mediator, ILogger<VacancyReviewCo
             {
                 AccountLegalEntityId = accountLegalEntityId,
                 Status = status,
-                ManualOutcome = string.IsNullOrEmpty(manualOutcome) ? null : [manualOutcome],
+                ManualOutcome = manualOutcome,
                 EmployerNameOption = employerNameOption
             });
 

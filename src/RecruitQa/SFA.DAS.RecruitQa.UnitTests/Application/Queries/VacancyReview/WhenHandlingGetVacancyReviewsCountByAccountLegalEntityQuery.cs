@@ -15,7 +15,11 @@ public class WhenHandlingGetVacancyReviewsCountByAccountLegalEntityQuery
         [Frozen] Mock<IRecruitApiClient> recruitApiClient,
         GetVacancyReviewsCountByAccountLegalEntityQueryHandler handler)
     {
-        var expectedRequest = new GetAccountsByAccountLegalEntityIdVacancyreviewsCountApiRequest(query.AccountLegalEntityId, query.Status, query.ManualOutcome, query.EmployerNameOption);
+        var expectedRequest = new GetAccountsByAccountLegalEntityIdVacancyreviewsCountApiRequest(
+            query.AccountLegalEntityId,
+            query.Status,
+            [.. query.ManualOutcome?.Select(x => x.ToString()) ?? []],
+            query.EmployerNameOption);
         recruitApiClient
             .Setup(x => x.GetWithResponseCode<int>(
                 It.Is<GetAccountsByAccountLegalEntityIdVacancyreviewsCountApiRequest>(c => c.GetUrl == expectedRequest.GetUrl)))
@@ -32,7 +36,11 @@ public class WhenHandlingGetVacancyReviewsCountByAccountLegalEntityQuery
         [Frozen] Mock<IRecruitApiClient> recruitApiClient,
         GetVacancyReviewsCountByAccountLegalEntityQueryHandler handler)
     {
-        var expectedRequest = new GetAccountsByAccountLegalEntityIdVacancyreviewsCountApiRequest(query.AccountLegalEntityId, query.Status, query.ManualOutcome, query.EmployerNameOption);
+        var expectedRequest = new GetAccountsByAccountLegalEntityIdVacancyreviewsCountApiRequest(
+            query.AccountLegalEntityId,
+            query.Status,
+            [.. query.ManualOutcome?.Select(x => x.ToString()) ?? []],
+            query.EmployerNameOption);
         recruitApiClient
             .Setup(x => x.GetWithResponseCode<int>(
                 It.Is<GetAccountsByAccountLegalEntityIdVacancyreviewsCountApiRequest>(c => c.GetUrl == expectedRequest.GetUrl)))

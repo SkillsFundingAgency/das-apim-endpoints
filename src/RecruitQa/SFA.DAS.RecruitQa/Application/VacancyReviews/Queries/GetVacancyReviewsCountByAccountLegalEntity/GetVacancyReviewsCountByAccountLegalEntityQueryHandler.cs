@@ -12,7 +12,7 @@ public class GetVacancyReviewsCountByAccountLegalEntityQueryHandler(IRecruitApiC
         var apiResponse = await recruitApiClient.GetWithResponseCode<int>(
             new GetAccountsByAccountLegalEntityIdVacancyreviewsCountApiRequest(request.AccountLegalEntityId, 
                 request.Status,
-                request.ManualOutcome,
+                [..request.ManualOutcome?.Select(x => x.ToString()) ?? []],
                 request.EmployerNameOption));
 
         return apiResponse.StatusCode == HttpStatusCode.NotFound 
