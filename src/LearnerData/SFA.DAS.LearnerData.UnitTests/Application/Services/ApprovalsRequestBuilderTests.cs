@@ -131,24 +131,63 @@ public class ApprovalsRequestBuilderTests
     }
 
     [Test]
-    public void Build_Should_Not_Send_NewPrices_When_Neither_Prices_Nor_StartDate_Changed()
+    public void Build_Should_Map_PlannedEndDate_Change_Without_Prices_When_Only_The_Planned_End_Date_Changed()
     {
         // Arrange
         var response = ResponseWith(BaseLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate);
+        response.ChangeDetails.Single().Old = JsonValue.Create("2027-07-31");
+        response.ChangeDetails.Single().New = JsonValue.Create("2027-09-30");
 
         // Act
         var result = _sut.Build(10001234, 9999999999, response);
 
         // Assert
-        result.Data.Changes.Should().BeEmpty();
+        var change = result.Data.Changes.Should().ContainSingle().Subject;
+        change.ChangeType.Should().Be("PlannedEndDate");
+        change.Data.Old.Should().Be("2027-07-31");
+        change.Data.New.Should().Be("2027-09-30");
         result.Data.NewPrices.Should().BeEmpty();
     }
 
     [Test]
-    public void Build_Should_Not_Send_A_Field_Change_For_A_Change_That_Does_Not_Need_Approval()
+    public void Build_Should_Map_StartDate_And_PlannedEndDate_Changes_And_Prices_When_All_Changed_Together()
     {
         // Arrange
-        var response = ResponseWith(BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
+        var response = ResponseWith(
+            BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate,
+            BaseLearnerApiPutResponse.LearningUpdateChanges.Prices,
+            BaseLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate);
+
+        var startDate = response.ChangeDetails.Single(x => x.ChangeType == BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
+        startDate.Old = JsonValue.Create("2026-08-15");
+        startDate.New = JsonValue.Create("2026-09-01");
+
+        var plannedEndDate = response.ChangeDetails.Single(x => x.ChangeType == BaseLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate);
+        plannedEndDate.Old = JsonValue.Create("2027-07-31");
+        plannedEndDate.New = JsonValue.Create("2027-08-31");
+
+        // Act
+        var result = _sut.Build(10001234, 9999999999, response);
+
+        // Assert
+        result.Data.Changes.Select(x => (x.ChangeType, x.Data.Old, x.Data.New)).Should().BeEquivalentTo(
+        [
+            ("StartDate", "2026-08-15", "2026-09-01"),
+            ("PlannedEndDate", "2027-07-31", "2027-08-31")
+        ], options => options.WithStrictOrdering());
+
+        result.Data.NewPrices.Should().BeEquivalentTo(
+        [
+            new ApprovalsPrice { TrainingPrice = "15000.00", AssessmentPrice = "2000.00", EffectiveFrom = new DateTime(2026, 9, 1) }
+        ]);
+    }
+
+    [TestCase(BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate)]
+    [TestCase(BaseLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate)]
+    public void Build_Should_Not_Send_A_Field_Change_For_A_Change_That_Does_Not_Need_Approval(BaseLearnerApiPutResponse.LearningUpdateChanges changeType)
+    {
+        // Arrange
+        var response = ResponseWith(changeType);
         response.ChangeDetails.ForEach(x => x.RequiresApproval = false);
 
         // Act

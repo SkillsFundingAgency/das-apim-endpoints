@@ -112,6 +112,60 @@ public class ApprovalsServiceTests
         mayProceed.Should().BeFalse();
     }
 
+    // ---- planned end date warning -----------------------------------------------------------
+
+    [TestCase("pending", null)]
+    [TestCase("employerApprovalRequested", null)]
+    [TestCase("autoRejected", "Overlaps another apprenticeship")]
+    [TestCase("somethingUnrecognised", null)]
+    public async Task Should_Warn_When_A_Planned_End_Date_Is_Not_AutoApproved(string status, string? reason)
+    {
+        var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate);
+        var approvalsResponse = new ApprovalsResponse
+        {
+            Changes = [new ApprovalsChangeResult { ChangeType = "PlannedEndDate", ApprovalStatus = status, Reason = reason }]
+        };
+        SetupResponses(Reply(HttpStatusCode.Created, approvalsResponse));
+
+        await _sut.RequestApproval(10001234, 9999999999, response);
+
+        _logger.Verify(x => x.Log(
+            LogLevel.Warning,
+            It.IsAny<EventId>(),
+            It.Is<It.IsAnyType>((state, _) =>
+                state.ToString()!.Contains("planned end date") &&
+                state.ToString()!.Contains(response.LearningKey.ToString()) &&
+                state.ToString()!.Contains(status) &&
+                state.ToString()!.Contains(reason ?? string.Empty)),
+            It.IsAny<Exception?>(),
+            It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
+    }
+
+    [TestCase("autoApproved")]
+    [TestCase("AutoApproved")]
+    [TestCase("AUTOAPPROVED")]
+    public async Task Should_Not_Warn_When_A_Planned_End_Date_Is_AutoApproved(string status)
+    {
+        var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate);
+        SetupResponses(Reply(HttpStatusCode.Created, Verdicts(("PlannedEndDate", status))));
+
+        await _sut.RequestApproval(10001234, 9999999999, response);
+
+        VerifyNoPlannedEndDateWarning();
+    }
+
+    [TestCase("pending")]
+    [TestCase("autoRejected")]
+    public async Task Should_Not_Warn_About_A_Start_Date_That_Is_Not_AutoApproved(string status)
+    {
+        var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
+        SetupResponses(Reply(HttpStatusCode.Created, Verdicts(("StartDate", status))));
+
+        await _sut.RequestApproval(10001234, 9999999999, response);
+
+        VerifyNoPlannedEndDateWarning();
+    }
+
     // ---- failures and retries --------------------------------------------------------------
 
     [TestCase(HttpStatusCode.ServiceUnavailable)]
@@ -275,6 +329,14 @@ public class ApprovalsServiceTests
             It.IsAny<Exception?>(),
             It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
 
+    private void VerifyNoPlannedEndDateWarning() =>
+        _logger.Verify(x => x.Log(
+            LogLevel.Warning,
+            It.IsAny<EventId>(),
+            It.Is<It.IsAnyType>((state, _) => state.ToString()!.Contains("planned end date")),
+            It.IsAny<Exception?>(),
+            It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Never);
+
     private void VerifyCalls(Times times) =>
         _client.Verify(x => x.PutWithResponseCode<ApprovalsRequestBody, ApprovalsResponse>(It.IsAny<IPutApiRequest<ApprovalsRequestBody>>()), times);
 
@@ -297,9 +359,18 @@ public class ApprovalsServiceTests
             .Select(x => new BaseLearnerApiPutResponse.ChangeDetail
             {
                 ChangeType = x,
-                // Learning supplies the old and new start date; no other change type is mapped to a field change yet
-                Old = x == BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate ? JsonValue.Create("2026-09-01") : null,
-                New = x == BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate ? JsonValue.Create("2026-09-15") : null,
+                Old = x switch
+                {
+                    BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate => JsonValue.Create("2026-09-01"),
+                    BaseLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate => JsonValue.Create("2027-08-31"),
+                    _ => null
+                },
+                New = x switch
+                {
+                    BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate => JsonValue.Create("2026-09-15"),
+                    BaseLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate => JsonValue.Create("2027-10-31"),
+                    _ => null
+                },
                 RequiresApproval = true
             })
             .ToList(),

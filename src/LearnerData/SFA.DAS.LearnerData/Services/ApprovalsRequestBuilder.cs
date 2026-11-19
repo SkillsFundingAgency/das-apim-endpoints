@@ -27,6 +27,7 @@ public class ApprovalsRequestBuilder : IApprovalsRequestBuilder
 
         var startDateChange = changesNeedingApproval.FirstOrDefault(x => x.ChangeType == BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
         var pricesChanged = changesNeedingApproval.Any(x => x.ChangeType == BaseLearnerApiPutResponse.LearningUpdateChanges.Prices);
+        var plannedEndDateChange = changesNeedingApproval.FirstOrDefault(x => x.ChangeType == BaseLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate);
 
         // The full price structure is sent whenever prices, or the start date that is derived from them, changed.
         // Prices are signalled to Approvals by this structure alone, never as an item in Changes.
@@ -35,21 +36,26 @@ public class ApprovalsRequestBuilder : IApprovalsRequestBuilder
             body.NewPrices = learningApiPutResponse.Prices.Select(ToApprovalsPrice).ToList();
         }
 
-        if (startDateChange != null)
-        {
-            body.Changes.Add(new ApprovalsFieldChange
-            {
-                ChangeType = nameof(CocChangeField.StartDate),
-                Data = new ApprovalsChangeData
-                {
-                    // Old is Learning's last-held value, which can be stale and not useful.
-                    Old = ToWireValue(startDateChange.Old),
-                    New = ToWireValue(startDateChange.New)
-                }
-            });
-        }
+        AddFieldChange(body, CocChangeField.StartDate, startDateChange);
+        AddFieldChange(body, CocChangeField.PlannedEndDate, plannedEndDateChange);
 
         return new PutApprovalsApiRequest(learningApiPutResponse.LearningKey, body);
+    }
+
+    // Old is Learning's last-held value, which can be stale and not useful.
+    private static void AddFieldChange(ApprovalsRequestBody body, CocChangeField field, BaseLearnerApiPutResponse.ChangeDetail? change)
+    {
+        if (change == null) return;
+
+        body.Changes.Add(new ApprovalsFieldChange
+        {
+            ChangeType = field.ToString(),
+            Data = new ApprovalsChangeData
+            {
+                Old = ToWireValue(change.Old),
+                New = ToWireValue(change.New)
+            }
+        });
     }
 
     // Scalars (dates are already yyyy-MM-dd strings) go to Approvals as strings
