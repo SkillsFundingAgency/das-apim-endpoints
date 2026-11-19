@@ -24,6 +24,9 @@ public class SelectMultipleController(IMediator mediator) : ControllerBase
                 AgreementId = request.AgreementId,
                 LearnerIds = request.LearnerIds,
                 UserInfo = request.UserInfo,
+                TransferSenderAccountId = request.TransferSenderAccountId,
+                CohortId = request.CohortId,
+                CohortReference = request.CohortReference
             });
 
         return Ok(result);
