@@ -44,7 +44,10 @@ public class SelectMultipleController(IMediator mediator) : ControllerBase
                 AccountLegalEntityId = request.AccountLegalEntityId,
                 AgreementId = request.AgreementId,
                 AccountId = request.AccountId,
-                LearnerIds = request.LearnerIds
+                LearnerIds = request.LearnerIds,
+                CohortId = request.CohortId,
+                TransferSenderAccountId = request.TransferSenderAccountId,
+                CohortReference = request.CohortReference
             });
 
         return Ok(result);
