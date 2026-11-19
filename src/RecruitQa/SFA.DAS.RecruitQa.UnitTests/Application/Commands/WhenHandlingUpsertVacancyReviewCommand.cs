@@ -19,7 +19,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
         [Greedy] UpsertVacancyReviewCommandHandler handler)
     {
         // arrange
-        command.VacancyReview.ManualOutcome = "Approved";
+        command.VacancyReview.ManualOutcome = ManualQaOutcome.Approved;
         command.VacancyReview.OwnerType = OwnerType.Provider;
         command.VacancyReview.EmployerLocationOption = AvailableWhere.AcrossEngland;
         command.VacancyReview.Status = nameof(ReviewStatus.New);

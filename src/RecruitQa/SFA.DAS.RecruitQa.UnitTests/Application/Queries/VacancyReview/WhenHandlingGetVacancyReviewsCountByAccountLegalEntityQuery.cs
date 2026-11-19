@@ -18,7 +18,7 @@ public class WhenHandlingGetVacancyReviewsCountByAccountLegalEntityQuery
         var expectedRequest = new GetAccountsByAccountLegalEntityIdVacancyreviewsCountApiRequest(
             query.AccountLegalEntityId,
             query.Status,
-            [.. query.ManualOutcome?.Select(x => x.ToString()) ?? []],
+            query.ManualOutcome,
             query.EmployerNameOption);
         recruitApiClient
             .Setup(x => x.GetWithResponseCode<int>(
@@ -39,7 +39,7 @@ public class WhenHandlingGetVacancyReviewsCountByAccountLegalEntityQuery
         var expectedRequest = new GetAccountsByAccountLegalEntityIdVacancyreviewsCountApiRequest(
             query.AccountLegalEntityId,
             query.Status,
-            [.. query.ManualOutcome?.Select(x => x.ToString()) ?? []],
+            query.ManualOutcome,
             query.EmployerNameOption);
         recruitApiClient
             .Setup(x => x.GetWithResponseCode<int>(

@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.123-prerelease-3" />
+    <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.123-prerelease-2" />
     <PackageReference Include="StrawberryShake.Blazor" Version="16.7.6" />
   </ItemGroup>
 

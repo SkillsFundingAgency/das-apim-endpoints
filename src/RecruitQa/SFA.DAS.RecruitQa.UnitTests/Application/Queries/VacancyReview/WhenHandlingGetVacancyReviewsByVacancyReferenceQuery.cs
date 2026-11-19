@@ -19,7 +19,7 @@ public class WhenHandlingGetVacancyReviewsByVacancyReferenceQuery
         var expectedRequest = new GetVacanciesByVacancyReferenceReviewsApiRequest(
             query.VacancyReference.ToString(),
             query.Status,
-            [..query.ManualOutcome?.Select(x => x.ToString()) ?? []],
+            query.ManualOutcome,
             query.IncludeNoStatus);
 
         recruitApiClient
@@ -45,7 +45,7 @@ public class WhenHandlingGetVacancyReviewsByVacancyReferenceQuery
         var expectedRequest = new GetVacanciesByVacancyReferenceReviewsApiRequest(
             query.VacancyReference.ToString(),
             query.Status,
-            [..query.ManualOutcome?.Select(x => x.ToString()) ?? []],
+            query.ManualOutcome,
             query.IncludeNoStatus);
 
         recruitApiClient

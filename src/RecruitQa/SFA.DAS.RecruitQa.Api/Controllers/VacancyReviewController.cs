@@ -11,7 +11,6 @@ using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByVa
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsCountByAccountLegalEntity;
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsCountByUser;
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewSummary;
-using SFA.DAS.SharedOuterApi.Types.Domain.Recruit.Reviews;
 
 namespace SFA.DAS.RecruitQa.Api.Controllers;
 

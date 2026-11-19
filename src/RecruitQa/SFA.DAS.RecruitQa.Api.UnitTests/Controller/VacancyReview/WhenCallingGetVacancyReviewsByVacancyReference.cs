@@ -5,7 +5,6 @@ using SFA.DAS.RecruitQa.Api.Controllers;
 using SFA.DAS.RecruitQa.Api.Models;
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByVacancyReference;
 using System.Net;
-using SFA.DAS.SharedOuterApi.Types.Domain.Recruit.Reviews;
 
 namespace SFA.DAS.RecruitQa.Api.UnitTests.Controller.VacancyReview;
 

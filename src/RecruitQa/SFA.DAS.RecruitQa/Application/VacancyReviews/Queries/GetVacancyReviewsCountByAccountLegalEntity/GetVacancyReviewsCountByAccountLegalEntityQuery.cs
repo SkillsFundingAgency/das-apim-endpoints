@@ -1,5 +1,4 @@
 using SFA.DAS.Recruit.Contracts.ApiResponses;
-using SFA.DAS.SharedOuterApi.Types.Domain.Recruit.Reviews;
 
 namespace SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsCountByAccountLegalEntity;
 

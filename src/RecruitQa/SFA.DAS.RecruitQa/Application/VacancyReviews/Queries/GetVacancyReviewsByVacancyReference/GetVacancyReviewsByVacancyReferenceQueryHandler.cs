@@ -13,7 +13,7 @@ public class GetVacancyReviewsByVacancyReferenceQueryHandler(IRecruitApiClient r
         var response = await recruitApiClient.GetWithResponseCode<List<VacancyReview>>(
             new GetVacanciesByVacancyReferenceReviewsApiRequest(request.VacancyReference.ToString(),
                 request.Status,
-                [.. request.ManualOutcome?.Select(x => x.ToString()) ?? []],
+                request.ManualOutcome,
                 request.IncludeNoStatus));
 
         if (response.StatusCode == HttpStatusCode.NotFound)

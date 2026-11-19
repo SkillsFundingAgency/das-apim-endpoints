@@ -11,7 +11,7 @@ public class QaReportProjected
     public DateTime? SlaDeadline { get; set; }
     public DateTime? ReviewStarted { get; set; }
     public DateTime? ReviewCompleted { get; set; }
-    public string? Outcome { get; set; }
+    public ManualQaOutcome? Outcome { get; set; }
     public string SlaExceededByHours { get; set; } = "";
     public string TimeTakenToReview { get; set; } = "";
     public int NumberOfIssuesReported { get; set; }
