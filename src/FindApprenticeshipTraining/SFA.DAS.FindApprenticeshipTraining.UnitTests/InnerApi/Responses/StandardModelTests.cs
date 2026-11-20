@@ -40,6 +40,7 @@ public sealed class StandardModelTests
             Assert.That(sut.RouteCode, Is.EqualTo(standardListItem.RouteCode));
             Assert.That(sut.MaxFunding, Is.EqualTo(standardListItem.MaxFunding));
             Assert.That(sut.TypicalDuration, Is.EqualTo(standardListItem.TypicalDuration));
+            Assert.That(sut.CourseDates, Is.EqualTo(standardListItem.CourseDates));
         });
     }
 }
