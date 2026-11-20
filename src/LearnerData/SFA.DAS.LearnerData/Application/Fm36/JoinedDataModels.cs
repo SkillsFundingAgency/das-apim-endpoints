@@ -50,8 +50,12 @@ public class JoinedLearnerData
         LearnerRef = sldLearnerData.Learner.LearnerRef;
         StartDate = learning.StartDate;
         PlannedEndDate = learning.PlannedEndDate;
-        Episodes = JoinEpisodes(learning, earningsApprenticeship, sldLearnerData);
-        LearningDeliveries = JoinLearningDeliveries(sldLearnerData, Episodes, earningsApprenticeship);
+
+        // The SLD cache holds every on programme aim, but only those for the first apprenticeship are sent to Learning (and so earned on), the rest are ignored
+        var firstApprenticeshipOnProgrammes = sldLearnerData.Delivery.OnProgramme.GetFirstApprenticeshipOnProgrammes();
+
+        Episodes = JoinEpisodes(learning, earningsApprenticeship, firstApprenticeshipOnProgrammes);
+        LearningDeliveries = JoinLearningDeliveries(sldLearnerData, firstApprenticeshipOnProgrammes, Episodes, earningsApprenticeship);
         AgeAtStartOfApprenticeship = learning.AgeAtStartOfApprenticeship;
         WithdrawnDate = learning.WithdrawnDate;
         FundingLineType = earningsApprenticeship.FundingLineType;
@@ -61,7 +65,7 @@ public class JoinedLearnerData
             .ToDictionary(g => g.Key, g => g.ToList()); 
     }
 
-    private static List<JoinedPriceEpisode> JoinEpisodes(Learning learning, EarningsApprenticeship earningsApprenticeship, UpdateLearnerRequest sldLearnerData)
+    private static List<JoinedPriceEpisode> JoinEpisodes(Learning learning, EarningsApprenticeship earningsApprenticeship, List<OnProgrammeRequestDetails> firstApprenticeshipOnProgrammes)
     {
         var joinedEpisodes = new List<JoinedPriceEpisode>();
 
@@ -71,7 +75,7 @@ public class JoinedLearnerData
             {
                 var earningEpisode = earningsApprenticeship.Episodes.SingleOrDefault(x => x.Instalments.Any(y => y.EpisodePriceKey == apprenticeshipEpisodePrice.Key));
 
-                var aimSequenceNumber = GetPriceEpisodeAimSequenceNumber(apprenticeshipEpisode, apprenticeshipEpisodePrice, sldLearnerData.Delivery.OnProgramme);
+                var aimSequenceNumber = GetPriceEpisodeAimSequenceNumber(apprenticeshipEpisode, apprenticeshipEpisodePrice, firstApprenticeshipOnProgrammes);
 
                 var joinedEpisode = new JoinedPriceEpisode(apprenticeshipEpisode, apprenticeshipEpisodePrice, earningEpisode, aimSequenceNumber);
 
@@ -104,7 +108,7 @@ public class JoinedLearnerData
         return owner?.AimSequenceNumber ?? AimSeqNumber;
     }
 
-    private static List<JoinedLearningDelivery> JoinLearningDeliveries(UpdateLearnerRequest sldLearnerData, List<JoinedPriceEpisode> joinedPriceEpisodes, EarningsApprenticeship earningsApprenticeship)
+    private static List<JoinedLearningDelivery> JoinLearningDeliveries(UpdateLearnerRequest sldLearnerData, List<OnProgrammeRequestDetails> firstApprenticeshipOnProgrammes, List<JoinedPriceEpisode> joinedPriceEpisodes, EarningsApprenticeship earningsApprenticeship)
     {
         var joinedLearningDeliveries = new List<JoinedLearningDelivery>();
 
@@ -112,14 +116,14 @@ public class JoinedLearnerData
 
         var allInstalments = joinedPriceEpisodes.SelectMany(x => x.Instalments).ToList();
 
-        foreach (var onProgram in sldLearnerData.Delivery.OnProgramme)
+        foreach (var onProgram in firstApprenticeshipOnProgrammes)
         {
             var delivery = new JoinedOnProgrammeLearningDelivery(onProgram, allInstalments, unassignedAdditionalPayments);
 
             // Completion instalments are due in the period of the achievement date, which is independent of the delivery's own end date
             delivery.Instalments.AddRange(allInstalments.Where(x =>
                 x.InstalmentType == InstalmentType.Completion &&
-                OwnsCompletionInstalment(onProgram, sldLearnerData.Delivery.OnProgramme, x)));
+                OwnsCompletionInstalment(onProgram, firstApprenticeshipOnProgrammes, x)));
 
             joinedLearningDeliveries.Add(delivery);
         }
