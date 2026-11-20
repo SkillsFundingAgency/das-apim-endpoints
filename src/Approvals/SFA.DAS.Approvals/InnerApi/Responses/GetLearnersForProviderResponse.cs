@@ -40,6 +40,7 @@ public record LearnerDataRecord
     public DateTime ReceivedDate { get; set; }
     public string CorrelationId { get; set; }
     public string ConsumerReference { get; set; }
+    public bool? OnServicePayments { get; set; }
 }
 
 public record Course
