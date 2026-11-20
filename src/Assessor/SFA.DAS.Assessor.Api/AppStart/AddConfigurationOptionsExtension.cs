@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Assessor.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.Assessor.Contracts.Client;
 
 namespace SFA.DAS.Assessor.Api.AppStart
 {

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Assessor.Contracts.ApiRequests;
 using SFA.DAS.Assessor.Contracts.ApiResponses;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Assessor.Contracts.Client;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Assessor.Application.Commands.CreateOrUpdateUser
 {

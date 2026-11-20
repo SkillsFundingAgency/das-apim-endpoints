@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -15,7 +12,10 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.Assessor.Api.AppStart;
 using SFA.DAS.Assessor.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
+using SFA.DAS.Assessor.Contracts.Client;
+using System;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.Assessor.Api
 {

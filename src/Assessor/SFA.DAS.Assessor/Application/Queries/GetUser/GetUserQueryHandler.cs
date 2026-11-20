@@ -1,14 +1,13 @@
-﻿using System;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Assessor.Contracts.ApiRequests;
 using SFA.DAS.Assessor.Contracts.ApiResponses;
+using SFA.DAS.Assessor.Contracts.Client;
 using SFA.DAS.Assessor.Models;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using System;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Assessor.Application.Queries.GetUser
 {

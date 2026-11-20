@@ -10,7 +10,7 @@
 
   <!--These packages are required to override transient package vulnerabilities-->
   <ItemGroup>
-    <PackageReference Include="SFA.DAS.Assessor.Contracts" Version="1.0.0-local.1" />
+    <PackageReference Include="SFA.DAS.Assessor.Contracts" Version="1.0.0-local.2" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.15" />
   </ItemGroup>
 

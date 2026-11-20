@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -8,9 +7,8 @@ using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Assessor.Api.AppStart;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Types.Services;
+using SFA.DAS.Assessor.Contracts.Client;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Assessor.Api.UnitTests.AppStart
 {

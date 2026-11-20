@@ -1,9 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Apim.Shared.Exceptions;
@@ -12,8 +7,12 @@ using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.Assessor.Application.Commands.CreateOrUpdateUser;
 using SFA.DAS.Assessor.Contracts.ApiRequests;
 using SFA.DAS.Assessor.Contracts.ApiResponses;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Assessor.Contracts.Client;
+using System;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Assessor.UnitTests.Application.Commands.CreateOrUpdateUser
 {

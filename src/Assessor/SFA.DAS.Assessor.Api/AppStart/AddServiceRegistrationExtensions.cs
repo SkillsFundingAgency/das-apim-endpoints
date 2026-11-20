@@ -3,9 +3,7 @@ using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Interfaces;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Types.Services;
+using SFA.DAS.Assessor.Contracts.Client;
 
 namespace SFA.DAS.Assessor.Api.AppStart
 {
