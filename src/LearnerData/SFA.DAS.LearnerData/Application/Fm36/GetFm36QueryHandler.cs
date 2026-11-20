@@ -18,6 +18,8 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.LearnerData.Application.Fm36;
 
+using Learning = SFA.DAS.LearnerData.Responses.LearningInner.Learning;
+
 public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
 {
     const int SimplificationEarningsPlatform = 2;

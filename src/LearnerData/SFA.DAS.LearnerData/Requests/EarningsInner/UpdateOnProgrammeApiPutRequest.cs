@@ -24,6 +24,7 @@ public class UpdateOnProgrammeRequest
     public List<PeriodInLearningItem> PeriodsInLearning { get; set; } = [];
     public Care Care { get; set; }
     public List<LearningSupport> LearningSupport { get; set; } = [];
+    public bool FurtherApprovalRequired { get; set; }
 }
 
 public class PriceItem

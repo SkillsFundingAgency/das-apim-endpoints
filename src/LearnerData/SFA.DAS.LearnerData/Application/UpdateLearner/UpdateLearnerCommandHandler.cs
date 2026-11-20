@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.Apim.Shared.Extensions;
@@ -24,6 +24,7 @@ public class UpdateLearnerCommandHandler(
     IUpdateLearningPutRequestBuilder updateLearningPutRequestBuilder,
     IUpdateEarningsOnProgrammeRequestBuilder updateEarningsOnProgrammeRequestBuilder,
     IUpdateEarningsEnglishAndMathsRequestBuilder updateEarningsEnglishAndMathsRequestBuilder,
+    IFurtherApprovalService furtherApprovalService,
     ILearnerDataCacheService learnerDataCacheService,
     IMessageSession messageSession,
     IApprovedApprenticeshipExistsChecker approvedApprenticeshipExistsChecker,
@@ -63,6 +64,8 @@ public class UpdateLearnerCommandHandler(
             }
             else
             {
+                var furtherApprovalRequired = await furtherApprovalService.Resolve(command.Ukprn, command.UpdateLearnerRequest.Learner.Uln, learningApiPutResponse);
+
                 var releaseOnProgramme = false;
                 var englishAndMathsCourseKeys = new List<Guid>();
                 var removedEnglishAndMathsCourseKeys = new List<Guid>();
@@ -71,7 +74,7 @@ public class UpdateLearnerCommandHandler(
                 if (learningApiPutResponse.Changes.HasOnProgrammeUpdate())
                 {
                     logger.LogInformation("Updating Earnings with OnProgramme changes for learning {LearningKey}", learningApiPutResponse.LearningKey);
-                    var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(command.UpdateLearnerRequest, learningApiPutResponse, request.Data);
+                    var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(command.UpdateLearnerRequest, learningApiPutResponse, request.Data, furtherApprovalRequired);
                     var earningsOnProgrammeResponse = await earningsApiClient.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(earningsOnProgrammeApiRequest);
 
                     if (earningsOnProgrammeResponse.Body.HasNewEarningsProfileVersionBeenGenerated)

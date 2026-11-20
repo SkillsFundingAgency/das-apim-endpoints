@@ -11,6 +11,8 @@ using Episode = SFA.DAS.LearnerData.Responses.LearningInner.Episode;
 
 namespace SFA.DAS.LearnerData.Application.Fm36;
 
+using Learning = SFA.DAS.LearnerData.Responses.LearningInner.Learning;
+
 // The Models in this file are used to join data from the Learning and Earnings APIs, as well as cached SLD data
 
 /// <summary>

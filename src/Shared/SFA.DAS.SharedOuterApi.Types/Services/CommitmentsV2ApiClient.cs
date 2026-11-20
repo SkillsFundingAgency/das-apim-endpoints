@@ -90,6 +90,6 @@ public class CommitmentsV2ApiClient(IInternalApiClient<CommitmentsV2ApiConfigura
 
     public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
     {
-        throw new NotImplementedException();
+        return apiClient.PutWithResponseCode<TData, TResponse>(request);
     }
 }
