@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using NLog.Web;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.Assessors.Api
 {
-    public class Program
+    [ExcludeFromCodeCoverage]
+    public static class Program
     {
         public static void Main(string[] args)
         {
@@ -15,9 +16,7 @@ namespace SFA.DAS.Assessors.Api
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseApplicationInsights()
-                        .UseStartup<Startup>()
-                        .UseNLog();
+                    webBuilder.UseStartup<Startup>();
                 });
     }
 }
