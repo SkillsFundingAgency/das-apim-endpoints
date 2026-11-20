@@ -20,7 +20,6 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor
     public class PutCertificatePrintRequestData
     {
         public PrintAddress Address { get; set; }
-        public DateTime PrintRequestedAt { get; set; }
         public string PrintRequestedBy { get; set; }
 
         public static implicit operator PutCertificatePrintRequestData(CreateCertificatePrintRequestCommand command)
@@ -39,7 +38,6 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor
             return new PutCertificatePrintRequestData
             {
                 Address = addr,
-                PrintRequestedAt = DateTime.UtcNow,
                 PrintRequestedBy = command?.Address?.ContactName
             };
         }

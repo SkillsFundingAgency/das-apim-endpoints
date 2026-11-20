@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetStandardCertificate;
 
 namespace SFA.DAS.DigitalCertificates.Api.Models.Certificates
@@ -22,14 +21,21 @@ namespace SFA.DAS.DigitalCertificates.Api.Models.Certificates
         public string EmployerName { get; set; }
         public string AssessorName { get; set; }
         public DateTime? StartDate { get; set; }
+        public string LatestEPAOutcome { get; set; }
+
+        public string Status { get; set; }
         public DateTime? PrintRequestedAt { get; set; }
         public string PrintRequestedBy { get; set; }
-        public List<DeliveryInformationDto> DeliveryInformation { get; set; }
+        public string PrintStatus { get; set; }
+        public DateTime? PrintStatusAt { get; set; }
+
         public bool CoronationEmblem { get; set; }
 
-        public static implicit operator GetStandardCertificateResponse(GetStandardCertificateQueryResult source)
+        public static implicit operator GetStandardCertificateResponse(
+            GetStandardCertificateQueryResult source)
         {
-            if (source == null) return null;
+            if (source == null)
+                return null;
 
             return new GetStandardCertificateResponse
             {
@@ -49,9 +55,12 @@ namespace SFA.DAS.DigitalCertificates.Api.Models.Certificates
                 EmployerName = source.EmployerName,
                 AssessorName = source.AssessorName,
                 StartDate = source.StartDate,
+                LatestEPAOutcome = source.LatestEPAOutcome,
+                Status = source.Status,
                 PrintRequestedAt = source.PrintRequestedAt,
                 PrintRequestedBy = source.PrintRequestedBy,
-                DeliveryInformation = source.DeliveryInformation == null ? null : source.DeliveryInformation.ConvertAll(d => new DeliveryInformationDto { Id = d.Id, Action = d.Action, Status = d.Status, EventTime = d.EventTime }),
+                PrintStatus = source.PrintStatus,
+                PrintStatusAt = source.PrintStatusAt,
                 CoronationEmblem = source.CoronationEmblem
             };
         }
