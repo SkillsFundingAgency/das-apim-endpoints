@@ -24,5 +24,5 @@ public record GetLearnerForProviderResponse
     public LearningType? LearningType { get; set; }
     public bool IsFlexiJob { get; set; }
     public int PlannedOTJTrainingHours { get; set; }
-
+    public bool? OnServicePayments { get; set; }
 }

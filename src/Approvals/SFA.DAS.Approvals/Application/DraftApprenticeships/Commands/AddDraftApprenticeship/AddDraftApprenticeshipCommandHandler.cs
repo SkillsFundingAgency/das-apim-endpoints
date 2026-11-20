@@ -73,6 +73,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAp
                     UserId = request.UserId,
                     RequestingParty = request.RequestingParty,
                     LearnerDataId = request.LearnerDataId,
+                    OnServicePayments = request.OnServicePayments,
                     MinimumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MinimumAge,
                     MaximumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MaximumAge,
                 };
