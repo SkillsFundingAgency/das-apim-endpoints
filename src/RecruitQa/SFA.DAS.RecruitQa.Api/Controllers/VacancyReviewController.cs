@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitQa.Api.Models;
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Commands.UpsertVacancyReview;
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReview;
@@ -7,9 +8,9 @@ using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByAc
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByFilter;
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByUser;
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByVacancyReference;
+using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsCountByAccountLegalEntity;
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsCountByUser;
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewSummary;
-using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsCountByAccountLegalEntity;
 
 namespace SFA.DAS.RecruitQa.Api.Controllers;
 
@@ -19,7 +20,7 @@ public class VacancyReviewController(IMediator mediator, ILogger<VacancyReviewCo
     [HttpGet]
     [Route("[controller]s")]
     public async Task<IActionResult> Get(
-        [FromQuery] List<string>? reviewStatus,
+        [FromQuery] List<ReviewStatus>? reviewStatus,
         [FromQuery] DateTime? expiredAssignationDateTime)
     {
         try
@@ -82,7 +83,7 @@ public class VacancyReviewController(IMediator mediator, ILogger<VacancyReviewCo
     }
 
     [HttpGet]
-    [Route("accounts/{accountLegalEntityId}/vacancyreviews")]
+    [Route("accounts/{accountLegalEntityId}/vacancyReviews")]
     public async Task<IActionResult> GetByAccountLegalEntity([FromRoute] long accountLegalEntityId)
     {
         try
@@ -103,11 +104,11 @@ public class VacancyReviewController(IMediator mediator, ILogger<VacancyReviewCo
     }
 
     [HttpGet]
-    [Route("vacancies/{vacancyReference}/vacancyreviews")]
+    [Route("vacancies/{vacancyReference:long}/vacancyReviews")]
     public async Task<IActionResult> GetByVacancyReference(
         [FromRoute] long vacancyReference, 
-        [FromQuery] string? status, 
-        [FromQuery] List<string>? manualOutcome,
+        [FromQuery] List<ReviewStatus>? status, 
+        [FromQuery] List<ManualQaOutcome>? manualOutcome,
         [FromQuery] bool includeNoStatus)
     {
         try
@@ -177,7 +178,9 @@ public class VacancyReviewController(IMediator mediator, ILogger<VacancyReviewCo
 
     [HttpGet]
     [Route("users/VacancyReviews")]
-    public async Task<IActionResult> GetByUser([FromQuery] string userId, [FromQuery] DateTime? assignationExpiry, [FromQuery] string? status)
+    public async Task<IActionResult> GetByUser([FromQuery] string userId,
+        [FromQuery] DateTime? assignationExpiry,
+        [FromQuery] ReviewStatus? status)
     {
         try
         {
@@ -199,13 +202,12 @@ public class VacancyReviewController(IMediator mediator, ILogger<VacancyReviewCo
     }
 
     [HttpGet]
-    [Route("accounts/{accountLegalEntityId}/vacancyreviews/count")]
+    [Route("accounts/{accountLegalEntityId:long}/vacancyReviews/count")]
     public async Task<IActionResult> GetCountByAccountLegalEntity(
         [FromRoute] long accountLegalEntityId,
-        [FromQuery] string? status,
-        [FromQuery] string? manualOutcome,
-        [FromQuery] string? employerNameOption
-        )
+        [FromQuery] List<ReviewStatus>? status,
+        [FromQuery] List<ManualQaOutcome>? manualOutcome,
+        [FromQuery] EmployerNameOption? employerNameOption)
     {
         try
         {
@@ -214,7 +216,7 @@ public class VacancyReviewController(IMediator mediator, ILogger<VacancyReviewCo
                 AccountLegalEntityId = accountLegalEntityId,
                 Status = status,
                 ManualOutcome = manualOutcome,
-                EmployerNameOption =employerNameOption
+                EmployerNameOption = employerNameOption
             });
 
             return Ok(new GetVacancyReviewsCountApiResponse { Count = result.Count });

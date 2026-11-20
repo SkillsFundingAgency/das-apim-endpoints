@@ -1,13 +1,13 @@
 using FluentAssertions.Execution;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitQa.Api.Models;
-using SFA.DAS.RecruitQa.InnerApi.Responses;
 
 namespace SFA.DAS.RecruitQa.Api.UnitTests.Models;
 
 public class WhenMappingVacancyReviewDtoFromResponse
 {
     [Test, RecursiveMoqAutoData]
-    public void Then_All_Fields_Are_Mapped_From_GetVacancyReviewResponse(GetVacancyReviewResponse source, long reference)
+    public void Then_All_Fields_Are_Mapped_From_GetVacancyReviewResponse(VacancyReview source, long reference)
     {
         // Arrange 
         source.VacancyReference = $"VAC{reference}";
@@ -24,7 +24,7 @@ public class WhenMappingVacancyReviewDtoFromResponse
             actual.CreatedDate.Should().Be(source.CreatedDate);
             actual.SlaDeadLine.Should().Be(source.SlaDeadLine);
             actual.ReviewedDate.Should().Be(source.ReviewedDate);
-            actual.Status.Should().Be(source.Status);
+            actual.Status.Should().Be(source.Status.ToString());
             actual.SubmissionCount.Should().Be(source.SubmissionCount);
             actual.ReviewedByUserEmail.Should().Be(source.ReviewedByUserEmail);
             actual.SubmittedByUserEmail.Should().Be(source.SubmittedByUserEmail);
@@ -38,7 +38,7 @@ public class WhenMappingVacancyReviewDtoFromResponse
             actual.UpdatedFieldIdentifiers.Should().BeEquivalentTo(source.UpdatedFieldIdentifiers);
             actual.VacancySnapshot.Should().Be(source.VacancySnapshot);
             actual.OwnerType.Should().Be(source.OwnerType);
-            actual.VacancyId.Should().Be(source.VacancyId);
+            actual.VacancyId.Should().Be(source.Id);
         }
     }
 }
