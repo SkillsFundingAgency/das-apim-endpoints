@@ -22,7 +22,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
     public class GetTrainingCourseProvidersQueryHandlerTests
     {
         [Test, MoqAutoData]
-        public async Task Handle_ReturnsExpectedReponse(
+        public async Task WhenHandle_AndNoLocationEntered_ThenReturnsExpectedResponse(
             GetCourseProvidersResponse apiResponse,
             GetCourseProvidersQuery query,
             GetStandardsListItem standardResponse,
@@ -60,7 +60,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
         }
 
         [Test, MoqAutoData]
-        public async Task Handler_NoLocationMatched_ReturnsExpectedResponse(
+        public async Task WhenHandle_AndNoLocationMatched_ThenReturnsExpectedResponse(
             GetCourseProvidersQuery query,
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
             [Frozen] Mock<ICachedLocationLookupService> cachedLocationLookupService,
@@ -94,15 +94,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Should().BeEquivalentTo(expectedResponse);
-
-            coursesApiMock.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetCourseLookupDetailsByIdRequest>(x => x.Id == query.LarsCode)), Times.Once);
-            courseManagementApiMock.Verify(x => x.GetWithResponseCode<GetCourseProvidersResponse>(It.IsAny<GetProvidersByCourseIdRequest>()), Times.Never);
+            using (new AssertionScope())
+            {
+                result.Should().BeEquivalentTo(expectedResponse);
+                coursesApiMock.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetCourseLookupDetailsByIdRequest>(x => x.Id == query.LarsCode)), Times.Once);
+                courseManagementApiMock.Verify(x => x.GetWithResponseCode<GetCourseProvidersResponse>(It.IsAny<GetProvidersByCourseIdRequest>()), Times.Never);
+            }
         }
 
 
         [Test, MoqAutoData]
-        public async Task Handler_NoLocationEntered_GetExpectedResponse(
+        public async Task WhenHandle_AndNoLocationEntered_ThenCallsCourseManagementApi(
             GetCourseProvidersResponse apiResponse,
             GetCourseProvidersQuery query,
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
@@ -144,7 +146,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
         [Test]
         [MoqInlineAutoData(HttpStatusCode.NotFound)]
         [MoqInlineAutoData(HttpStatusCode.BadRequest)]
-        public async Task Handler_BadRequestOrNotFoundResponseFromApi_ReturnsNull(
+        public async Task WhenHandle_AndBadRequestOrNotFound_ThenReturnsNull(
             HttpStatusCode statusCode,
             GetCourseProvidersQuery query,
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
@@ -164,6 +166,164 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.Should().BeNull();
+        }
+
+        [Test, MoqAutoData]
+        public async Task WhenHandle_AndLocationMatched_ThenForwardsCoordinatesAndSetsCourseDates(
+            GetCourseProvidersResponse apiResponse,
+            GetCourseProvidersQuery query,
+            GetStandardsListItem standardResponse,
+            [Frozen] Mock<ICachedLocationLookupService> cachedLocationLookupService,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiMock,
+            [Greedy] GetTrainingCourseProvidersQueryHandler handler)
+        {
+            query.LocationName = "Leeds";
+            var location = new LocationItem(query.LocationName, [51.5, -1.5], "England");
+
+            cachedLocationLookupService
+                .Setup(client => client.GetCachedLocationInformation(query.LocationName, false))
+                .ReturnsAsync(location);
+
+            coursesApiMock
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetCourseLookupDetailsByIdRequest>(x => x.Id == query.LarsCode)))
+                .ReturnsAsync(standardResponse);
+
+            courseManagementApiMock
+                .Setup(client => client.GetWithResponseCode<GetCourseProvidersResponse>(It.Is<GetProvidersByCourseIdRequest>(
+                    c => c.CourseId == query.LarsCode
+                         && c.Latitude == location.Latitude
+                         && c.Longitude == location.Longitude
+                         && c.LocationName == query.LocationName)))
+                .ReturnsAsync(new ApiResponse<GetCourseProvidersResponse>(apiResponse, HttpStatusCode.OK, ""));
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            using (new AssertionScope())
+            {
+                result.Should().BeSameAs(apiResponse);
+                result.CourseDates.Should().Be(standardResponse.CourseDates);
+                courseManagementApiMock.Verify(x => x.GetWithResponseCode<GetCourseProvidersResponse>(It.Is<GetProvidersByCourseIdRequest>(
+                    c => c.Latitude == location.Latitude && c.Longitude == location.Longitude)), Times.Once);
+            }
+        }
+
+        [Test, MoqAutoData]
+        public async Task WhenHandle_AndNoLocationMatchedAndCourseMissing_ThenReturnsEmptyStandardDetails(
+            GetCourseProvidersQuery query,
+            [Frozen] Mock<ICachedLocationLookupService> cachedLocationLookupService,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiMock,
+            [Greedy] GetTrainingCourseProvidersQueryHandler handler)
+        {
+            query.LocationName = "Unknown place";
+
+            cachedLocationLookupService
+                .Setup(client => client.GetCachedLocationInformation(query.LocationName, false))
+                .ReturnsAsync((LocationItem)null);
+
+            coursesApiMock
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetCourseLookupDetailsByIdRequest>(x => x.Id == query.LarsCode)))
+                .ReturnsAsync((GetStandardsListItem)null);
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            using (new AssertionScope())
+            {
+                result.Should().BeEquivalentTo(new GetCourseProvidersResponse
+                {
+                    PageSize = 10,
+                    Page = 1,
+                    LarsCode = query.LarsCode,
+                    Providers = [],
+                    QarPeriod = string.Empty,
+                    ReviewPeriod = string.Empty,
+                    StandardName = string.Empty,
+                    CourseDates = null,
+                    TotalCount = 0,
+                    TotalPages = 0
+                });
+                courseManagementApiMock.Verify(x => x.GetWithResponseCode<GetCourseProvidersResponse>(It.IsAny<GetProvidersByCourseIdRequest>()), Times.Never);
+            }
+        }
+
+        [Test, MoqAutoData]
+        public async Task WhenHandle_AndApiReturnsNonSuccess_ThenReturnsEmptyResponse(
+            GetCourseProvidersResponse apiResponse,
+            GetCourseProvidersQuery query,
+            GetStandardsListItem standardResponse,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiMock,
+            [Greedy] GetTrainingCourseProvidersQueryHandler handler)
+        {
+            query.LocationName = null;
+
+            coursesApiMock
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetCourseLookupDetailsByIdRequest>(x => x.Id == query.LarsCode)))
+                .ReturnsAsync(standardResponse);
+
+            courseManagementApiMock
+                .Setup(client => client.GetWithResponseCode<GetCourseProvidersResponse>(It.IsAny<GetProvidersByCourseIdRequest>()))
+                .ReturnsAsync(new ApiResponse<GetCourseProvidersResponse>(apiResponse, HttpStatusCode.InternalServerError, "Error"));
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            using (new AssertionScope())
+            {
+                result.Should().BeEquivalentTo(new GetCourseProvidersResponse());
+                result.Should().NotBeSameAs(apiResponse);
+            }
+        }
+
+        [Test, MoqAutoData]
+        public async Task WhenHandle_AndSuccessWithNullBody_ThenReturnsNull(
+            GetCourseProvidersQuery query,
+            GetStandardsListItem standardResponse,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiMock,
+            [Greedy] GetTrainingCourseProvidersQueryHandler handler)
+        {
+            query.LocationName = null;
+
+            coursesApiMock
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetCourseLookupDetailsByIdRequest>(x => x.Id == query.LarsCode)))
+                .ReturnsAsync(standardResponse);
+
+            courseManagementApiMock
+                .Setup(client => client.GetWithResponseCode<GetCourseProvidersResponse>(It.IsAny<GetProvidersByCourseIdRequest>()))
+                .ReturnsAsync(new ApiResponse<GetCourseProvidersResponse>(null, HttpStatusCode.OK, ""));
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.Should().BeNull();
+        }
+
+        [Test, MoqAutoData]
+        public async Task WhenHandle_AndCourseMissing_ThenClearsCourseDates(
+            GetCourseProvidersResponse apiResponse,
+            GetCourseProvidersQuery query,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiMock,
+            [Greedy] GetTrainingCourseProvidersQueryHandler handler)
+        {
+            query.LocationName = null;
+
+            coursesApiMock
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetCourseLookupDetailsByIdRequest>(x => x.Id == query.LarsCode)))
+                .ReturnsAsync((GetStandardsListItem)null);
+
+            courseManagementApiMock
+                .Setup(client => client.GetWithResponseCode<GetCourseProvidersResponse>(It.Is<GetProvidersByCourseIdRequest>(
+                    c => c.GetUrl.Contains(query.LarsCode))))
+                .ReturnsAsync(new ApiResponse<GetCourseProvidersResponse>(apiResponse, HttpStatusCode.OK, ""));
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            using (new AssertionScope())
+            {
+                result.Should().BeSameAs(apiResponse);
+                result.CourseDates.Should().BeNull();
+            }
         }
     }
 }
