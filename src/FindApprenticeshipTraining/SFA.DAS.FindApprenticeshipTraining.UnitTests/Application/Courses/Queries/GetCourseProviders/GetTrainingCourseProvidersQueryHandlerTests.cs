@@ -150,8 +150,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
             HttpStatusCode statusCode,
             GetCourseProvidersQuery query,
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiMock,
             [Greedy] GetTrainingCourseProvidersQueryHandler handler,
-            GetStandardsListItem standardResponse,
             CancellationToken cancellationToken
         )
         {
@@ -165,7 +165,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Should().BeNull();
+            using (new AssertionScope())
+            {
+                result.Should().BeNull();
+                coursesApiMock.Verify(x => x.Get<GetStandardsListItem>(It.IsAny<GetCourseLookupDetailsByIdRequest>()), Times.Never);
+            }
         }
 
         [Test, MoqAutoData]
@@ -251,16 +255,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
         public async Task WhenHandle_AndApiReturnsNonSuccess_ThenReturnsEmptyResponse(
             GetCourseProvidersResponse apiResponse,
             GetCourseProvidersQuery query,
-            GetStandardsListItem standardResponse,
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiMock,
             [Greedy] GetTrainingCourseProvidersQueryHandler handler)
         {
             query.LocationName = null;
-
-            coursesApiMock
-                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetCourseLookupDetailsByIdRequest>(x => x.Id == query.LarsCode)))
-                .ReturnsAsync(standardResponse);
 
             courseManagementApiMock
                 .Setup(client => client.GetWithResponseCode<GetCourseProvidersResponse>(It.IsAny<GetProvidersByCourseIdRequest>()))
@@ -272,22 +271,18 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
             {
                 result.Should().BeEquivalentTo(new GetCourseProvidersResponse());
                 result.Should().NotBeSameAs(apiResponse);
+                coursesApiMock.Verify(x => x.Get<GetStandardsListItem>(It.IsAny<GetCourseLookupDetailsByIdRequest>()), Times.Never);
             }
         }
 
         [Test, MoqAutoData]
         public async Task WhenHandle_AndSuccessWithNullBody_ThenReturnsNull(
             GetCourseProvidersQuery query,
-            GetStandardsListItem standardResponse,
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiMock,
             [Greedy] GetTrainingCourseProvidersQueryHandler handler)
         {
             query.LocationName = null;
-
-            coursesApiMock
-                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetCourseLookupDetailsByIdRequest>(x => x.Id == query.LarsCode)))
-                .ReturnsAsync(standardResponse);
 
             courseManagementApiMock
                 .Setup(client => client.GetWithResponseCode<GetCourseProvidersResponse>(It.IsAny<GetProvidersByCourseIdRequest>()))
@@ -295,7 +290,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Should().BeNull();
+            using (new AssertionScope())
+            {
+                result.Should().BeNull();
+                coursesApiMock.Verify(x => x.Get<GetStandardsListItem>(It.IsAny<GetCourseLookupDetailsByIdRequest>()), Times.Never);
+            }
         }
 
         [Test, MoqAutoData]

@@ -18,7 +18,6 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
     public async Task<GetCourseProvidersResponse> Handle(GetCourseProvidersQuery request, CancellationToken cancellationToken)
     {
         LocationItem locationItem = null;
-        GetStandardsListItem standard = await _coursesApiClient.Get<GetStandardsListItem>(new GetCourseLookupDetailsByIdRequest(request.LarsCode));
 
         if (!string.IsNullOrWhiteSpace(request.LocationName))
         {
@@ -26,7 +25,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
 
             if (locationItem is null)
             {
-
+                GetStandardsListItem standard = await GetCourse(request.LarsCode);
                 var standardName = standard != null ? $"{standard.Title} (level {standard.Level})" : string.Empty;
 
                 return new GetCourseProvidersResponse
@@ -73,9 +72,15 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
 
         if (response.Body != null)
         {
+            GetStandardsListItem standard = await GetCourse(request.LarsCode);
             response.Body.CourseDates = standard?.CourseDates;
         }
 
         return response.Body;
+    }
+
+    private Task<GetStandardsListItem> GetCourse(string larsCode)
+    {
+        return _coursesApiClient.Get<GetStandardsListItem>(new GetCourseLookupDetailsByIdRequest(larsCode));
     }
 }
