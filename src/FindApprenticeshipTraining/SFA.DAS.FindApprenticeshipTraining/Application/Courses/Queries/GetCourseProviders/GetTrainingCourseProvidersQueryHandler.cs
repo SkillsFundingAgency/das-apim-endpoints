@@ -18,6 +18,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
     public async Task<GetCourseProvidersResponse> Handle(GetCourseProvidersQuery request, CancellationToken cancellationToken)
     {
         LocationItem locationItem = null;
+        GetStandardsListItem standard = await _coursesApiClient.Get<GetStandardsListItem>(new GetCourseLookupDetailsByIdRequest(request.LarsCode));
 
         if (!string.IsNullOrWhiteSpace(request.LocationName))
         {
@@ -25,7 +26,6 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
 
             if (locationItem is null)
             {
-                GetStandardsListItem standard = await _coursesApiClient.Get<GetStandardsListItem>(new GetCourseLookupDetailsByIdRequest(request.LarsCode));
 
                 var standardName = standard != null ? $"{standard.Title} (level {standard.Level})" : string.Empty;
 
@@ -38,6 +38,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
                     QarPeriod = string.Empty,
                     ReviewPeriod = string.Empty,
                     StandardName = standardName,
+                    CourseDates = standard?.CourseDates,
                     TotalCount = 0,
                     TotalPages = 0
                 };
@@ -67,7 +68,14 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
         if (response.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.NotFound)
             return null;
 
-        return response.StatusCode.IsSuccessStatusCode()
-            ? response.Body : new GetCourseProvidersResponse();
+        if (!response.StatusCode.IsSuccessStatusCode())
+            return new GetCourseProvidersResponse();
+
+        if (response.Body != null)
+        {
+            response.Body.CourseDates = standard?.CourseDates;
+        }
+
+        return response.Body;
     }
 }

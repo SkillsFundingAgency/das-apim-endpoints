@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Apim.Shared.Models;
@@ -15,7 +16,6 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
-using GetStandardRequest = SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests.GetStandardRequest;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queries.GetCourseProviders
 {
@@ -25,12 +25,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
         public async Task Handle_ReturnsExpectedReponse(
             GetCourseProvidersResponse apiResponse,
             GetCourseProvidersQuery query,
+            GetStandardsListItem standardResponse,
             [Frozen] Mock<ICachedLocationLookupService> cachedLocationLookupService,
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiMock,
             [Greedy] GetTrainingCourseProvidersQueryHandler handler,
             CancellationToken cancellationToken
             )
         {
+            query.LocationName = null;
+
             courseManagementApiMock
                 .Setup(client => client.GetWithResponseCode<GetCourseProvidersResponse>(It.Is<GetProvidersByCourseIdRequest>(
                     c => c.GetUrl.Contains(query.LarsCode)
@@ -40,10 +44,19 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
                 .ReturnsAsync(new ApiResponse<GetCourseProvidersResponse>(apiResponse,
                     HttpStatusCode.OK, ""));
 
+            coursesApiMock
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetCourseLookupDetailsByIdRequest>(x => x.Id == query.LarsCode)))
+                .ReturnsAsync(standardResponse);
+
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Should().BeEquivalentTo(apiResponse, options => options.Excluding(x => x.LarsCode));
-            result.LarsCode.Should().BeEquivalentTo(apiResponse.LarsCode.ToString());
+            using (new AssertionScope())
+            {
+                result.Should().BeEquivalentTo(apiResponse, options => options.Excluding(x => x.LarsCode).Excluding(x => x.CourseDates));
+                result.LarsCode.Should().BeEquivalentTo(apiResponse.LarsCode.ToString());
+                result.CourseDates.Should().Be(standardResponse.CourseDates);
+                result.Providers.Should().BeEquivalentTo(apiResponse.Providers);
+            }
         }
 
         [Test, MoqAutoData]
@@ -74,6 +87,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
                 QarPeriod = string.Empty,
                 ReviewPeriod = string.Empty,
                 StandardName = $"{standardResponse.Title} (level {standardResponse.Level})",
+                CourseDates = standardResponse.CourseDates,
                 TotalCount = 0,
                 TotalPages = 0
             };
@@ -110,13 +124,21 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
                 .ReturnsAsync(new ApiResponse<GetCourseProvidersResponse>(apiResponse,
                     HttpStatusCode.OK, ""));
 
+            coursesApiMock
+                .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetCourseLookupDetailsByIdRequest>(x => x.Id == query.LarsCode)))
+                .ReturnsAsync(standardResponse);
+
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Should().BeEquivalentTo(apiResponse, options => options.Excluding(x => x.LarsCode));
-            result.LarsCode.Should().BeEquivalentTo(apiResponse.LarsCode.ToString());
-            coursesApiMock.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(x => x.StandardId == query.LarsCode)), Times.Never);
-            courseManagementApiMock.Verify(x => x.GetWithResponseCode<GetCourseProvidersResponse>(It.IsAny<GetProvidersByCourseIdRequest>()), Times.Once);
-            courseManagementApiMock.Verify(x => x.Get<GetAcademicYearsLatestQueryResponse>(It.IsAny<GetAcademicYearsLatestRequest>()), Times.Never);
+            using (new AssertionScope())
+            {
+                result.Should().BeEquivalentTo(apiResponse, options => options.Excluding(x => x.LarsCode).Excluding(x => x.CourseDates));
+                result.LarsCode.Should().BeEquivalentTo(apiResponse.LarsCode.ToString());
+                result.CourseDates.Should().Be(standardResponse.CourseDates);
+                coursesApiMock.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetCourseLookupDetailsByIdRequest>(x => x.Id == query.LarsCode)), Times.Once);
+                courseManagementApiMock.Verify(x => x.GetWithResponseCode<GetCourseProvidersResponse>(It.IsAny<GetProvidersByCourseIdRequest>()), Times.Once);
+                courseManagementApiMock.Verify(x => x.Get<GetAcademicYearsLatestQueryResponse>(It.IsAny<GetAcademicYearsLatestRequest>()), Times.Never);
+            }
         }
 
         [Test]
