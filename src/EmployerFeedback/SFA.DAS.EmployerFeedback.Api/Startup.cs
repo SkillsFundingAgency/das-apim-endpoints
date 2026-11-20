@@ -9,6 +9,7 @@ using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.EmployerFeedback.Api.AppStart;
+using SFA.DAS.EmployerFeedback.Api.Middleware;
 using SFA.DAS.EmployerFeedback.Api.TaskQueue;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetAttributes;
 using SFA.DAS.EmployerFeedback.Configuration;
@@ -141,6 +142,7 @@ namespace SFA.DAS.EmployerFeedback.Api
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMiddleware<RemoveServerHeadersMiddleware>();
 
             if (env.IsDevelopment())
             {
