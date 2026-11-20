@@ -12,4 +12,8 @@ public class SelectMultipleAddDraftApprenticeshipsCommand : IRequest<SelectMulti
     public IEnumerable<long> LearnerIds { get; set; }
     public long AccountId { get; set; }
     public UserInfo UserInfo { get; set; }
+    public long? CohortId { get; set; }
+    public long? TransferSenderAccountId { get; set; }
+    public string CohortReference { get; set; }
+    public string EncodedPledgeApplicationId { get; set; }
 }

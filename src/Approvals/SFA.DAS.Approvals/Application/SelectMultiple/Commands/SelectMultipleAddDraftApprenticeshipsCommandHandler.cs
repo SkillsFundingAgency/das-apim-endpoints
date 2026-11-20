@@ -29,6 +29,7 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
     public async Task<SelectMultipleAddDraftApprenticeshipsResult> Handle(SelectMultipleAddDraftApprenticeshipsCommand command, CancellationToken cancellationToken)
     {
         var learnerIds = command.LearnerIds?.Distinct().ToList() ?? [];
+        var cohortReference = string.Empty;
 
         if (learnerIds.Count == 0)
         {
@@ -38,8 +39,20 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
         await Validate(command, cancellationToken);
         var learnerDetails = await GetLearnerDetails(command, learnerIds);
         ApiResponse<BulkCreateReservationsWithNonLevyResult> reservationResult = await GetReservations(command, learnerDetails);
-        var cohort = await CreateCohort(command);
-        var bulkUploadAddDraftApprenticeships = FormatDataToBulkUpload(command, learnerDetails, cohort);
+
+        List<BulkUploadAddDraftApprenticeshipRequest> bulkUploadAddDraftApprenticeships;
+        if (command.CohortId.HasValue && !string.IsNullOrEmpty(command.CohortReference))
+        {
+            cohortReference = command.CohortReference;
+            bulkUploadAddDraftApprenticeships = FormatDataToBulkUpload(command, learnerDetails, command.CohortId.Value, command.CohortReference);
+        }
+        else
+        {
+            var cohort = await CreateCohort(command);
+            cohortReference = cohort.CohortReference;
+            bulkUploadAddDraftApprenticeships = FormatDataToBulkUpload(command, learnerDetails, cohort.CohortId, cohort.CohortReference);
+        }
+
         MergeReservationWithDraftApprenticeships(bulkUploadAddDraftApprenticeships, reservationResult);
 
         var dataToSend = new BulkUploadAddDraftApprenticeshipsRequest
@@ -56,7 +69,7 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
 
         return new SelectMultipleAddDraftApprenticeshipsResult
         {
-            CohortReference = cohort.CohortReference
+            CohortReference = cohortReference
         };
     }
 
@@ -76,7 +89,8 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
         return result.Body;
     }
 
-    private List<BulkUploadAddDraftApprenticeshipRequest> FormatDataToBulkUpload(SelectMultipleAddDraftApprenticeshipsCommand command, List<LearnerDataRecord> learnerDetails, CreateCohortResponse cohort)
+    private List<BulkUploadAddDraftApprenticeshipRequest> FormatDataToBulkUpload(SelectMultipleAddDraftApprenticeshipsCommand command, 
+        List<LearnerDataRecord> learnerDetails, long cohortId, string cohortReference)
     {
         return learnerDetails.Select((learner, index) =>
         {
@@ -96,13 +110,15 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
                 CostAsString = (learner.TrainingPrice + learner.EpaoPrice).ToString(),
                 AgreementId = command.AgreementId,
                 LegalEntityId = command.AccountLegalEntityId,
-                CohortId = cohort.CohortId,
-                CohortRef = cohort.CohortReference,
+                CohortId = cohortId,
+                CohortRef = cohortReference,
                 RecognisePriorLearningAsString = "false",
                 TrainingPrice = learner.TrainingPrice,
                 EndPointAssessmentPrice = learner.EpaoPrice,
                 ActualStartDate = learner.StartDate,
-                LearnerDataId = learner.Id
+                LearnerDataId = learner.Id,
+                TransferSenderId = command.TransferSenderAccountId,
+                EPAOrgId = command.EncodedPledgeApplicationId
             };
         }).ToList();
     }
@@ -138,7 +154,11 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
             ProviderId = command.ProviderId,
             AccountLegalEntityId = command.AccountLegalEntityId,
             AgreementId = command.AgreementId,
-            UserInfo = command.UserInfo
+            UserInfo = command.UserInfo,
+            TransferSenderAccountId = command.TransferSenderAccountId,
+            CohortId = command.CohortId,
+            CohortReference = command.CohortReference,
+            EncodedPledgeApplicationId = command.EncodedPledgeApplicationId
         };
 
         var result = await mediator.Send(validateQuery, cancellationToken);
