@@ -40,7 +40,7 @@ public class SelectLearnersController(IMediator mediator, ILogger<SelectLearners
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Error when getting  ILR records for Provider {providerId}", providerId);
+            logger.LogError(e, "Error when getting ILR records for Provider {providerId}", providerId);
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
