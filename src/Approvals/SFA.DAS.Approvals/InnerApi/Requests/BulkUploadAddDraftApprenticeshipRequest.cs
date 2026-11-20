@@ -28,6 +28,7 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
         public string CourseCode { get; set; }
         public string TrainingCourseVersion { get; set; }
         public string StandardUId { get; set; }
+        public DeliveryModel? DeliveryModel { get; set; }
         public long ProviderId { get; set; }
         public string CohortRef { get; set; }
         public long? CohortId { get; set; }

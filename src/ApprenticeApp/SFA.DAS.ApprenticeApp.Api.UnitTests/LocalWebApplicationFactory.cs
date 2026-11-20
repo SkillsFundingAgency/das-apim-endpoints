@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SFA.DAS.ApprenticeApp.Telemetry;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
+using System.Collections.Generic;
 
 
 namespace SFA.DAS.ApprenticeApp.Api.UnitTests
@@ -31,6 +32,9 @@ namespace SFA.DAS.ApprenticeApp.Api.UnitTests
                 {
                     c.Url = _testContext.ApprenticeCommitmentsInnerApi.BaseAddress;
                 });
+
+                s.AddMetrics();
+                s.AddSingleton<IApprenticeAppMetrics, ApprenticeAppMetrics>();
             });
 
             builder.ConfigureAppConfiguration(a =>

@@ -23,6 +23,14 @@ public enum TestScenario
     /// apprenticeship has completed. 
     /// </summary>
     LearningSupportComplexScenario,
+    /// <summary>
+    /// Models an apprenticeship with a break in learning, resulting in two onProgrammes for the same standard each with a different price
+    /// </summary>
+    ApprenticeshipWithBreakInLearning,
+    /// <summary>
+    /// Models an apprenticeship with a change of price, plus an onProgramme for a different standard which starts before the price change
+    /// </summary>
+    ApprenticeshipWithChangeOfStandard,
 }
 
 public enum WithdrawalDate

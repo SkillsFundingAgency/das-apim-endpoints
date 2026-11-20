@@ -3,7 +3,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharing;
-using SFA.DAS.DigitalCertificates.InnerApi.Responses;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
 
 namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateSharing
 {
@@ -48,8 +48,8 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateShari
         }
 
         [Test, AutoData]
-        public void Then_Implicit_Operator_Maps_PostCreateSharingResponse_Correctly(
-            PostCreateSharingResponse response)
+        public void Then_Implicit_Operator_Maps_CreateSharingResponse_Correctly(
+            CreateSharingResponse response)
         {
             // Arrange & Act
             CreateSharingResult result = response;
@@ -57,7 +57,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateShari
             // Assert
             result.UserId.Should().Be(response.UserId);
             result.CertificateId.Should().Be(response.CertificateId);
-            result.CertificateType.Should().Be(response.CertificateType);
+            result.CertificateType.Should().Be(response.CertificateType.ToString());
             result.CourseName.Should().Be(response.CourseName);
             result.SharingId.Should().Be(response.SharingId);
             result.SharingNumber.Should().Be(response.SharingNumber);
