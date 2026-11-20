@@ -29,7 +29,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.UnitTests.Controllers
         {
             mockMediator.Setup(x => x.Send(It.IsAny<GetSavedSearchesQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mockQueryResult);
 
-            var actual = await sut.Get(lastRunDateTime, mockPageNo, mockPageSize, maxApprenticeshipSearchResultCount, sortOrder, It.IsAny<CancellationToken>()) as ObjectResult;
+            var actual = await sut.Get(lastRunDateTime, mockPageNo, mockPageSize, It.IsAny<CancellationToken>()) as ObjectResult;
             var actualValue = actual!.Value as GetSavedSearchesQueryResult;
 
             using (new AssertionScope())
@@ -57,7 +57,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.UnitTests.Controllers
         {
             mockMediator.Setup(x => x.Send(It.IsAny<GetSavedSearchesQuery>(), It.IsAny<CancellationToken>())).ThrowsAsync(new InvalidOperationException());
 
-            var actual = await sut.Get(lastRunDateTime, mockPageNo, mockPageSize, maxApprenticeshipSearchResultCount, sortOrder, It.IsAny<CancellationToken>()) as StatusCodeResult;
+            var actual = await sut.Get(lastRunDateTime, mockPageNo, mockPageSize, It.IsAny<CancellationToken>()) as StatusCodeResult;
 
             actual!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
