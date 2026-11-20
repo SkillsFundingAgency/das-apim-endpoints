@@ -1,7 +1,6 @@
 using System.Net;
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.Common.Domain.Types;
@@ -20,13 +19,15 @@ public class ApprovalsServiceTests
     private const int MaxAttempts = 4; // 1 initial attempt + 3 retries
 
     private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _client;
+    private Mock<ILogger<ApprovalsService>> _logger;
     private ApprovalsService _sut;
 
     [SetUp]
     public void SetUp()
     {
         _client = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
-        _sut = new ApprovalsService(_client.Object, new ApprovalsRequestBuilder(), Mock.Of<ILogger<ApprovalsService>>(), TimeSpan.Zero);
+        _logger = new Mock<ILogger<ApprovalsService>>();
+        _sut = new ApprovalsService(_client.Object, new ApprovalsRequestBuilder(), _logger.Object, TimeSpan.Zero);
     }
 
     // ---- request and response --------------------------------------------------------------
@@ -47,7 +48,7 @@ public class ApprovalsServiceTests
     }
 
     [Test]
-    public async Task Should_Return_The_Changes_And_Prices_Approvals_Responded_With()
+    public async Task Should_Return_The_Changes_Approvals_Responded_With()
     {
         var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
         var approvalsResponse = new ApprovalsResponse
@@ -60,8 +61,7 @@ public class ApprovalsServiceTests
                     ApprovalStatus = "autoApproved",
                     Data = new ApprovalsChangeData { Old = "2026-09-01", New = "2026-09-15" }
                 }
-            ],
-            Prices = [new ApprovalsPrice { TrainingPrice = "15000.00", AssessmentPrice = "2000.00", EffectiveFrom = new DateTime(2026, 9, 15) }]
+            ]
         };
         SetupResponses(Reply(HttpStatusCode.Created, approvalsResponse));
 
@@ -162,29 +162,88 @@ public class ApprovalsServiceTests
     }
 
     [Test]
-    public async Task Should_Throw_When_Transient_Failures_Are_Exhausted()
+    public async Task Should_Treat_As_Not_Approved_When_Transient_Failures_Are_Exhausted()
     {
         var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
         SetupResponses(Enumerable.Repeat(Reply(HttpStatusCode.ServiceUnavailable, null, "service unavailable"), MaxAttempts).ToArray());
 
-        var act = () => _sut.RequestApproval(10001234, 9999999999, response);
+        var outcome = await _sut.RequestApproval(10001234, 9999999999, response);
 
-        var ex = await act.Should().ThrowAsync<HttpRequestContentException>();
-        ex.Which.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
+        VerifyNotApproved(outcome);
         VerifyCalls(Times.Exactly(MaxAttempts));
+        VerifyNoDecisionLogged(response);
     }
 
     [Test]
-    public async Task Should_Not_Retry_A_Permanent_Failure()
+    public async Task Should_Treat_As_Not_Approved_When_The_Call_Keeps_Throwing_HttpRequestException()
     {
         var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
-        SetupResponses(Reply(HttpStatusCode.BadRequest, null, "bad request"));
+        _client.Setup(x => x.PutWithResponseCode<ApprovalsRequestBody, ApprovalsResponse>(It.IsAny<IPutApiRequest<ApprovalsRequestBody>>()))
+            .ThrowsAsync(new HttpRequestException("connection reset"));
 
-        var act = () => _sut.RequestApproval(10001234, 9999999999, response);
+        var outcome = await _sut.RequestApproval(10001234, 9999999999, response);
 
-        var ex = await act.Should().ThrowAsync<HttpRequestContentException>();
-        ex.Which.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        VerifyNotApproved(outcome);
+        VerifyCalls(Times.Exactly(MaxAttempts));
+        VerifyNoDecisionLogged(response);
+    }
+
+    [Test]
+    public async Task Should_Treat_As_Not_Approved_When_The_Call_Keeps_Timing_Out()
+    {
+        var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
+        _client.Setup(x => x.PutWithResponseCode<ApprovalsRequestBody, ApprovalsResponse>(It.IsAny<IPutApiRequest<ApprovalsRequestBody>>()))
+            .ThrowsAsync(new TaskCanceledException("timed out"));
+
+        var outcome = await _sut.RequestApproval(10001234, 9999999999, response);
+
+        VerifyNotApproved(outcome);
+        VerifyCalls(Times.Exactly(MaxAttempts));
+        VerifyNoDecisionLogged(response);
+    }
+
+    [TestCase(HttpStatusCode.BadRequest)]
+    [TestCase(HttpStatusCode.NotFound)]
+    [TestCase(HttpStatusCode.Conflict)]
+    public async Task Should_Treat_A_Permanent_Failure_As_Not_Approved_Without_Retrying(HttpStatusCode permanent)
+    {
+        var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
+        SetupResponses(Reply(permanent, null, "rejected"));
+
+        var outcome = await _sut.RequestApproval(10001234, 9999999999, response);
+
+        VerifyNotApproved(outcome);
         VerifyCalls(Times.Once());
+        VerifyNoDecisionLogged(response);
+    }
+
+    [Test]
+    public async Task Should_Treat_An_Unreadable_Response_As_Not_Approved_Without_Retrying()
+    {
+        var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
+        _client.Setup(x => x.PutWithResponseCode<ApprovalsRequestBody, ApprovalsResponse>(It.IsAny<IPutApiRequest<ApprovalsRequestBody>>()))
+            .ThrowsAsync(new System.Text.Json.JsonException("unexpected token"));
+
+        var outcome = await _sut.RequestApproval(10001234, 9999999999, response);
+
+        VerifyNotApproved(outcome);
+        VerifyCalls(Times.Once());
+        VerifyNoDecisionLogged(response);
+    }
+
+    [Test]
+    public async Task Should_Let_A_Failure_To_Build_The_Request_Propagate_Without_Calling_Approvals()
+    {
+        var builder = new Mock<IApprovalsRequestBuilder>();
+        builder.Setup(x => x.Build(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<BaseLearnerApiPutResponse>()))
+            .Throws(new InvalidOperationException("builder bug"));
+        var sut = new ApprovalsService(_client.Object, builder.Object, _logger.Object, TimeSpan.Zero);
+        var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.StartDate);
+
+        var act = () => sut.RequestApproval(10001234, 9999999999, response);
+
+        await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("builder bug");
+        VerifyCalls(Times.Never());
     }
 
     // ---- helpers ---------------------------------------------------------------------------
@@ -199,6 +258,22 @@ public class ApprovalsServiceTests
             sequence = sequence.ReturnsAsync(response);
         }
     }
+
+    private static void VerifyNotApproved(ApprovalsOutcome outcome)
+    {
+        outcome.AllAutoApproved.Should().BeFalse();
+        outcome.Response.Changes.Should().BeEmpty();
+    }
+
+    private void VerifyNoDecisionLogged(BaseLearnerApiPutResponse response) =>
+        _logger.Verify(x => x.Log(
+            LogLevel.Error,
+            It.IsAny<EventId>(),
+            It.Is<It.IsAnyType>((state, _) =>
+                state.ToString()!.Contains(response.LearningKey.ToString()) &&
+                state.ToString()!.Contains("treating it as not approved")),
+            It.IsAny<Exception?>(),
+            It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
 
     private void VerifyCalls(Times times) =>
         _client.Verify(x => x.PutWithResponseCode<ApprovalsRequestBody, ApprovalsResponse>(It.IsAny<IPutApiRequest<ApprovalsRequestBody>>()), times);

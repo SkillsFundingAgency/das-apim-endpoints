@@ -2,7 +2,6 @@ using System.Net;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
-using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Requests.CommitmentsInner;
 using SFA.DAS.LearnerData.Responses.CommitmentsInner;
@@ -21,7 +20,7 @@ public interface IApprovalsService
     /// anything else came back (pending, rejected, unrecognised, or no verdicts at all).
     /// Pending and rejected are deliberately not distinguished: both are simply a lack of approval.
     /// The response is returned as well so that the caller can echo it back as an event.
-    /// Throws if Approvals could not be reached or returned an error.
+    /// If no verdict can be obtained from Approvals, the failure is logged and the change is treated as not approved.
     /// </summary>
     Task<ApprovalsOutcome> RequestApproval(long ukprn, long uln, BaseLearnerApiPutResponse learningApiPutResponse);
 }
@@ -37,7 +36,6 @@ public record ApprovalsOutcome(bool AllAutoApproved, ApprovalsResponse Response)
 public class ApprovalsService : IApprovalsService
 {
     private const int MaxRetries = 3;
-    private const string AutoApprovedStatus = "autoApproved";
 
     private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsApiClient;
     private readonly IApprovalsRequestBuilder _requestBuilder;
@@ -94,20 +92,16 @@ public class ApprovalsService : IApprovalsService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Approvals request failed for learning {LearningKey} (apprenticeship {ApprenticeshipId}). No approval decision was obtained.",
+            _logger.LogError(ex, "Approvals request failed for learning {LearningKey} (apprenticeship {ApprenticeshipId}). No approval decision was obtained, so treating it as not approved and payments will be withheld.",
                 request.Data.LearningKey, request.Data.ApprenticeshipId);
-            throw;
+            return NotApproved;
         }
 
         if (!IsSuccess(apiResponse.StatusCode))
         {
-            _logger.LogError("Approvals responded {StatusCode} for learning {LearningKey} (apprenticeship {ApprenticeshipId}). No approval decision was obtained. Response body: {ErrorContent}",
+            _logger.LogError("Approvals responded {StatusCode} for learning {LearningKey} (apprenticeship {ApprenticeshipId}). No approval decision was obtained, so treating it as not approved and payments will be withheld. Response body: {ErrorContent}",
                 (int)apiResponse.StatusCode, request.Data.LearningKey, request.Data.ApprenticeshipId, apiResponse.ErrorContent);
-
-            throw new HttpRequestContentException(
-                $"Approvals responded {(int)apiResponse.StatusCode} ({apiResponse.StatusCode}) for learning {request.Data.LearningKey}.",
-                apiResponse.StatusCode,
-                apiResponse.ErrorContent);
+            return NotApproved;
         }
 
         var allAutoApproved = AreAllAutoApproved(apiResponse.Body);
@@ -116,12 +110,14 @@ public class ApprovalsService : IApprovalsService
         return new ApprovalsOutcome(allAutoApproved, apiResponse.Body ?? new ApprovalsResponse());
     }
 
+    private static ApprovalsOutcome NotApproved => new(false, new ApprovalsResponse());
+
     private static bool AreAllAutoApproved(ApprovalsResponse? response)
     {
         var verdicts = response?.Changes ?? [];
 
         return verdicts.Count > 0
-               && verdicts.All(v => string.Equals(v.ApprovalStatus, AutoApprovedStatus, StringComparison.OrdinalIgnoreCase));
+               && verdicts.All(v => v.IsAutoApproved);
     }
 
     private void LogRequest(ApprovalsRequestBody body)
@@ -158,8 +154,8 @@ public class ApprovalsService : IApprovalsService
                 body.LearningKey, body.ApprenticeshipId);
         }
 
-        _logger.LogInformation("Approvals result for learning {LearningKey} (apprenticeship {ApprenticeshipId}): all changes auto-approved = {AllAutoApproved}, {PriceCount} price(s) echoed back",
-            body.LearningKey, body.ApprenticeshipId, allAutoApproved, response?.Prices.Count ?? 0);
+        _logger.LogInformation("Approvals result for learning {LearningKey} (apprenticeship {ApprenticeshipId}): all changes auto-approved = {AllAutoApproved}",
+            body.LearningKey, body.ApprenticeshipId, allAutoApproved);
     }
 
     private static bool IsSuccess(HttpStatusCode statusCode) => (int)statusCode is >= 200 and < 300;

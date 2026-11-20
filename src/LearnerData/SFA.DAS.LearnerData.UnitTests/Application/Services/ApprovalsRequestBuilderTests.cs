@@ -98,13 +98,36 @@ public class ApprovalsRequestBuilderTests
     {
         // Arrange
         var response = ResponseWith(BaseLearnerApiPutResponse.LearningUpdateChanges.Prices);
+        response.Prices =
+        [
+            new BaseLearnerApiPutResponse.EpisodePrice
+            {
+                StartDate = new DateTime(2026, 9, 1),
+                EndDate = new DateTime(2027, 1, 31),
+                TrainingPrice = 15000m,
+                EndPointAssessmentPrice = 2000m,
+                TotalPrice = 17000m
+            },
+            new BaseLearnerApiPutResponse.EpisodePrice
+            {
+                StartDate = new DateTime(2027, 2, 1),
+                EndDate = new DateTime(2027, 8, 31),
+                TrainingPrice = 18000m,
+                EndPointAssessmentPrice = null,
+                TotalPrice = 18000m
+            }
+        ];
 
         // Act
         var result = _sut.Build(10001234, 9999999999, response);
 
         // Assert
         result.Data.Changes.Should().BeEmpty();
-        result.Data.NewPrices.Should().HaveCount(response.Prices.Count);
+        result.Data.NewPrices.Should().BeEquivalentTo(
+        [
+            new ApprovalsPrice { TrainingPrice = "15000.00", AssessmentPrice = "2000.00", EffectiveFrom = new DateTime(2026, 9, 1) },
+            new ApprovalsPrice { TrainingPrice = "18000.00", AssessmentPrice = "0.00", EffectiveFrom = new DateTime(2027, 2, 1) }
+        ], options => options.WithStrictOrdering());
     }
 
     [Test]
