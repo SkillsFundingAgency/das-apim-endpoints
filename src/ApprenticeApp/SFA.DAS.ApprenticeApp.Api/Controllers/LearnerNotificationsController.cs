@@ -98,5 +98,12 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
 
             return NoContent();
         }
+
+        [HttpPost("progress-notifications")]
+        public async Task<IActionResult> AddApprenticeshipProgress(Guid accountIdentifier)
+        {
+            await _mediator.Send(new AddApprenticeshipProgressCommand { ApprenticeId = accountIdentifier });
+            return Ok();
+        }
     }
 }

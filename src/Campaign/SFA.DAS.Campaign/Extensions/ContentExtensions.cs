@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -722,6 +722,109 @@ namespace SFA.DAS.Campaign.Extensions
                     TableHasHeaderColumn = contentItem.HasTableHeaderColumn()
                 });
             }
+        }
+
+        public const string AnnouncementCategoryContentTypeKey = "announcementCategory";
+
+        public static string GetAnnouncementCategoryTitle(this CmsContent content, LandingPage categoryLink)
+        {
+            var linkedId = categoryLink?.Sys?.Id;
+            if (linkedId == null)
+            {
+                return null;
+            }
+
+            var entry = content.Includes?.Entry?.FirstOrDefault(c =>
+                c.Sys?.Id != null && c.Sys.Id.Equals(linkedId, StringComparison.CurrentCultureIgnoreCase));
+
+            return entry?.Fields?.Title;
+        }
+
+        public static void ProcessContentNodeTypes(this CmsContent article, FluffyContent contentItem, List<ContentItem> contentItems)
+        {
+            if (contentItem.NodeType.NodeTypeIsContent())
+            {
+                contentItems.Add(new ContentItem
+                {
+                    Type = contentItem.NodeType,
+                    Values = contentItem.BuildParagraph(),
+                    TableValue = contentItem.BuildTable(article),
+                    VideoTranscripts = contentItem.BuildVideoTranscripts(article),
+                    CtaPanel = contentItem.BuildCtaPanel(article),
+                    StatsSection = contentItem.BuildStatsSection(article)
+                });
+            }
+        }
+
+        public static void ProcessListNodeTypes(this FluffyContent contentItem, List<ContentItem> contentItems)
+        {
+            if (contentItem.NodeType.NodeTypeIsList())
+            {
+                contentItems.Add(new ContentItem
+                {
+                    Type = contentItem.NodeType,
+                    TableValue = contentItem.GetListItems()
+                });
+            }
+        }
+
+        public static void ProcessEmbeddedAssetBlockNodeTypes(this CmsContent article, FluffyContent contentItem, List<ContentItem> contentItems)
+        {
+            if (contentItem.NodeType.NodeTypeIsEmbeddedAssetBlock())
+            {
+                contentItems.Add(new ContentItem
+                {
+                    Type = contentItem.NodeType,
+                    EmbeddedResource = article.GetEmbeddedResource(contentItem.Data.Target.Sys.Id)
+                });
+            }
+        }
+
+        /// <summary>
+        /// Resolves an ordered list of tab links (e.g. an article's tabbedContent or an announcement's sections)
+        /// against the included entries, keeping the editor's ordering.
+        /// </summary>
+        public static List<TabbedContentModel> BuildTabbedContent(this CmsContent content, List<TabbedContent> tabLinks)
+        {
+            var entries = content.Includes?.Entry;
+            if (tabLinks == null || entries == null)
+            {
+                return null;
+            }
+
+            var tabs = tabLinks
+                .Select(link => entries.FirstOrDefault(entry =>
+                    entry.Sys?.Id != null
+                    && entry.Sys.Id.Equals(link.Sys?.Id)
+                    && entry.Sys.ContentType?.Sys?.Id?.GetPageType() == PageType.Tab))
+                .Where(tab => tab?.Fields != null)
+                .Select(tab =>
+                {
+                    var tabModel = new TabbedContentModel
+                    {
+                        TabName = tab.Fields.TabName,
+                        TabTitle = tab.Fields.TabTitle,
+                        FindTraineeship = tab.Fields.FindTraineeship,
+                        Id = tab.Sys.Id
+                    };
+                    var contentItems = new List<ContentItem>();
+                    if (tab.Fields.TabContent?.Content != null)
+                    {
+                        foreach (var contentItem in tab.Fields.TabContent.Content)
+                        {
+                            content.ProcessContentNodeTypes(contentItem, contentItems);
+                            contentItem.ProcessListNodeTypes(contentItems);
+                            content.ProcessEmbeddedAssetBlockNodeTypes(contentItem, contentItems);
+                            content.ProcessEmbeddedEntryBlockNodeTypes(contentItem, contentItems);
+                            contentItem.ProcessTableNodeTypes(contentItems);
+                        }
+                    }
+                    tabModel.Content.Items = contentItems;
+                    return tabModel;
+                })
+                .ToList();
+
+            return tabs.Count == 0 ? null : tabs;
         }
 
         public static void ProcessEmbeddedEntryBlockNodeTypes(this CmsContent article, SubContentItems contentItem, List<ContentItem> contentItems)

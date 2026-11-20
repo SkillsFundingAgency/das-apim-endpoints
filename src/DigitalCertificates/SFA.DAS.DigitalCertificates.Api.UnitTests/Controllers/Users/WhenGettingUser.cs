@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Api.Controllers;
+using SFA.DAS.DigitalCertificates.Api.Models.Users;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetUser;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -35,7 +36,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var user = queryResult.User;
-            var expected = new Models.Users.GetUserResponse
+            var expected = new GetUserResponse
             {
                 Id = user.Id,
                 GovUkIdentifier = user.GovUkIdentifier,

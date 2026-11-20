@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
 
 namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAuthorise
 {
@@ -19,9 +19,15 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAuthorise
 
         public async Task<Unit> Handle(CreateUserAuthoriseCommand command, CancellationToken cancellationToken)
         {
-            var request = new PostAuthoriseUserRequest((PostAuthoriseUserRequestData)command, command.UserId);
+            var request = new PostUsersByUserIdAuthoriseApiRequest(new CreateUserAuthorisationRequest
+            {
+                Uln = command.Uln
+            })
+            {
+                UserId = command.UserId
+            };
 
-            var response = await _digitalCertificatesApiClient.PostWithResponseCode<PostAuthoriseUserRequestData, object>(request, false);
+            var response = await _digitalCertificatesApiClient.PostWithResponseCode<object>(request, false);
 
             response.EnsureSuccessStatusCode();
 

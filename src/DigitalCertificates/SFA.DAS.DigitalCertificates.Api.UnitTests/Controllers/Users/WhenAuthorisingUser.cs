@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Api.Controllers;
+using SFA.DAS.DigitalCertificates.Api.Models.Users;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAuthorise;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -19,7 +20,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
         [Test, MoqAutoData]
         public async Task Then_Returns_NoContent_And_Mediator_Send_Called(
             Guid userId,
-            Models.Users.CreateUserAuthoriseRequest request,
+            CreateUserAuthoriseRequest request,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] UsersController controller)
         {
@@ -42,7 +43,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             Guid userId,
-            Models.Users.CreateUserAuthoriseRequest request,
+            CreateUserAuthoriseRequest request,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] UsersController controller)
         {
