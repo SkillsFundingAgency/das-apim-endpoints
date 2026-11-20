@@ -574,6 +574,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Recr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Recruit.UnitTests", "Shared\SFA.DAS.SharedOuterApi.Recruit.UnitTests\SFA.DAS.SharedOuterApi.Recruit.UnitTests.csproj", "{5CD2218A-2D05-42A4-95C2-A55B81A67D09}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EmployerFinanceJobs", "EmployerFinanceJobs", "{1A24B9F0-107B-4741-94E5-B3D0F89EF6B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerFinanceJobs.Api", "EmployerFinanceJobs\SFA.DAS.EmployerFinanceJobs.Api\SFA.DAS.EmployerFinanceJobs.Api.csproj", "{46C68CA6-5F67-4842-9018-6A95D4EB0CD0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerFinanceJobs", "EmployerFinanceJobs\SFA.DAS.EmployerFinanceJobs\SFA.DAS.EmployerFinanceJobs.csproj", "{2097D0A6-5FA7-4032-BB80-420C63A150BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerFinanceJobs.UnitTests", "EmployerFinanceJobs\SFA.DAS.EmployerFinanceJobs.Api.UnitTests\SFA.DAS.EmployerFinanceJobs.UnitTests.csproj", "{1ABDD77E-D826-466F-80BB-EB59E54279FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1504,6 +1512,18 @@ Global
 		{5CD2218A-2D05-42A4-95C2-A55B81A67D09}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CD2218A-2D05-42A4-95C2-A55B81A67D09}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CD2218A-2D05-42A4-95C2-A55B81A67D09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46C68CA6-5F67-4842-9018-6A95D4EB0CD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46C68CA6-5F67-4842-9018-6A95D4EB0CD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46C68CA6-5F67-4842-9018-6A95D4EB0CD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46C68CA6-5F67-4842-9018-6A95D4EB0CD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2097D0A6-5FA7-4032-BB80-420C63A150BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2097D0A6-5FA7-4032-BB80-420C63A150BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2097D0A6-5FA7-4032-BB80-420C63A150BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2097D0A6-5FA7-4032-BB80-420C63A150BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1ABDD77E-D826-466F-80BB-EB59E54279FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1ABDD77E-D826-466F-80BB-EB59E54279FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1ABDD77E-D826-466F-80BB-EB59E54279FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1ABDD77E-D826-466F-80BB-EB59E54279FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1739,6 +1759,9 @@ Global
 		{43AF2766-DE69-4D6B-A2CF-4240C40217B0} = {C26049C4-45D6-4E3C-91EC-4F54CA8DFFE1}
 		{0BD62027-0232-40BC-AD24-1161FBF5A1B4} = {9C327515-DF6A-4277-BF53-4C86D510C718}
 		{5CD2218A-2D05-42A4-95C2-A55B81A67D09} = {9C327515-DF6A-4277-BF53-4C86D510C718}
+		{46C68CA6-5F67-4842-9018-6A95D4EB0CD0} = {1A24B9F0-107B-4741-94E5-B3D0F89EF6B6}
+		{2097D0A6-5FA7-4032-BB80-420C63A150BA} = {1A24B9F0-107B-4741-94E5-B3D0F89EF6B6}
+		{1ABDD77E-D826-466F-80BB-EB59E54279FE} = {1A24B9F0-107B-4741-94E5-B3D0F89EF6B6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2353A4D0-2859-4472-B2D4-BBD8087B4E22}
