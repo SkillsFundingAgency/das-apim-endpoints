@@ -14,4 +14,5 @@ public class ValidateSelectMultipleLearnerRecordsQuery : IRequest<ValidateSelect
     public UserInfo UserInfo { get; set; }
     public long? CohortId { get; set; }
     public string CohortReference { get; set; }
+    public string EncodedPledgeApplicationId { get; set; }
 }

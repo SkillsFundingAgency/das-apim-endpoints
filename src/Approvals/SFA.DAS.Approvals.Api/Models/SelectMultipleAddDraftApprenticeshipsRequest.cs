@@ -14,4 +14,5 @@ public class SelectMultipleAddDraftApprenticeshipsRequest
     public long? CohortId { get; set; }
     public long? TransferSenderAccountId { get; set; }
     public string CohortReference { get; set; }
+    public string EncodedPledgeApplicationId { get; set; }
 }

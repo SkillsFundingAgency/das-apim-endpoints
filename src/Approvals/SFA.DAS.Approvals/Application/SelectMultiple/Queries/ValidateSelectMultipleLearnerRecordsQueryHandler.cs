@@ -102,7 +102,8 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandler(
                 LegalEntityId = command.AccountLegalEntityId,
                 TransferSenderId = command.TransferSenderAccountId,
                 CohortId = command.CohortId,
-                CohortRef = command.CohortReference
+                CohortRef = command.CohortReference,
+                EPAOrgId = command.EncodedPledgeApplicationId
             };
         }).ToList();
 

@@ -117,7 +117,8 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
                 EndPointAssessmentPrice = learner.EpaoPrice,
                 ActualStartDate = learner.StartDate,
                 LearnerDataId = learner.Id,
-                TransferSenderId = command.TransferSenderAccountId
+                TransferSenderId = command.TransferSenderAccountId,
+                EPAOrgId = command.EncodedPledgeApplicationId
             };
         }).ToList();
     }
@@ -156,7 +157,8 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
             UserInfo = command.UserInfo,
             TransferSenderAccountId = command.TransferSenderAccountId,
             CohortId = command.CohortId,
-            CohortReference = command.CohortReference
+            CohortReference = command.CohortReference,
+            EncodedPledgeApplicationId = command.EncodedPledgeApplicationId
         };
 
         var result = await mediator.Send(validateQuery, cancellationToken);
