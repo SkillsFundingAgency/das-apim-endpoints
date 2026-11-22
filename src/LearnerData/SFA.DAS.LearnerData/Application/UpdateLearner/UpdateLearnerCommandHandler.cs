@@ -93,7 +93,9 @@ public class UpdateLearnerCommandHandler(
 
                 var releaseEnglishAndMaths = englishAndMathsCourseKeys.Count > 0;
 
-                if (learningApiPutResponse.Changes.HasForceEarningsSync())
+                // A withdrawal (or its removal) recalculates the English and Maths courses alongside the apprenticeship,
+                // so everything is released rather than only the courses reported as changed by the English and Maths update
+                if (learningApiPutResponse.Changes.HasForceEarningsSync() || learningApiPutResponse.Changes.HasWithdrawalUpdate())
                 {
                     // Release All
                     await ReleaseEarnings(command, learningApiPutResponse.LearningKey, ReleaseType.All, []);

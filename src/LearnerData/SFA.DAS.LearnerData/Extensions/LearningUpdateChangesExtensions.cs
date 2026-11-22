@@ -29,6 +29,12 @@ public static class LearningUpdateChangesExtensions
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsLearningSupport);
     }
 
+    public static bool HasWithdrawalUpdate(this List<UpdateLearnerApiPutResponse.LearningUpdateChanges> changes)
+    {
+        return changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal)
+               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal);
+    }
+
     public static bool HasPersonalDetailsOnly(this List<UpdateLearnerApiPutResponse.LearningUpdateChanges> changes)
     {
         return changes.SequenceEqual(new [] { UpdateLearnerApiPutResponse.LearningUpdateChanges.PersonalDetails });

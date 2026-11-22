@@ -59,6 +59,25 @@ namespace SFA.DAS.LearnerData.UnitTests.Extensions
             changes.HasEnglishAndMathsUpdate().Should().BeFalse();
         }
 
+        [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal)]
+        [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal)]
+        public void HasWithdrawalUpdate_ReturnsTrue_ForWithdrawalChanges(UpdateLearnerApiPutResponse.LearningUpdateChanges change)
+        {
+            var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges> { change };
+
+            changes.HasWithdrawalUpdate().Should().BeTrue();
+        }
+
+        [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.WithdrawalReasonChanged)]
+        [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsWithdrawal)]
+        [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate)]
+        public void HasWithdrawalUpdate_ReturnsFalse_WhenNoRelevantChanges(UpdateLearnerApiPutResponse.LearningUpdateChanges change)
+        {
+            var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges> { change };
+
+            changes.HasWithdrawalUpdate().Should().BeFalse();
+        }
+
         [Test]
         public void HasPersonalDetailsOnly_ReturnsTrue_WhenOnlyPersonalDetailsPresent()
         {
