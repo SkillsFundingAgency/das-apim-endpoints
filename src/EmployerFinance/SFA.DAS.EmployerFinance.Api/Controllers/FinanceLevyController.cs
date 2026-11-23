@@ -60,7 +60,7 @@ public class FinanceLevyController(IMediator mediator,
         try
         {
             var projectionMonths = await mediator.Send(new GetLevyProjectionMonthsByAccountIdQuery(accountId));
-            var result = await mediator.Send(new GetLevyProjectionsByAccountIdQuery(accountId, projectionMonths.Months));
+            var result = await mediator.Send(new GetLevyProjectionsByAccountIdQuery(accountId, projectionMonths.Months, TriggerRefresh: false));
 
             return TypedResults.Ok(result);
         }
