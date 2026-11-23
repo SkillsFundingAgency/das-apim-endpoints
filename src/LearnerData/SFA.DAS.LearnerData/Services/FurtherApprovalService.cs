@@ -96,14 +96,20 @@ public class FurtherApprovalService(
         // new values are copied from Approvals' response and sent straight back to Approvals. It is defined as an event, but is a
         // command in disguise, since it is really an instruction to Approvals to apply the change it has just auto-approved.
 
+        var approvedLearningUpdatedEvent = approvedLearningUpdatedEventBuilder.Build(learningResponse, approvalsResponse);
+        var changes = string.Join(", ", approvedLearningUpdatedEvent.Changes.Select(x => x.ChangeType));
+
         try
         {
-            await messageSession.Publish(approvedLearningUpdatedEventBuilder.Build(learningResponse, approvalsResponse));
+            await messageSession.Publish(approvedLearningUpdatedEvent);
+
+            logger.LogInformation("Published ApprovedLearningUpdatedEvent for learning {LearningKey}, episode {EpisodeKey} (apprenticeship {ApprenticeshipId}): changes {Changes}, {PriceCount} prices",
+                learningResponse.LearningKey, learningResponse.LearningEpisodeKey, learningResponse.ApprovalsApprenticeshipId, changes, approvedLearningUpdatedEvent.Prices.Count);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Change was auto-approved for learning {LearningKey} (apprenticeship {ApprenticeshipId}), but publishing ApprovedLearningUpdatedEvent failed. The event has not been sent for changes: {Changes}",
-                learningResponse.LearningKey, learningResponse.ApprovalsApprenticeshipId, string.Join(", ", approvalsResponse.Changes.Select(x => x.ChangeType)));
+            logger.LogError(ex, "Change was auto-approved for learning {LearningKey} (apprenticeship {ApprenticeshipId}), but publishing ApprovedLearningUpdatedEvent failed. The event has not been sent for changes: {Changes}, {PriceCount} prices",
+                learningResponse.LearningKey, learningResponse.ApprovalsApprenticeshipId, changes, approvedLearningUpdatedEvent.Prices.Count);
         }
     }
 }

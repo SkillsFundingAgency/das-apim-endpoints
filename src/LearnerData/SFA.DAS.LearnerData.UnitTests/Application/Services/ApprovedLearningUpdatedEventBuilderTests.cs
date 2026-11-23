@@ -191,6 +191,51 @@ public class ApprovedLearningUpdatedEventBuilderTests
     }
 
     [Test]
+    public void Build_Should_Echo_An_Auto_Approved_Planned_End_Date()
+    {
+        // Arrange
+        var approvals = new ApprovalsResponse
+        {
+            Changes =
+            [
+                new ApprovalsChangeResult { ChangeType = "PlannedEndDate", ApprovalStatus = "autoApproved", Data = new ApprovalsChangeData { Old = "2027-07-31", New = "2027-09-30" } }
+            ]
+        };
+
+        // Act
+        var result = _sut.Build(new UpdateLearnerApiPutResponse(), approvals);
+
+        // Assert
+        result.Changes.Should().ContainSingle();
+        result.Changes[0].ChangeType.Should().Be("PlannedEndDate");
+        result.Changes[0].Data.Old.Should().Be("2027-07-31");
+        result.Changes[0].Data.New.Should().Be("2027-09-30");
+        result.Prices.Should().BeEmpty();
+    }
+
+    [TestCase("pending")]
+    [TestCase("employerApprovalRequested")]
+    [TestCase("autoRejected")]
+    public void Build_Should_Not_Echo_A_Planned_End_Date_That_Was_Not_Auto_Approved(string status)
+    {
+        // Arrange
+        var approvals = new ApprovalsResponse
+        {
+            Changes =
+            [
+                new ApprovalsChangeResult { ChangeType = "StartDate", ApprovalStatus = "autoApproved", Data = new ApprovalsChangeData { Old = "2026-09-01", New = "2026-09-15" } },
+                new ApprovalsChangeResult { ChangeType = "PlannedEndDate", ApprovalStatus = status, Data = new ApprovalsChangeData { Old = "2027-07-31", New = "2027-09-30" } }
+            ]
+        };
+
+        // Act
+        var result = _sut.Build(new UpdateLearnerApiPutResponse(), approvals);
+
+        // Assert
+        result.Changes.Select(x => x.ChangeType).Should().Equal("StartDate");
+    }
+
+    [Test]
     public void Build_Should_Echo_An_Auto_Approved_Start_Date_Without_The_Prices_That_Are_Pending()
     {
         // Arrange
