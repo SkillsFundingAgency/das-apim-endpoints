@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -19,11 +19,12 @@ public class FinanceLevyController(IMediator mediator,
     [Route("projections")]
     public async Task<IResult> GetLevyProjections(
         [FromRoute, Required] long accountId,
-        [FromQuery] int months = 6)
+        [FromQuery] int months = 6,
+        [FromQuery] bool triggerRefresh = true)
     {
         try
         {
-            var result = await mediator.Send(new GetLevyProjectionsByAccountIdQuery(accountId, months));
+            var result = await mediator.Send(new GetLevyProjectionsByAccountIdQuery(accountId, months, triggerRefresh));
 
             return TypedResults.Ok(result);
         }

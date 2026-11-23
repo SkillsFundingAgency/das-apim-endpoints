@@ -95,6 +95,7 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
 
         _projectionRequest!.AccountId.Should().Be(AccountId);
         _projectionRequest.PostData.Months.Should().Be(6);
+        _projectionRequest.PostData.TriggerRefresh.Should().BeTrue();
         _projectionRequest.PostData.HistoricLevyIn.Should().BeEquivalentTo(
             new List<LevyInMonthSummary> { new(new DateOnly(now.Year, now.Month, 1).AddMonths(1), 1100m) });
 
@@ -104,6 +105,7 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
         result.Summary.TotalCommittedTransfersCosts.Should().Be(_estimatesTimeline.TotalEstimatedCommitedTransferCost);
         result.Projections.Should().BeEquivalentTo(_estimatesTimeline.Projections);
         result.LatestLevyDeclarationInDate.Should().Be(lastSubmissionDate);
+        result.LastSuccessfulImportDate.Should().Be(_estimatesTimeline.LastSuccessfulImportDate);
     }
 
     [Test]

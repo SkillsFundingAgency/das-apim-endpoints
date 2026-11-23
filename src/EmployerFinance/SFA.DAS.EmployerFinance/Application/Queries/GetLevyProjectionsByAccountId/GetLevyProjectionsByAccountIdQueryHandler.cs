@@ -77,7 +77,8 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
                 PaymentFundsOutForExpiry = fundsOutTask.Result ?? [],
                 LongTermExpiredFunds = expiredLevy?.LongTerm ?? [],
                 ShortTermExpiredFunds = expiredLevy?.ShortTerm ?? [],
-                CurrentPayments = currentPaymentsTask.Result
+                CurrentPayments = currentPaymentsTask.Result,
+                TriggerRefresh = request.TriggerRefresh
             }));
 
         var projection = projectionResponse.Body;
@@ -95,7 +96,8 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
                 TotalCommittedTransfersCosts = projection.TotalEstimatedCommitedTransferCost
             },
             Projections = projection.Projections,
-            LatestLevyDeclarationInDate = GetLatestSubmissionDate(declarations) ?? DateTime.MinValue
+            LatestLevyDeclarationInDate = GetLatestSubmissionDate(declarations) ?? DateTime.MinValue,
+            LastSuccessfulImportDate = projection.LastSuccessfulImportDate
         };
     }
 
