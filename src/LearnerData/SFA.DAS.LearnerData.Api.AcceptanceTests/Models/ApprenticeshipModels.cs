@@ -29,6 +29,8 @@ public class LearningDeliveryModel
     public DateTime ExpectedEndDate { get; set; }
     public DateTime? ActualEndDate { get; set; }
     public string LearnAimRef { get; set; }
+    public int StandardCode { get; set; }
+    public string? AgreementId { get; set; }
 }
 
 public class PriceEpisodeModel

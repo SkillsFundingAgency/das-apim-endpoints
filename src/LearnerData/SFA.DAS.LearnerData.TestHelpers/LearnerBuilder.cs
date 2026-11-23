@@ -160,8 +160,13 @@ public static class LearnerBuilder
     {
         var instalments = new List<Instalment>();
 
-        // Learning inner only creates the episode from onProgrammes for the episode's standard, so onProgrammes for other standards have no prices
-        foreach (var program in testLearner.UpdateLearnerRequest.Delivery.OnProgramme.Where(x => x.StandardCode.ToString() == learningEpisode.TrainingCode))
+        // Learning inner only creates the episode from the first apprenticeship onProgrammes (same standard and agreement as the earliest), so other onProgrammes have no prices.
+        // This deliberately does not use the production rule, so the tests fail if that rule changes
+        var earliestOnProgramme = testLearner.UpdateLearnerRequest.Delivery.OnProgramme.MinBy(x => x.StartDate)!;
+        var firstApprenticeshipOnProgrammes = testLearner.UpdateLearnerRequest.Delivery.OnProgramme
+            .Where(x => x.StandardCode == earliestOnProgramme.StandardCode && x.AgreementId == earliestOnProgramme.AgreementId);
+
+        foreach (var program in firstApprenticeshipOnProgrammes)
         {
             var periodInLearningKey = Guid.NewGuid();
             var programEndDate = (new []{program.WithdrawalDate, program.PauseDate, program.ExpectedEndDate}).Min();
