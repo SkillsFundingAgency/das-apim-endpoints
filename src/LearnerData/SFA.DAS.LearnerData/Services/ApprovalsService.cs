@@ -148,6 +148,12 @@ public class ApprovalsService : IApprovalsService
                 body.LearningKey, body.ApprenticeshipId, verdict.ChangeType, verdict.ApprovalStatus, verdict.Reason);
         }
 
+        foreach (var verdict in verdicts.Where(v => IsPlannedEndDate(v) && !v.IsAutoApproved))
+        {
+            _logger.LogWarning("Approvals returned {ApprovalStatus} for the planned end date of learning {LearningKey} (apprenticeship {ApprenticeshipId}), reason '{Reason}'. Planned end dates are expected to be auto-approved.",
+                verdict.ApprovalStatus, body.LearningKey, body.ApprenticeshipId, verdict.Reason);
+        }
+
         if (verdicts.Count == 0)
         {
             _logger.LogWarning("Approvals returned no verdicts for learning {LearningKey} (apprenticeship {ApprenticeshipId}). Treating as not auto-approved.",
@@ -157,6 +163,9 @@ public class ApprovalsService : IApprovalsService
         _logger.LogInformation("Approvals result for learning {LearningKey} (apprenticeship {ApprenticeshipId}): all changes auto-approved = {AllAutoApproved}",
             body.LearningKey, body.ApprenticeshipId, allAutoApproved);
     }
+
+    private static bool IsPlannedEndDate(ApprovalsChangeResult verdict) =>
+        string.Equals(verdict.ChangeType, nameof(CocChangeField.PlannedEndDate), StringComparison.OrdinalIgnoreCase);
 
     private static bool IsSuccess(HttpStatusCode statusCode) => (int)statusCode is >= 200 and < 300;
 
