@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using SFA.DAS.EmployerFinance.Application.Queries.GetLevyProjectionMonthsByAccountId;
 using SFA.DAS.EmployerFinance.Application.Queries.GetLevyProjectionsByAccountId;
+using SFA.DAS.EmployerFinance.Application.Queries.GetLevyProjectionsStatusByAccountId;
 
 namespace SFA.DAS.EmployerFinance.Api.Controllers;
 
@@ -31,6 +32,23 @@ public class FinanceLevyController(IMediator mediator,
         catch (Exception e)
         {
             logger.LogError(e, "Error getting levy projections for account {AccountId}", accountId);
+            return TypedResults.InternalServerError();
+        }
+    }
+
+    [HttpGet]
+    [Route("projections/status")]
+    public async Task<IResult> GetLevyProjectionsStatus([FromRoute, Required] long accountId)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetLevyProjectionsStatusByAccountIdQuery(accountId));
+
+            return TypedResults.Ok(result);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error getting levy projections status for account {AccountId}", accountId);
             return TypedResults.InternalServerError();
         }
     }
