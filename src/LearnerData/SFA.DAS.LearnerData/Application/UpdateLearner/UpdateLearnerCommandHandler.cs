@@ -80,7 +80,11 @@ public class UpdateLearnerCommandHandler(
                     }
                 }
 
-                if (learningApiPutResponse.Changes.HasEnglishAndMathsUpdate())
+                // English and Maths learning support is limited to the apprenticeship withdrawal date, so a withdrawal (or its removal)
+                // resends the English and Maths details to recalculate it from the ILR
+                var withdrawalAffectsEnglishAndMaths = learningApiPutResponse.Changes.HasWithdrawalUpdate() && request.Data.EnglishAndMathsCourses.Any();
+
+                if (learningApiPutResponse.Changes.HasEnglishAndMathsUpdate() || withdrawalAffectsEnglishAndMaths)
                 {
                     logger.LogInformation("Updating Earnings with English and Maths changes for learning {LearningKey}", learningApiPutResponse.LearningKey);
                     var englishAndMathsRequest = updateEarningsEnglishAndMathsRequestBuilder.Build(command, learningApiPutResponse, request);

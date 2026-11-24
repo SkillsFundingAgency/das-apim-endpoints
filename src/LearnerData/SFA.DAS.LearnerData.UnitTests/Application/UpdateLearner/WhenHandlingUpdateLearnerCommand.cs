@@ -490,6 +490,7 @@ public class WhenHandlingUpdateLearnerCommand
         var command = _fixture.Create<UpdateLearnerCommand>();
 
         var updateOnProgPutRequest = _fixture.Create<UpdateOnProgrammeApiPutRequest>();
+        var englishAndMathsApiPutRequest = _fixture.Create<UpdateEnglishAndMathsApiPutRequest>();
 
         var updateLearningApiResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
         updateLearningApiResponse.Changes.Clear();
@@ -497,6 +498,64 @@ public class WhenHandlingUpdateLearnerCommand
 
         MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
         var apiPutRequest = MockLearningPutRequestBuilder(command);
+        apiPutRequest.Data.EnglishAndMathsCourses.Should().NotBeEmpty();
+
+        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data))
+            .ReturnsAsync(updateOnProgPutRequest);
+
+        _earningsApiClient.Setup(x => x.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateOnProgrammeEarningsApiPutResponse>(new UpdateOnProgrammeEarningsApiPutResponse { HasNewEarningsProfileVersionBeenGenerated = true }, HttpStatusCode.OK, ""));
+
+        _updateEarningsEnglishAndMathsRequestBuilder.Setup(x => x.Build(command, updateLearningApiResponse, apiPutRequest))
+            .Returns(englishAndMathsApiPutRequest);
+
+        _earningsApiClient.Setup(x => x.PutWithResponseCode<UpdateEnglishAndMathsRequest, UpdateEnglishAndMathsEarningsApiPutResponse>(It.IsAny<UpdateEnglishAndMathsApiPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateEnglishAndMathsEarningsApiPutResponse>(new UpdateEnglishAndMathsEarningsApiPutResponse(), HttpStatusCode.OK, ""));
+
+        _earningsApiClient.Setup(x => x.Post(It.IsAny<ReleaseEarningsApiPostRequest>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        //Assert
+        _earningsApiClient.Verify(x => x.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(
+                It.Is<UpdateOnProgrammeApiPutRequest>(r => r == updateOnProgPutRequest)),
+            Times.Once);
+
+        // English and Maths details are resent so their learning support is recalculated against the withdrawal
+        _earningsApiClient.Verify(x => x.PutWithResponseCode<UpdateEnglishAndMathsRequest, UpdateEnglishAndMathsEarningsApiPutResponse>(
+                It.Is<UpdateEnglishAndMathsApiPutRequest>(r => r == englishAndMathsApiPutRequest)),
+            Times.Once);
+
+        // English and Maths courses are recalculated with the apprenticeship withdrawal, so all are released
+        _earningsApiClient.Verify(x => x.Post(
+                It.Is<ReleaseEarningsApiPostRequest>(r =>
+                    r.Data.LearnerKey == command.LearnerKey &&
+                    r.Data.LearnerRef == command.UpdateLearnerRequest.Learner.LearnerRef &&
+                    r.Data.ReleaseType == ReleaseType.All &&
+                    r.Data.EnglishAndMathsCourseKeys.Count == 0)),
+            Times.Once);
+
+        _earningsApiClient.VerifyNoOtherCalls();
+    }
+
+    [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal)]
+    [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal)]
+    public async Task Then_English_And_Maths_Is_Not_Updated_When_The_Withdrawal_Changes_And_There_Are_No_English_And_Maths_Courses(UpdateLearnerApiPutResponse.LearningUpdateChanges withdrawalChange)
+    {
+        // Arrange
+        var command = _fixture.Create<UpdateLearnerCommand>();
+
+        var updateOnProgPutRequest = _fixture.Create<UpdateOnProgrammeApiPutRequest>();
+
+        var updateLearningApiResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
+        updateLearningApiResponse.Changes.Clear();
+        updateLearningApiResponse.Changes.Add(withdrawalChange);
+
+        MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
+        var apiPutRequest = MockLearningPutRequestBuilder(command);
+        apiPutRequest.Data.EnglishAndMathsCourses.Clear();
 
         _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data))
             .ReturnsAsync(updateOnProgPutRequest);
@@ -511,20 +570,10 @@ public class WhenHandlingUpdateLearnerCommand
         await _sut.Handle(command, CancellationToken.None);
 
         //Assert
-        _earningsApiClient.Verify(x => x.PutWithResponseCode<UpdateOnProgrammeRequest, UpdateOnProgrammeEarningsApiPutResponse>(
-                It.Is<UpdateOnProgrammeApiPutRequest>(r => r == updateOnProgPutRequest)),
-            Times.Once);
-
-        // English and Maths courses are recalculated with the apprenticeship withdrawal, so all are released
-        _earningsApiClient.Verify(x => x.Post(
-                It.Is<ReleaseEarningsApiPostRequest>(r =>
-                    r.Data.LearnerKey == command.LearnerKey &&
-                    r.Data.LearnerRef == command.UpdateLearnerRequest.Learner.LearnerRef &&
-                    r.Data.ReleaseType == ReleaseType.All &&
-                    r.Data.EnglishAndMathsCourseKeys.Count == 0)),
-            Times.Once);
-
-        _earningsApiClient.VerifyNoOtherCalls();
+        _earningsApiClient.Verify(x => x.PutWithResponseCode<UpdateEnglishAndMathsRequest, UpdateEnglishAndMathsEarningsApiPutResponse>(
+                It.IsAny<UpdateEnglishAndMathsApiPutRequest>()),
+            Times.Never);
+        _updateEarningsEnglishAndMathsRequestBuilder.Verify(x => x.Build(It.IsAny<UpdateLearnerCommand>(), It.IsAny<UpdateLearnerApiPutResponse>(), It.IsAny<UpdateLearningApiPutRequest>()), Times.Never);
     }
 
     [Test]
