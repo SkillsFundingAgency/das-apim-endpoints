@@ -33,6 +33,7 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
     private const string PaymentFundsOutCacheKey = "GetPaymentFundsOut_{0}_{1}";
     private const string ExpiredLevyCacheKey = "GetExpiredLevy_{0}_{1}";
     private const string LevyDeclarationSummaryCacheKey = "GetLevyDeclarationSummaryByDate_{0}_{1}_{2}";
+    private const string CeasedPayeSchemesCacheKey = "GetCeasedPayeSchemes_{0}_{1}";
     private const string LatestTransactionTypeTransactionIdsCacheKey = "LatestTransactionTypeTransactionIds_{0}";
     private const string NoTransactionsKeySegment = "none";
 
@@ -56,6 +57,8 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
         await Task.WhenAll(latestIdsTask, accountPayeSchemesTask);
         var latestIds = latestIdsTask.Result;
         var accountPayeSchemes = accountPayeSchemesTask.Result;
+        var ceasedPayeSchemes = await GetCeasedPayeSchemesAsync(request.AccountId, latestIds?.LatestDeclarationId);
+        accountPayeSchemes = [.. accountPayeSchemes.Except(ceasedPayeSchemes ?? [], StringComparer.OrdinalIgnoreCase)];
 
         var fundsInTask = GetFundsInAsync(request.AccountId, latestIds?.LatestDeclarationId);
         var fundsOutTask = GetFundsOutAsync(request.AccountId, latestIds?.LatestPaymentId);
@@ -148,6 +151,11 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
         response.EnsureSuccessStatusCode();
         return [.. (response.Body ?? []).Select(p => p.Id)];
     }
+
+    private Task<List<string>?> GetCeasedPayeSchemesAsync(long accountId, long? latestDeclarationId) =>
+        GetOrCacheAsync(
+            string.Format(CeasedPayeSchemesCacheKey, accountId, ToKeySegment(latestDeclarationId)),
+            async () => await financeApiClient.Get<List<string>>(new GetCeasedPayeSchemesRequest(accountId)));
 
     private async Task<List<LevyDeclaration>?> FetchHistoricTransactionLinesDataAsync(DateTime now, long accountId, long? latestDeclarationId, List<string> emprefs)
     {
