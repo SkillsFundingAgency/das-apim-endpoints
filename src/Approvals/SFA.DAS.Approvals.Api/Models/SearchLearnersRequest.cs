@@ -20,4 +20,5 @@ public class SearchLearnersRequest
     [JsonConverter(typeof(StringEnumConverter))]
     public LearningType? LearningType { get; set; }
     public List<long> ExcludeUlns { get; set; } = new();
+    public string AgreementId { get; set; }
 }
