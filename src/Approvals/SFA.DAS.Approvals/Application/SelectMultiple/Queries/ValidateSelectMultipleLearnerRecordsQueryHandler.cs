@@ -60,7 +60,7 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandler(
                 ProviderId = (uint?)command.ProviderId,
                 RowNumber = index + 1,
                 Id = Guid.NewGuid(),
-                StartDate = learner.StartDate,
+                StartDate = learner.StartDate
             };
 
         }).ToList();

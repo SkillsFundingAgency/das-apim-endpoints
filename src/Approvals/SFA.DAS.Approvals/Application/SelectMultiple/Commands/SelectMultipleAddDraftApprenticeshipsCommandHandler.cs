@@ -187,7 +187,8 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
                 Id = Guid.NewGuid(),
                 StartDate = learner.StartDate,
                 ULN = learner.Uln.ToString(),
-                UserId = parsedUserId
+                UserId = parsedUserId,
+                TransferSenderAccountId = command.TransferSenderAccountId
             };
         }).ToList();
 
