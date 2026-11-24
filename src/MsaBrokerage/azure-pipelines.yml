@@ -52,4 +52,5 @@ stages:
 - template: ../../pipeline-templates/stage/outerapi-pipeline.yml
   parameters:
     OuterApiName: MsaBrokerage
-    ApimEndpointsRedisConnectionString: $(ApimEndpointsRedisConnectionString)
+    ConfigurationSecrets:
+      ApimEndpointsRedisConnectionString: $(ApimEndpointsRedisConnectionString)
