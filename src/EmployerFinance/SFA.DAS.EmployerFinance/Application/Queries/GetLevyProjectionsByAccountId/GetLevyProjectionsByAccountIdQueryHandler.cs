@@ -67,7 +67,7 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
 
         await Task.WhenAll(levySummaryTask, declarationsTask, fundsInTask, fundsOutTask, expiredLevyTask, currentPaymentsTask);
         var levySummary = levySummaryTask.Result;
-        var declarations = declarationsTask.Result;
+        var declarations = declarationsTask.Result ?? [];
         var expiredLevy = expiredLevyTask.Result;
 
         var projectionResponse = await projectionApiClient.PostWithResponseCode<EstimatesTimeline>(
