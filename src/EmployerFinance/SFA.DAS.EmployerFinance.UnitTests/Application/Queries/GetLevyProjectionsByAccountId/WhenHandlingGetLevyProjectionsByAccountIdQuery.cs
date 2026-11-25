@@ -62,6 +62,7 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
         SetupLatestIds(new GetLatestTransactionTypeTransactionIdsForAccountResponse { LatestDeclarationId = 121, LatestPaymentId = 115, LatestExpiryId = 100 });
         SetupFundsData([], [], new GetExpiredLevyResponse());
         SetupDeclarations([]);
+        SetupCeasedPayeSchemes([]);
         SetupCacheMisses();
 
         _financeApiClient
@@ -211,7 +212,10 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
     {
         // arrange
         if (returnsNull)
+        {
             SetupFundsData(null, null, null);
+            SetupCeasedPayeSchemes(null);
+        }
 
         // act
         await Handle();
@@ -221,6 +225,7 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
         _projectionRequest.PostData.PaymentFundsOutForExpiry.Should().NotBeNull().And.BeEmpty();
         _projectionRequest.PostData.LongTermExpiredFunds.Should().NotBeNull().And.BeEmpty();
         _projectionRequest.PostData.ShortTermExpiredFunds.Should().NotBeNull().And.BeEmpty();
+        _declarationsRequest!.Emprefs.Should().BeEquivalentTo(DefaultEmprefs);
     }
 
     [Test]
@@ -264,6 +269,8 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
         var (fundsIn, fundsOut, expiredLevy) = SetupRandomFundsData();
         List<LevyDeclaration> declarations = [new LevyDeclaration { PayrollMonth = 1, PayrollYear = "25-26", TotalAmount = 100m }];
         SetupDeclarations(declarations);
+        List<string> ceasedPayeSchemes = ["999/ZZ999"];
+        SetupCeasedPayeSchemes(ceasedPayeSchemes);
 
         // act
         await Handle();
@@ -272,6 +279,7 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
         _cacheStorageService.Verify(x => x.SaveToCache($"GetLevyFundsIn_{AccountId}_121", fundsIn, TimeSpan.FromDays(7), null), Times.Once);
         _cacheStorageService.Verify(x => x.SaveToCache($"GetPaymentFundsOut_{AccountId}_115", fundsOut, TimeSpan.FromDays(7), null), Times.Once);
         _cacheStorageService.Verify(x => x.SaveToCache($"GetExpiredLevy_{AccountId}_100", expiredLevy, TimeSpan.FromDays(7), null), Times.Once);
+        _cacheStorageService.Verify(x => x.SaveToCache($"GetCeasedPayeSchemes_{AccountId}_121", ceasedPayeSchemes, TimeSpan.FromDays(7), null), Times.Once);
         _cacheStorageService.Verify(x => x.SaveToCache(
             $"GetLevyDeclarationSummaryByDate_{AccountId}_121_{HashOfDefaultEmprefs}", declarations, TimeSpan.FromDays(7), null), Times.Once);
         _cacheStorageService.Verify(x => x.SaveToCache(
@@ -308,6 +316,7 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
         _cacheStorageService.Verify(x => x.RetrieveFromCache<List<CalendarPeriodAmount>>($"GetLevyFundsIn_{AccountId}_none"), Times.Once);
         _cacheStorageService.Verify(x => x.RetrieveFromCache<List<CalendarPeriodAmount>>($"GetPaymentFundsOut_{AccountId}_none"), Times.Once);
         _cacheStorageService.Verify(x => x.RetrieveFromCache<GetExpiredLevyResponse>($"GetExpiredLevy_{AccountId}_none"), Times.Once);
+        _cacheStorageService.Verify(x => x.RetrieveFromCache<List<string>>($"GetCeasedPayeSchemes_{AccountId}_none"), Times.Once);
         _cacheStorageService.Verify(x => x.RetrieveFromCache<List<LevyDeclaration>>($"GetLevyDeclarationSummaryByDate_{AccountId}_none_{HashOfDefaultEmprefs}"), Times.Once);
     }
 
@@ -349,16 +358,20 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
     }
 
     [Test]
-    public async Task Then_The_Accounts_Paye_Schemes_Are_Sent_With_The_Declarations_Request_And_Not_Cached()
+    public async Task Then_The_Accounts_Paye_Schemes_Without_The_Ceased_Schemes_Are_Sent_With_The_Declarations_Request_And_Not_Cached()
     {
+        // arrange
+        SetupCeasedPayeSchemes(["456/cd789", "999/ZZ999"]);
+
         // act
         await Handle();
 
         // assert
-        _declarationsRequest!.Emprefs.Should().BeEquivalentTo(DefaultEmprefs);
-        _declarationsRequest.Data.Should().BeEquivalentTo(DefaultEmprefs);
-        _cacheStorageService.Verify(x => x.SaveToCache(It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<TimeSpan>(), null), Times.Never);
-        _cacheStorageService.Verify(x => x.RetrieveFromCache<List<string>>(It.IsAny<string>()), Times.Never);
+        _financeApiClient.Verify(x => x.Get<List<string>>(It.Is<GetCeasedPayeSchemesRequest>(r => r.GetUrl == $"api/levy-declarations/{AccountId}/ceased")), Times.Once);
+        _declarationsRequest!.Emprefs.Should().BeEquivalentTo(new List<string> { "123/AB456" });
+        _declarationsRequest.Data.Should().BeEquivalentTo(new List<string> { "123/AB456" });
+        _cacheStorageService.Verify(x => x.SaveToCache(It.Is<string>(k => !k.StartsWith("GetCeasedPayeSchemes_")), It.IsAny<List<string>>(), It.IsAny<TimeSpan>(), null), Times.Never);
+        _cacheStorageService.Verify(x => x.RetrieveFromCache<List<string>>(It.Is<string>(k => !k.StartsWith("GetCeasedPayeSchemes_"))), Times.Never);
     }
 
     [Test]
@@ -377,12 +390,16 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
             $"GetLevyDeclarationSummaryByDate_{AccountId}_121_66DAAF66F1E9F5AC"), Times.Once);
     }
 
-    [TestCase(HttpStatusCode.OK)]
-    [TestCase(HttpStatusCode.NotFound)]
-    public async Task Then_No_Historic_Levy_Is_Projected_When_The_Account_Has_No_Paye_Schemes(HttpStatusCode payeSchemesStatusCode)
+    [TestCase(HttpStatusCode.OK, false)]
+    [TestCase(HttpStatusCode.NotFound, false)]
+    [TestCase(HttpStatusCode.OK, true)]
+    public async Task Then_No_Historic_Levy_Is_Projected_When_The_Account_Has_No_Live_Paye_Schemes(HttpStatusCode payeSchemesStatusCode, bool allSchemesCeased)
     {
         // arrange
-        SetupPayeSchemesResponse(payeSchemesStatusCode, payeSchemesStatusCode == HttpStatusCode.OK ? [] : null);
+        if (allSchemesCeased)
+            SetupCeasedPayeSchemes(DefaultEmprefs);
+        else
+            SetupPayeSchemesResponse(payeSchemesStatusCode, payeSchemesStatusCode == HttpStatusCode.OK ? [] : null);
 
         // act
         var result = await Handle();
@@ -443,6 +460,13 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
             .ReturnsAsync(new ApiResponse<List<LevyDeclaration>>(declarations, HttpStatusCode.OK, null!));
     }
 
+    private void SetupCeasedPayeSchemes(List<string>? ceasedPayeSchemes)
+    {
+        _financeApiClient
+            .Setup(x => x.Get<List<string>>(It.Is<GetCeasedPayeSchemesRequest>(r => r.GetUrl == $"api/levy-declarations/{AccountId}/ceased")))
+            .ReturnsAsync(ceasedPayeSchemes!);
+    }
+
     private void SetupFundsData(List<CalendarPeriodAmount>? fundsIn, List<CalendarPeriodAmount>? fundsOut, GetExpiredLevyResponse? expiredLevy)
     {
         _financeApiClient
@@ -477,6 +501,9 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
             .Setup(x => x.RetrieveFromCache<List<LevyDeclaration>>(It.IsAny<string>()))
             .ReturnsAsync((List<LevyDeclaration>)null!);
         _cacheStorageService
+            .Setup(x => x.RetrieveFromCache<List<string>>(It.IsAny<string>()))
+            .ReturnsAsync((List<string>)null!);
+        _cacheStorageService
             .Setup(x => x.RetrieveFromCache<GetLatestTransactionTypeTransactionIdsForAccountResponse>(It.IsAny<string>()))
             .ReturnsAsync((GetLatestTransactionTypeTransactionIdsForAccountResponse)null!);
     }
@@ -502,6 +529,9 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
         _cacheStorageService
             .Setup(x => x.RetrieveFromCache<List<LevyDeclaration>>($"GetLevyDeclarationSummaryByDate_{AccountId}_{declarationKeySegment}_{HashOfDefaultEmprefs}"))
             .ReturnsAsync([]);
+        _cacheStorageService
+            .Setup(x => x.RetrieveFromCache<List<string>>($"GetCeasedPayeSchemes_{AccountId}_{declarationKeySegment}"))
+            .ReturnsAsync([]);
 
         return (fundsIn, fundsOut, expiredLevy);
     }
@@ -511,6 +541,7 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
         _financeApiClient.Verify(x => x.Get<List<CalendarPeriodAmount>>(It.IsAny<GetLevyFundsInRequest>()), Times.Never);
         _financeApiClient.Verify(x => x.Get<List<CalendarPeriodAmount>>(It.IsAny<GetPaymentFundsOutRequest>()), Times.Never);
         _financeApiClient.Verify(x => x.Get<GetExpiredLevyResponse>(It.IsAny<GetExpiredLevyRequest>()), Times.Never);
+        _financeApiClient.Verify(x => x.Get<List<string>>(It.IsAny<GetCeasedPayeSchemesRequest>()), Times.Never);
         _financeApiClient.Verify(x => x.PostWithResponseCode<List<LevyDeclaration>>(It.IsAny<PostLevyDeclarationSummaryByDate>(), It.IsAny<bool>()), Times.Never);
     }
 }
