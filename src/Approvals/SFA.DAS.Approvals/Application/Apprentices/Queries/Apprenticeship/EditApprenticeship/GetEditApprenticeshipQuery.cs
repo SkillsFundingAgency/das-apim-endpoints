@@ -12,6 +12,7 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Constants;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditApprenticeship
 {
@@ -28,7 +29,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditA
         public short Status { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]
         public LearningType? LearningType { get; set; }
-
+        public List<string> LockedManualFieldsAndFeatures { get; set; }
     }
 
     public class GetEditApprenticeshipQueryHandler : IRequestHandler<GetEditApprenticeshipQuery, GetEditApprenticeshipQueryResult>
@@ -47,7 +48,15 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditA
         public async Task<GetEditApprenticeshipQueryResult> Handle(GetEditApprenticeshipQuery request, CancellationToken cancellationToken)
         {
             var innerApiRequest = new GetApprenticeshipRequest(request.ApprenticeshipId);
-            var innerApiResponse = await _apiClient.GetWithResponseCode<GetApprenticeshipResponse>(innerApiRequest);
+            var innerApiTask = _apiClient.GetWithResponseCode<GetApprenticeshipResponse>(innerApiRequest);
+
+            var fieldLocksRequest = new GetEditApprenticeshipFieldAndFeatureLocksRequest(request.ApprenticeshipId);
+            var fieldLocksTask = _apiClient.GetWithResponseCode<GetEditApprenticeshipFieldAndFeatureLocksResponse>(fieldLocksRequest);
+
+            await Task.WhenAll(innerApiTask, fieldLocksTask);
+
+            var innerApiResponse = await innerApiTask;
+            var fieldLocksResponse = await fieldLocksTask;
 
             if (innerApiResponse.StatusCode == HttpStatusCode.NotFound)
             {
@@ -70,7 +79,8 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditA
                 IsFundedByTransfer = apprenticeship.TransferSenderId.HasValue,
                 HasMultipleDeliveryModelOptions = deliveryModel.Count > 1,
                 Status = apprenticeship.Status, 
-                LearningType = apprenticeship.LearningType
+                LearningType = apprenticeship.LearningType,
+                LockedManualFieldsAndFeatures = fieldLocksResponse.Body?.LockedManualFieldsAndFeatures ?? new List<string>()
             };
         }
     }
