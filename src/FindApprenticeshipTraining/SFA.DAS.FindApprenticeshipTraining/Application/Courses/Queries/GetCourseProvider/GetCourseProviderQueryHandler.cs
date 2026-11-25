@@ -23,7 +23,8 @@ public sealed class GetCourseProviderQueryHandler(
     IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient,
     IAssessorsApiClient<AssessorsApiConfiguration> _assessorServiceInnerApiClient,
     ICachedLocationLookupService _cachedLocationLookupService,
-    ICachedFeedbackService _cachedFeedbackService
+    ICachedFeedbackService _cachedFeedbackService,
+    ICachedStandardDetailsService _cachedStandardDetailsService
 ) : IRequestHandler<GetCourseProviderQuery, GetCourseProviderQueryResult>
 {
     public async Task<GetCourseProviderQueryResult> Handle(GetCourseProviderQuery query, CancellationToken cancellationToken)
@@ -96,7 +97,10 @@ public sealed class GetCourseProviderQueryHandler(
 
         var (employerFB, apprenticeFB) = feedbackTask.Result;
 
+        GetCourseLookupResponse standard = await _cachedStandardDetailsService.GetStandardDetails(query.LarsCode);
+
         GetCourseProviderQueryResult result = courseProviderDetailsResponse.Body;
+        result.CourseDates = standard?.CourseDates;
         result.TotalProvidersCount = trainingCourseCountDetails?.TotalProvidersCount ?? 0;
         result.Courses = courseDetailsResponse.Body.Select(a => (ProviderCourseModel)a);
         result.AnnualEmployerFeedbackDetails = employerFB.AnnualEmployerFeedbackDetails;

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Apim.Shared.Exceptions;
@@ -17,6 +18,7 @@ using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.AccessorService;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.AccessorService;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ApprenticeFeedback;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerFeedback;
@@ -33,6 +35,8 @@ public sealed class GetCourseProviderQueryHandlerTests
     private Mock<IAssessorsApiClient<AssessorsApiConfiguration>> _assessorClientMock;
     private Mock<ICachedLocationLookupService> _cachedLocationLookupServiceMock;
     private Mock<ICachedFeedbackService> _cachedFeedbackServiceMock;
+    private Mock<ICachedStandardDetailsService> _cachedStandardDetailsServiceMock;
+    private GetCourseLookupResponse _course;
 
     private GetCourseProviderQueryHandler SetupHandler(
         GetCourseProviderQuery query,
@@ -49,6 +53,16 @@ public sealed class GetCourseProviderQueryHandlerTests
         _assessorClientMock = new Mock<IAssessorsApiClient<AssessorsApiConfiguration>>();
         _cachedLocationLookupServiceMock = new Mock<ICachedLocationLookupService>();
         _cachedFeedbackServiceMock = new Mock<ICachedFeedbackService>();
+        _cachedStandardDetailsServiceMock = new Mock<ICachedStandardDetailsService>();
+        _course = new GetCourseLookupResponse
+        {
+            LarsCode = query.LarsCode,
+            CourseDates = new StandardDate
+            {
+                LastDateStarts = new DateTime(2027, 7, 16, 0, 0, 0, DateTimeKind.Utc),
+                EffectiveFrom = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            }
+        };
 
         _cachedLocationLookupServiceMock
             .Setup(x => x.GetCachedLocationInformation(query.LocationName, false))
@@ -115,13 +129,18 @@ public sealed class GetCourseProviderQueryHandlerTests
                 HttpStatusCode.OK,
                 string.Empty
             ));
+
+            _cachedStandardDetailsServiceMock
+                .Setup(x => x.GetStandardDetails(query.LarsCode))
+                .ReturnsAsync(_course);
         }
 
         return new GetCourseProviderQueryHandler(
             _roatpClientMock.Object,
             _assessorClientMock.Object,
             _cachedLocationLookupServiceMock.Object,
-            _cachedFeedbackServiceMock.Object
+            _cachedFeedbackServiceMock.Object,
+            _cachedStandardDetailsServiceMock.Object
         );
     }
 
@@ -224,19 +243,23 @@ public sealed class GetCourseProviderQueryHandlerTests
 
         await action.Should().ThrowAsync<ApiResponseException>();
 
-        _roatpClientMock.Verify(x =>
-            x.GetWithResponseCode<GetCourseProviderDetailsResponse>(It.Is<GetCourseProviderDetailsRequest>(a =>
-                a.GetUrl.Contains($"locationName={query.LocationName}") &&
-                a.GetUrl.Contains($"latitude={locationResponse.Latitude}") &&
-                a.GetUrl.Contains($"longitude={locationResponse.Longitude}") &&
-                a.GetUrl.Contains($"shortlistUserId={query.ShortlistUserId}")
-            )),
-            Times.Once
-        );
-        _assessorClientMock.Verify(x => x.GetWithResponseCode<GetAssessmentsResponse>(It.IsAny<GetAssessmentsRequest>()), Times.Never);
-        _cachedFeedbackServiceMock.Verify(x => x.GetProviderFeedback(query.Ukprn), Times.Never);
-        _roatpClientMock.Verify(c => c.GetWithResponseCode<List<ProviderCourseResponse>>(It.IsAny<ProviderCoursesRequest>()), Times.Never);
-        _roatpClientMock.Verify(x => x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(It.IsAny<GetCourseTrainingProvidersCountRequest>()), Times.Never);
+        using (new AssertionScope())
+        {
+            _roatpClientMock.Verify(x =>
+                x.GetWithResponseCode<GetCourseProviderDetailsResponse>(It.Is<GetCourseProviderDetailsRequest>(a =>
+                    a.GetUrl.Contains($"locationName={query.LocationName}") &&
+                    a.GetUrl.Contains($"latitude={locationResponse.Latitude}") &&
+                    a.GetUrl.Contains($"longitude={locationResponse.Longitude}") &&
+                    a.GetUrl.Contains($"shortlistUserId={query.ShortlistUserId}")
+                )),
+                Times.Once
+            );
+            _assessorClientMock.Verify(x => x.GetWithResponseCode<GetAssessmentsResponse>(It.IsAny<GetAssessmentsRequest>()), Times.Never);
+            _cachedFeedbackServiceMock.Verify(x => x.GetProviderFeedback(query.Ukprn), Times.Never);
+            _roatpClientMock.Verify(c => c.GetWithResponseCode<List<ProviderCourseResponse>>(It.IsAny<ProviderCoursesRequest>()), Times.Never);
+            _roatpClientMock.Verify(x => x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(It.IsAny<GetCourseTrainingProvidersCountRequest>()), Times.Never);
+            _cachedStandardDetailsServiceMock.Verify(x => x.GetStandardDetails(It.IsAny<string>()), Times.Never);
+        }
     }
 
     [Test]
@@ -417,10 +440,48 @@ public sealed class GetCourseProviderQueryHandlerTests
 
         var result = await sut.Handle(query, CancellationToken.None);
 
-        result.Should().Be(null);
-        _assessorClientMock.Verify(x => x.GetWithResponseCode<GetAssessmentsResponse>(It.IsAny<GetAssessmentsRequest>()), Times.Never);
-        _cachedFeedbackServiceMock.Verify(x => x.GetProviderFeedback(query.Ukprn), Times.Never);
-        _roatpClientMock.Verify(c => c.GetWithResponseCode<List<ProviderCourseResponse>>(It.IsAny<ProviderCoursesRequest>()), Times.Never);
-        _roatpClientMock.Verify(x => x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(It.IsAny<GetCourseTrainingProvidersCountRequest>()), Times.Never);
+        using (new AssertionScope())
+        {
+            result.Should().Be(null);
+            _assessorClientMock.Verify(x => x.GetWithResponseCode<GetAssessmentsResponse>(It.IsAny<GetAssessmentsRequest>()), Times.Never);
+            _cachedFeedbackServiceMock.Verify(x => x.GetProviderFeedback(query.Ukprn), Times.Never);
+            _roatpClientMock.Verify(c => c.GetWithResponseCode<List<ProviderCourseResponse>>(It.IsAny<ProviderCoursesRequest>()), Times.Never);
+            _roatpClientMock.Verify(x => x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(It.IsAny<GetCourseTrainingProvidersCountRequest>()), Times.Never);
+            _cachedStandardDetailsServiceMock.Verify(x => x.GetStandardDetails(It.IsAny<string>()), Times.Never);
+        }
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenHandle_AndCourseReturned_ThenSetsLastDateStartsAndCourseDates(
+        GetCourseProviderQuery query,
+        GetCourseProviderDetailsResponse courseProviderDetailsResponse,
+        EmployerFeedbackAnnualDetails employerFeedbackResponse,
+        GetAssessmentsResponse assessmentResponse,
+        ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
+        List<ProviderCourseResponse> providerCoursesResponse,
+        GetCourseTrainingProvidersCountResponse courseTrainingProvidersCountResponse,
+        LocationItem locationResponse)
+    {
+        courseProviderDetailsResponse.LastDateStarts = new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        var sut = SetupHandler(
+            query,
+            courseProviderDetailsResponse,
+            assessmentResponse,
+            employerFeedbackResponse,
+            apprenticeFeedbackResponse,
+            providerCoursesResponse,
+            courseTrainingProvidersCountResponse,
+            locationResponse
+        );
+
+        var result = await sut.Handle(query, CancellationToken.None);
+
+        using (new AssertionScope())
+        {
+            result.CourseDates.Should().Be(_course.CourseDates);
+            result.LastDateStarts.Should().Be(courseProviderDetailsResponse.LastDateStarts);
+            _cachedStandardDetailsServiceMock.Verify(x => x.GetStandardDetails(query.LarsCode), Times.Once);
+        }
     }
 }

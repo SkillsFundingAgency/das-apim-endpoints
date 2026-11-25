@@ -28,6 +28,7 @@ public sealed class GetCourseProviderQueryResultTests
             Assert.That(sut.Contact.Website, Is.EquivalentTo(response.Contact.Website));
             Assert.That(sut.Contact.PhoneNumber, Is.EquivalentTo(response.Contact.PhoneNumber));
             Assert.That(sut.CourseName, Is.EqualTo(response.CourseName));
+            Assert.That(sut.LastDateStarts, Is.EqualTo(response.LastDateStarts));
             Assert.That(sut.Level, Is.EqualTo(response.Level));
             Assert.That(sut.LarsCode, Is.EqualTo(response.LarsCode));
             Assert.That(sut.IFateReferenceNumber, Is.EqualTo(response.IFateReferenceNumber));
