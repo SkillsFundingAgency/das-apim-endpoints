@@ -25,8 +25,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
 
             if (locationItem is null)
             {
-                GetStandardsListItem standard = await _coursesApiClient.Get<GetStandardsListItem>(new GetCourseLookupDetailsByIdRequest(request.LarsCode));
-
+                GetStandardsListItem standard = await GetCourse(request.LarsCode);
                 var standardName = standard != null ? $"{standard.Title} (level {standard.Level})" : string.Empty;
 
                 return new GetCourseProvidersResponse
@@ -38,6 +37,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
                     QarPeriod = string.Empty,
                     ReviewPeriod = string.Empty,
                     StandardName = standardName,
+                    CourseDates = standard?.CourseDates,
                     TotalCount = 0,
                     TotalPages = 0
                 };
@@ -67,7 +67,20 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
         if (response.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.NotFound)
             return null;
 
-        return response.StatusCode.IsSuccessStatusCode()
-            ? response.Body : new GetCourseProvidersResponse();
+        if (!response.StatusCode.IsSuccessStatusCode())
+            return new GetCourseProvidersResponse();
+
+        if (response.Body != null)
+        {
+            GetStandardsListItem standard = await GetCourse(request.LarsCode);
+            response.Body.CourseDates = standard?.CourseDates;
+        }
+
+        return response.Body;
+    }
+
+    private Task<GetStandardsListItem> GetCourse(string larsCode)
+    {
+        return _coursesApiClient.Get<GetStandardsListItem>(new GetCourseLookupDetailsByIdRequest(larsCode));
     }
 }
