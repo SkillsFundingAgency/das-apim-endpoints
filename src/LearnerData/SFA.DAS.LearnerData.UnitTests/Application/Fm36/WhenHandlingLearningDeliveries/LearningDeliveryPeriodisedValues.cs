@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using System.Text.Json;
+using SFA.DAS.LearnerData.TestHelpers;
 using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 using static SFA.DAS.LearnerData.Application.Fm36.Common.EarningsFM36Constants;
 
@@ -590,6 +591,106 @@ public class LearningDeliveryPeriodisedValues
         result.Period10.Should().Be((expectedIncentive?.DeliveryPeriod == 10 ? expectedIncentive.Amount : 0));
         result.Period11.Should().Be((expectedIncentive?.DeliveryPeriod == 11 ? expectedIncentive.Amount : 0));
         result.Period12.Should().Be((expectedIncentive?.DeliveryPeriod == 12 ? expectedIncentive.Amount : 0));
+    }
+
+    // Learner from FLP-2184: starts 2025-08-14 aged 17, second incentive due 2026-08-13 (2627-R01),
+    // with the on programme delivery ending later in August 2026
+    [TestCase("2026-08-15", "2026-08-19", null, null, TestName = "SecondIncentive_IsReported_WhenCompletedInSameMonthAfterDueDate")]
+    [TestCase("2026-09-30", null, "2026-08-14", null, TestName = "SecondIncentive_IsReported_WhenPausedInSameMonthAfterDueDate")]
+    [TestCase("2026-08-15", null, null, "2026-08-14", TestName = "SecondIncentive_IsReported_WhenWithdrawnAfterDueDateAndExpectedEndInSameMonth")]
+    public async Task Then_SecondIncentive_IsReported_WhenDeliveryEndsInSameMonthAfterDueDate(
+        string expectedEndDate, string? completionDate, string? pauseDate, string? withdrawalDate)
+    {
+        // Arrange
+        var testFixture = new GetFm36QueryTestFixture(TestScenario.SimpleApprenticeship, context =>
+            ConfigureSecondIncentiveLearner(context, DateTime.Parse(expectedEndDate), ParseDate(completionDate), ParseDate(pauseDate), ParseDate(withdrawalDate)));
+
+        // Act
+        await testFixture.CallSubjectUnderTest(collectionYear: 2627);
+
+        // Assert
+        var learningDelivery = testFixture.GetLearningDeliveryByAimSequenceNumber(1);
+        AssertIncentiveOnlyInPeriod(learningDelivery, PeriodisedAttributes.LearnDelSecondEmp1618Pay, 1, 500);
+        AssertIncentiveOnlyInPeriod(learningDelivery, PeriodisedAttributes.LearnDelSecondProv1618Pay, 1, 500);
+
+        var priceEpisode = testFixture.Result!.Items!.Single().PriceEpisodes.Single();
+        priceEpisode.PriceEpisodePeriodisedValues.Single(x => x.AttributeName == PeriodisedAttributes.PriceEpisodeSecondEmp1618Pay).Period1.Should().Be(500);
+        priceEpisode.PriceEpisodePeriodisedValues.Single(x => x.AttributeName == PeriodisedAttributes.PriceEpisodeSecondProv1618Pay).Period1.Should().Be(500);
+    }
+
+    [Test]
+    public async Task Then_SecondIncentive_IsNotReported_WhenDueAfterDeliveryEndDate()
+    {
+        // Arrange
+        var testFixture = new GetFm36QueryTestFixture(TestScenario.SimpleApprenticeship, context =>
+            ConfigureSecondIncentiveLearner(context, new DateTime(2026, 8, 15), completionDate: new DateTime(2026, 8, 12)));
+
+        // Act
+        await testFixture.CallSubjectUnderTest(collectionYear: 2627);
+
+        // Assert
+        var learningDelivery = testFixture.GetLearningDeliveryByAimSequenceNumber(1);
+        learningDelivery.LearningDeliveryPeriodisedValues.Single(x => x.AttributeName == PeriodisedAttributes.LearnDelSecondEmp1618Pay).AllValuesAreSetToZero().Should().BeTrue();
+        learningDelivery.LearningDeliveryPeriodisedValues.Single(x => x.AttributeName == PeriodisedAttributes.LearnDelSecondProv1618Pay).AllValuesAreSetToZero().Should().BeTrue();
+    }
+
+    [Test]
+    public async Task Then_FirstIncentive_IsReported_WhenSecondIncentiveIsDueInSameMonthAsDeliveryEnd()
+    {
+        // Arrange
+        var testFixture = new GetFm36QueryTestFixture(TestScenario.SimpleApprenticeship, context =>
+            ConfigureSecondIncentiveLearner(context, new DateTime(2026, 8, 15), completionDate: new DateTime(2026, 8, 19)));
+
+        // Act
+        await testFixture.CallSubjectUnderTest(collectionYear: 2526);
+
+        // Assert
+        var learningDelivery = testFixture.GetLearningDeliveryByAimSequenceNumber(1);
+        AssertIncentiveOnlyInPeriod(learningDelivery, PeriodisedAttributes.LearnDelFirstEmp1618Pay, 4, 500);
+        AssertIncentiveOnlyInPeriod(learningDelivery, PeriodisedAttributes.LearnDelFirstProv1618Pay, 4, 500);
+        learningDelivery.LearningDeliveryPeriodisedValues.Single(x => x.AttributeName == PeriodisedAttributes.LearnDelSecondEmp1618Pay).AllValuesAreSetToZero().Should().BeTrue();
+        learningDelivery.LearningDeliveryPeriodisedValues.Single(x => x.AttributeName == PeriodisedAttributes.LearnDelSecondProv1618Pay).AllValuesAreSetToZero().Should().BeTrue();
+    }
+
+    private static void ConfigureSecondIncentiveLearner(Fm36TestContext context, DateTime expectedEndDate,
+        DateTime? completionDate = null, DateTime? pauseDate = null, DateTime? withdrawalDate = null)
+    {
+        var testLearner = context.TestLearners.Single();
+        testLearner.ClearProgrammes();
+        testLearner.AddProgramme(
+            ageAtStart: 17,
+            startDate: new DateTime(2025, 8, 14),
+            endDate: expectedEndDate,
+            trainingPrice: 3101,
+            endpointAssessmentPrice: 399);
+
+        var onProgramme = testLearner.UpdateLearnerRequest.Delivery.OnProgramme.Single();
+        onProgramme.CompletionDate = completionDate;
+        onProgramme.PauseDate = pauseDate;
+        onProgramme.WithdrawalDate = withdrawalDate;
+
+        testLearner.AdditionalPayments = new List<AdditionalPayment>
+        {
+            new AdditionalPayment { AcademicYear = 2526, DeliveryPeriod = 4, Amount = 500, AdditionalPaymentType = AdditionalPaymentsTypes.ProviderIncentive, DueDate = new DateTime(2025, 11, 11) },
+            new AdditionalPayment { AcademicYear = 2526, DeliveryPeriod = 4, Amount = 500, AdditionalPaymentType = AdditionalPaymentsTypes.EmployerIncentive, DueDate = new DateTime(2025, 11, 11) },
+            new AdditionalPayment { AcademicYear = 2627, DeliveryPeriod = 1, Amount = 500, AdditionalPaymentType = AdditionalPaymentsTypes.ProviderIncentive, DueDate = new DateTime(2026, 8, 13) },
+            new AdditionalPayment { AcademicYear = 2627, DeliveryPeriod = 1, Amount = 500, AdditionalPaymentType = AdditionalPaymentsTypes.EmployerIncentive, DueDate = new DateTime(2026, 8, 13) },
+        };
+    }
+
+    private static DateTime? ParseDate(string? date) => date == null ? null : DateTime.Parse(date);
+
+    private static void AssertIncentiveOnlyInPeriod(
+        DC.ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery learningDelivery, string attributeName, int period, decimal amount)
+    {
+        var result = learningDelivery.LearningDeliveryPeriodisedValues.Single(x => x.AttributeName == attributeName);
+        var values = new[] { result.Period1, result.Period2, result.Period3, result.Period4, result.Period5, result.Period6,
+            result.Period7, result.Period8, result.Period9, result.Period10, result.Period11, result.Period12 };
+
+        for (var i = 1; i <= 12; i++)
+        {
+            values[i - 1].Should().Be(i == period ? amount : 0, $"{attributeName} period {i}");
+        }
     }
 
     [TestCase(TestScenario.SimpleApprenticeship)]
