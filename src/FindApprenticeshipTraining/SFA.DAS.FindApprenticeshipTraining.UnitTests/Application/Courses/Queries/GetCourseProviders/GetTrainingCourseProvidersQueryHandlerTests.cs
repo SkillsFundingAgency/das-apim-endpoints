@@ -101,6 +101,45 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
             }
         }
 
+        [Test, MoqAutoData]
+        public async Task WhenHandle_AndNoLocationMatchedAndCourseMissing_ThenReturnsEmptyStandardDetails(
+            GetCourseProvidersQuery query,
+            [Frozen] Mock<ICachedLocationLookupService> cachedLocationLookupService,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
+            [Frozen] Mock<ICachedStandardDetailsService> cachedStandardDetailsService,
+            [Greedy] GetTrainingCourseProvidersQueryHandler handler)
+        {
+            query.LocationName = "Unknown place";
+
+            cachedLocationLookupService
+                .Setup(client => client.GetCachedLocationInformation(query.LocationName, false))
+                .ReturnsAsync((LocationItem)null);
+
+            cachedStandardDetailsService
+                .Setup(client => client.GetStandardDetails(query.LarsCode))
+                .ReturnsAsync((GetCourseLookupResponse)null);
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            using (new AssertionScope())
+            {
+                result.Should().BeEquivalentTo(new GetCourseProvidersResponse
+                {
+                    PageSize = 10,
+                    Page = 1,
+                    LarsCode = query.LarsCode,
+                    Providers = [],
+                    QarPeriod = string.Empty,
+                    ReviewPeriod = string.Empty,
+                    StandardName = string.Empty,
+                    CourseDates = null,
+                    TotalCount = 0,
+                    TotalPages = 0
+                });
+                cachedStandardDetailsService.Verify(x => x.GetStandardDetails(query.LarsCode), Times.Once);
+                courseManagementApiMock.Verify(x => x.GetWithResponseCode<GetCourseProvidersResponse>(It.IsAny<GetProvidersByCourseIdRequest>()), Times.Never);
+            }
+        }
 
         [Test, MoqAutoData]
         public async Task WhenHandle_AndNoLocationEntered_ThenCallsCourseManagementApi(

@@ -24,7 +24,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
 
             if (locationItem is null)
             {
-                var standard = await _cachedStandardDetailsService.GetStandardDetails(request.LarsCode);
+                GetCourseLookupResponse standard = await _cachedStandardDetailsService.GetStandardDetails(request.LarsCode);
                 var standardName = standard != null ? $"{standard.Title} (level {standard.Level})" : string.Empty;
 
                 return new GetCourseProvidersResponse
@@ -71,7 +71,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
 
         if (response.Body != null)
         {
-            var standard = await _cachedStandardDetailsService.GetStandardDetails(request.LarsCode);
+            GetCourseLookupResponse standard = await _cachedStandardDetailsService.GetStandardDetails(request.LarsCode);
             response.Body.CourseDates = standard?.CourseDates;
         }
 
