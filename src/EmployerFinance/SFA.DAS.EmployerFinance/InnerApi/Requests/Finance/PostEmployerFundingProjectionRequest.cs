@@ -22,4 +22,5 @@ public class PostEmployerFundingProjectionRequestData
     public List<CalendarPeriodAmount> LongTermExpiredFunds { get; set; } = [];
     public List<CalendarPeriodAmount> ShortTermExpiredFunds { get; set; } = [];
     public CollectionPeriodPayments? CurrentPayments { get; set; }
+    public bool TriggerRefresh { get; set; } = true;
 }

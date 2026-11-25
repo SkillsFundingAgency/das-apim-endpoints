@@ -9,6 +9,7 @@ public sealed record GetLevyProjectionsByAccountIdQueryResult
 {
     public long AccountId { get; init; }
     public DateTime LatestLevyDeclarationInDate { get; set; }
+    public DateTime LastSuccessfulImportDate { get; set; }
     public LevyProjectionsSummary Summary { get; set; }
     public List<MonthlyFundingBreakdown> Projections { get; init; } = [];
 }

@@ -20,7 +20,7 @@ internal class WhenGettingProjections
     {
         mockMediator
             .Setup(mediator => mediator.Send(
-                It.Is<GetLevyProjectionsByAccountIdQuery>(c => c.AccountId.Equals(accountId) && c.Months.Equals(months)),
+                It.Is<GetLevyProjectionsByAccountIdQuery>(c => c.AccountId.Equals(accountId) && c.Months.Equals(months) && c.TriggerRefresh),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(mediatorResult);
 
@@ -40,6 +40,7 @@ internal class WhenGettingProjections
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] FinanceLevyController controller)
     {
+        const bool triggerRefresh = false;
         mockMediator
             .Setup(mediator => mediator.Send(
                 It.Is<GetLevyProjectionMonthsByAccountIdQuery>(c => c.AccountId.Equals(accountId)),
@@ -47,7 +48,7 @@ internal class WhenGettingProjections
             .ReturnsAsync(new GetLevyProjectionMonthsByAccountIdQueryResult(months));
         mockMediator
             .Setup(mediator => mediator.Send(
-                It.Is<GetLevyProjectionsByAccountIdQuery>(c => c.AccountId.Equals(accountId) && c.Months.Equals(months)),
+                It.Is<GetLevyProjectionsByAccountIdQuery>(c => c.AccountId.Equals(accountId) && c.Months.Equals(months) && c.TriggerRefresh == triggerRefresh),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(mediatorResult);
 
