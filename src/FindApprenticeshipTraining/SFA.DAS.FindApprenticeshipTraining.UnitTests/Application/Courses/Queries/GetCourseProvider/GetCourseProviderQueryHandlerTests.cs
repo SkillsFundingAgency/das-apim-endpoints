@@ -484,4 +484,131 @@ public sealed class GetCourseProviderQueryHandlerTests
             _cachedStandardDetailsServiceMock.Verify(x => x.GetStandardDetails(query.LarsCode), Times.Once);
         }
     }
+
+    [Test, MoqAutoData]
+    public async Task WhenHandle_AndLocationMissing_ThenPassesNullCoordinates(
+        GetCourseProviderQuery query,
+        GetCourseProviderDetailsResponse courseProviderDetailsResponse,
+        EmployerFeedbackAnnualDetails employerFeedbackResponse,
+        GetAssessmentsResponse assessmentResponse,
+        ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
+        List<ProviderCourseResponse> providerCoursesResponse,
+        GetCourseTrainingProvidersCountResponse courseTrainingProvidersCountResponse,
+        LocationItem locationResponse)
+    {
+        var sut = SetupHandler(
+            query,
+            courseProviderDetailsResponse,
+            assessmentResponse,
+            employerFeedbackResponse,
+            apprenticeFeedbackResponse,
+            providerCoursesResponse,
+            courseTrainingProvidersCountResponse,
+            locationResponse
+        );
+
+        _cachedLocationLookupServiceMock
+            .Setup(x => x.GetCachedLocationInformation(query.LocationName, false))
+            .ReturnsAsync((LocationItem)null);
+
+        _roatpClientMock
+            .Setup(x => x.GetWithResponseCode<GetCourseProviderDetailsResponse>(It.IsAny<GetCourseProviderDetailsRequest>()))
+            .ReturnsAsync(new ApiResponse<GetCourseProviderDetailsResponse>(
+                courseProviderDetailsResponse,
+                HttpStatusCode.OK,
+                string.Empty
+            ));
+
+        var result = await sut.Handle(query, CancellationToken.None);
+
+        using (new AssertionScope())
+        {
+            result.Should().NotBeNull();
+            _roatpClientMock.Verify(x =>
+                x.GetWithResponseCode<GetCourseProviderDetailsResponse>(
+                    It.Is<GetCourseProviderDetailsRequest>(a =>
+                        !a.GetUrl.Contains("latitude=") &&
+                        !a.GetUrl.Contains("longitude=")
+                    )
+                ),
+                Times.Once
+            );
+            _roatpClientMock.Verify(x =>
+                x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
+                    It.Is<GetCourseTrainingProvidersCountRequest>(a =>
+                        a.Latitude == null &&
+                        a.Longitude == null
+                    )
+                ),
+                Times.Once
+            );
+        }
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenHandle_AndNoProviderCounts_ThenReturnsZeroTotalProviders(
+        GetCourseProviderQuery query,
+        GetCourseProviderDetailsResponse courseProviderDetailsResponse,
+        EmployerFeedbackAnnualDetails employerFeedbackResponse,
+        GetAssessmentsResponse assessmentResponse,
+        ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
+        List<ProviderCourseResponse> providerCoursesResponse,
+        GetCourseTrainingProvidersCountResponse courseTrainingProvidersCountResponse,
+        LocationItem locationResponse)
+    {
+        courseTrainingProvidersCountResponse.Courses = [];
+
+        var sut = SetupHandler(
+            query,
+            courseProviderDetailsResponse,
+            assessmentResponse,
+            employerFeedbackResponse,
+            apprenticeFeedbackResponse,
+            providerCoursesResponse,
+            courseTrainingProvidersCountResponse,
+            locationResponse
+        );
+
+        var result = await sut.Handle(query, CancellationToken.None);
+
+        result.TotalProvidersCount.Should().Be(0);
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenHandle_AndCourseMissing_ThenClearsCourseDates(
+        GetCourseProviderQuery query,
+        GetCourseProviderDetailsResponse courseProviderDetailsResponse,
+        EmployerFeedbackAnnualDetails employerFeedbackResponse,
+        GetAssessmentsResponse assessmentResponse,
+        ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
+        List<ProviderCourseResponse> providerCoursesResponse,
+        GetCourseTrainingProvidersCountResponse courseTrainingProvidersCountResponse,
+        LocationItem locationResponse)
+    {
+        courseProviderDetailsResponse.LastDateStarts = new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        var sut = SetupHandler(
+            query,
+            courseProviderDetailsResponse,
+            assessmentResponse,
+            employerFeedbackResponse,
+            apprenticeFeedbackResponse,
+            providerCoursesResponse,
+            courseTrainingProvidersCountResponse,
+            locationResponse
+        );
+
+        _cachedStandardDetailsServiceMock
+            .Setup(x => x.GetStandardDetails(query.LarsCode))
+            .ReturnsAsync((GetCourseLookupResponse)null);
+
+        var result = await sut.Handle(query, CancellationToken.None);
+
+        using (new AssertionScope())
+        {
+            result.CourseDates.Should().BeNull();
+            result.LastDateStarts.Should().Be(courseProviderDetailsResponse.LastDateStarts);
+            _cachedStandardDetailsServiceMock.Verify(x => x.GetStandardDetails(query.LarsCode), Times.Once);
+        }
+    }
 }
