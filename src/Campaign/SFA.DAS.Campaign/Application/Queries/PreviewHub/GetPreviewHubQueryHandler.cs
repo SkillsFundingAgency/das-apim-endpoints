@@ -23,7 +23,7 @@ namespace SFA.DAS.Campaign.Application.Queries.PreviewHub
 
         public async Task<GetPreviewHubQueryResult> Handle(GetPreviewHubQuery request, CancellationToken cancellationToken)
         {
-            var article = _client.Get<CmsContent>(new GetHubEntriesRequest(request.Hub.ToTitleCase()));
+            var article = _client.Get<HubCmsContent>(new GetHubEntriesRequest(request.Hub.ToTitleCase()));
             var menu = _mediator.RetrieveMenu(cancellationToken);
             var banners = _mediator.RetrieveBanners(cancellationToken: cancellationToken);
 

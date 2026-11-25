@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using SFA.DAS.EmployerFeedback.FakeApis.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 

@@ -1,6 +1,7 @@
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Learning;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
+
 public class WhenBuildingGetAllApprenticeshipsForAcademicYear
 {
     [Test, AutoData]

@@ -15,7 +15,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor
         }
 
         public string GetUrl => IncludeLogs
-            ? $"api/v1/learnerdetails/framework-learner/{Id}"
-            : $"api/v1/learnerdetails/framework-learner/{Id}?allLogs=false";
+            ? $"api/v1/learnerdetails/framework-learner/{Id}?allLogs=true"
+            : $"api/v1/learnerdetails/framework-learner/{Id}";
     }
 }

@@ -1,4 +1,3 @@
-using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
@@ -15,7 +14,7 @@ public static class LearnerBuilder
     // we can use this because the data being generated is for fm36 tests only.
     // these concrete class have their own tests to validate their behaviour.
     private static UpdateLearningPutRequestBuilder _updateLearningPutRequestBuilder = 
-        new UpdateLearningPutRequestBuilder(new LearningSupportService(), new BreaksInLearningService(), new CostsService());
+        new UpdateLearningPutRequestBuilder(new UpdateLearningRequestBodyBuilder(new LearningSupportService(), new BreaksInLearningService(), new CostsService(), new StubEnglishAndMathsValueService()));
 
     internal static Learning BuildLearningInnerApiResponse(TestLearner testLearner)
     {
@@ -25,18 +24,12 @@ public static class LearnerBuilder
         var firstOnProg = sldDelivery.OnProgramme.OrderBy(x => x.StartDate).First();
         var latestOnProg = sldDelivery.OnProgramme.OrderByDescending(x => x.StartDate).First();
 
-        var command = new UpdateLearnerCommand
-        {
-            LearningKey = testLearner.LearningKey,
-            Ukprn = testLearner.Ukprn,
-            UpdateLearnerRequest = testLearner.UpdateLearnerRequest
-        };
-
-        var updateLearningRequest = _updateLearningPutRequestBuilder.Build(command);
+        // Safe to block: the only async work is StubEnglishAndMathsValueService, which completes synchronously
+        var updateLearningRequest = _updateLearningPutRequestBuilder.Build(testLearner.Ukprn, testLearner.UpdateLearnerRequest, testLearner.LearningKey).GetAwaiter().GetResult();
 
         return new Learning
         {
-            Key = command.LearningKey,
+            Key = testLearner.LearningKey,
             Uln = sldLearner.Uln.ToString(),
             StartDate = sldDelivery.OnProgramme.Min(x => x.StartDate),
             PlannedEndDate = sldDelivery.OnProgramme.Max(x => x.ExpectedEndDate),
@@ -84,7 +77,6 @@ public static class LearnerBuilder
                 EndDate = endDate,
                 TrainingPrice = cost.TrainingPrice,
                 EndPointAssessmentPrice = cost.EpaoPrice,
-                FundingBandMaximum = testLearner.FundingBandMax,
                 TotalPrice = totalPrice
             });
 
@@ -119,7 +111,8 @@ public static class LearnerBuilder
             Instalments = new List<Instalment>(),
             AdditionalPayments = new List<AdditionalPayment>(),
             CompletionPayment = totalPrice * 0.2m,
-            OnProgramTotal = totalPrice * 0.8m
+            OnProgramTotal = totalPrice * 0.8m,
+            FundingBandMaximum = testLearner.FundingBandMax
         }).First();
 
         if (testLearner.Instalments != null && testLearner.Instalments.Any())
@@ -135,6 +128,26 @@ public static class LearnerBuilder
 
         episode.AdditionalPayments = testLearner.AdditionalPayments ?? new List<AdditionalPayment>();
 
+        if (testLearner.UpdateLearnerRequest.Delivery.EnglishAndMaths.Any())
+        {
+            episode.EnglishAndMaths = testLearner.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x => new EnglishAndMaths
+            {
+                LearnAimRef = x.LearnAimRef,
+                StartDate = x.StartDate,
+                EndDate = x.EndDate,
+                Course = x.Course,
+                Instalments = x.StartDate
+                    .Enumerate(x.EndDate, DateIncrement.Monthly, out int instalmentCount)
+                    .Select(dt => new EnglishAndMathsInstalment
+                    {
+                        AcademicYear = dt.ToAcademicYear(),
+                        DeliveryPeriod = dt.ToDeliveryPeriod(),
+                        Amount = testLearner.EnglishAndMathsValues[x.LearnAimRef]/instalmentCount,
+                        InstalmentType = "Regular"
+                    }).ToList()
+            }).ToList();
+        }
+
         return new List<SFA.DAS.LearnerData.Responses.EarningsInner.Episode> { episode };
     }
 
@@ -147,10 +160,16 @@ public static class LearnerBuilder
     {
         var instalments = new List<Instalment>();
 
-        foreach (var program in testLearner.UpdateLearnerRequest.Delivery.OnProgramme)
+        // Learning inner only creates the episode from the first apprenticeship onProgrammes (same standard and agreement as the earliest), so other onProgrammes have no prices.
+        // This deliberately does not use the production rule, so the tests fail if that rule changes
+        var earliestOnProgramme = testLearner.UpdateLearnerRequest.Delivery.OnProgramme.MinBy(x => x.StartDate)!;
+        var firstApprenticeshipOnProgrammes = testLearner.UpdateLearnerRequest.Delivery.OnProgramme
+            .Where(x => x.StandardCode == earliestOnProgramme.StandardCode && x.AgreementId == earliestOnProgramme.AgreementId);
+
+        foreach (var program in firstApprenticeshipOnProgrammes)
         {
             var periodInLearningKey = Guid.NewGuid();
-            var programEndDate = (new []{program.WithdrawalDate, program.ExpectedEndDate, program.ExpectedEndDate}).Min();
+            var programEndDate = (new []{program.WithdrawalDate, program.PauseDate, program.ExpectedEndDate}).Min();
             var numberOfCosts = program.Costs?.Count ?? 0;
 
             for (var costIndex = 0; costIndex < numberOfCosts; costIndex++)
@@ -192,5 +211,13 @@ public static class LearnerBuilder
         }
 
         return instalments;
+    }
+
+    // This is a stubbed implementation of IEnglishAndMathsValueService for use in the fm36 test data builder.
+    // The fm36 test data takes English and Maths values from TestLearner.EnglishAndMathsValues, not from the built Learning request,
+    // so no value actually needs looking up
+    private sealed class StubEnglishAndMathsValueService : IEnglishAndMathsValueService
+    {
+        public Task<decimal> GetValue(string learnAimRef, DateTime startDate) => Task.FromResult(0m);
     }
 }

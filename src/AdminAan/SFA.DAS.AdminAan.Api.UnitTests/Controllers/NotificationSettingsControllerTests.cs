@@ -39,7 +39,7 @@ namespace SFA.DAS.AdminAan.Api.UnitTests.Controllers
         {
             mockMediator
                 .Setup(m => m.Send(It.Is<UpdateNotificationSettingsCommand>(q => q.MemberId == memberId && q.ReceiveNotifications == postRequest.ReceiveNotifications),
-                    It.IsAny<CancellationToken>()));
+                    It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
             await sut.Index(memberId, postRequest);
 

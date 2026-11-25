@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
@@ -81,20 +78,24 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
             {
                 throw new ApplicationException($"Getting Draft Apprenticeships Failed. Status Code {draftApprenticeshipsResponse.StatusCode} Error : {draftApprenticeshipsResponse.ErrorContent}");
             }
-            var selectedUlns = draftApprenticeshipsResponse.Body.DraftApprenticeships.Select(x => x.Uln).ToList();
-            request.ExcludeUlns = selectedUlns;
+            var selectedUlns = draftApprenticeshipsResponse.Body.DraftApprenticeships
+                .Where(x => long.TryParse(x.Uln, out _))
+                .Select(x => long.Parse(x.Uln))
+                .ToList();
+
+            request.ExcludeUlns.AddRange(selectedUlns);
         }
 
         var learnerDataTask = GetLearnerData(request);
         var standardsTask = GetStandardsData();
-        var coursesTask = GetCourses(request.ProviderId);
 
-        await Task.WhenAll(learnerDataTask, standardsTask, coursesTask);
-        var learnerData = learnerDataTask.Result;
-        var standards = standardsTask.Result;
-        var courses = coursesTask.Result;
+        await Task.WhenAll(learnerDataTask, standardsTask);
+        var learnerData = await learnerDataTask;
+        var standards = await standardsTask;
 
         logger.LogInformation("Building Learner Data result");
+
+        var trainingProgrammes = standards.TrainingProgrammes.ToList();
 
         return new GetLearnersForProviderQueryResult
         {
@@ -105,9 +106,9 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
             Page = learnerData.Page,
             PageSize = learnerData.PageSize,
             TotalPages = learnerData.TotalPages,
-            Learners = await mapper.Map(learnerData.Data, standards.TrainingProgrammes.ToList()),
+            Learners = mapper.Map(learnerData.Data, trainingProgrammes),
             FutureMonths = futureMonths,
-            TrainingCourses = courses.ToList()
+            TrainingCourses = mapper.PopulateMissingTrainingNames(learnerData.Courses, trainingProgrammes)
         };
     }
 
@@ -115,20 +116,24 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
     {
         logger.LogInformation("Getting Learner Data for Provider {ProviderId}", request.ProviderId);
 
-        var response = await learnerDataClient.GetWithResponseCode<GetLearnersForProviderResponse>(
-            new GetLearnersForProviderRequest(
-                request.ProviderId,
-                request.SearchTerm,
-                request.SortField,
-                request.SortDescending,
-                request.Page,
-                request.PageSize,
-                request.StartMonth,
-                request.StartYear,
-                request.MaxStartDate,
-                string.Join(",", request.ExcludeUlns),
-                request.CourseCode
-            ));
+        var requestData = new GetLearnersForProviderRequest
+        {
+            Filter = request.SearchTerm,
+            SortColumn = request.SortField,
+            SortDescending = request.SortDescending,
+            Page = request.Page,
+            PageSize = request.PageSize,
+            StartMonth = request.StartMonth,
+            StartYear = request.StartYear,
+            MaxStartDate = request.MaxStartDate,
+            ExcludeUlns = request.ExcludeUlns,
+            CourseCode = request.CourseCode,
+            LearningType = request.LearningType,
+            AgreementId = request.AgreementId
+        };
+
+        var response = await learnerDataClient.PostWithResponseCode<GetLearnersForProviderResponse>(
+            new PostGetLearnersForProviderRequest(request.ProviderId, requestData));
 
         if (!string.IsNullOrEmpty(response.ErrorContent))
         {
@@ -150,18 +155,5 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
         }
 
         return response.Body;
-    }
-
-    private async Task<IEnumerable<TrainingProgramme>> GetCourses(long ukprn)
-    {
-        var response = await commitmentsClient.GetWithResponseCode<GetCourseCodesResponse>(new GetAllTrainingProgrammesRequest());
-
-        var courseCodes = await learnerDataClient.GetWithResponseCode<GetCourseCodesByUkprnResponse>(new GetCourseCodesByUkprnRequest(ukprn));
-
-        var codes = courseCodes.Body.CourseCodes.Select(t => t.ToString());
-
-        var trainingProgrammesForUkprn = response.Body.TrainingProgrammes.Where(t => codes.Contains(t.CourseCode));
-
-        return trainingProgrammesForUkprn;
     }
 }

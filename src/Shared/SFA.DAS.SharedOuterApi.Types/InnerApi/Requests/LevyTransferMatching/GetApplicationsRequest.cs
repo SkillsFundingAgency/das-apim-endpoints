@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
 using SFA.DAS.Apim.Shared.Interfaces;
 
-using SFA.DAS.Apim.Shared.Interfaces;
-
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LevyTransferMatching;
 
 public class GetApplicationsRequest : IGetApiRequest
@@ -35,10 +33,10 @@ public class GetApplicationsRequest : IGetApiRequest
                 queryParameters.Add("accountId", AccountId.Value.ToString());
             }
 
-                if (SenderAccountId.HasValue)
-                {
-                    queryParameters.Add("senderAccountId", SenderAccountId.Value.ToString());
-                }
+            if (SenderAccountId.HasValue)
+            {
+                queryParameters.Add("senderAccountId", SenderAccountId.Value.ToString());
+            }
 
             if (ApplicationStatusFilter != null)
             {

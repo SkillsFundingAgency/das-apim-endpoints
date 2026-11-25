@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using SFA.DAS.Apim.Shared.Infrastructure;
+﻿using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.RecruitJobs.Ai;
@@ -10,6 +6,9 @@ using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RecruitAi;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using System.Linq;
+using System.Net;
+using System.Threading;
 
 namespace SFA.DAS.RecruitJobs.UnitTests.Ai;
 
@@ -53,7 +52,7 @@ public class WhenReviewingVacancy
         recruitAiApiClient
             .Setup(x => x.PostWithResponseCode<NullResponse>(It.IsAny<PostVacancyReviewRequest>(), false))
             .Callback<IPostApiRequest, bool>((x, _) => { capturedRequest = x as PostVacancyReviewRequest; })
-            .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.OK, null));
+            .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.OK, null!));
         
         // act
         var result = await sut.ReviewVacancyAsync(Guid.NewGuid(), vacancy, CancellationToken.None);
@@ -72,7 +71,5 @@ public class WhenReviewingVacancy
         data.WageAdditionalInformation.Should().Be(vacancy.Wage!.WageAdditionalInformation);
         data.WageCompanyBenefitsInformation.Should().Be(vacancy.Wage.CompanyBenefitsInformation);
         data.WageWorkingWeekDescription.Should().Be(vacancy.Wage.WorkingWeekDescription);
-
-
     }
 }

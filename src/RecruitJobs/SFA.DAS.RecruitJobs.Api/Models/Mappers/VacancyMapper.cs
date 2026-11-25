@@ -1,13 +1,12 @@
-﻿using SFA.DAS.RecruitJobs.Domain;
-using SFA.DAS.RecruitJobs.InnerApi.Requests.Vacancy;
+﻿using SFA.DAS.Recruit.Contracts.ApiResponses;
 
 namespace SFA.DAS.RecruitJobs.Api.Models.Mappers;
 
 public class VacancyMapper
 {
-    public static PutVacancyRequestData ToInnerDto(Vacancy vacancy)
+    public PutVacancyRequest ToInnerDto(Vacancy vacancy)
     {
-        return new PutVacancyRequestData
+        return new PutVacancyRequest
         {
             AccountId = vacancy.AccountId,
             AccountLegalEntityId = vacancy.AccountLegalEntityId,
@@ -20,6 +19,9 @@ public class VacancyMapper
             ApplicationUrl = vacancy.ApplicationUrl,
             ApprenticeshipType = vacancy.ApprenticeshipType,
             ApprovedDate = vacancy.ApprovedDate,
+            ArchiveType = vacancy.ArchiveType,
+            ArchivedDate = vacancy.ArchivedDate,
+            ArchivedByUserId = vacancy.ArchivedByUserId.ToString(),
             ClosedDate = vacancy.ClosedDate,
             ClosingDate = vacancy.ClosingDate,
             ClosureReason = vacancy.ClosureReason,

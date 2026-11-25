@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using SFA.DAS.RecruitJobs.Api.Controllers;
-using SFA.DAS.RecruitJobs.InnerApi.Requests.VacancyAnalytics;
-using SFA.DAS.RecruitJobs.InnerApi.Responses.VacancyAnalytics;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Recruit.Contracts.ApiRequests;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
+using SFA.DAS.RecruitJobs.Api.Controllers;
 
 namespace SFA.DAS.RecruitJobs.Api.UnitTests.Controllers.VacancyControllerTests;
 
@@ -13,44 +10,20 @@ namespace SFA.DAS.RecruitJobs.Api.UnitTests.Controllers.VacancyControllerTests;
 internal class WhenGettingVacancyAnalytics
 {
     [Test, MoqAutoData]
-    public async Task Then_The_Request_Is_Sent_Correctly(
-       long vacancyReference,
-       GetOneVacancyAnalyticsResponse response,
-       Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
-       [Greedy] VacanciesController sut)
-    {
-        // arrange
-        GetOneVacancyAnalyticsApiRequest? capturedRequest = null;
-        recruitApiClient
-            .Setup(x => x.Get<GetOneVacancyAnalyticsResponse>(It.IsAny<GetOneVacancyAnalyticsApiRequest>()))
-            .Callback<IGetApiRequest>(x => capturedRequest = x as GetOneVacancyAnalyticsApiRequest)
-            .ReturnsAsync(response);
-
-        var expectedUrl = $"api/vacancyAnalytics/{vacancyReference}";
-
-        // act
-        await sut.GetOne(recruitApiClient.Object, vacancyReference);
-
-        // assert
-        capturedRequest.Should().NotBeNull();
-        capturedRequest!.GetUrl.Should().Be(expectedUrl);
-    }
-
-    [Test, MoqAutoData]
     public async Task Then_The_Results_Are_Returned(
         long vacancyReference,
-        GetOneVacancyAnalyticsResponse response,
-        Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        VacancyAnalyticsResponse response,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] VacanciesController sut)
     {
         // arrange
         recruitApiClient
-            .Setup(x => x.Get<GetOneVacancyAnalyticsResponse>(It.IsAny<GetOneVacancyAnalyticsApiRequest>()))
-            .Callback<IGetApiRequest>(x => _ = x as GetOneVacancyAnalyticsApiRequest)
+            .Setup(x => x.Get<VacancyAnalyticsResponse>(It.IsAny<GetVacancyanalyticsByVacancyReferenceApiRequest>()))
+            .Callback<IGetApiRequest>(x => _ = x as GetVacancyanalyticsByVacancyReferenceApiRequest)
             .ReturnsAsync(response);
 
         // act
-        var result = await sut.GetOne(recruitApiClient.Object, vacancyReference) as Ok<GetOneVacancyAnalyticsResponse>;
+        var result = await sut.GetOne(recruitApiClient.Object, vacancyReference) as Ok<VacancyAnalyticsResponse>;
 
         // assert
         result.Should().NotBeNull();
@@ -60,17 +33,17 @@ internal class WhenGettingVacancyAnalytics
     [Test, MoqAutoData]
     public async Task Then_If_Null_Response_Then_Null_Results_Are_Returned(
         long vacancyReference,
-        GetOneVacancyAnalyticsResponse response,
-        Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        VacancyAnalyticsResponse response,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] VacanciesController sut)
     {
         // arrange
         recruitApiClient
-            .Setup(x => x.Get<GetOneVacancyAnalyticsResponse>(It.IsAny<GetOneVacancyAnalyticsApiRequest>()))
-            .ReturnsAsync((GetOneVacancyAnalyticsResponse)null!);
+            .Setup(x => x.Get<VacancyAnalyticsResponse>(It.IsAny<GetVacancyanalyticsByVacancyReferenceApiRequest>()))
+            .ReturnsAsync((VacancyAnalyticsResponse)null!);
 
         // act
-        var result = await sut.GetOne(recruitApiClient.Object, vacancyReference) as Ok<GetOneVacancyAnalyticsResponse>;
+        var result = await sut.GetOne(recruitApiClient.Object, vacancyReference) as Ok<VacancyAnalyticsResponse>;
 
         // assert
         result.Should().NotBeNull();
@@ -79,21 +52,21 @@ internal class WhenGettingVacancyAnalytics
     [Test, MoqAutoData]
     public async Task Then_If_Empty_Response_Then_Empty_Results_Are_Returned(
         long vacancyReference,
-        GetOneVacancyAnalyticsResponse response,
-        Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        VacancyAnalyticsResponse response,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] VacanciesController sut)
     {
         // arrange
         recruitApiClient
-            .Setup(x => x.Get<GetOneVacancyAnalyticsResponse>(It.IsAny<GetOneVacancyAnalyticsApiRequest>()))
-            .ReturnsAsync(new GetOneVacancyAnalyticsResponse()
+            .Setup(x => x.Get<VacancyAnalyticsResponse>(It.IsAny<GetVacancyanalyticsByVacancyReferenceApiRequest>()))
+            .ReturnsAsync(new VacancyAnalyticsResponse()
             {
                 VacancyReference = vacancyReference,
                 Analytics = []
             });
 
         // act
-        var result = await sut.GetOne(recruitApiClient.Object, vacancyReference) as Ok<GetOneVacancyAnalyticsResponse>;
+        var result = await sut.GetOne(recruitApiClient.Object, vacancyReference) as Ok<VacancyAnalyticsResponse>;
 
         // assert
         result.Should().NotBeNull();

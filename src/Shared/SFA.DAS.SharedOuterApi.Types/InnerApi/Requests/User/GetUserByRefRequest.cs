@@ -1,7 +1,5 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-using SFA.DAS.Apim.Shared.Interfaces;
-
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.User;
 
 public record GetUserByRefRequest(string UserRef) : IGetApiRequest

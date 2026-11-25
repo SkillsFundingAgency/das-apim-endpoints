@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests.Controllers
 {
@@ -74,12 +73,12 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Controllers
     [Frozen] Mock<IMediator> mediatorMock,
     [Greedy] CmadController controller,
     string email,
-    List<Registration> registrations)
+    Registration registrations)
         {
             // Arrange
             controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() };
 
-            var expectedResult = new GetRegistrationsByEmailQueryResult { Registrations = registrations };
+            var expectedResult = new GetRegistrationsByEmailQueryResult { Registration = registrations };
 
             mediatorMock
                 .Setup(m => m.Send(

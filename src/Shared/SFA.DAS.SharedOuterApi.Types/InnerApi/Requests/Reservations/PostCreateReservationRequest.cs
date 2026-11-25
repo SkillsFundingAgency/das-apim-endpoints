@@ -1,20 +1,12 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-using SFA.DAS.Apim.Shared.Interfaces;
-
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Reservations;
 
-public class PostCreateReservationRequest : IPostApiRequest
+public class PostCreateReservationRequest(CreateReservationRequest data) : IPostApiRequest
 {
     public string PostUrl => $"api/accounts/{AccountId}/reservations";
-    public long AccountId { get; }
-    public object Data { get; set; }
-
-    public PostCreateReservationRequest(CreateReservationRequest data)
-    {
-        Data = data;
-        AccountId = data.AccountId;
-    }
+    public long AccountId { get; } = data.AccountId;
+    public object Data { get; set; } = data;
 }
 
 public class CreateReservationRequest

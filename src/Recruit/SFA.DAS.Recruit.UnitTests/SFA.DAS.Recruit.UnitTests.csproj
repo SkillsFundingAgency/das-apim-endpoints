@@ -1,32 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-
     <IsPackable>false</IsPackable>
-
     <LangVersion>default</LangVersion>
-
     <Nullable>enable</Nullable>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="coverlet.msbuild">
+    <PackageReference Include="coverlet.msbuild" Version="6.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="AutoFixture.NUnit3" />
-    <PackageReference Include="FluentAssertions" />
-    <PackageReference Include="Moq" />
-    <PackageReference Include="nunit" />
-    <PackageReference Include="NUnit3TestAdapter" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="SFA.DAS.Testing.AutoFixture" />
-    <PackageReference Include="System.ComponentModel.TypeConverter" />
+    <PackageReference Include="AutoFixture.NUnit3" Version="4.18.1" />
+    <PackageReference Include="FluentAssertions" Version="7.2.0" />
+    <PackageReference Include="Moq" Version="4.20.72" />
+    <PackageReference Include="NUnit" Version="4.2.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="SFA.DAS.Testing.AutoFixture" Version="17.1.103" />
+    <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Recruit\SFA.DAS.Recruit.csproj" />
   </ItemGroup>
-
 </Project>

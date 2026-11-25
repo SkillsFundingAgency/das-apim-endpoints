@@ -1,6 +1,9 @@
 ﻿using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeship;
 using SFA.DAS.Approvals.InnerApi;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
 {
@@ -62,6 +65,9 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         public bool HasLearnerDataChanges { get; set; }
         public DateTime? LastLearnerDataSync { get; set; }
         public string TrainingCourseVersion { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public LearningType? LearningType { get; set; }
+
 
         public static implicit operator GetEditDraftApprenticeshipResponse(GetEditDraftApprenticeshipQueryResult source)
         {
@@ -113,6 +119,7 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
                 HasLearnerDataChanges = source.HasLearnerDataChanges,
                 LastLearnerDataSync = source.LastLearnerDataSync,
                 TrainingCourseVersion = source.TrainingCourseVersion,
+                LearningType = source.LearningType
             };
         }
     }

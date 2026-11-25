@@ -1,18 +1,17 @@
-﻿using System.Collections.Generic;
-using SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetCandidateSkills;
+﻿using SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetCandidateSkills;
+using System.Collections.Generic;
 
-namespace SFA.DAS.VacanciesManage.Api.Models
+namespace SFA.DAS.VacanciesManage.Api.Models;
+
+public class GetCandidateSkillsListResponse
 {
-    public class GetCandidateSkillsListResponse
-    {
-        public IList<string> CandidateSkills { get; set; }
+    public IList<string> CandidateSkills { get; set; }
 
-        public static implicit operator GetCandidateSkillsListResponse(GetCandidateSkillsQueryResponse source)
+    public static implicit operator GetCandidateSkillsListResponse(GetCandidateSkillsQueryResponse source)
+    {
+        return new GetCandidateSkillsListResponse
         {
-            return new GetCandidateSkillsListResponse
-            {
-                CandidateSkills = source?.CandidateSkills ?? new List<string>() 
-            };
-        }
+            CandidateSkills = source?.CandidateSkills ?? new List<string>()
+        };
     }
 }

@@ -70,7 +70,7 @@ public static class Startup
                 var clientConfig = sp.GetService<RecruitApiConfiguration>();
                 x.BaseAddress = new Uri($"{clientConfig.Url.TrimEnd('/')}/graphql");
 
-                if (configuration.IsLocalOrDev())
+                if (string.IsNullOrEmpty(clientConfig.Identifier))
                 {
                     return;
                 }

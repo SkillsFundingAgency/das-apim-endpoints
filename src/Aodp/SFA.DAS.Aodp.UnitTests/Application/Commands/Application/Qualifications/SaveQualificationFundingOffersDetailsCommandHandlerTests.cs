@@ -3,8 +3,10 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Kernel;
 using Moq;
 using SFA.DAS.Aodp.Application.Commands.Application.Qualifications;
+using SFA.DAS.Aodp.Application.UnitTests.Queries.Qualifications;
 using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.Aodp.Services;
+using SFA.DAS.AODP.Shared.UnitTests.Helpers;
 
 namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Application.Qualifications
 {
@@ -57,18 +59,6 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Application.Qualifications
             // Assert
             Assert.That(result.Success, Is.False);
             Assert.That(result.ErrorMessage, Is.EqualTo(exceptionMessage));
-        }
-    }
-    public class DateOnlySpecimenBuilder : ISpecimenBuilder
-    {
-        public object Create(object request, ISpecimenContext context)
-        {
-            if (request is Type type && type == typeof(DateOnly))
-            {
-                return new DateOnly(2023, 1, 1); //a default date
-            }
-
-            return new NoSpecimen();
         }
     }
 }

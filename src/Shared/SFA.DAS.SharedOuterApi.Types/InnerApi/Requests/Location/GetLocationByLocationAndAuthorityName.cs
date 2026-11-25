@@ -1,22 +1,9 @@
-﻿using System.Web;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+using System.Web;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location;
 
-using SFA.DAS.Apim.Shared.Interfaces;
-
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location
+public class GetLocationByLocationAndAuthorityName(string locationName, string authorityName) : IGetApiRequest
 {
-    public class GetLocationByLocationAndAuthorityName : IGetApiRequest
-    {
-        private readonly string _locationName;
-        private readonly string _authorityName;
-
-        public GetLocationByLocationAndAuthorityName(string locationName, string authorityName)
-        {
-            _locationName = locationName;
-            _authorityName = authorityName;
-        }
-
-        public string GetUrl  => $"api/locations?locationName={HttpUtility.UrlEncode(_locationName)}&authorityName={HttpUtility.UrlEncode(_authorityName)}";
-    }
+    public string GetUrl => $"api/locations?locationName={HttpUtility.UrlEncode(locationName)}&authorityName={HttpUtility.UrlEncode(authorityName)}";
 }

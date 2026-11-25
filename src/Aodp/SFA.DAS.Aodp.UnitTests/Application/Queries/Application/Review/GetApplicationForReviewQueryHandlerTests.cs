@@ -16,6 +16,7 @@ using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.SharedOuterApi.Types.Models.DfeSignIn;
+using SFA.DAS.AODP.Shared.UnitTests.Helpers;
 
 namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Application.Review
 {
@@ -254,23 +255,6 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Application.Review
                 Assert.That(result.Success, Is.False);
                 Assert.That(result.ErrorMessage, Is.EqualTo(UnexpectedReviewerFailureMessage));
             });
-        }
-
-        public class DateOnlySpecimenBuilder : ISpecimenBuilder
-        {
-            public object Create(object request, ISpecimenContext context)
-            {
-                if (request is Type type)
-                {
-                    if (type == typeof(DateOnly))
-                        return DateOnly.FromDateTime(DateTime.UtcNow.Date);
-
-                    if (type == typeof(DateOnly?))
-                        return (DateOnly?)DateOnly.FromDateTime(DateTime.UtcNow.Date);
-                }
-
-                return new NoSpecimen();
-            }
         }
     }
 }

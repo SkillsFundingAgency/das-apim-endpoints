@@ -17,7 +17,6 @@ public class WhenGettingAllProviderRelationships
     [Test, MoqAutoData]
     public async Task GetEmployerDetails_Calls_With_Correct_Values(
         GetAllProviderRelationshipQuery request,
-        CancellationToken cancellation,
         GetProviderAccountLegalEntitiesResponse[] providerLegalEntitiesresponse,
         GetProvidersResponse providerSummary,
         List<List<EmployerDetails>> employers,
@@ -28,7 +27,7 @@ public class WhenGettingAllProviderRelationships
     {
         // Arrange
         int count = providerSummary.RegisteredProviders.Count();
-        roatpService.Setup(t => t.GetProviders(cancellation)).
+        roatpService.Setup(t => t.GetProviders(It.IsAny<CancellationToken>())).
          ReturnsAsync(providerSummary);
 
         int index = 0;
@@ -38,19 +37,19 @@ public class WhenGettingAllProviderRelationships
             var employerDetails = employers[index];
             var course = coursesForProviderResponses[index];
 
-            getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(provider.Ukprn)).
+            getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(provider.Ukprn, It.IsAny<CancellationToken>())).
            ReturnsAsync(providerDetails);
 
-            getProviderRelationshipService.Setup(t => t.GetEmployerDetails((providerDetails))).
+            getProviderRelationshipService.Setup(t => t.GetEmployerDetails(providerDetails, It.IsAny<CancellationToken>())).
                 ReturnsAsync(employerDetails);
 
-            getProviderRelationshipService.Setup(t => t.GetCoursesForProviderByUkprn(provider.Ukprn)).
+            getProviderRelationshipService.Setup(t => t.GetCoursesForProviderByUkprn(provider.Ukprn, It.IsAny<CancellationToken>())).
           ReturnsAsync(course);
             index++;
         }
 
         // Act
-        var result = await sut.Handle(request, cancellation);
+        var result = await sut.Handle(request, CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();
@@ -81,11 +80,11 @@ public class WhenGettingAllProviderRelationships
         [Greedy] GetAllProvidersRelationshipsQueryHandler sut)
     {
         // Arrange
-        roatpService.Setup(t => t.GetProviders(cancellation)).
+        roatpService.Setup(t => t.GetProviders(It.IsAny<CancellationToken>())).
             ReturnsAsync((GetProvidersResponse?)null);
 
         // Act
-        var result = await sut.Handle(request, cancellation);
+        var result = await sut.Handle(request, CancellationToken.None);
 
         // Assert
         result?.Items.Should().HaveCount(0);
@@ -122,6 +121,7 @@ public class WhenGettingAllProviderRelationships
         [Frozen] Mock<IRoatpV2TrainingProviderService> roatpService,
         [Greedy] GetAllProvidersRelationshipsQueryHandler sut)
     {
+        // Arrange
         roatpService
             .Setup(s => s.GetProviders(It.IsAny<CancellationToken>()))
             .ReturnsAsync((GetProvidersResponse?)null);
@@ -143,7 +143,6 @@ public class WhenGettingAllProviderRelationships
     [Test, MoqAutoData]
     public async Task ShouldProcessProvider_InParallel(
         GetAllProviderRelationshipQuery request,
-        CancellationToken cancellation,
         GetProviderAccountLegalEntitiesResponse[] providerLegalEntitiesresponse,
         GetProvidersResponse providerSummary,
         List<List<EmployerDetails>> employers,
@@ -152,6 +151,7 @@ public class WhenGettingAllProviderRelationships
        [Frozen] Mock<IRoatpV2TrainingProviderService> roatpService,
        [Greedy] GetAllProvidersRelationshipsQueryHandler sut)
     {
+        // Arrange
         var providers = Enumerable.Range(1, 20)
             .Select(t => new Provider
             {
@@ -163,27 +163,29 @@ public class WhenGettingAllProviderRelationships
         request.Page = 1;
         request.PageSize = 10;
 
-        roatpService.Setup(t => t.GetProviders(cancellation))
+        roatpService.Setup(t => t.GetProviders(It.IsAny<CancellationToken>()))
             .ReturnsAsync(new GetProvidersResponse()
             {
                 RegisteredProviders = providers
             });
 
-        getProviderRelationshipService.Setup(s => s.GetAllProviderRelationShipDetails(It.IsAny<int>()))
+        getProviderRelationshipService.Setup(s => s.GetAllProviderRelationShipDetails(It.IsAny<int>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new GetProviderAccountLegalEntitiesResponse());
 
-        getProviderRelationshipService.Setup(s => s.GetCoursesForProviderByUkprn(It.IsAny<long>())).
+        getProviderRelationshipService.Setup(s => s.GetCoursesForProviderByUkprn(It.IsAny<long>(), It.IsAny<CancellationToken>())).
             ReturnsAsync(new GetCoursesForProviderResponse());
 
-        getProviderRelationshipService.Setup(s => s.GetEmployerDetails(It.IsAny<GetProviderAccountLegalEntitiesResponse>())).
+        getProviderRelationshipService.Setup(s => s.GetEmployerDetails(It.IsAny<GetProviderAccountLegalEntitiesResponse>(), It.IsAny<CancellationToken>())).
             ReturnsAsync(new List<EmployerDetails>());
 
-        var result = await sut.Handle(request, cancellation);
+        // Act
+        var result = await sut.Handle(request, CancellationToken.None);
 
+        // Assert
         result.Should().NotBeNull();
         result.Items.Should().HaveCount(10);
         result.TotalItems.Should().Be(20);
 
-        getProviderRelationshipService.Verify(x => x.GetAllProviderRelationShipDetails(It.IsAny<int>()), Times.Exactly(10));
+        getProviderRelationshipService.Verify(x => x.GetAllProviderRelationShipDetails(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Exactly(10));
     }
 }

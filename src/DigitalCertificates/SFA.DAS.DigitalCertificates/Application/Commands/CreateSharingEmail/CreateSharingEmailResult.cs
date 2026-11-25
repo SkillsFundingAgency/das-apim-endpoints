@@ -1,5 +1,5 @@
 ﻿using System;
-using SFA.DAS.DigitalCertificates.InnerApi.Responses;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
 
 namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingEmail
 {
@@ -7,7 +7,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingEmail
     {
         public Guid Id { get; set; }
         public Guid EmailLinkCode { get; set; }
-        public static implicit operator CreateSharingEmailResult(PostCreateSharingEmailResponse response)
+        public static implicit operator CreateSharingEmailResult(CreateSharingEmailResponse response)
         {
             return new CreateSharingEmailResult
             {

@@ -69,20 +69,14 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
         services.AddTransient<IAutoReservationsService, AutoReservationsService>();
 
-        if (configuration.GetValue<bool>("UseNewCoursesApi") == true)
-        {
-            services.AddTransient<ICourseTypeRulesService, CourseTypeRulesServiceWithCourses>();
-            services.AddTransient<IProviderCoursesOrStandardsService, ProviderCoursesService>();
-        }
-        else
-        {
-            services.AddTransient<ICourseTypeRulesService, CourseTypeRulesService>();
-            services.AddTransient<IProviderCoursesOrStandardsService, ProviderStandardsService>();
-        }
+        services.AddTransient<ICourseTypeRulesService, CourseTypeRulesServiceWithCourses>();
+        services.AddTransient<IProviderCoursesOrStandardsService, ProviderCoursesService>();
         services.AddTransient<IProviderStandardsService, ProviderStandardsService>();
+        services.AddTransient<ITrainingProgrammeResolutionService, TrainingProgrammeResolutionService>();
         services.AddTransient<IBulkCourseMetadataService, BulkCourseMetadataService>();
         services.AddSingleton<IMapLearnerRecords, MapLearnerRecords>();
         services.AddTransient<IAddCourseTypeDataToCsvService, AddCourseTypeDataToCsvService>();
+        services.AddTransient<IAddCourseTypeFromRulesService, AddCourseTypeFromRulesService>();
         services.AddServiceParameters();
     }
 }

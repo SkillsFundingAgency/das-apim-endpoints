@@ -12,19 +12,18 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetEditApprenticeshipCourse
 {
     public class GetEditApprenticeshipCourseQueryHandler : IRequestHandler<GetEditApprenticeshipCourseQuery, GetEditApprenticeshipCourseQueryResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
-        private readonly IProviderCoursesOrStandardsService _providerStandardsService;
+        private readonly IProviderStandardsService _providerStandardsService;
         private readonly ServiceParameters _serviceParameters;
 
         public GetEditApprenticeshipCourseQueryHandler(
             ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
-            IProviderCoursesOrStandardsService providerStandardsService,
+            IProviderStandardsService providerStandardsService,
             ServiceParameters serviceParameters)
         {
             _apiClient = apiClient;

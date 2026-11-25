@@ -11,6 +11,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Recruit.Application.Report.Query.GetReportById;
+using SFA.DAS.Recruit.Application.Report.Query.GetReportDataById;
 
 namespace SFA.DAS.Recruit.Api.Controllers;
 
@@ -53,6 +54,24 @@ public class ReportsController(IMediator mediator,
         catch (Exception e)
         {
             logger.LogError(e, "Error getting reports by ukprn");
+            return StatusCode((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpGet]
+    [Route("{reportId:guid}/data")]
+    public async Task<IActionResult> GetData(
+        [FromRoute, Required] Guid reportId,
+        CancellationToken token = default)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetReportDataByIdQuery(reportId), token);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error getting report data by report id");
             return StatusCode((int)HttpStatusCode.InternalServerError);
         }
     }

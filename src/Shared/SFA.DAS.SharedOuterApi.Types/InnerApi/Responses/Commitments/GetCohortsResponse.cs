@@ -30,7 +30,7 @@ public enum Party
     Provider = 2,
     TransferSender = 4
 }
-    
+
 public enum CommitmentStatus
 {
     New = 0,

@@ -24,10 +24,10 @@ public class WhenAnonymisingAnAddress
             Latitude = 1,
             Longitude = 2
         };
-        
+
         // act
         address.Anonymise();
-        
+
         // assert
         address.AddressLine1.Should().BeNull();
         address.AddressLine2.Should().BeNull();

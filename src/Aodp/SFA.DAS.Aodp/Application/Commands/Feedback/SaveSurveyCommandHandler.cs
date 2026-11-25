@@ -1,13 +1,8 @@
 ﻿using MediatR;
 using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.Aodp.Services;
-using SFA.DAS.Aodp.Configuration;
-using SFA.DAS.Aodp.Services;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Aodp.Application.Commands.Feedback
 {

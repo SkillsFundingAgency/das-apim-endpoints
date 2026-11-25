@@ -1,4 +1,4 @@
-﻿using SFA.DAS.DigitalCertificates.InnerApi.Responses;
+﻿using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
 
 namespace SFA.DAS.DigitalCertificates.Application.Queries.GetSharings
 {

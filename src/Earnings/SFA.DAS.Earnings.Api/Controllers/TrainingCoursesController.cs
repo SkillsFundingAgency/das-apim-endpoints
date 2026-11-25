@@ -7,24 +7,15 @@ namespace SFA.DAS.Earnings.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class TrainingCoursesController : ControllerBase
+public class TrainingCoursesController(ILogger<TrainingCoursesController> logger, IMediator mediator) : ControllerBase
 {
-    private readonly ILogger<TrainingCoursesController> _logger;
-    private readonly IMediator _mediator;
-
-    public TrainingCoursesController(ILogger<TrainingCoursesController> logger, IMediator mediator)
-    {
-        _logger = logger;
-        _mediator = mediator;
-    }
-
     [HttpGet]
     [Route("standards/{courseCode}")]
     public async Task<IActionResult> GetStandard(string courseCode)
     {
         try
         {
-            var queryResult = await _mediator.Send(new GetStandardQuery(courseCode));
+            var queryResult = await mediator.Send(new GetStandardQuery(courseCode));
 
             if (queryResult == null)
             {
@@ -37,7 +28,7 @@ public class TrainingCoursesController : ControllerBase
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error attempting to get list of standards");
+            logger.LogError(e, "Error attempting to get list of standards");
             return BadRequest();
         }
     }

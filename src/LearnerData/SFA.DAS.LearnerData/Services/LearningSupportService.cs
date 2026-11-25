@@ -6,7 +6,7 @@ namespace SFA.DAS.LearnerData.Services;
 
 public interface ILearningSupportService
 {
-    List<LearningSupport> GetCombinedLearningSupport(
+    (List<LearningSupport> OnProgramme, Dictionary<string, List<LearningSupport>> EnglishAndMaths) GetLearningSupport(
         List<OnProgrammeRequestDetails> onProgrammes,
         DateTime onProgrammeEndDate,
         List<BreakInLearning> onProgrammeBreaksInLearning,
@@ -16,16 +16,16 @@ public interface ILearningSupportService
 
 public class LearningSupportService : ILearningSupportService
 {
-    public List<LearningSupport> GetCombinedLearningSupport(
+    public (List<LearningSupport> OnProgramme, Dictionary<string, List<LearningSupport>> EnglishAndMaths) GetLearningSupport(
         List<OnProgrammeRequestDetails> onProgrammes,
         DateTime onProgrammeEndDate,
         List<BreakInLearning> onProgrammeBreaksInLearning,
         List<MathsAndEnglishDetails> englishAndMathsCourses,
         IEnumerable<KeyValuePair<string, List<LearningSupport>>> englishAndMathsRequestedLearningSupportByLearnAimRef)
     {
+        var onProgrammeLearningSupport = ProcessLearningSupport(onProgrammes.SelectMany(op => op.LearningSupport), onProgrammeBreaksInLearning, onProgrammeEndDate);
 
-        var combined = new List<LearningSupport>();
-        combined.AddRange(ProcessLearningSupport(onProgrammes.SelectMany(op => op.LearningSupport), onProgrammeBreaksInLearning, onProgrammeEndDate));
+        var englishAndMathsLearningSupport = new Dictionary<string, List<LearningSupport>>();
 
         foreach(var course in englishAndMathsCourses)
         {
@@ -42,12 +42,12 @@ public class LearningSupportService : ILearningSupportService
                     course.WithdrawalDate,
                     course.PauseDate
                 }.Min();
-                combined.AddRange(ProcessLearningSupport(requestedLearningSupport!, course.BreaksInLearning, endDate!.Value));
+                englishAndMathsLearningSupport[course.LearnAimRef] = ProcessLearningSupport(requestedLearningSupport!, course.BreaksInLearning, endDate!.Value);
             }
 
         }
 
-        return combined;
+        return (onProgrammeLearningSupport, englishAndMathsLearningSupport);
     }
 
     private static List<LearningSupport> ProcessLearningSupport(

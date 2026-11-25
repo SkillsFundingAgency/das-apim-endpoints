@@ -6,7 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" />
+    <PackageReference Include="MediatR" Version="12.5.0" />    
+    <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.118-prerelease-13" />
+    <PackageReference Include="AngleSharp" Version="1.5.1" />
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
   </ItemGroup>
 
   <ItemGroup>

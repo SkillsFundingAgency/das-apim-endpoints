@@ -1,8 +1,7 @@
 ﻿
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RequestApprenticeTraining
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RequestApprenticeTraining;
+
+public class GetStandardsListResponse
 {
-    public class GetStandardsListResponse
-    {
-        public IEnumerable<GetStandardResponse> Standards { get; set; }
-    }
+    public IEnumerable<GetStandardResponse> Standards { get; set; }
 }

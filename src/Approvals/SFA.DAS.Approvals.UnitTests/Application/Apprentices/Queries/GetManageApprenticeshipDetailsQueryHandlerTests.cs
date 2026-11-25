@@ -16,10 +16,7 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
-using SFA.DAS.SharedOuterApi.Types.Models;
 using GetApprenticeshipUpdatesResponse = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetApprenticeshipUpdatesResponse;
 using Party = SFA.DAS.Approvals.Application.Shared.Enums.Party;
 
@@ -438,5 +435,32 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
         var result = await _handler.Handle(_query, CancellationToken.None);
 
         result.HasMultipleDeliveryModelOptions.Should().BeFalse();
+    }
+
+    [Test]
+    public async Task Handle_MapsPaymentsStatus_WhenPaymentsAreFrozen()
+    {
+        var freezeDate = DateTime.UtcNow.Date.AddDays(-5);
+        _apprenticeship.PaymentFreezeDate = freezeDate;
+        _apprenticeship.FreezePaymentsReason = 1;
+
+        var result = await _handler.Handle(_query, CancellationToken.None);
+
+        result.PaymentsStatus.FreezeStatus.Should().BeTrue();
+        result.PaymentsStatus.PaymentFreezeDate.Should().Be(freezeDate);
+        result.PaymentsStatus.ReasonFrozen.Should().Be("Learner is on a break");
+    }
+
+    [Test]
+    public async Task Handle_MapsPaymentsStatus_WhenPaymentsAreNotFrozen()
+    {
+        _apprenticeship.PaymentFreezeDate = null;
+        _apprenticeship.FreezePaymentsReason = null;
+
+        var result = await _handler.Handle(_query, CancellationToken.None);
+
+        result.PaymentsStatus.FreezeStatus.Should().BeFalse();
+        result.PaymentsStatus.PaymentFreezeDate.Should().BeNull();
+        result.PaymentsStatus.ReasonFrozen.Should().BeNull();
     }
 }

@@ -1,0 +1,71 @@
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
+using FluentAssertions;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Moq;
+using NUnit.Framework;
+using SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
+using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
+using SFA.DAS.Testing.AutoFixture;
+
+namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Courses;
+
+public sealed class CoursesControllerGetCourseByLarsCodeTests
+{
+    [Test, MoqAutoData]
+    public async Task WhenGetCourseByLarsCode_ThenReturnsOkAndCourseFromMediator(
+        GetCourseByLarsCodeQuery query,
+        GetCourseByLarsCodeQueryResult result,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Frozen] ILogger<CoursesController> mockLogger,
+        [Greedy] CoursesController controller
+    )
+    {
+        mockMediator
+            .Setup(mediator => mediator.Send(
+                It.Is<GetCourseByLarsCodeQuery>(c =>
+                    c.LarsCode.Equals(query.LarsCode) &&
+                    c.Distance.Equals(query.Distance) &&
+                    c.LocationName.Equals(query.LocationName)
+                ),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(result);
+
+        var sut = await controller.GetCourseByLarsCode(query.LarsCode, query.Distance, query.LocationName) as ObjectResult;
+
+        Assert.That(sut, Is.Not.Null);
+        Assert.That(sut.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
+
+        var model = sut.Value as GetCourseByLarsCodeQueryResult;
+        Assert.That(model, Is.Not.Null);
+        model.Should().Be(result);
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenGetCourseByLarsCode_AndCourseIsNull_ThenReturnsNotFound(
+        GetCourseByLarsCodeQuery query,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Frozen] ILogger<CoursesController> mockLogger,
+        [Greedy] CoursesController controller
+    )
+    {
+        mockMediator
+            .Setup(mediator => mediator.Send(
+                It.Is<GetCourseByLarsCodeQuery>(c =>
+                    c.LarsCode.Equals(query.LarsCode) &&
+                    c.Distance.Equals(query.Distance) &&
+                    c.LocationName.Equals(query.LocationName)
+                ),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync((GetCourseByLarsCodeQueryResult)null);
+
+        var sut = await controller.GetCourseByLarsCode(query.LarsCode, query.Distance, query.LocationName) as NotFoundResult;
+
+        Assert.That(sut, Is.Not.Null);
+        Assert.That(sut.StatusCode, Is.EqualTo((int)HttpStatusCode.NotFound));
+    }
+}

@@ -9,13 +9,10 @@ using SFA.DAS.LearnerDataJobs.InnerApi;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.Apim.Shared.Infrastructure;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LearnerDataJobs.UnitTests.Application.Commands;
@@ -28,9 +25,9 @@ public class AddLearnerDataCommandHandlerTests
         CourseLookupDetailResponse courseResponse,
         [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> client,
         [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
+        [Frozen] Mock<IConfiguration> configuration,
         [Greedy] AddLearnerDataCommandHandler handler)
     {
-
         courseResponse.LearningType = "Apprenticeship";
 
         var expectedUrl =
@@ -53,9 +50,19 @@ public class AddLearnerDataCommandHandlerTests
     [Test, MoqAutoData]
     public async Task Then_AddingANewLearner_Returns_Non200_Range_HttpStatusCode(
         AddLearnerDataCommand command,
+        CourseLookupDetailResponse courseResponse,
         [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> client,
+        [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
+        [Frozen] Mock<IConfiguration> configuration,
         [Greedy] AddLearnerDataCommandHandler handler)
     {
+        courseResponse.LearningType = "Apprenticeship";
+
+        courseClient.Setup(x =>
+        x.Get<CourseLookupDetailResponse>(
+                It.Is<GetCourseLookupDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
+            .ReturnsAsync(courseResponse);
+
         client.Setup(x =>
                 x.PutWithResponseCode<NullResponse>(It.IsAny<PutLearnerDataRequest>()))
             .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.BadRequest, "Error"));
@@ -74,7 +81,6 @@ public class AddLearnerDataCommandHandlerTests
         [Greedy] AddLearnerDataCommandHandler handler)
     {
         courseResponse.LearningType = "Unknown";
-        configuration.Setup(x => x["UseNewCoursesApi"]).Returns("true");
 
         courseClient.Setup(x =>
                 x.Get<CourseLookupDetailResponse?>(
@@ -106,7 +112,6 @@ public class AddLearnerDataCommandHandlerTests
         [Greedy] AddLearnerDataCommandHandler handler)
     {
         CourseLookupDetailResponse? courseResponse = null;
-        configuration.Setup(x => x["UseNewCoursesApi"]).Returns("true");
 
         courseClient.Setup(x =>
                 x.Get<CourseLookupDetailResponse?>(
@@ -119,26 +124,6 @@ public class AddLearnerDataCommandHandlerTests
     }
 
     [Test, MoqAutoData]
-    public async Task Then_AddingANewLearner_Throws_Exception_When_No_StandardFound(
-        AddLearnerDataCommand command,
-        [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
-        [Frozen] Mock<IConfiguration> configuration,
-        [Greedy] AddLearnerDataCommandHandler handler)
-    {
-        StandardDetailResponse? courseResponse = null;
-        configuration.Setup(x => x["UseNewCoursesApi"]).Returns("false");
-
-        courseClient.Setup(x =>
-                x.Get<StandardDetailResponse?>(
-                    It.Is<GetStandardDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
-            .ReturnsAsync(courseResponse);
-
-        var act = async () => await handler.Handle(command, CancellationToken.None);
-
-        await act.Should().ThrowAsync<Exception>().WithMessage($"No standard found for LARS code {command.LearnerData.LarsCode}");
-    }
-
-    [Test, MoqAutoData]
     public async Task Then_AddingANewLearner_Maps_To_Inner_Api_Successfully(
         AddLearnerDataCommand command,
         CourseLookupDetailResponse courseResponse,
@@ -148,7 +133,6 @@ public class AddLearnerDataCommandHandlerTests
         [Greedy] AddLearnerDataCommandHandler handler)
     {
         courseResponse.LearningType = "ApprenticeshipUnit";
-        configuration.Setup(x => x["UseNewCoursesApi"]).Returns("true");
 
         var expectedUrl =
             $"providers/{command.LearnerData.UKPRN}/learners/{command.LearnerData.ULN}";
@@ -167,39 +151,4 @@ public class AddLearnerDataCommandHandlerTests
 
         client.Verify(x => x.PutWithResponseCode<NullResponse>(It.Is<PutLearnerDataRequest>(p => ((LearnerDataRequest)p.Data).LarsCode == command.LearnerData.LarsCode && ((LearnerDataRequest)p.Data).TrainingName == courseResponse.Title)));
     }
-
-    [Test, MoqAutoData]
-    public async Task Then_AddingANewLearner_Maps_To_Inner_Api_Successfully_using_Standard_api(
-        AddLearnerDataCommand command,
-        StandardDetailResponse courseResponse,
-        [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> client,
-        [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
-        [Frozen] Mock<IConfiguration> configuration,
-        [Greedy] AddLearnerDataCommandHandler handler)
-    {
-        courseResponse.ApprenticeshipType = "ApprenticeshipUnit";
-        configuration.Setup(x => x["UseNewCoursesApi"]).Returns("false");
-
-        var expectedUrl =
-            $"providers/{command.LearnerData.UKPRN}/learners/{command.LearnerData.ULN}";
-
-        courseClient.Setup(x =>
-                x.Get<StandardDetailResponse?>(
-                    It.Is<GetStandardDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
-            .ReturnsAsync(courseResponse);
-
-        client.Setup(x =>
-                x.PutWithResponseCode<NullResponse>(
-                    It.Is<PutLearnerDataRequest>(p => p.PutUrl == expectedUrl)))
-            .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.Created, ""));
-
-
-        var result = await handler.Handle(command, CancellationToken.None);
-
-        client.Verify(x => x.PutWithResponseCode<NullResponse>(It.Is<PutLearnerDataRequest>(p => ((LearnerDataRequest)p.Data).LarsCode == command.LearnerData.LarsCode
-            && ((LearnerDataRequest)p.Data).TrainingName == courseResponse.Title
-            && ((LearnerDataRequest)p.Data).LearningType == LearningType.ApprenticeshipUnit))
-        );
-    }
-
 }

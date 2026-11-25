@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.Domain;
 using SFA.DAS.SharedOuterApi.Types.InnerApi;
@@ -26,11 +27,12 @@ public sealed class GetCourseByLarsCodeQueryResult
     public string StandardPageUrl { get; set; }
     public List<Ksb> Ksbs { get; set; }
     public CourseType CourseType { get; set; }
-    public LearningType ApprenticeshipType { get; set; }
-    public List<RelatedOccupation> RelatedOccupations { get; set; }
+    public LearningType LearningType { get; set; }
+    public StandardDate CourseDates { get; set; }
+    public List<RelatedOccupation> RelatedOccupations { get; set; } = [];
     public int IncentivePayment { get; set; }
 
-    public static implicit operator GetCourseByLarsCodeQueryResult(StandardDetailsLookupResponse source)
+    public static implicit operator GetCourseByLarsCodeQueryResult(GetCourseLookupResponse source)
     {
         return new()
         {
@@ -46,7 +48,8 @@ public sealed class GetCourseByLarsCodeQueryResult
             TypicalJobTitles = source.TypicalJobTitles,
             StandardPageUrl = source.StandardPageUrl,
             CourseType = source.CourseType,
-            ApprenticeshipType = source.LearningType,
+            LearningType = source.LearningType,
+            CourseDates = source.CourseDates,
             RelatedOccupations = source.RelatedOccupations.Select(c => (RelatedOccupation)c).ToList()
         };
     }

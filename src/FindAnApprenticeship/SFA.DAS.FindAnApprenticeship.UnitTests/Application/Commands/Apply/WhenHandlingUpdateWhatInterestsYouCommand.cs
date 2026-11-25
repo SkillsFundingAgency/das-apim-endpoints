@@ -1,5 +1,5 @@
 ﻿using System.Net;
-using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using Newtonsoft.Json;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateWhatInterestsYou;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;

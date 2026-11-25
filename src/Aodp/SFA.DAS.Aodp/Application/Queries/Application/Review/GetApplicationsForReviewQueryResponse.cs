@@ -21,6 +21,7 @@ namespace SFA.DAS.Aodp.Application.Queries.Application.Review
             public bool NewMessage { get; set; }
             public string Reviewer1 { get; set; }
             public string Reviewer2 { get; set; }
+            public DateTime? SubmittedAt { get; set; }
 
         }
     }

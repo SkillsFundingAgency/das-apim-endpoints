@@ -19,7 +19,8 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharedSta
             DateTime dateAwarded,
             string overallGrade,
             string providerName,
-            DateTime startDate)
+            DateTime startDate,
+            bool coronationEmblem)
         {
             // Arrange & Act
             var result = new GetSharedStandardCertificateQueryResult
@@ -34,7 +35,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharedSta
                 OverallGrade = overallGrade,
                 ProviderName = providerName,
                 StartDate = startDate,
-
+                CoronationEmblem = coronationEmblem
             };
 
             // Assert
@@ -48,6 +49,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharedSta
             result.OverallGrade.Should().Be(overallGrade);
             result.ProviderName.Should().Be(providerName);
             result.StartDate.Should().Be(startDate);
+            result.CoronationEmblem.Should().Be(coronationEmblem);
         }
     }
 }

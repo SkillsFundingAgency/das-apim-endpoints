@@ -17,7 +17,7 @@ public class GetProvidersByCourseIdRequest : IGetApiRequest
     public decimal? Latitude { get; set; }
     public decimal? Longitude { get; set; }
 
-    public string Location { get; set; }
+    public string LocationName { get; set; }
     public List<DeliveryMode?> DeliveryModes { get; set; }
     public List<ProviderRating?> EmployerProviderRatings { get; set; }
     public List<ProviderRating?> ApprenticeProviderRatings { get; set; }
@@ -77,9 +77,9 @@ public class GetProvidersByCourseIdRequest : IGetApiRequest
             url += $"&pageSize={PageSize}";
         }
 
-        if (!string.IsNullOrEmpty(Location))
+        if (!string.IsNullOrEmpty(LocationName))
         {
-            url += $"&location={Location}";
+            url += $"&locationName={LocationName}";
         }
 
         if (UserId != null)

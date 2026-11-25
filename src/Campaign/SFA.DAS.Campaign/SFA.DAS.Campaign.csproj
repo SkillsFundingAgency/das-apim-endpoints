@@ -19,9 +19,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="MediatR" />
-      <PackageReference Include="RestEase" />
-      <PackageReference Include="RestEase.HttpClientFactory" />
+      <PackageReference Include="MediatR" Version="12.5.0" />
+      <PackageReference Include="RestEase" Version="1.6.4" />
+      <PackageReference Include="RestEase.HttpClientFactory" Version="1.6.4" />
     </ItemGroup>
 
 </Project>

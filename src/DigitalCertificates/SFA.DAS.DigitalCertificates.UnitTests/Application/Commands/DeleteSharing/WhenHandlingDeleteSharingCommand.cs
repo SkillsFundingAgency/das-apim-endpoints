@@ -6,16 +6,11 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.DigitalCertificates.Application.Commands.DeleteSharing;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.Apim.Shared.Exceptions;
-using SFA.DAS.Apim.Shared.Exceptions;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.DigitalCertificates.Application.Commands.DeleteSharing;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.DeleteSharing
@@ -33,7 +28,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.DeleteShari
 
             mockDigitalCertificatesApiClient
                 .Setup(client => client.DeleteWithResponseCode<object>(
-                    It.Is<DeleteSharingRequest>(r => r.SharingId == command.SharingId), It.IsAny<bool>()))
+                    It.IsAny<DeleteSharingByIdApiRequest>(), It.IsAny<bool>()))
                 .ReturnsAsync(apiResponse);
 
             // Act
@@ -44,11 +39,13 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.DeleteShari
 
             mockDigitalCertificatesApiClient.Verify(client =>
                 client.DeleteWithResponseCode<object>(
-                    It.Is<DeleteSharingRequest>(r => r.SharingId == command.SharingId), It.IsAny<bool>()), Times.Once);
+                    It.Is<DeleteSharingByIdApiRequest>(r =>
+                        r.Id == command.SharingId &&
+                        r.DeleteUrl == $"api/sharing/{command.SharingId}"), It.IsAny<bool>()), Times.Once);
         }
 
         [Test, MoqAutoData]
-        public void Then_Exception_Is_Thrown_If_Api_Call_Fails(
+        public async Task Then_Exception_Is_Thrown_If_Api_Call_Fails(
             DeleteSharingCommand command,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
             DeleteSharingCommandHandler handler)
@@ -56,18 +53,18 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.DeleteShari
             // Arrange
             mockDigitalCertificatesApiClient
                 .Setup(client => client.DeleteWithResponseCode<object>(
-                    It.IsAny<DeleteSharingRequest>(), It.IsAny<bool>()))
+                    It.IsAny<DeleteSharingByIdApiRequest>(), It.IsAny<bool>()))
                 .ThrowsAsync(new ApiResponseException(HttpStatusCode.BadRequest, "Bad request"));
 
             // Act
             Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            act.Should().ThrowAsync<ApiResponseException>()
+            await act.Should().ThrowAsync<ApiResponseException>()
                 .Where(e => e.Status == HttpStatusCode.BadRequest);
 
             mockDigitalCertificatesApiClient.Verify(client =>
-                client.DeleteWithResponseCode<object>(It.IsAny<DeleteSharingRequest>(), It.IsAny<bool>()), Times.Once);
+                client.DeleteWithResponseCode<object>(It.IsAny<DeleteSharingByIdApiRequest>(), It.IsAny<bool>()), Times.Once);
         }
     }
 }

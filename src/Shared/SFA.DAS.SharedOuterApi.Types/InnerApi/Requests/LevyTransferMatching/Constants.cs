@@ -1,22 +1,19 @@
-﻿using SFA.DAS.Apim.Shared.Interfaces;
+﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LevyTransferMatching;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LevyTransferMatching
+public class SortOrder
 {
-    public class SortOrder
-    {
-        public const string Ascending = "Ascending";
-        public const string Descending = "Descending";
-    }
+    public const string Ascending = "Ascending";
+    public const string Descending = "Descending";
+}
 
-    public class ApplicationSortColumn
-    {
-        public const string ApplicationDate = "ApplicationDate";
-    }
+public class ApplicationSortColumn
+{
+    public const string ApplicationDate = "ApplicationDate";
+}
 
-    public class ApplicationStatus
-    {
-        public static readonly string Pending = "Pending";
-        public static readonly string Accepted = "Accepted";
-        public static readonly string Approved = "Approved";
-    }
+public class ApplicationStatus
+{
+    public static readonly string Pending = "Pending";
+    public static readonly string Accepted = "Accepted";
+    public static readonly string Approved = "Approved";
 }

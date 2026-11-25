@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Api.Controllers;
+using SFA.DAS.DigitalCertificates.Api.Models.Sharing;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetSharedStandardCertificate;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -34,7 +35,8 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
             // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().Be(expectedResponse);
+            var expected = (GetSharedStandardCertificateResponse)expectedResponse;
+            actual.Value.Should().BeEquivalentTo(expected);
 
             mediator.Verify(m => m.Send(It.Is<GetSharedStandardCertificateQuery>(q => q.Id == id), It.IsAny<CancellationToken>()), Times.Once);
         }
@@ -46,7 +48,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
             [Greedy] SharingController controller)
         {
             // Arrange
-            GetSharedStandardCertificateQueryResult? expectedResponse = null;
+            GetSharedStandardCertificateQueryResult expectedResponse = null;
             mediator
                 .Setup(m => m.Send(It.IsAny<GetSharedStandardCertificateQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedResponse);

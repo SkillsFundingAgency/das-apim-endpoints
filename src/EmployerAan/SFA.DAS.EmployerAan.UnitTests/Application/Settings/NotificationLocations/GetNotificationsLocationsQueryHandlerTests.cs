@@ -3,17 +3,9 @@ using FluentAssertions;
 using Moq;
 using SFA.DAS.EmployerAan.Application.Settings.NotificationsLocations;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
-using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
-using SFA.DAS.EmployerAan.Infrastructure;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
 

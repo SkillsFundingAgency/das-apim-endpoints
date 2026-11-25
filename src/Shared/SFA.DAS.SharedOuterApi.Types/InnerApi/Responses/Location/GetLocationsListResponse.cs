@@ -1,7 +1,6 @@
-﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location
+﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
+
+public class GetLocationsListResponse
 {
-    public class GetLocationsListResponse
-    {
-        public IEnumerable<GetLocationsListItem> Locations { get; set; }
-    }
+    public IEnumerable<GetLocationsListItem> Locations { get; set; }
 }

@@ -1,11 +1,9 @@
-﻿using System.Net;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+using System.Net;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.Types.Interfaces
+public interface ICustomerEngagementApiClient<T> : IGetApiClient<T>
 {
-    public interface ICustomerEngagementApiClient<T> : IGetApiClient<T>
-    {
-        Task<HttpStatusCode> GetResponseCode(IGetApiRequest request);
-    }
+    Task<HttpStatusCode> GetResponseCode(IGetApiRequest request);
 }

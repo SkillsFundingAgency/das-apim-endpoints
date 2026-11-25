@@ -7,6 +7,7 @@ namespace SFA.DAS.LearnerData.Requests;
 
 public class UpdateLearnerRequest
 {
+    public string? ConsumerReference { get; set; }
     public UpdateLearnerRequestDeliveryDetails Delivery { get; set; }
     public LearnerRequestDetails Learner { get; set; }
 }
@@ -21,6 +22,7 @@ public class LearnerRequestDetails
     public bool HasEhcp { get; set; }
     [JsonRequired]
     public long Uln { get; set; }
+    public string LearnerRef { get; set; }
 }
 
 public class UpdateLearnerRequestDeliveryDetails
@@ -40,11 +42,15 @@ public class OnProgrammeRequestDetails
     public List<CostDetails>? Costs { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
+    public short? WithdrawalReasonCode { get; set; }
     public DateTime? PauseDate { get; set; }
     public List<LearningSupport> LearningSupport { get; set; }
     public Care Care { get; set; }
     public int AimSequenceNumber { get; set; }
     public string LearnAimRef { get; set; }
+    public DateTime? AchievementDate { get; set; }
+    public int PercentageOfTrainingLeft { get; set; }
+    public bool? IsFlexiJob { get; set; }
 }
 
 public class CostDetails
@@ -60,13 +66,13 @@ public class MathsAndEnglish
     //with the CreateLearner requests
     public string Course { get; set; } = "";
     public string LearnAimRef { get; set; }
-    public decimal Amount { get; set; } = 0;
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
     public DateTime? PauseDate { get; set; }
-    public int? PriorLearningPercentage { get; set; }
+    public int? PriorLearningAdjustment { get; set; }
+    public int? OtherFundingAdjustment { get; set; }
     public int? AimSequenceNumber { get; set; }
     public List<LearningSupport> LearningSupport { get; set; }
 }

@@ -53,6 +53,12 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(item => item.VacancySource)
                 .Excluding(item => item.ApplicationUrl)
                 .Excluding(item => item.EmploymentLocationInformation)
+                .Excluding(item => item.EmployerContactEmail)
+                .Excluding(item => item.EmployerContactName)
+                .Excluding(item => item.EmployerContactPhone)
+                .Excluding(item => item.ProviderContactEmail)
+                .Excluding(item => item.ProviderContactName)
+                .Excluding(item => item.ProviderContactPhone)
             );
             actual.FullDescription.Should().Be(source.Vacancy.LongDescription);
             actual.Qualifications.Should().BeEquivalentTo(source.Vacancy.Qualifications.Select(c=>(GetVacancyQualification)c).ToList());
@@ -71,6 +77,46 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             actual.ClosingDate.Should().Be(source.Vacancy.ClosingDate.AddDays(1).Subtract(TimeSpan.FromSeconds(1)));
             actual.IsNationalVacancy.Should().Be(source.Vacancy.VacancyLocationType.Equals("National", StringComparison.CurrentCultureIgnoreCase));
             actual.IsNationalVacancyDetails.Should().Be(source.Vacancy.VacancyLocationType.Equals("National", StringComparison.CurrentCultureIgnoreCase) ? source.Vacancy.EmploymentLocationInformation : string.Empty);
+        }
+        
+        [Test, AutoData]
+        public void Then_The_Employer_Contact_Details_Are_Mapped_Correctly(GetVacancyQueryResult source, int ukprn)
+        {
+            // arrange
+            source.Vacancy.Ukprn = ukprn.ToString();
+            source.Vacancy.VacancyReference = $"VAC{source.Vacancy.VacancyReference}";
+
+            source.Vacancy.ProviderContactEmail = null;
+            source.Vacancy.ProviderContactName = null;
+            source.Vacancy.ProviderContactPhone = null;
+            
+            // act
+            var actual = (GetVacancyResponse)source;
+            
+            // assert
+            actual.EmployerContactEmail.Should().Be(source.Vacancy.EmployerContactEmail);
+            actual.EmployerContactName.Should().Be(source.Vacancy.EmployerContactName);
+            actual.EmployerContactPhone.Should().Be(source.Vacancy.EmployerContactPhone);
+        }
+        
+        [Test, AutoData]
+        public void Then_The_Provider_Contact_Details_Are_Mapped_Correctly(GetVacancyQueryResult source, int ukprn)
+        {
+            // arrange
+            source.Vacancy.Ukprn = ukprn.ToString();
+            source.Vacancy.VacancyReference = $"VAC{source.Vacancy.VacancyReference}";
+
+            source.Vacancy.EmployerContactEmail = null;
+            source.Vacancy.EmployerContactName = null;
+            source.Vacancy.EmployerContactPhone = null;
+            
+            // act
+            var actual = (GetVacancyResponse)source;
+            
+            // assert
+            actual.EmployerContactEmail.Should().Be(source.Vacancy.ProviderContactEmail);
+            actual.EmployerContactName.Should().Be(source.Vacancy.ProviderContactName);
+            actual.EmployerContactPhone.Should().Be(source.Vacancy.ProviderContactPhone);
         }
 
         [Test, AutoData]

@@ -8,6 +8,9 @@ using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipJobs.Api.Controllers;
 using SFA.DAS.FindApprenticeshipJobs.Api.Models;
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSearchVacancies;
+using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.UnitTests.Controllers;
@@ -39,7 +42,9 @@ public class WhenPostingGetSavedSearchResult
             c.PageSize == request.PageSize
         ), It.IsAny<CancellationToken>())).ReturnsAsync(result);
         
-        var actual = await controller.GetSavedSearchResult(request)  as ObjectResult;
+        var actual = await controller.GetSavedSearchResult(
+            Mock.Of<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>>(),
+            request)  as ObjectResult;
         
         var actualValue = actual!.Value as GetSavedSearchVacanciesQueryResult;
         actualValue.Should().BeEquivalentTo(result);
@@ -56,7 +61,9 @@ public class WhenPostingGetSavedSearchResult
         mediator.Setup(x => x.Send(It.IsAny<GetSavedSearchVacanciesQuery>(
         ), It.IsAny<CancellationToken>())).ReturnsAsync((GetSavedSearchVacanciesQueryResult)null!);
         
-        var actual = await controller.GetSavedSearchResult(request)  as NotFoundResult;
+        var actual = await controller.GetSavedSearchResult(
+            Mock.Of<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>>(),
+            request)  as NotFoundResult;
         
         actual!.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
     }
@@ -71,8 +78,30 @@ public class WhenPostingGetSavedSearchResult
         mediator.Setup(x => x.Send(It.IsAny<GetSavedSearchVacanciesQuery>(
         ), It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
         
-        var actual = await controller.GetSavedSearchResult(request)  as StatusCodeResult;
+        var actual = await controller.GetSavedSearchResult(
+            Mock.Of<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>>(),
+            request)  as StatusCodeResult;
         
         actual!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_When_A_Candidate_Is_Not_Found_Their_Saved_Search_Is_Deleted(
+        GetCandidateSavedVacanciesRequest request,
+        GetSavedSearchVacanciesQueryResult result,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> faaInnerClient,
+        [Greedy] SavedSearchesController controller)
+    {
+        // arrange
+        mediator
+            .Setup(x => x.Send(It.IsAny<GetSavedSearchVacanciesQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(null as GetSavedSearchVacanciesQueryResult);
+
+        // act
+        await controller.GetSavedSearchResult(faaInnerClient.Object, request);
+
+        // assert
+        faaInnerClient.Verify(x => x.Delete(It.Is<DeleteSavedSearchesRequest>(c => c.Ids[0] == request.Id && c.Ids.Count == 1)), Times.Once);
     }
 }

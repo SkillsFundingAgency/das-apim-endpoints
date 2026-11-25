@@ -13,6 +13,7 @@ public class RegisteredProviderModel
     public int OrganisationTypeId { get; set; }
     public ProviderType ProviderType { get; set; }
     public string LegalName { get; set; }
+    public string TradingName { get; set; }
     public IEnumerable<AllowedCourseType> AllowedCourseTypes { get; set; } = [];
 }
 

@@ -6,13 +6,12 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 
-public class ProviderRelationshipsApiHealthCheck : ApiHealthCheck<RoatpV2ApiConfiguration>, IHealthCheck
+public class ProviderRelationshipsApiHealthCheck(
+    IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> client,
+    ILogger<ProviderRelationshipsApiHealthCheck> logger)
+    : ApiHealthCheck<RoatpV2ApiConfiguration>(HealthCheckDescription, HealthCheckResultDescription, client, logger),
+        IHealthCheck
 {
     public static readonly string HealthCheckDescription = "Provider Relationships API";
     public static string HealthCheckResultDescription => $"{HealthCheckDescription} check";
-
-    public ProviderRelationshipsApiHealthCheck(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> client, ILogger<ProviderRelationshipsApiHealthCheck> logger)
-        : base(HealthCheckDescription, HealthCheckResultDescription, client, logger)
-    {
-    }
 }

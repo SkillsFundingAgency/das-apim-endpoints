@@ -1,40 +1,37 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests
+public class GetDataLockEventsRequest : IGetApiRequest
 {
-    public class GetDataLockEventsRequest : IGetApiRequest
+    public long SinceEventId { get; set; }
+    public DateTime? SinceTime { get; set; }
+    public string EmployerAccountId { get; set; }
+    public long Ukprn { get; set; }
+    public int PageNumber { get; set; }
+
+    public string GetUrl => BuildUrl();
+
+    private string BuildUrl()
     {
-        public long SinceEventId { get; set; }
-        public DateTime? SinceTime { get; set; }
-        public string EmployerAccountId { get; set; }
-        public long Ukprn { get; set; }
-        public int PageNumber { get; set; }
-
-        public string GetUrl => BuildUrl();
-
-        private string BuildUrl()
+        var url = $"api/v2/datalock?page={PageNumber}";
+        if (SinceEventId > 0)
         {
-            var url = $"api/v2/datalock?page={PageNumber}";
-            if (SinceEventId > 0)
-            {
-                url += $"&sinceEventId={SinceEventId}";
-            }
-            if (SinceTime.HasValue)
-            {
-                url += $"&sinceTime={SinceTime.Value:yyyy-MM-ddTHH:mm:ss}";
-            }
-            if (!string.IsNullOrEmpty(EmployerAccountId))
-            {
-                url += $"&employerAccountId={EmployerAccountId}";
-            }
-            if (Ukprn > 0)
-            {
-                url += $"&ukprn={Ukprn}";
-            }
-
-            return url;
+            url += $"&sinceEventId={SinceEventId}";
         }
+        if (SinceTime.HasValue)
+        {
+            url += $"&sinceTime={SinceTime.Value:yyyy-MM-ddTHH:mm:ss}";
+        }
+        if (!string.IsNullOrEmpty(EmployerAccountId))
+        {
+            url += $"&employerAccountId={EmployerAccountId}";
+        }
+        if (Ukprn > 0)
+        {
+            url += $"&ukprn={Ukprn}";
+        }
+
+        return url;
     }
 }

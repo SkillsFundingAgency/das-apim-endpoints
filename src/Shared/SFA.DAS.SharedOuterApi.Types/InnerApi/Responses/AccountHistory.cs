@@ -1,4 +1,5 @@
 ﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+
 public class AccountHistory
 {
     public long AccountId { get; set; }

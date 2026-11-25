@@ -2,6 +2,7 @@
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
 
 namespace SFA.DAS.SharedOuterApi.Types.Models.Roatp;
+
 public class ProviderDetailsModel
 {
     public Guid Id { get; set; }
@@ -9,6 +10,7 @@ public class ProviderDetailsModel
     public string LegalName { get; set; }
     public string TradingName { get; set; }
     public ProviderType ProviderType { get; set; }
+    public bool IsTrainingProviderMainOrEmployerProfile => ProviderType is ProviderType.Main or ProviderType.Employer;
 
     public bool IsMainProvider => ProviderType == ProviderType.Main;
 

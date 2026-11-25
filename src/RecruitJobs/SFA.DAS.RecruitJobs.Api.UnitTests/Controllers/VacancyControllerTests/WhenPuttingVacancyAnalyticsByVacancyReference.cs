@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using SFA.DAS.Recruit.Contracts.ApiRequests;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitJobs.Api.Controllers;
-using SFA.DAS.RecruitJobs.Api.Models.Requests;
-using SFA.DAS.RecruitJobs.InnerApi.Requests.VacancyAnalytics;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
 using System.Net;
 using System.Threading;
 
@@ -18,12 +14,12 @@ internal class WhenPuttingVacancyAnalyticsByVacancyReference
     public async Task Then_The_Request_To_Put_Message_Is_Sent_Correctly(
         long vacancyReference,
         PutVacancyAnalyticsRequest request,
-        Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] VacanciesController sut)
     {
         // arrange
         recruitApiClient
-            .Setup(x => x.Put(It.IsAny<PutOneVacancyAnalyticsApiRequest>()))
+            .Setup(x => x.Put(It.IsAny<PutVacancyanalyticsByVacancyReferenceApiRequest>()))
             .Returns(Task.CompletedTask);
 
         // act
@@ -36,14 +32,14 @@ internal class WhenPuttingVacancyAnalyticsByVacancyReference
     [Test, MoqAutoData]
     public async Task PutOne_SendsCorrectRequestToRecruitApi(long vacancyReference,
         PutVacancyAnalyticsRequest request,
-        Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] VacanciesController sut)
     {
         // Arrange
-        PutOneVacancyAnalyticsApiRequest? capturedRequest = null;
+        PutVacancyanalyticsByVacancyReferenceApiRequest? capturedRequest = null;
         recruitApiClient
-            .Setup(x => x.Put(It.IsAny<PutOneVacancyAnalyticsApiRequest>()))
-            .Callback<object>(r => capturedRequest = (PutOneVacancyAnalyticsApiRequest)r)
+            .Setup(x => x.Put(It.IsAny<PutVacancyanalyticsByVacancyReferenceApiRequest>()))
+            .Callback<object>(r => capturedRequest = (PutVacancyanalyticsByVacancyReferenceApiRequest)r)
             .Returns(Task.CompletedTask);
 
         // Act
@@ -56,17 +52,17 @@ internal class WhenPuttingVacancyAnalyticsByVacancyReference
         // Assert
         capturedRequest.Should().NotBeNull();
         capturedRequest!.VacancyReference.Should().Be(vacancyReference);
-        capturedRequest.Payload.AnalyticsData.Should().BeEquivalentTo(request.AnalyticsData);
+        capturedRequest.Data.AnalyticsData.Should().BeEquivalentTo(request.AnalyticsData);
     }
 
     [Test, MoqAutoData]
     public async Task PutOne_WhenExceptionThrown_ReturnsInternalServerError(long vacancyReference,
-        Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] VacanciesController sut)
     {
         // Arrange
         recruitApiClient
-            .Setup(x => x.Put(It.IsAny<PutOneVacancyAnalyticsApiRequest>()))
+            .Setup(x => x.Put(It.IsAny<PutVacancyanalyticsByVacancyReferenceApiRequest>()))
             .ThrowsAsync(new Exception("Boom"));
 
         var request = new PutVacancyAnalyticsRequest

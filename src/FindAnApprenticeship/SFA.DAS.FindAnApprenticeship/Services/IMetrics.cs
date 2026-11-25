@@ -6,5 +6,6 @@
         void IncreaseVacancyStarted(string vacancyReference, int viewCount = 1);
         void IncreaseVacancySubmitted(string vacancyReference, int viewCount = 1);
         void IncreaseVacancySearchResultViews(string vacancyReference, int viewCount = 1);
+        void IncreaseVacancySaved(string vacancyReference, int viewCount = 1);
     }
 }

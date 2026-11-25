@@ -1,13 +1,21 @@
 ﻿namespace SFA.DAS.LearnerData.Responses.LearningInner;
 
+public class UpdateShortCourseLearningResponse
+{
+    public List<UpdateShortCourseLearningPutResponse> Results { get; set; } = [];
+}
+
 public class UpdateShortCourseLearningPutResponse : IShortCourseLearningPaymentEventBuildContext
 {
     public Guid LearningKey { get; set; }
     public Guid LearnerKey { get; set; }
     public string[] Changes { get; set; } = [];
-    public DateTime? CompletionDate { get; set; }
     public LearningInnerShortCourseLearner Learner { get; set; } = null!;
-    public LearningInnerShortCourseEpisode[] Episodes { get; set; } = [];
+    public LearningInnerShortCourseEpisode? Episode { get; set; }
+    public bool IsNewLearning { get; set; }
+    public bool IsNewEpisode { get; set; }
+    public bool IsIgnored { get; set; }
+    public bool IsRemoved { get; set; }
 }
 
 public static class UpdateShortCourseLearningPutResponseExtensions
@@ -27,7 +35,10 @@ public enum ShortCourseUpdateChanges
     WithdrawalDate = 0,
     Milestone = 1,
     CompletionDate = 2,
-    LearnerRef = 3
-
+    LearnerRef = 3,
+    Reinstated = 4,
+    StartDate = 5,
+    ExpectedEndDate = 6,
+    ForceEarningsSync = 7
 }
 #pragma warning restore CS8618

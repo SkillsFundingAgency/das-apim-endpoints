@@ -1,11 +1,8 @@
 using SFA.DAS.Apim.Shared.Interfaces;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses
+public class GetRoutesListRequest : IGetApiRequest
 {
-    public class GetRoutesListRequest : IGetApiRequest
-    {
-        public string GetUrl => "api/courses/routes";
-    }
+    public string GetUrl => "api/courses/routes";
 }

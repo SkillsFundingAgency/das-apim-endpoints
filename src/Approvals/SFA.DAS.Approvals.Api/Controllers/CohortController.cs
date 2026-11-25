@@ -280,7 +280,6 @@ public class CohortController(
         [FromQuery] string searchTerm,
         [FromQuery] string sortField,
         [FromQuery] bool reverseSort,
-        [FromQuery] bool useLearnerData,
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 50)
     {

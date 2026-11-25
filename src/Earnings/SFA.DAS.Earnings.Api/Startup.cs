@@ -25,7 +25,6 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddNLog();
         services.AddOptions();
         services.AddSingleton(_env);
 
@@ -77,6 +76,8 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
     {
+        app.UseMiddleware<SecurityHeadersMiddleware>();
+
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();

@@ -1,8 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using SFA.DAS.Recruit.Domain.Vacancy;
 using SFA.DAS.SharedOuterApi.Types.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 using SFA.DAS.SharedOuterApi.Types.Models;
+using ApplicationMethod = SFA.DAS.Recruit.Domain.Vacancy.ApplicationMethod;
+using ClosureReason = SFA.DAS.Recruit.Domain.Vacancy.ClosureReason;
+using ContactDetail = SFA.DAS.Recruit.Domain.Vacancy.ContactDetail;
+using EmployerNameOption = SFA.DAS.Recruit.Domain.Vacancy.EmployerNameOption;
+using GeoCodeMethod = SFA.DAS.Recruit.Domain.Vacancy.GeoCodeMethod;
+using OwnerType = SFA.DAS.Recruit.Domain.Vacancy.OwnerType;
+using Qualification = SFA.DAS.Recruit.Domain.Vacancy.Qualification;
+using ReviewFieldIndicator = SFA.DAS.Recruit.Domain.Vacancy.ReviewFieldIndicator;
+using SourceOrigin = SFA.DAS.Recruit.Domain.Vacancy.SourceOrigin;
+using SourceType = SFA.DAS.Recruit.Domain.Vacancy.SourceType;
+using TrainingProvider = SFA.DAS.Recruit.Domain.Vacancy.TrainingProvider;
+using TransferInfo = SFA.DAS.Recruit.Domain.Vacancy.TransferInfo;
+using VacancyStatus = SFA.DAS.Recruit.Domain.Vacancy.VacancyStatus;
+using Wage = SFA.DAS.Recruit.Domain.Vacancy.Wage;
 
 namespace SFA.DAS.Recruit.Api.Models.Vacancies.Requests;
 
@@ -16,6 +30,7 @@ public class PostVacancyRequest
     public OwnerType? OwnerType { get; init; }
     public SourceOrigin? SourceOrigin { get; init; }
     public SourceType? SourceType { get; init; }
+    public ArchiveType? ArchiveType { get; init; }
     public long? SourceVacancyReference { get; init; }
     public DateTime? ApprovedDate { get; init; }
     public DateTime? CreatedDate { get; init; }
@@ -27,6 +42,7 @@ public class PostVacancyRequest
     public DateTime? LiveDate { get; init; }
     public DateTime? StartDate { get; init; }
     public DateTime? ClosingDate { get; init; }
+    public DateTime? ArchivedDate { get; init; }
     public int ReviewCount { get; init; }
     public string? ApplicationUrl { get; init; }
     public ApplicationMethod? ApplicationMethod { get; init; }
@@ -68,4 +84,5 @@ public class PostVacancyRequest
     public List<ReviewFieldIndicator>? ProviderReviewFieldIndicators { get; init; }
     public string? SubmittedByUserId { get; init; }
     public string? ReviewRequestedByUserId { get; init; }
+    public string? ArchivedByUserId { get; init; }
 }

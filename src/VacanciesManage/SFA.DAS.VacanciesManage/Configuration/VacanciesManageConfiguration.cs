@@ -1,7 +1,6 @@
-namespace SFA.DAS.VacanciesManage.Configuration
+namespace SFA.DAS.VacanciesManage.Configuration;
+
+public class VacanciesManageConfiguration
 {
-    public class VacanciesManageConfiguration
-    {
-        public string ApimEndpointsRedisConnectionString { get ; set ; }
-    }
+    public string ApimEndpointsRedisConnectionString { get; set; }
 }

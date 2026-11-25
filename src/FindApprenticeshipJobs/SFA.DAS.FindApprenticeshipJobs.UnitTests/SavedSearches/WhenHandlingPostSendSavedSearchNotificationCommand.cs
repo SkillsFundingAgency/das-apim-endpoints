@@ -1,5 +1,5 @@
 ﻿using AutoFixture.NUnit3;
-using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;

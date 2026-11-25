@@ -1,5 +1,4 @@
 using Azure.Identity;
-using FluentValidation;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Logging.ApplicationInsights;
@@ -8,8 +7,6 @@ using NServiceBus;
 using SFA.DAS.LearnerData.Api.AppStart;
 using SFA.DAS.LearnerData.Api.Middleware;
 using SFA.DAS.LearnerData.Application.CreateLearner;
-using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.LearnerData.Validators;
 using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
 using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.Apim.Shared.Infrastructure;
@@ -20,6 +17,8 @@ using System.Text.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.ConfigureKestrel(o => o.AddServerHeader = false);
 
 var configuration = builder.Configuration.BuildSharedConfiguration();
 
@@ -87,14 +86,13 @@ builder.Services.AddHealthChecks()
 
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(CreateLearnerCommand).Assembly));
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IValidator<CreateLearnerRequest>, CreateLearnerRequestValidator>();
-builder.Services.AddScoped<IValidator<IEnumerable<LearnerDataRequest>>, BulkLearnerDataRequestsValidator>();
 
 builder.Services.AddServices();
 
 var app = builder.Build();
 
 app.UseMiddleware<CorrelationIdMiddleware>();
+app.UseMiddleware<SecurityHeadersMiddleware>();
 
 if (app.Environment.IsDevelopment()) app.UseDeveloperExceptionPage();
 
@@ -108,8 +106,6 @@ app.UseSwagger()
     .UseHealthChecks()
     .UseAuthentication();
 
-app.UseMiddleware<StrictJsonValidationMiddleware<StubUpdateLearnerRequest>>();
-app.UseMiddleware<StrictJsonValidationMiddleware<StubUpdateShortCourseRequest>>();
 app.UseMiddleware<ConcurrencyTrackingMiddleware>();
 
 app.MapControllers();

@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Feedback;
 
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ApprenticeFeedback;
+
 public class ApprenticeFeedbackAnnualDetails
 {
     public List<ApprenticeFeedbackStarsAnnualSummary> AnnualApprenticeFeedbackDetails { get; set; }

@@ -1,14 +1,15 @@
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.Extensions.Logging.ApplicationInsights;
+using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.Aodp.Api;
 using SFA.DAS.Aodp.Api.AppStart;
 using SFA.DAS.Aodp.Application.Commands.FormBuilder.Forms;
+using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection;
 using System.Text.Json.Serialization;
-using SFA.DAS.Apim.Shared.AppStart;
 
 [assembly: ApiController]
 
@@ -51,9 +52,9 @@ builder.Services
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 
-builder.Logging.AddApplicationInsights();
-builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("SFA.DAS", LogLevel.Information);
-builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Warning);
+builder.Services.AddApplicationInsightsTelemetry(configuration);
+builder.Services.Configure<ApplicationInsightsServiceOptions>(o =>
+    o.RequestCollectionOptions.InjectResponseHeaders = false);
 
 builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);
@@ -61,6 +62,16 @@ builder.Services.AddHealthChecks();
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(CreateFormVersionCommandHandler).Assembly));
 
 var app = builder.Build();
+
+app.Use(async (context, next) =>
+{
+    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    context.Response.Headers["X-Frame-Options"] = "DENY";
+    if (!app.Environment.IsDevelopment())
+        context.Response.Headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'";
+    context.Response.Headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()";
+    await next();
+});
 
 if (app.Environment.IsDevelopment()) app.UseDeveloperExceptionPage();
 

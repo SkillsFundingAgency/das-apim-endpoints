@@ -4,7 +4,6 @@ using SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
 using SFA.DAS.FindApprenticeshipJobs.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Infrastructure.Services;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;

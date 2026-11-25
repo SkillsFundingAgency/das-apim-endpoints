@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Threading;
 using MediatR;
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Responses;
@@ -15,6 +16,8 @@ public class GetAllProvidersRelationshipsQueryHandler(
     IGetProviderRelationshipService getProviderRelationshipService)
     : IRequestHandler<GetAllProviderRelationshipQuery, GetAllProviderRelationshipQueryResponse?>
 {
+    private const int ProviderProcessingParallelism = 5;
+
     public async Task<GetAllProviderRelationshipQueryResponse?> Handle(GetAllProviderRelationshipQuery request, CancellationToken cancellationToken)
     {
         var providers = await GetRegisteredProviderDetails(request.Page, (int)request.PageSize, cancellationToken);
@@ -25,33 +28,46 @@ public class GetAllProvidersRelationshipsQueryHandler(
         }
 
         ConcurrentBag<GetProviderRelationshipQueryResponse> providerResponse = [];
+        using var semaphore = new SemaphoreSlim(ProviderProcessingParallelism);
 
-        await Parallel.ForEachAsync(providers.RegisteredProviders,
-                new ParallelOptions { MaxDegreeOfParallelism = 5 },
-                async (p, cancellationToken) =>
+        var providerTasks = providers.RegisteredProviders.Select(async provider =>
+        {
+            await semaphore.WaitAsync(cancellationToken);
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var providerDetails = await getProviderRelationshipService.GetAllProviderRelationShipDetails(provider.Ukprn, cancellationToken);
+
+                if (providerDetails is null)
                 {
-                    var providerDetails = await getProviderRelationshipService.GetAllProviderRelationShipDetails(p.Ukprn);
+                    return;
+                }
 
-                    if (providerDetails is null)
-                    {
-                        return;
-                    }
+                var coursesForProviderTask = getProviderRelationshipService.GetCoursesForProviderByUkprn(provider.Ukprn, cancellationToken);
+                var employerDetailsTask = getProviderRelationshipService.GetEmployerDetails(providerDetails, cancellationToken);
 
-                    var coursesForProviderTask = getProviderRelationshipService.GetCoursesForProviderByUkprn(p.Ukprn);
+                await Task.WhenAll(coursesForProviderTask, employerDetailsTask);
 
-                    var employerDetailsTask = getProviderRelationshipService.GetEmployerDetails(providerDetails);
+                var employers = await employerDetailsTask;
+                var coursesForProvider = await coursesForProviderTask;
 
-                    await Task.WhenAll(coursesForProviderTask, employerDetailsTask);
-
-                    providerResponse.Add(new GetProviderRelationshipQueryResponse()
-                    {
-                        Ukprn = p.Ukprn,
-                        Status = Enum.GetName(typeof(ProviderStatusType), p.StatusId) ?? string.Empty,
-                        Type = Enum.GetName(typeof(ProviderType), p.ProviderTypeId) ?? string.Empty,
-                        Employers = employerDetailsTask.Result ?? [],
-                        SupportedCourses = coursesForProviderTask.Result?.CourseTypes?? []
-                    });
+                providerResponse.Add(new GetProviderRelationshipQueryResponse()
+                {
+                    Ukprn = provider.Ukprn,
+                    Status = Enum.GetName(typeof(ProviderStatusType), provider.StatusId) ?? string.Empty,
+                    Type = Enum.GetName(typeof(ProviderType), provider.ProviderTypeId) ?? string.Empty,
+                    Employers = employers ?? [],
+                    SupportedCourses = coursesForProvider?.CourseTypes ?? []
                 });
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+        });
+
+        await Task.WhenAll(providerTasks);
 
         return new GetAllProviderRelationshipQueryResponse() { Page = request.Page, PageSize = (int)request.PageSize, TotalItems = providers.TotalCount, Items = providerResponse.ToList() };
     }

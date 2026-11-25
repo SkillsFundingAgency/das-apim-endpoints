@@ -1,14 +1,13 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Client;
+using SFA.DAS.Apim.Shared.Exceptions;
+using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Recruit.Api.Extensions;
 using SFA.DAS.Recruit.Api.Models.Requests;
 using SFA.DAS.Recruit.Api.Models.Responses;
 using SFA.DAS.Recruit.Api.Models.Vacancies;
 using SFA.DAS.Recruit.Api.Models.Vacancies.Requests;
-using SFA.DAS.Recruit.Application.Queries.GetNextVacancyReference;
 using SFA.DAS.Recruit.Data.Models;
 using SFA.DAS.Recruit.Domain.Vacancy;
 using SFA.DAS.Recruit.GraphQL;
@@ -17,22 +16,17 @@ using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests.VacancyAnalytics;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses.VacancyAnalytics;
+using SFA.DAS.Recruit.InnerApi.Requests;
+using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.Apim.Shared.Exceptions;
-using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
+using StrawberryShake;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Recruit.InnerApi.Requests;
-using SFA.DAS.Recruit.InnerApi.Responses;
-using StrawberryShake;
-using GetNextVacancyReferenceResponse = SFA.DAS.Recruit.Api.Models.Vacancies.Responses.GetNextVacancyReferenceResponse;
 using VacancyStatus = SFA.DAS.Recruit.GraphQL.VacancyStatus;
 
 namespace SFA.DAS.Recruit.Api.Controllers;
@@ -41,13 +35,6 @@ namespace SFA.DAS.Recruit.Api.Controllers;
 [Route("[controller]/")]
 public class VacanciesController(ILogger<VacanciesController> logger): ControllerBase
 {
-    [HttpGet, Route("vacancyReference")]
-    public async Task<IActionResult> GetNextVacancyReference([FromServices] IMediator mediator)
-    {
-        var result = await mediator.Send(new GetNextVacancyReferenceQuery());
-        return Ok(new GetNextVacancyReferenceResponse(result.Value));
-    }
-
     // TODO: Semi proxy for the inner api endpoint - this should go once we have migrated vacancies over to SQL
     [HttpPost, Route("{vacancyId:guid}")]
     public async Task<IActionResult> PostOne(
@@ -222,7 +209,7 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>(data, pageInfo));
     }
     
-    [HttpGet, Route("employer/{accountId:int}/{status:regex(^(draft|submitted|live|closed|referred|rejected|review)$)}")]
+    [HttpGet, Route("employer/{accountId:int}/{status:regex(^(draft|submitted|live|closed|referred|rejected|review|archived)$)}")]
     public async Task<IResult> GetEmployerVacanciesListByStatus(
         [FromServices] IRecruitGqlClient recruitGqlClient,
         [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
@@ -257,7 +244,7 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         }
 
         var vacancyReferences = items
-            .Where(x => x.VacancyReference is not null && x.Status is VacancyStatus.Live or VacancyStatus.Closed)
+            .Where(x => x.VacancyReference is not null && x.Status is VacancyStatus.Live or VacancyStatus.Closed or VacancyStatus.Archived)
             .Select(x => x.VacancyReference!.Value);
 
         var statsResponse = await recruitApiClient.GetWithResponseCode<DataResponse<Dictionary<long, VacancyStatsItem>>>(new GetEmployerVacancyApplicationStatsRequest(accountId, vacancyReferences));
@@ -268,7 +255,7 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>(data, pageInfo));
     }
 
-    [HttpGet, Route("provider/{ukprn:int}/{status:regex(^(draft|submitted|live|closed|referred|rejected|review)$)}")]
+    [HttpGet, Route("provider/{ukprn:int}/{status:regex(^(draft|submitted|live|closed|referred|rejected|review|archived)$)}")]
     public async Task<IResult> GetProviderVacanciesListByStatus(
         [FromServices] IRecruitGqlClient recruitGqlClient,
         [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
@@ -304,7 +291,7 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         }
 
         var vacancyReferences = items
-            .Where(x => x.VacancyReference is not null && x.Status is VacancyStatus.Live or VacancyStatus.Closed)
+            .Where(x => x.VacancyReference is not null && x.Status is VacancyStatus.Live or VacancyStatus.Closed or VacancyStatus.Archived)
             .Select(x => x.VacancyReference!.Value);
 
         var statsResponse = await recruitApiClient.GetWithResponseCode<DataResponse<Dictionary<long, VacancyStatsItem>>>(new GetProviderVacancyApplicationStatsRequest(ukprn, vacancyReferences));

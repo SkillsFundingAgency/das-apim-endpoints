@@ -10,13 +10,11 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.Apim.Shared.AppStart;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Infrastructure.Services;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
-
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Services;
 
 namespace SFA.DAS.AdminAan.Api.AppStart;
@@ -61,7 +59,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
         services.AddTransient<ILocationLookupService, LocationLookupService>();
         services.AddTransient<ICacheStorageService, CacheStorageService>();
-        
+
         if (configuration.IsLocalOrDev())
         {
             services.AddDistributedMemoryCache();
@@ -110,7 +108,7 @@ public static class ServiceCollectionExtensions
         var apiConfig = GetApiConfiguration(configuration, "AanHubApiConfiguration");
 
         services.AddRestEaseClient<IAanHubRestApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(configuration), apiConfig.Identifier));
     }
     private static void AddEducationalOrganisationApiClient(IServiceCollection services, IConfigurationRoot configuration)
     {
@@ -124,7 +122,7 @@ public static class ServiceCollectionExtensions
         var apiConfig = GetApiConfiguration(configuration, "LocationApiConfiguration");
 
         services.AddRestEaseClient<ILocationApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(configuration), apiConfig.Identifier));
     }
 
     private static void AddCommitmentsV2ApiClient(IServiceCollection services, IConfiguration configuration)
@@ -132,7 +130,7 @@ public static class ServiceCollectionExtensions
         var apiConfig = GetApiConfiguration(configuration, "CommitmentsV2ApiConfiguration");
 
         services.AddRestEaseClient<ICommitmentsV2ApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(configuration), apiConfig.Identifier));
     }
 
     private static void AddCoursesApiClient(IServiceCollection services, IConfiguration configuration)
@@ -140,7 +138,7 @@ public static class ServiceCollectionExtensions
         var apiConfig = GetApiConfiguration(configuration, "CoursesApiConfiguration");
 
         services.AddRestEaseClient<ICoursesApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(configuration), apiConfig.Identifier));
     }
 
     private static void AddApprenticeAccountsApiClient(IServiceCollection services, IConfiguration configuration)
@@ -148,7 +146,7 @@ public static class ServiceCollectionExtensions
         var apiConfig = GetApiConfiguration(configuration, "ApprenticeAccountsApiConfiguration");
 
         services.AddRestEaseClient<IApprenticeAccountsApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(configuration), apiConfig.Identifier));
     }
 
     private static InnerApiConfiguration GetApiConfiguration(IConfiguration configuration, string configurationName)

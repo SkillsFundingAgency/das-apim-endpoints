@@ -8,7 +8,7 @@ public sealed class ProviderCourseResponse
 {
     public string CourseName { get; set; }
     public CourseType CourseType { get; set; }
-    public LearningType ApprenticeshipType { get; set; }
+    public LearningType LearningType { get; set; }
     public int Level { get; set; }
     public string LarsCode { get; set; }
     public string IfateReferenceNumber { get; set; }

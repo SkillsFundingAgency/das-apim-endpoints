@@ -1,11 +1,8 @@
-﻿using SFA.DAS.Apim.Shared.Interfaces;
+﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RequestApprenticeTraining;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RequestApprenticeTraining
+public enum RequestType
 {
-    public enum RequestType
-    {
-        Shortlist = 0,
-        CourseDetail = 1,
-        Providers = 2
-    }
+    Shortlist = 0,
+    CourseDetail = 1,
+    Providers = 2
 }

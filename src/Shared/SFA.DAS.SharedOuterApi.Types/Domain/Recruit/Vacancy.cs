@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+using SFA.DAS.SharedOuterApi.Types.Json;
 using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
@@ -16,10 +18,10 @@ public class Vacancy
     public long? SourceVacancyReference { get; init; }
     public DateTime? ApprovedDate { get; init; }
     public DateTime? CreatedDate { get; init; }
-    public DateTime? LastUpdatedDate { get; init; }
+    public DateTime? LastUpdatedDate { get; set; }
     public DateTime? SubmittedDate { get; init; }
     public DateTime? ReviewRequestedDate { get; init; }
-    public DateTime? ClosedDate { get; init; }
+    public DateTime? ClosedDate { get; set; }
     public DateTime? DeletedDate { get; init; }
     public DateTime? LiveDate { get; init; }
     public DateTime? StartDate { get; init; }
@@ -31,6 +33,7 @@ public class Vacancy
     public string? ShortDescription { get; init; }
     public string? Description { get; init; }
     public string? AnonymousReason { get; init; }
+    [JsonConverter(typeof(JsonDisabilityConfidentBooleanConverter))]
     public bool? DisabilityConfident { get; init; }
     public ContactDetail? Contact { get; set; }
     public string? EmployerDescription { get; init; }
@@ -54,7 +57,7 @@ public class Vacancy
     public string? AdditionalTrainingDescription { get; init; }
     public TrainingProvider? TrainingProvider { get; init; }
     public Wage? Wage { get; set; }
-    public ClosureReason? ClosureReason { get; init; }
+    public ClosureReason? ClosureReason { get; set; }
     public TransferInfo? TransferInfo { get; init; }
     public string? AdditionalQuestion1 { get; init; }
     public string? AdditionalQuestion2 { get; init; }

@@ -10,4 +10,5 @@ public static class ErrorCodes
 {
     public const string NoData = "NO_DATA";
     public const string UnexpectedError = "UNEXPECTED_ERROR";
+    public const string BadRequest = "BAD_REQUEST";
 }

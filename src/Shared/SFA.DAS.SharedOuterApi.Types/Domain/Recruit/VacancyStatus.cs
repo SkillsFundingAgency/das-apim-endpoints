@@ -12,5 +12,6 @@ public enum VacancyStatus
     Referred,
     Live,
     Closed,
-    Approved
+    Approved,
+    Archived,
 }

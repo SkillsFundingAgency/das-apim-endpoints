@@ -1,9 +1,8 @@
-﻿namespace SFA.DAS.SharedOuterApi.Types.Models
+﻿namespace SFA.DAS.SharedOuterApi.Types.Models;
+
+public class FeedbackTransaction
 {
-    public class FeedbackTransaction
-    {
-        public long FeedbackTransactionId { get; set; }
-        public Guid ApprenticeId { get; set; }
-        public Guid ApprenticeFeedbackTargetId { get; set; }
-    }
+    public long FeedbackTransactionId { get; set; }
+    public Guid ApprenticeId { get; set; }
+    public Guid ApprenticeFeedbackTargetId { get; set; }
 }

@@ -35,8 +35,6 @@ public class OnProgramme
 {
     public string CourseCode { get; set; } = null!;
 
-    public long EmployerId { get; set; }
-
     public long Ukprn { get; set; }
 
     public DateTime StartDate { get; set; }

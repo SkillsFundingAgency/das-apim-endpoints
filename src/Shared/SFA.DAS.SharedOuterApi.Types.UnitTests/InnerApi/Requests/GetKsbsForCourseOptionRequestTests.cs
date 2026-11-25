@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 
-namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests.Courses;
+namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
 
 public class GetKsbsForCourseOptionRequestTests
 {
@@ -10,6 +10,6 @@ public class GetKsbsForCourseOptionRequestTests
         var request = new GetKsbsForCourseOptionRequest(larsCode);
 
         request.LarsCode.Should().Be(larsCode);
-        request.GetUrl.Should().Be($"api/courses/standards/{larsCode}/options/core/ksbs");
+        request.GetUrl.Should().Be($"api/courses/lookup/{larsCode}/options/all/ksbs");
     }
 }

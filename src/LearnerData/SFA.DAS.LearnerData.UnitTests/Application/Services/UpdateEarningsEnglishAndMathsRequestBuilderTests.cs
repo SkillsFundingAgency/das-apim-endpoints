@@ -50,21 +50,22 @@ public class UpdateEarningsEnglishAndMathsRequestBuilderTests
             LearnAimRef = x.LearnAimRef,
             Amount = x.Amount,
             WithdrawalDate = x.WithdrawalDate,
-            PriorLearningAdjustmentPercentage = x.PriorLearningPercentage,
+            CombinedFundingAdjustmentPercentage = x.CombinedFundingAdjustmentPercentage,
             CompletionDate = x.CompletionDate,
             PauseDate = x.PauseDate,
             PeriodsInLearning = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Where(e => e.LearnAimRef == x.LearnAimRef)
                 .Select(y => new PeriodInLearningItem
                 {
                     StartDate = y.StartDate,
-                    EndDate = y.PauseDate ?? y.CompletionDate ?? y.WithdrawalDate ?? y.EndDate,
+                    EndDate = y.CompletionDate ?? y.PauseDate ?? y.WithdrawalDate,
                     OriginalExpectedEndDate = y.EndDate
                 })
                 .OrderBy(p => p.StartDate)
-                .ToList()
+                .ToList(),
+            LearningSupport = x.LearningSupport
         }).ToList();
 
-        result.PutUrl.Should().Be($"learning/{command.LearningKey}/english-and-maths");
+        result.PutUrl.Should().Be($"learning/{response.LearningKey}/english-and-maths");
         result.Data.EnglishAndMaths.Should().BeEquivalentTo(expectedItems);
     }
 

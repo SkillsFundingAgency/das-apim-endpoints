@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using SFA.DAS.Common.Domain.Types;
 
 namespace SFA.DAS.LearnerData.Events;
 
@@ -25,12 +25,4 @@ public class LearnerDataEvent
     public DateTime ReceivedDate { get; set; }
     public int AcademicYear { get; set; }
     public LearningType LearningType { get; set; }
-}
-
-[JsonConverter(typeof(JsonStringEnumConverter))]
-public enum LearningType : byte
-{
-    Apprenticeship = 0,
-    FoundationApprenticeship = 1,
-    ApprenticeshipUnit = 2
 }

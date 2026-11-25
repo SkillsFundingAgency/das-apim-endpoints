@@ -571,61 +571,6 @@
 			"response": []
 		},
 		{
-			"name": "Get Standards - Forecasting",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Successful POST request\", function () {\r",
-							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Array matches count\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.standards.length).to.eql(pm.variables.get(\"m_activeAvailableCount\"));\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Body matches string\", function () {\r",
-							"    var expectedValue = \"\\\"id\\\":\\\"\" + pm.variables.get(\"m_larsCode\");\r",
-							"    expectedValue += \"\\\",\\\"title\\\":\\\"\" + pm.variables.get(\"m_title\");\r",
-							"    pm.expect(pm.response.text()).to.include(expectedValue);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Ocp-Apim-Subscription-Key",
-						"value": "{{apim-subscription-key}}",
-						"description": "This key is provided by DevOps which authenticates the APIM gateway.  ",
-						"type": "text"
-					},
-					{
-						"key": "X-Version",
-						"value": "1",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{apim-base-url}}/forecasting/Courses/standards",
-					"host": [
-						"{{apim-base-url}}"
-					],
-					"path": [
-						"forecasting",
-						"Courses",
-						"standards"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Get Standards - MA",
 			"event": [
 				{

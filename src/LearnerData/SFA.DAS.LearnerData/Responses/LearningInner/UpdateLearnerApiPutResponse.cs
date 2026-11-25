@@ -1,8 +1,17 @@
 namespace SFA.DAS.LearnerData.Responses.LearningInner;
 
-public class UpdateLearnerApiPutResponse
+public class UpdateLearnerApiPutResponse : BaseLearnerApiPutResponse;
+
+public class CreateDraftLearnerApiPutResponse : BaseLearnerApiPutResponse
+{
+    public Guid LearnerKey { get; set; }
+    public Guid? RemovedLearningKey { get; set; }
+}
+
+public abstract class BaseLearnerApiPutResponse
 {
     public List<LearningUpdateChanges> Changes { get; set; } = [];
+    public Guid LearningKey { get; set; }
     public Guid LearningEpisodeKey { get; set; }
     public List<EpisodePrice> Prices { get; set; } = [];
 
@@ -20,7 +29,7 @@ public class UpdateLearnerApiPutResponse
     {
         CompletionDate = 0,
         EnglishAndMaths = 1,
-        LearningSupport = 2,
+        OnprogrammeLearningSupport = 2,
         Prices = 3,
         ExpectedEndDate = 4,
         Withdrawal = 5,
@@ -32,6 +41,12 @@ public class UpdateLearnerApiPutResponse
         BreaksInLearningUpdated = 11,
         DateOfBirthChanged = 12,
         Care = 13,
-        EnglishAndMathsBreaksInLearningUpdated = 14
+        EnglishAndMathsBreaksInLearningUpdated = 14,
+        AchievementDateChanged = 15,
+		Reinstated = 16,
+        NewApprenticeshipLearner = 17,
+        EnglishAndMathsLearningSupport = 18,
+        WithdrawalReasonChanged = 19,
+        ForceEarningsSync = 20
     }
 }

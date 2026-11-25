@@ -1,11 +1,18 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 
 #pragma warning disable CS861
 namespace SFA.DAS.LearnerData.Responses.EarningsInner;
 
 public class GetFm36DataResponse
 {
-    public List<Apprenticeship> Apprenticeships { get; set; }
+    public List<Apprenticeship> Apprenticeships { get; set; } = [];
+
+    /// <summary>
+    /// Total number of matching learnings across all pages
+    /// </summary>
+    public int TotalItems { get; set; }
+    public int? Page { get; set; }
+    public int? PageSize { get; set; }
 }
 
 public class Apprenticeship
@@ -24,11 +31,13 @@ public class Episode
     public List<AdditionalPayment> AdditionalPayments { get; set; }
     public decimal CompletionPayment { get; set; }
     public decimal OnProgramTotal { get; set; }
+    public decimal FundingBandMaximum { get; set; }
+    public List<EnglishAndMaths> EnglishAndMaths { get; set; }
 }
 
 [DebuggerDisplay("AY {AcademicYear} DP {DeliveryPeriod} Amount: {Amount} EpisodePriceKey: {EpisodePriceKey}")]
 
-public class Instalment
+public class Instalment : IInstalment
 {
     public short AcademicYear { get; set; }
     public byte DeliveryPeriod { get; set; }
@@ -45,4 +54,32 @@ public class AdditionalPayment
     public decimal Amount { get; set; }
     public string AdditionalPaymentType { get; set; }
     public DateTime DueDate { get; set; }
+
+    /// <summary> The English and maths course the payment belongs to, or null for payments on the apprenticeship (on-programme) aim </summary>
+    public string? LearnAimRef { get; set; }
+}
+
+public class EnglishAndMaths
+{
+    public string LearnAimRef { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public string Course { get; set; }
+    public List<EnglishAndMathsInstalment> Instalments { get; set; }
+}
+
+public class EnglishAndMathsInstalment : IInstalment
+{
+    public short AcademicYear { get; set; }
+    public byte DeliveryPeriod { get; set; }
+    public decimal Amount { get; set; }
+    public string InstalmentType { get; set; }
+}
+
+public interface IInstalment
+{
+    short AcademicYear { get; set; }
+    byte DeliveryPeriod { get; set; }
+    decimal Amount { get; set; }
+    string InstalmentType { get; set; }
 }

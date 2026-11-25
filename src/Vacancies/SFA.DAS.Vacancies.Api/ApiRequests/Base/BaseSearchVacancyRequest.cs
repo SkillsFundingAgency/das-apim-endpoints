@@ -12,9 +12,10 @@ public class BaseSearchVacancyRequest
     [FromQuery]
     public int PageNumber { get; set; } = 1;
     /// <summary>
-    /// Page size you wish to get - defaults to 10
+    /// Page size you wish to get - defaults to 10 max is 100
     /// </summary>
     [FromQuery]
+    [Range(1, 100, ErrorMessage = "Page size must be between 1 and 100")]
     public int PageSize { get; set; } = 10;
     /// <summary>
     /// If `FilterBySubscription` is `true` then you can supply the `AccountLegalEntityPublicHashedId` you wish to filter by, obtained from `GET AccountLegalEntities`. You can only supply a value that is linked to your account, or as a Provider you have permission to act on behalf of.

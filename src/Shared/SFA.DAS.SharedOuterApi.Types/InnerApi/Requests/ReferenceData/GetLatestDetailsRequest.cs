@@ -1,23 +1,13 @@
-﻿using System.Web;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ReferenceData;
+using System.Web;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.ReferenceData;
 
-using SFA.DAS.Apim.Shared.Interfaces;
-
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.ReferenceData
+public class GetLatestDetailsRequest(string identifier, OrganisationType organisationType) : IGetApiRequest
 {
-    public class GetLatestDetailsRequest : IGetApiRequest
-    {
-        public string Identifier { get; }
-        public OrganisationType OrganisationType { get; set; }
+    public string Identifier { get; } = identifier;
+    public OrganisationType OrganisationType { get; set; } = organisationType;
 
-        public GetLatestDetailsRequest(string identifier, OrganisationType organisationType)
-        {
-            Identifier = identifier;
-            OrganisationType = organisationType;
-        }
-
-        public string GetUrl => $"api/organisations/get?identifier={HttpUtility.UrlEncode(Identifier)}&organisationType={OrganisationType}";
-    }
+    public string GetUrl => $"api/organisations/get?identifier={HttpUtility.UrlEncode(Identifier)}&organisationType={OrganisationType}";
 }

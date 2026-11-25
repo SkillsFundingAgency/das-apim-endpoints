@@ -12,16 +12,12 @@ using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using GetApprenticeshipUpdatesResponse = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetApprenticeshipUpdatesResponse;
 
@@ -103,9 +99,26 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         result.CanActualStartDateBeChanged = canActualStartDateBeChanged;
         result.PendingPriceChange = null;
         result.PendingStartDateChange = null;
-        result.PaymentsStatus = new PaymentsStatus { PaymentsFrozen = false };
+        result.PaymentsStatus = new PaymentsStatus
+        {
+            FreezeStatus = apprenticeship.PaymentFreezeDate.HasValue,
+            PaymentFreezeDate = apprenticeship.PaymentFreezeDate,
+            ReasonFrozen = GetReasonFrozenDisplayText(apprenticeship.FreezePaymentsReason)
+        };
         result.LearnerStatusDetails = new LearnerStatusDetails { LearnerStatus = LearnerStatus.None };
         return result;
+    }
+
+    private static string GetReasonFrozenDisplayText(byte? freezePaymentsReason)
+    {
+        return freezePaymentsReason switch
+        {
+            1 => "Learner is on a break",
+            2 => "Learner has withdrawn",
+            3 => "There is a change to training details",
+            4 => "You disagree with an auto approved change",
+            _ => null
+        };
     }
 
     private async Task<bool?> CanActualStartDateBeChanged(DateTime? actualStartDate)

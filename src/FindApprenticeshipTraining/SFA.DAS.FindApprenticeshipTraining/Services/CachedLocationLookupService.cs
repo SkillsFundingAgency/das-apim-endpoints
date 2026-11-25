@@ -1,9 +1,7 @@
-﻿using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Services;
@@ -29,7 +27,7 @@ public sealed class CachedLocationLookupService : ICachedLocationLookupService
 
     public async Task<LocationItem> GetCachedLocationInformation(string locationDescription, bool includeDistrictNameInPostcodeDisplayName = false)
     {
-        if(string.IsNullOrWhiteSpace(locationDescription))
+        if (string.IsNullOrWhiteSpace(locationDescription))
         {
             return null;
         }

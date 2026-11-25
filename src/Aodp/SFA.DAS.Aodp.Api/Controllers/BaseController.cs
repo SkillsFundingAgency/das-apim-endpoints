@@ -23,6 +23,16 @@ public class BaseController : Controller
             return Ok(response.Value);
         }
 
+        if (response.ErrorCode == ErrorCodes.BadRequest)
+        {
+            return new ContentResult
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                Content = response.ErrorMessage,
+                ContentType = "application/problem+json"
+            };
+        }
+
         _logger.LogError(message: $"Error thrown handling request: {response.ErrorMessage}");
         return StatusCode(StatusCodes.Status500InternalServerError);
     }

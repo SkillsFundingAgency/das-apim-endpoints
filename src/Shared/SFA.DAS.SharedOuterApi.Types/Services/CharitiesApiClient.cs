@@ -1,34 +1,26 @@
-﻿using System.Net;
-using SFA.DAS.Apim.Shared.Interfaces;
-
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
+using System.Net;
 
-namespace SFA.DAS.SharedOuterApi.Types.Services
+namespace SFA.DAS.SharedOuterApi.Types.Services;
+
+public class CharitiesApiClient(IInternalApiClient<CharitiesApiConfiguration> apiClient)
+    : ICharitiesApiClient<CharitiesApiConfiguration>
 {
-    public class CharitiesApiClient : ICharitiesApiClient<CharitiesApiConfiguration>
+    public Task<TResponse> Get<TResponse>(IGetApiRequest request)
     {
-        private readonly IInternalApiClient<CharitiesApiConfiguration> _apiClient;
+        return apiClient.Get<TResponse>(request);
+    }
 
-        public CharitiesApiClient(IInternalApiClient<CharitiesApiConfiguration> apiClient)
-        {
-            _apiClient = apiClient;
-        }
-        public Task<TResponse> Get<TResponse>(IGetApiRequest request)
-        {
-            return _apiClient.Get<TResponse>(request);
-        }
+    public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
+    {
+        return apiClient.GetResponseCode(request);
+    }
 
-        public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
-        {
-            return _apiClient.GetResponseCode(request);
-        }
-
-        public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
-        {
-            return _apiClient.GetWithResponseCode<TResponse>(request);
-        }
+    public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
+    {
+        return apiClient.GetWithResponseCode<TResponse>(request);
     }
 }

@@ -15,14 +15,14 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 public class UpdateEarningsOnProgrammeRequestBuilderTests
 {
     private readonly Fixture _fixture = new();
-    private Mock<ICoursesApiClient<CoursesApiConfiguration>> _coursesApiClient;
+    private Mock<ICourseService> _courseService;
     private UpdateEarningsOnProgrammeRequestBuilder _sut;
 
     [SetUp]
     public void SetUp()
     {
-        _coursesApiClient = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();
-        _sut = new UpdateEarningsOnProgrammeRequestBuilder(_coursesApiClient.Object);
+        _courseService = new Mock<ICourseService>();
+        _sut = new UpdateEarningsOnProgrammeRequestBuilder(_courseService.Object);
     }
 
     [TestCase(true)]
@@ -46,13 +46,14 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
             
 
         // Act
-        var result = await _sut.Build(command, response, putRequest);
+        var result = await _sut.Build(command.UpdateLearnerRequest, response, putRequest.Data);
 
         // Assert
-        result.PutUrl.Should().Be($"learning/{command.LearningKey}/on-programme");
+        result.PutUrl.Should().Be($"learning/{response.LearningKey}/on-programme");
         result.Data.CompletionDate.Should().Be(putRequest.Data.Learner.CompletionDate);
-        result.Data.WithdrawalDate.Should().Be(putRequest.Data.Delivery.WithdrawalDate);
+        result.Data.WithdrawalDate.Should().Be(putRequest.Data.OnProgramme.WithdrawalDate);
         result.Data.PauseDate.Should().Be(putRequest.Data.OnProgramme.PauseDate);
+        result.Data.AchievementDate.Should().Be(putRequest.Data.OnProgramme.AchievementDate);
         result.Data.ApprenticeshipEpisodeKey.Should().Be(response.LearningEpisodeKey);
         result.Data.DateOfBirth.Should().Be(putRequest.Data.Learner.DateOfBirth);
 
@@ -66,30 +67,15 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
             TotalPrice = x.TotalPrice
         }));
 
-        if (completion)
-        {
-            result.Data.PeriodsInLearning.Should().BeEquivalentTo(
-                command.UpdateLearnerRequest.Delivery.OnProgramme
-                    .Where(x => x.AgreementId == agreementId)
-                    .Select(x => new PeriodInLearningItem
-                    {
-                        StartDate = x.StartDate,
-                        EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.ExpectedEndDate,
-                        OriginalExpectedEndDate = x.ExpectedEndDate
-                    }));
-        }
-        else
-        {
-            result.Data.PeriodsInLearning.Should().BeEquivalentTo(
-                command.UpdateLearnerRequest.Delivery.OnProgramme
-                    .Where(x => x.AgreementId == agreementId)
-                    .Select(x => new PeriodInLearningItem
-                    {
-                        StartDate = x.StartDate,
-                        EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.ExpectedEndDate,
-                        OriginalExpectedEndDate = x.ExpectedEndDate
-                    }));
-        }
+        result.Data.PeriodsInLearning.Should().BeEquivalentTo(
+            command.UpdateLearnerRequest.Delivery.OnProgramme
+                .Where(x => x.AgreementId == agreementId)
+                .Select(x => new PeriodInLearningItem
+                {
+                    StartDate = x.StartDate,
+                    EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.CompletionDate,
+                    OriginalExpectedEndDate = x.ExpectedEndDate
+                }));
 
 
         result.Data.FundingBandMaximum.Should().BeNull();
@@ -107,7 +93,7 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
                                .Create();
 
         var expectedFundingBand = 9000;
-        _coursesApiClient.Setup(c => c.Get<StandardDetailResponse>(It.IsAny<GetStandardDetailsByIdRequest>()))
+        _courseService.Setup(c => c.GetStandardDetailsById(It.IsAny<string>()))
                          .ReturnsAsync(new StandardDetailResponse
                          {
                              ApprenticeshipFunding =
@@ -122,7 +108,7 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
                          });
 
         // Act
-        var result = await _sut.Build(command, response, putRequest);
+        var result = await _sut.Build(command.UpdateLearnerRequest, response, putRequest.Data);
 
         // Assert
         result.Data.FundingBandMaximum.Should().Be(expectedFundingBand);
@@ -140,10 +126,10 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
                                .Create();
 
         // Act
-        var result = await _sut.Build(command, response, putRequest);
+        var result = await _sut.Build(command.UpdateLearnerRequest, response, putRequest.Data);
 
         // Assert
-        result.PutUrl.Should().Be($"learning/{command.LearningKey}/on-programme");
+        result.PutUrl.Should().Be($"learning/{response.LearningKey}/on-programme");
         result.Data.Care.HasEHCP.Should().Be(putRequest.Data.Learner.Care.HasEHCP);
         result.Data.Care.IsCareLeaver.Should().Be(putRequest.Data.Learner.Care.IsCareLeaver);
         result.Data.Care.CareLeaverEmployerConsentGiven.Should().Be(putRequest.Data.Learner.Care.CareLeaverEmployerConsentGiven);

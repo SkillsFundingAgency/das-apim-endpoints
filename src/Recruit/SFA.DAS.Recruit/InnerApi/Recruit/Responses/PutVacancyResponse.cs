@@ -13,6 +13,7 @@ public class PutVacancyResponse
     public long? AccountId { get; init; }
     public required VacancyStatus Status { get; init; }
     public ApprenticeshipTypes? ApprenticeshipType { get; init; }
+    public SharedOuterApi.Types.Domain.Recruit.ArchiveType? ArchiveType { get; init; }
     public string? Title { get; init; }
     public OwnerType? OwnerType { get; init; }
     public SourceOrigin? SourceOrigin { get; init; }
@@ -28,6 +29,7 @@ public class PutVacancyResponse
     public DateTime? LiveDate { get; init; }
     public DateTime? StartDate { get; init; }
     public DateTime? ClosingDate { get; init; }
+    public DateTime? ArchivedDate { get; init; }
     public int ReviewCount { get; init; }
     public string? ApplicationUrl { get; init; }
     public ApplicationMethod? ApplicationMethod { get; init; }
@@ -68,4 +70,5 @@ public class PutVacancyResponse
     public List<ReviewFieldIndicator>? EmployerReviewFieldIndicators { get; init; }
     public List<ReviewFieldIndicator>? ProviderReviewFieldIndicators { get; init; }
     public string? SubmittedByUserId { get; init; }
+    public string? ArchivedByUserId { get; init; }
 }

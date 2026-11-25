@@ -90,7 +90,7 @@ public class GetClosedVacancyResponse: IVacancy
     public int NumberOfPositions { get; set; }
     public string OutcomeDescription { get; set; }
     public ContactDetail ProviderContact { get; set; }
-    public IEnumerable<Qualification> Qualifications { get; init; } = [];
+    public IEnumerable<Qualification> Qualifications { get; set; } = [];
     public string ShortDescription { get; set; }
     public IEnumerable<string> Skills { get; init; } = [];
     public DateTime StartDate { get; set; }
@@ -112,6 +112,7 @@ public class GetClosedVacancyResponse: IVacancy
         public string Subject { get; set; }
         public string Grade { get; set; }
         public QualificationWeighting? Weighting { get; set; }
+        public string OtherQualificationName { get; set; }
     }
         
     public class ContactDetail

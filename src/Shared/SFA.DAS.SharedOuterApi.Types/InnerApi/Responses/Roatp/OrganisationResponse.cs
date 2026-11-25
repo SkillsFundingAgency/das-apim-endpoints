@@ -1,4 +1,5 @@
 ﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp;
+
 public class OrganisationResponse
 {
     public Guid OrganisationId { get; set; }

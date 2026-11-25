@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.LearnerData.Shared;
 using System.Diagnostics;
 
 namespace SFA.DAS.LearnerData.Requests.EarningsInner;
@@ -26,6 +27,7 @@ public class EnglishAndMathsItem
     public DateTime? PauseDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
     public DateTime? CompletionDate { get; set; }
-    public int? PriorLearningAdjustmentPercentage { get; set; }
+    public decimal? CombinedFundingAdjustmentPercentage { get; set; }
     public List<PeriodInLearningItem> PeriodsInLearning { get; set; } = [];
+    public List<LearningSupport> LearningSupport { get; set; } = [];
 }

@@ -7,21 +7,30 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models.Apprentices;
 using SFA.DAS.Approvals.Api.Models.Apprentices.ChangeEmployer;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.ChangeEmployer.Confirm;
+using SFA.DAS.Approvals.Application.Apprentices.Commands.ChangePayments;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.ConfirmEditApprenticeship;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.EditApprenticeship;
 using SFA.DAS.Approvals.Application.Apprentices.Queries;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.ApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditApprenticeship;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetChangePayments;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetApprenticeship;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetEditApprenticeshipCourse;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.ApprenticeData;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.ConfirmEmployer;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Inform;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.SelectDeliveryModel;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprenticeships;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprenticeshipsCSV;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprenticeshipUpdates;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetSelectNewEmployer;
+using SFA.DAS.Approvals.Application.InvalidIlrChanges.Commands;
+using SFA.DAS.Approvals.Application.InvalidIlrChanges.Queries;
+using SFA.DAS.Approvals.Application.Apprentices.Commands.AcknowledgeApprovalRequestAlerts;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprovalRequests;
 using SFA.DAS.Approvals.Exceptions;
+using SFA.DAS.Approvals.InnerApi.Requests;
 
 namespace SFA.DAS.Approvals.Api.Controllers;
 
@@ -507,6 +516,62 @@ public class ApprenticesController(
         return await ConfirmEditApprenticeshipInternal(apprenticeshipId, null, accountId, request);
     }
 
+    [HttpGet]
+    [Route("/employer/{accountId}/apprentices/{apprenticeshipId}/payments")]
+    public async Task<IActionResult> GetChangePaymentsEmployer(
+        [FromRoute] long accountId,
+        [FromRoute] long apprenticeshipId)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetChangePaymentsQuery { ApprenticeshipId = apprenticeshipId });
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok((GetChangePaymentsResponse)result);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error getting change payments for apprenticeship {ApprenticeshipId}", apprenticeshipId);
+            return BadRequest();
+        }
+    }
+
+    [HttpPatch]
+    [Route("/employer/{accountId}/apprentices/{apprenticeshipId}/payments")]
+    [Consumes("application/json", "application/json-patch+json", "text/json", "application/*+json")]
+    public async Task<IActionResult> ChangePaymentsEmployer(
+        [FromRoute] long accountId,
+        [FromRoute] long apprenticeshipId,
+        [FromBody] ChangePaymentsRequest request)
+    {
+        try
+        {
+            await mediator.Send(new ChangePaymentsCommand
+            {
+                AccountId = accountId,
+                ApprenticeshipId = apprenticeshipId,
+                PaymentFreezeDate = request.PaymentFreezeDate,
+                UserInfo = request.UserInfo,
+                FreezePaymentsReason = request.FreezePaymentsReason
+            });
+
+            return Ok();
+        }
+        catch (DomainApimException)
+        {
+            throw;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error changing payments for apprenticeship {ApprenticeshipId}", apprenticeshipId);
+            return BadRequest();
+        }
+    }
+
     [HttpPost]
     [Route("/provider/{providerId}/apprenticeships/download")]
     public async Task<IActionResult> GetApprenticeshipsCSV(long providerId, [FromBody] PostApprenticeshipsCSVRequest request)
@@ -543,6 +608,51 @@ public class ApprenticesController(
         catch (Exception ex)
         {
             logger.LogError(ex, "Error in GetApprenticeshipsCSV for provider Id: {providerId}", providerId);
+            return BadRequest();
+        }
+    }
+
+    [HttpGet]
+    [Route("/provider/{providerId}/apprentices")]
+    [Route("/employer/{accountId}/apprentices")]
+    public async Task<IActionResult> GetApprenticeships(long? providerId, long? accountId, [FromQuery] InnerApi.Requests.GetApprenticeshipsRequest request)
+    {
+        try
+        {
+            logger.LogInformation("GetApprenticeships starting for providerId {Id}", providerId);
+
+            var query = new GetApprenticeshipsQuery
+            {
+                AccountId = accountId,
+                ProviderId = providerId,
+                PageNumber = request.PageNumber,
+                PageItemCount = request.PageItemCount,
+                SortField = request.SortField,
+                ReverseSort = request.ReverseSort,
+                SearchTerm = request.SearchTerm,
+                EmployerName = request.EmployerName,
+                CourseName = request.CourseName,
+                ProviderName = request.ProviderName,
+                Status = request.Status,
+                StartDate = request.StartDate,
+                EndDate = request.EndDate,
+                Alert = request.Alert,
+                ApprenticeConfirmationStatus = request.ApprenticeConfirmationStatus,
+                DeliveryModel = request.DeliveryModel
+            };
+       
+            var apprenticesData = await mediator.Send(query);
+
+            if (apprenticesData == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(apprenticesData);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error in GetApprenticeships for provider Id: {providerId}", providerId);
             return BadRequest();
         }
     }
@@ -589,6 +699,190 @@ public class ApprenticesController(
         catch (Exception e)
         {
             logger.LogError(e, $"Error confirming edit apprenticeship {apprenticeshipId}");
+            return BadRequest();
+        }
+    }
+
+    [HttpGet]
+    [Route("/provider/{providerId}/apprentices/{apprenticeshipId}")]
+    public async Task<IActionResult> GetApprenticeship(long apprenticeshipId)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetApprenticeshipQuery { ApprenticeshipId = apprenticeshipId });
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            var response = mapper.Map<GetApprenticeshipResponse>(result);
+
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, $"Error in GetApprenticeship {apprenticeshipId}");
+            return BadRequest();
+        }
+    }
+
+    [HttpGet]
+    [Route("/provider/{providerId:long}/apprentices/{apprenticeshipId:long}/invalid-ilr-changes")]
+    public async Task<IActionResult> GetInvalidIlrChanges(long providerId, long apprenticeshipId)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetInvalidIlrChangesQuery(providerId, apprenticeshipId));
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+        catch (ResourceNotFoundException exception)
+        {
+            logger.LogError(exception, "Invalid ILR changes not found for apprenticeship {ApprenticeshipId}", apprenticeshipId);
+            return NotFound();
+        }
+        catch (UnauthorizedAccessException exception)
+        {
+            logger.LogError(exception, "Permission denied when accessing invalid ILR changes for apprenticeship {ApprenticeshipId}", apprenticeshipId);
+            return Unauthorized();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Error getting invalid ILR changes for apprenticeship {ApprenticeshipId}", apprenticeshipId);
+            return BadRequest();
+        }
+    }
+
+    [HttpPost]
+    [Route("/provider/{providerId:long}/apprentices/{apprenticeshipId:long}/invalid-ilr-changes")]
+    public async Task<IActionResult> AcknowledgeInvalidIlrChanges(long providerId, long apprenticeshipId, [FromBody] AcknowledgeInvalidIlrChangesApiRequest request)
+    {
+        try
+        {
+            await mediator.Send(new AcknowledgeInvalidIlrChangesCommand
+            {
+                ProviderId = providerId,
+                ApprenticeshipId = apprenticeshipId,
+                UserInfo = request.UserInfo,
+                Acknowledgements = request.Acknowledgements
+            });
+            return Ok();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Error acknowledging invalid ILR changes for apprenticeship {ApprenticeshipId}", apprenticeshipId);
+            return BadRequest();
+        }
+    }
+
+    [HttpGet]
+    [Route("/provider/{providerId:long}/apprentices/{apprenticeshipId:long}/declined-changes")]
+    public async Task<IActionResult> GetDeclinedChanges(long providerId, long apprenticeshipId)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetInvalidIlrChangesQuery(
+                providerId,
+                apprenticeshipId,
+                GetInvalidIlrChangesRequest.DeclinedChangesPath));
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+        catch (ResourceNotFoundException exception)
+        {
+            logger.LogError(exception, "Declined changes not found for apprenticeship {ApprenticeshipId}", apprenticeshipId);
+            return NotFound();
+        }
+        catch (UnauthorizedAccessException exception)
+        {
+            logger.LogError(exception, "Permission denied when accessing declined changes for apprenticeship {ApprenticeshipId}", apprenticeshipId);
+            return Unauthorized();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Error getting declined changes for apprenticeship {ApprenticeshipId}", apprenticeshipId);
+            return BadRequest();
+        }
+    }
+
+    [HttpPost]
+    [Route("/provider/{providerId:long}/apprentices/{apprenticeshipId:long}/declined-changes")]
+    public async Task<IActionResult> AcknowledgeDeclinedChanges(long providerId, long apprenticeshipId, [FromBody] AcknowledgeInvalidIlrChangesApiRequest request)
+    {
+        try
+        {
+            await mediator.Send(new AcknowledgeInvalidIlrChangesCommand
+            {
+                ProviderId = providerId,
+                ApprenticeshipId = apprenticeshipId,
+                UserInfo = request.UserInfo,
+                InnerPath = GetInvalidIlrChangesRequest.DeclinedChangesPath,
+                Acknowledgements = request.Acknowledgements
+            });
+            return Ok();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Error acknowledging declined changes for apprenticeship {ApprenticeshipId}", apprenticeshipId);
+            return BadRequest();
+        }
+    }
+
+    [HttpGet]
+    [Route("/employer/{accountId:long}/apprentices/{apprenticeshipId:long}/approval-requests")]
+    public async Task<IActionResult> GetApprovalRequest(long accountId, long apprenticeshipId, [FromQuery] byte status)
+    {
+        try
+        {
+            var queryResult = await mediator.Send(new GetApprovalRequestQuery
+            {
+                ApprenticeshipId = apprenticeshipId,
+                Status = status,
+                AccountId = accountId,
+            });
+
+            if (queryResult == null)
+            {
+                return NotFound();
+            }
+
+            var model = queryResult;
+            return Ok(model);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error attempting to get approval request for apprenticeshipId: {ApprenticeshipId}", apprenticeshipId);
+            return BadRequest();
+        }
+    }
+
+    [HttpPut]
+    [Route("/employer/{accountId:long}/apprentices/{apprenticeshipId:long}/alerts-acknowledged")]
+    public async Task<IActionResult> UpdateApprovalRequestAlertAcknowledge(long accountId, long apprenticeshipId, [FromBody] Models.Apprentices.UpdateApprovalRequestAlertAcknowledgeRequest request)
+    {
+        try
+        {
+            var command = new UpdateApprovalRequestAlertAcknowledgeCommand
+            {
+                ApprenticeshipId = apprenticeshipId,
+                ApprovalRequestAlerts = request.ApprovalRequestAlerts,
+                AccountId = accountId,
+            };
+            await mediator.Send(command);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error attempting to update approval request for apprenticeshipId: {ApprenticeshipId}", apprenticeshipId);
             return BadRequest();
         }
     }

@@ -6,9 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" />
-    <PackageReference Include="SFA.DAS.NServiceBus" />
-    <PackageReference Include="Swashbuckle.AspNetCore" />
+    <PackageReference Include="MediatR" Version="12.5.0" />
+    <PackageReference Include="SFA.DAS.NServiceBus" Version="17.0.49" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
   </ItemGroup>
 
   <ItemGroup>

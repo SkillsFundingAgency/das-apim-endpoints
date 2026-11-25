@@ -189,6 +189,9 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         [JsonPropertyName("pageTitle")]
         public string PageTitle { get; set; }
 
+        [JsonPropertyName("shortPageTitle")]
+        public string ShortPageTitle { get; set; }
+
         [JsonPropertyName("metaDescription")]
         public string MetaDescription { get; set; }
 
@@ -203,6 +206,54 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         public PurpleContent TabContent { get; set; }
         [JsonPropertyName("findTraineeship")]
         public bool FindTraineeship { get; set; }
+
+        [JsonPropertyName("cardImage")]
+        public LandingPage CardImage { get; set; }
+
+        [JsonPropertyName("videoName")]
+        public string VideoName { get; set; }
+
+        [JsonPropertyName("text")]
+        public string Text { get; set; }
+
+        [JsonPropertyName("heading")]
+        public string Heading { get; set; }
+
+        [JsonPropertyName("icon")]
+        public string Icon { get; set; }
+
+        [JsonPropertyName("buttonText")]
+        public string ButtonText { get; set; }
+
+        [JsonPropertyName("url")]
+        public string Url { get; set; }
+
+        [JsonPropertyName("highlightValue")]
+        public string HighlightValue { get; set; }
+
+        [JsonPropertyName("quoteName")]
+        public string QuoteName { get; set; }
+
+        [JsonPropertyName("quoteRole")]
+        public string QuoteRole { get; set; }
+
+        [JsonPropertyName("referenceText")]
+        public string ReferenceText { get; set; }
+
+        [JsonPropertyName("audience")]
+        public string Audience { get; set; }
+
+        [JsonPropertyName("linkType")]
+        public string LinkType { get; set; }
+
+        [JsonPropertyName("internalPage")]
+        public LandingPage InternalPage { get; set; }
+
+        [JsonPropertyName("externalUrl")]
+        public string ExternalUrl { get; set; }
+
+        [JsonPropertyName("order")]
+        public int? Order { get; set; }
     }
 
     public class PurpleContent
@@ -318,8 +369,26 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         [JsonPropertyName("headerImage")]
         public HeaderImage HeaderImage { get; set; }
 
+        [JsonPropertyName("articleType")]
+        public string ArticleType { get; set; }
+
         [JsonPropertyName("cards")]
         public List<CardItem> Cards { get; set; }
+
+        [JsonPropertyName("cards2")]
+        public List<CardItem> Cards2 { get; set; }
+
+        [JsonPropertyName("cards3")]
+        public List<CardItem> Cards3 { get; set; }
+
+        [JsonPropertyName("cardsTitle")]
+        public string CardsTitle { get; set; }
+
+        [JsonPropertyName("cardsTitle2")]
+        public string CardsTitle2 { get; set; }
+
+        [JsonPropertyName("cardsTitle3")]
+        public string CardsTitle3 { get; set; }
 
         [JsonPropertyName("menuItems")]
         public List<MenuItem> MenuItems { get; set; }
@@ -344,6 +413,48 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         public ImageContent Image { get; set; }
         [JsonPropertyName("Id")]
         public int Id { get; set; }
+
+        [JsonPropertyName("fromPath")]
+        public string FromPath { get; set; }
+
+        [JsonPropertyName("toPath")]
+        public string ToPath { get; set; }
+
+        [JsonPropertyName("matchType")]
+        public string MatchType { get; set; }
+
+        [JsonPropertyName("permanent")]
+        public bool? Permanent { get; set; }
+
+        [JsonPropertyName("headline")]
+        public string Headline { get; set; }
+
+        [JsonPropertyName("intro")]
+        public string Intro { get; set; }
+
+        [JsonPropertyName("date")]
+        public DateTime? Date { get; set; }
+
+        [JsonPropertyName("updatedDate")]
+        public DateTime? UpdatedDate { get; set; }
+
+        [JsonPropertyName("audience")]
+        public string Audience { get; set; }
+
+        [JsonPropertyName("category")]
+        public LandingPage Category { get; set; }
+
+        [JsonPropertyName("sections")]
+        public List<TabbedContent> Sections { get; set; }
+
+        [JsonPropertyName("browserTitle")]
+        public string BrowserTitle { get; set; }
+
+        [JsonPropertyName("introText")]
+        public string IntroText { get; set; }
+
+        [JsonPropertyName("featureCards")]
+        public List<CardItem> FeatureCards { get; set; }
     }
 
     public class MainContent

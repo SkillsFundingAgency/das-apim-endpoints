@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Api.Controllers;
+using SFA.DAS.DigitalCertificates.Api.Models.Certificates;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetStandardCertificate;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -34,7 +35,8 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Certificates
             // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().Be(expectedResponse);
+            var expected = (GetStandardCertificateResponse)expectedResponse;
+            actual.Value.Should().BeEquivalentTo(expected);
 
             mediator.Verify(m => m.Send(It.Is<GetStandardCertificateQuery>(q => q.Id == id), It.IsAny<CancellationToken>()), Times.Once);
         }
@@ -46,7 +48,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Certificates
             [Greedy] CertificatesController controller)
         {
             // Arrange
-            GetStandardCertificateQueryResult? expectedResponse = null;
+            GetStandardCertificateQueryResult expectedResponse = null;
             mediator
                 .Setup(m => m.Send(It.IsAny<GetStandardCertificateQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedResponse);

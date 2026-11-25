@@ -18,7 +18,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.VacancyReview.Commands;
 
 public class WhenHandlingUpsertVacancyReviewCommand
 {
-    [Test, MoqAutoData]
+    [Test, RecursiveMoqAutoData]
     public async Task Submitted_Vacancy_Sends_Immediate_Emails(
         UpsertVacancyReviewCommand command,
         PostCreateVacancyNotificationsResponse response,
@@ -58,7 +58,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
         apiClient.Verify(x => x.GetAll<RecruitUserApiResponse>(It.IsAny<GetProviderRecruitUserNotificationPreferencesApiRequest>()), Times.Never);
     }
     
-    [Test, MoqAutoData]
+    [Test, RecursiveMoqAutoData]
     public async Task Then_If_Submitted_Emails_Does_Not_Return_Successfully_Then_No_Emails_Are_Sent(
         UpsertVacancyReviewCommand command,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> apiClient,

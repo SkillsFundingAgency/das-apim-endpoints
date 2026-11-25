@@ -1,24 +1,17 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests
+public class PutAccountUserRequest(string userRef, string email, string firstName, string lastName, Guid? correlationId)
+    : IPutApiRequest
 {
-    public class PutAccountUserRequest : IPutApiRequest
+    public string PutUrl => $"api/user/upsert";
+    public object Data { get; set; } = new
     {
-        public PutAccountUserRequest(string userRef, string email, string firstName, string lastName, Guid? correlationId)
-        {
-            Data = new
-            {
-                UserRef = userRef,
-                FirstName = firstName,
-                LastName = lastName,
-                EmailAddress = email,
-                CorrelationId = correlationId.HasValue ? correlationId.Value.ToString() : string.Empty
-            };
-        }
-
-        public string PutUrl => $"api/user/upsert";
-        public object Data { get; set; }
-    }
+        UserRef = userRef,
+        FirstName = firstName,
+        LastName = lastName,
+        EmailAddress = email,
+        CorrelationId = correlationId.HasValue ? correlationId.Value.ToString() : string.Empty
+    };
 }

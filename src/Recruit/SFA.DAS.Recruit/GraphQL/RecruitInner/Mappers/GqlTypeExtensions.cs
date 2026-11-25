@@ -17,6 +17,7 @@ public static class GqlTypeExtensions
             VacancyStatus.Live => Domain.Vacancy.VacancyStatus.Live,
             VacancyStatus.Closed => Domain.Vacancy.VacancyStatus.Closed,
             VacancyStatus.Approved => Domain.Vacancy.VacancyStatus.Approved,
+            VacancyStatus.Archived => Domain.Vacancy.VacancyStatus.Archived,
             _ => throw new ArgumentOutOfRangeException(nameof(status), status, null)
         };
     }
@@ -91,5 +92,6 @@ public static class GqlTypeExtensions
             [Domain.Vacancy.VacancyStatus.Live] = [VacancyStatus.Live],
             [Domain.Vacancy.VacancyStatus.Referred] = [VacancyStatus.Referred, VacancyStatus.Rejected],
             [Domain.Vacancy.VacancyStatus.Rejected] = [VacancyStatus.Referred, VacancyStatus.Rejected],
+            [Domain.Vacancy.VacancyStatus.Archived] = [VacancyStatus.Archived],
         };
 }

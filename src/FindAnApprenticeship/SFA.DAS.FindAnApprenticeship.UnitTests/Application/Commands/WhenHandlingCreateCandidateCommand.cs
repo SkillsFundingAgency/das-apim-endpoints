@@ -1,14 +1,13 @@
-﻿using SFA.DAS.FindAnApprenticeship.Application.Commands.Candidate;
+﻿using System.Net;
+using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Candidate;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
-using System.Net;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands;
 public class WhenHandlingPostCandidateCommand
@@ -92,6 +91,7 @@ public class WhenHandlingPostCandidateCommand
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
         CreateCandidateCommandHandler handler)
     {
+        // arrange
         command.GovUkIdentifier = govUkId;
 
         var expectedPostData = new PostCandidateApiRequestData
@@ -103,6 +103,11 @@ public class WhenHandlingPostCandidateCommand
         mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(
                 It.Is<GetCandidateApiRequest>(r => r.GetUrl == expectedGetCandidateRequest.GetUrl)))
             .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
+        
+        var expectedGetCandidateByEmailAddressRequest = new GetCandidateByEmailAddressApiRequest(command.Email);
+        mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(
+                It.Is<GetCandidateByEmailAddressApiRequest>(r => r.GetUrl == expectedGetCandidateByEmailAddressRequest.GetUrl)))
+            .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(null!, HttpStatusCode.NotFound, string.Empty));
 
         var expectedRequest = new PostCandidateApiRequest(command.GovUkIdentifier, expectedPostData);
 
@@ -113,6 +118,7 @@ public class WhenHandlingPostCandidateCommand
 
         Func<Task> result = () => handler.Handle(command, CancellationToken.None);
 
+        // act/assert
         await result.Should().ThrowExactlyAsync<ArgumentNullException>();
     }
 
@@ -124,6 +130,7 @@ public class WhenHandlingPostCandidateCommand
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
         CreateCandidateCommandHandler handler)
     {
+        // arrange
         command.GovUkIdentifier = govUkId;
 
         response.FirstName = null;
@@ -135,9 +142,14 @@ public class WhenHandlingPostCandidateCommand
         };
 
         var expectedGetCandidateRequest = new GetCandidateApiRequest(govUkId);
+        var expectedGetCandidateByEmailAddressRequest = new GetCandidateByEmailAddressApiRequest(command.Email);
         mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(
                 It.Is<GetCandidateApiRequest>(r => r.GetUrl == expectedGetCandidateRequest.GetUrl)))
-            .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
+            .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(null!, HttpStatusCode.NotFound, string.Empty));
+        
+        mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(
+                It.Is<GetCandidateByEmailAddressApiRequest>(r => r.GetUrl == expectedGetCandidateByEmailAddressRequest.GetUrl)))
+            .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(null!, HttpStatusCode.NotFound, string.Empty));
 
         var expectedRequest = new PostCandidateApiRequest(command.GovUkIdentifier, expectedPostData);
 
@@ -146,8 +158,10 @@ public class WhenHandlingPostCandidateCommand
                 It.Is<PostCandidateApiRequest>(r => r.PostUrl == expectedRequest.PostUrl), true))
             .ReturnsAsync(new ApiResponse<PostCandidateApiResponse>(response, HttpStatusCode.OK, string.Empty));
 
+        // act
         var result = await handler.Handle(command, CancellationToken.None);
 
+        // assert
         using (new AssertionScope())
         {
             result.GovUkIdentifier.Should().BeEquivalentTo(response.GovUkIdentifier);
@@ -158,5 +172,103 @@ public class WhenHandlingPostCandidateCommand
             result.DateOfBirth.Should().BeNull();
             result.Status.Should().Be(UserStatus.Incomplete);
         }
+    }
+    
+    [Test, MoqAutoData]
+    public async Task Then_If_The_Candidate_Is_Not_Found_By_Their_Gov_Id_Then_The_Candidate_Is_Looked_Up_By_Email_Address_And_The_Gov_Id_Updated_When_Null(
+        CreateCandidateCommand command,
+        GetCandidateApiResponse candidate,
+        PostCandidateApiResponse response,
+        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
+        CreateCandidateCommandHandler handler)
+    {
+        // arrange
+        candidate.Email = command.Email;
+        candidate.Status = UserStatus.Completed;
+        candidate.GovUkIdentifier = null;
+
+        mockApiClient
+            .Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(It.IsAny<GetCandidateApiRequest>()))
+            .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(null!, HttpStatusCode.NotFound, string.Empty));
+        
+        mockApiClient
+            .Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(It.IsAny<GetCandidateByEmailAddressApiRequest>()))
+            .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(candidate, HttpStatusCode.OK, string.Empty));
+
+        mockApiClient
+            .Setup(client => client.PostWithResponseCode<PostCandidateApiResponse>(It.IsAny<PostCandidateApiRequest>(), true))
+            .ReturnsAsync(new ApiResponse<PostCandidateApiResponse>(response, HttpStatusCode.OK, string.Empty));
+        
+        PatchCandidateApiRequest? capturedPatchRequest = null;
+        mockApiClient
+            .Setup(client => client.PatchWithResponseCode(It.IsAny<IPatchApiRequest<JsonPatchDocument<PatchableCandidate>>>()))
+            .Callback<IPatchApiRequest<JsonPatchDocument<PatchableCandidate>>>(x => capturedPatchRequest = x as PatchCandidateApiRequest)
+            .ReturnsAsync(new ApiResponse<string>(string.Empty, HttpStatusCode.OK, string.Empty));
+
+        // act
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        // assert
+        result.GovUkIdentifier.Should().BeEquivalentTo(command.GovUkIdentifier);
+        
+        capturedPatchRequest.Should().NotBeNull();
+        capturedPatchRequest.Data.Operations.Should().HaveCount(2);
+        capturedPatchRequest.Data.Operations[0].op.Should().Be("replace");
+        capturedPatchRequest.Data.Operations[0].path.Should().Be("/GovUkIdentifier");
+        capturedPatchRequest.Data.Operations[0].value.Should().Be(command.GovUkIdentifier);
+        capturedPatchRequest.Data.Operations[1].op.Should().Be("replace");
+        capturedPatchRequest.Data.Operations[1].path.Should().Be("/UpdatedOn");
+    }
+    
+    [Test, MoqAutoData]
+    public async Task Then_If_The_Candidate_Is_Not_Found_By_Their_Gov_Id_Then_The_Candidate_Is_Looked_Up_By_Email_Address_And_The_Gov_Id_Update_Will_Fail_When_It_Is_Not_Null(
+        CreateCandidateCommand command,
+        GetCandidateApiResponse candidate,
+        PostCandidateApiResponse response,
+        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
+        CreateCandidateCommandHandler handler)
+    {
+        // arrange
+        candidate.Email = command.Email;
+        candidate.Status = UserStatus.Completed;
+
+        mockApiClient
+            .Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(It.IsAny<GetCandidateApiRequest>()))
+            .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(null!, HttpStatusCode.NotFound, string.Empty));
+        
+        mockApiClient
+            .Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(It.IsAny<GetCandidateByEmailAddressApiRequest>()))
+            .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(candidate, HttpStatusCode.OK, string.Empty));
+
+        var action = async () => await handler.Handle(command, CancellationToken.None);
+
+        // act/assert
+        await action.Should().ThrowAsync<NotSupportedException>();
+    }
+    
+    [Test, MoqAutoData]
+    public async Task Then_If_The_Candidate_Matches_Multiple_Accounts_By_Their_Email_Address_Then_An_Exception_Is_Raised(
+        CreateCandidateCommand command,
+        GetCandidateApiResponse candidate,
+        PostCandidateApiResponse response,
+        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
+        CreateCandidateCommandHandler handler)
+    {
+        // arrange
+        candidate.Email = command.Email;
+        candidate.Status = UserStatus.Completed;
+
+        mockApiClient
+            .Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(It.IsAny<GetCandidateApiRequest>()))
+            .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(null!, HttpStatusCode.NotFound, string.Empty));
+        
+        mockApiClient
+            .Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(It.IsAny<GetCandidateByEmailAddressApiRequest>()))
+            .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(candidate, HttpStatusCode.BadRequest, string.Empty));
+
+        var action = async () => await handler.Handle(command, CancellationToken.None);
+
+        // act/assert
+        await action.Should().ThrowAsync<NotSupportedException>();
     }
 }

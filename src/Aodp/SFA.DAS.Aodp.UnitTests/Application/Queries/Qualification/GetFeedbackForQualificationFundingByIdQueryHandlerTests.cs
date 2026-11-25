@@ -1,21 +1,12 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
-using AutoFixture.Kernel;
 using Moq;
-using NUnit.Framework;
 using SFA.DAS.Aodp.Application.Queries.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
 using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.Aodp.Services;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.AODP.Shared.UnitTests.Helpers;
 
 namespace SFA.DAS.Aodp.Application.UnitTests.Queries.Qualifications
 {
@@ -77,17 +68,6 @@ namespace SFA.DAS.Aodp.Application.UnitTests.Queries.Qualifications
             Assert.That(result.ErrorMessage, Is.EqualTo(exceptionMessage));
         }
     }
-    public class DateOnlySpecimenBuilder : ISpecimenBuilder
-    {
-        public object Create(object request, ISpecimenContext context)
-        {
-            if (request is Type type && type == typeof(DateOnly))
-            {
-                return new DateOnly(2023, 1, 1); // a default date
-            }
 
-            return new NoSpecimen();
-        }
-    }
 }
 

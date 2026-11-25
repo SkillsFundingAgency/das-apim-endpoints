@@ -10,5 +10,6 @@ public class CreateLearnerCommand : IRequest
     public DateTime ReceivedOn { get; set; }
     public CreateLearnerRequest Request { get; set; }
     public long Ukprn { get; set; }
+    public int AcademicYear { get; set; }
 }
 #pragma warning restore CS8618

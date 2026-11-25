@@ -7,7 +7,6 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 
 namespace SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetCommitmentsApprenticeshipById
 {

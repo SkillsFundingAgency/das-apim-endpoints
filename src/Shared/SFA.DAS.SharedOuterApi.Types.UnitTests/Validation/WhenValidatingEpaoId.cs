@@ -1,48 +1,47 @@
 ﻿using SFA.DAS.SharedOuterApi.Types.Validation;
 
-namespace SFA.DAS.SharedOuterApi.UnitTests.Validation
+namespace SFA.DAS.SharedOuterApi.UnitTests.Validation;
+
+public class WhenValidatingEpaoId
 {
-    public class WhenValidatingEpaoId
+    [Test, AutoData]
+    public async Task And_Not_Match_Regex_Then_Not_Valid(
+        string epaoId,
+        TestValidator validator)
     {
-        [Test, AutoData]
-        public async Task And_Not_Match_Regex_Then_Not_Valid(
-            string epaoId,
-            TestValidator validator)
-        {
-            var validationResult = await validator.ValidateAsync(epaoId);
+        var validationResult = await validator.ValidateAsync(epaoId);
 
-            validationResult.IsValid().Should().BeFalse();
-            validationResult.ValidationDictionary.Should().ContainKey("epaoId");
-        }
-
-        [Test]
-        [InlineAutoData(null, false)]
-        [InlineAutoData("", false)]
-        [InlineAutoData("^%$£&^*", false)]
-        [InlineAutoData("EPAO001", false)]
-        [InlineAutoData("EPA0001", true)]
-        [InlineAutoData("EPA0901", true)]
-        [InlineAutoData("epa9999", true)]
-        [InlineAutoData("epa999999999", true)]
-        [InlineAutoData("epa9999999999", false)]
-        public async Task Match_Regex_Cases(
-            string epaoId,
-            bool isValid,
-            TestValidator validator)
-        {
-            var validationResult = await validator.ValidateAsync(epaoId);
-
-            validationResult.IsValid().Should().Be(isValid);
-        }
+        validationResult.IsValid().Should().BeFalse();
+        validationResult.ValidationDictionary.Should().ContainKey("epaoId");
     }
 
-    public class TestValidator : EpaoIdValidator, IValidator<string>
+    [Test]
+    [InlineAutoData(null, false)]
+    [InlineAutoData("", false)]
+    [InlineAutoData("^%$£&^*", false)]
+    [InlineAutoData("EPAO001", false)]
+    [InlineAutoData("EPA0001", true)]
+    [InlineAutoData("EPA0901", true)]
+    [InlineAutoData("epa9999", true)]
+    [InlineAutoData("epa999999999", true)]
+    [InlineAutoData("epa9999999999", false)]
+    public async Task Match_Regex_Cases(
+        string epaoId,
+        bool isValid,
+        TestValidator validator)
     {
-        public Task<ValidationResult> ValidateAsync(string item)
-        {
-            var result = new ValidationResult();
-            ValidateEpaoId(item, ref result);
-            return Task.FromResult(result);
-        }
+        var validationResult = await validator.ValidateAsync(epaoId);
+
+        validationResult.IsValid().Should().Be(isValid);
+    }
+}
+
+public class TestValidator : EpaoIdValidator, IValidator<string>
+{
+    public Task<ValidationResult> ValidateAsync(string item)
+    {
+        var result = new ValidationResult();
+        ValidateEpaoId(item, ref result);
+        return Task.FromResult(result);
     }
 }

@@ -1,13 +1,10 @@
 ﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using SFA.DAS.CollectionCalendar.Contracts.ApiRequests;
+using SFA.DAS.CollectionCalendar.Contracts.ApiResponses;
+using SFA.DAS.CollectionCalendar.Contracts.Client;
 using SFA.DAS.Learning.Api.Controllers;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.CollectionCalendar;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.CollectionCalendar;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Threading.Tasks;
@@ -19,21 +16,21 @@ public class WhenGettingAcademicYear
 {
     [Test, MoqAutoData]
     public async Task Then_Gets_ApprenticeshipKey_From_ApiClient(
-        GetAcademicYearsResponse expectedResponse,
+        AcademicYearDetails expectedResponse,
         DateTime searchDate,
-        Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> mockCollectionCalendarApiClient)
+        Mock<ICollectionCalendarClient<CollectionCalendarConfiguration>> mockCollectionCalendarClient)
     {
         //  Arrange
-        mockCollectionCalendarApiClient.Setup(x => x.Get<GetAcademicYearsResponse>(It.IsAny<GetAcademicYearByDateRequest>())).ReturnsAsync(expectedResponse);
+        mockCollectionCalendarClient.Setup(x => x.Get<AcademicYearDetails>(It.IsAny<GetAcademicyearsApiRequest>())).ReturnsAsync(expectedResponse);
 
-        var controller = new CollectionCalendarController(mockCollectionCalendarApiClient.Object);
+        var controller = new CollectionCalendarController(mockCollectionCalendarClient.Object);
 
         //  Act
         var result = await controller.GetAcademicYear(searchDate);
 
         //  Assert
         var okObjectResult = result.ShouldBeOfType<OkObjectResult>();
-        var actualResponse = okObjectResult.Value.ShouldBeOfType<GetAcademicYearsResponse>();
+        var actualResponse = okObjectResult.Value.ShouldBeOfType<AcademicYearDetails>();
         actualResponse.Should().Be(expectedResponse);
     }
 }

@@ -1,5 +1,5 @@
-using System.Text.Json.Serialization;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
 
@@ -7,22 +7,22 @@ public class GetUserAccountsResponse
 {
     [JsonPropertyName(nameof(AccountId))]
     public long AccountId { get; set; }
-    
+
     [JsonPropertyName(nameof(DateRegistered))]
     public DateTime? DateRegistered { get; set; }
-    
-    [JsonPropertyName("HashedAccountId")] 
+
+    [JsonPropertyName("HashedAccountId")]
     public string EncodedAccountId { get; set; }
 
-    [JsonPropertyName("DasAccountName")] 
+    [JsonPropertyName("DasAccountName")]
     public string DasAccountName { get; set; }
 
-    [JsonPropertyName("Role")] 
+    [JsonPropertyName("Role")]
     public string Role { get; set; }
 
-    [JsonPropertyName("EmployerType")] 
+    [JsonPropertyName("EmployerType")]
     public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
 
-    [JsonPropertyName(nameof(NameConfirmed))] 
+    [JsonPropertyName(nameof(NameConfirmed))]
     public bool? NameConfirmed { get; set; }
 }

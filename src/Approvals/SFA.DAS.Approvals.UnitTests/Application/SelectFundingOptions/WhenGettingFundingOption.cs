@@ -76,6 +76,27 @@ public class WhenGettingFundingOption
     }
 
     [Test, MoqAutoData]
+    public async Task ThenHasRemainingReservationsCount(
+        GetSelectFundingOptionsQuery query,
+        GetAccountReservationsStatusResponse reservationsResponse,
+        [Frozen] Mock<IReservationApiClient<ReservationApiConfiguration>> reservationsApiClient,
+        GetSelectFundingOptionsQueryHandler handler
+    )
+    {
+        reservationsResponse.RemainingReservationsCount = 5;
+
+        reservationsApiClient.Setup(x =>
+                x.Get<GetAccountReservationsStatusResponse>(
+                    It.Is<GetAccountReservationsStatusRequest>(x =>
+                        x.AccountId == query.AccountId && x.TransferSenderId == null)))
+            .ReturnsAsync(reservationsResponse);
+
+        var actual = await handler.Handle(query, CancellationToken.None);
+
+        actual.RemainingReservationsCount.Should().Be(5);
+    }
+
+    [Test, MoqAutoData]
     public async Task ThenIsLevyAccount_WhenEmploymentTypeIsLevy(
         GetSelectFundingOptionsQuery query,
         GetAccountResponse accountResponse,

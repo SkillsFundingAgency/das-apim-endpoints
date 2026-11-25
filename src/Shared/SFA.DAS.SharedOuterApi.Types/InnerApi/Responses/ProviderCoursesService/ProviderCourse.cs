@@ -19,7 +19,6 @@ namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ProviderCoursesService
         public bool? HasNationalDeliveryOption { get; set; }
         public bool? HasHundredPercentEmployerDeliveryOption { get; set; }
         public bool HasPortableFlexiJobOption { get; set; }
-        public string Version { get; set; }
         public string ApprovalBody { get; set; }
     }
 }

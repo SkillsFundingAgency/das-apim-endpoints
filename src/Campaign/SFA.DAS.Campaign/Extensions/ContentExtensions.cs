@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -23,6 +23,10 @@ namespace SFA.DAS.Campaign.Extensions
         public const string UnorderedListNodeTypeKey = "unordered-list";
         public const string OrderedListNodeTypeKey = "ordered-list";
         public const string EmbeddedAssetBlockNodeTypeKey = "embedded-asset-block";
+        public const string VideoTranscriptsContentTypeKey = "videoTranscripts";
+        public const string TableNodeTypeKey = "table";
+        public const string TableHeaderCellNodeTypeKey = "table-header-cell";
+        public const string EmbeddedEntryBlockNodeTypeKey = "embedded-entry-block";
 
         public static bool ContentItemsAreNullOrEmpty(this CmsContent pageContent)
         {   
@@ -33,6 +37,37 @@ namespace SFA.DAS.Campaign.Extensions
             var item = pageContent.Items.FirstOrDefault();
 
             return item == null;
+        }
+
+        public static bool ContentItemsAreNullOrEmpty(this HubCmsContent pageContent)
+        {
+            if (pageContent == null || pageContent.Total == 0)
+            {
+                return true;
+            }
+
+            return pageContent.Items.FirstOrDefault() == null;
+        }
+
+        public static ResourceItem GetEmbeddedResource(this HubCmsContent hub, string id)
+        {
+            var embeddedResource = hub.Includes.Asset.FirstOrDefault(c => c.Sys.Id.Equals(id));
+
+            if (embeddedResource != null)
+            {
+                return new ResourceItem
+                {
+                    Id = id,
+                    Title = embeddedResource.Fields.Title,
+                    Description = embeddedResource.Fields.Description,
+                    FileName = embeddedResource.Fields.File.FileName,
+                    Url = $"https:{embeddedResource.Fields.File.Url}",
+                    ContentType = embeddedResource.Fields.File.ContentType,
+                    Size = embeddedResource.Fields.File.Details.Size
+                };
+            }
+
+            return new ResourceItem();
         }
 
         public static List<string> BuildParagraph(this SubContentItems contentItemContent)
@@ -72,7 +107,7 @@ namespace SFA.DAS.Campaign.Extensions
                 {
                     var linkedItemId = subContentItem.Data.Target.Sys.Id;
                     var item = article.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(linkedItemId, StringComparison.CurrentCultureIgnoreCase));
-                    if (item != null)
+                    if (item?.Fields?.Table?.TableData != null)
                     {
                         data.AddRange(item.Fields.Table.TableData);
                     }
@@ -91,7 +126,7 @@ namespace SFA.DAS.Campaign.Extensions
                 {
                     var linkedItemId = subContentItem.Data.Target.Sys.Id;
                     var item = article.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(linkedItemId, StringComparison.CurrentCultureIgnoreCase));
-                    if (item != null)
+                    if (item?.Fields?.Table?.TableData != null)
                     {
                         data.AddRange(item.Fields.Table.TableData);
                     }
@@ -99,6 +134,276 @@ namespace SFA.DAS.Campaign.Extensions
             }
 
             return data;
+        }
+
+        public static List<VideoTranscript> BuildVideoTranscripts(this SubContentItems contentItem, CmsContent article)
+        {
+            var data = new List<VideoTranscript>();
+            if (contentItem.Content == null)
+            {
+                return data;
+            }
+
+            foreach (var subContentItem in contentItem.Content)
+            {
+                if (subContentItem.NodeType == null
+                    || !subContentItem.NodeType.Equals(EmbeddedEntryInlineNodeTypeKey))
+                {
+                    continue;
+                }
+
+                var linkedItemId = subContentItem.Data?.Target?.Sys?.Id;
+                if (linkedItemId == null)
+                {
+                    continue;
+                }
+
+                var item = article.Includes?.Entry?.FirstOrDefault(c =>
+                    c.Sys?.Id != null && c.Sys.Id.Equals(linkedItemId, StringComparison.CurrentCultureIgnoreCase));
+                if (item?.IsVideoTranscript() == true && item.Fields != null)
+                {
+                    data.Add(new VideoTranscript
+                    {
+                        VideoName = item.Fields.VideoName,
+                        Text = item.Fields.Text
+                    });
+                }
+            }
+
+            return data;
+        }
+
+        public static List<VideoTranscript> BuildVideoTranscripts(this FluffyContent contentItem, CmsContent article)
+        {
+            var data = new List<VideoTranscript>();
+            if (contentItem.Content == null)
+            {
+                return data;
+            }
+
+            foreach (var subContentItem in contentItem.Content)
+            {
+                if (subContentItem.NodeType == null
+                    || !subContentItem.NodeType.Equals(EmbeddedEntryInlineNodeTypeKey))
+                {
+                    continue;
+                }
+
+                var linkedItemId = subContentItem.Data?.Target?.Sys?.Id;
+                if (linkedItemId == null)
+                {
+                    continue;
+                }
+
+                var item = article.Includes?.Entry?.FirstOrDefault(c =>
+                    c.Sys?.Id != null && c.Sys.Id.Equals(linkedItemId, StringComparison.CurrentCultureIgnoreCase));
+                if (item?.IsVideoTranscript() == true && item.Fields != null)
+                {
+                    data.Add(new VideoTranscript
+                    {
+                        VideoName = item.Fields.VideoName,
+                        Text = item.Fields.Text
+                    });
+                }
+            }
+
+            return data;
+        }
+
+        public static List<List<string>> BuildNativeTable(this SubContentItems contentItem)
+        {
+            return BuildTableRows(contentItem.Content?.Select(row => row.Content));
+        }
+
+        public static List<List<string>> BuildNativeTable(this FluffyContent contentItem)
+        {
+            return BuildTableRows(contentItem.Content?.Select(row => row.Content));
+        }
+
+        public static bool HasTableHeaderRow(this SubContentItems contentItem)
+        {
+            return IsTableHeaderRow(contentItem.Content?.FirstOrDefault()?.Content);
+        }
+
+        public static bool HasTableHeaderRow(this FluffyContent contentItem)
+        {
+            return IsTableHeaderRow(contentItem.Content?.FirstOrDefault()?.Content);
+        }
+
+        private static bool IsTableHeaderRow(List<RelatedContent> cells)
+        {
+            return cells != null
+                   && cells.Count > 0
+                   && cells.All(cell => TableHeaderCellNodeTypeKey.Equals(cell.NodeType));
+        }
+
+        public static bool HasTableHeaderColumn(this SubContentItems contentItem)
+        {
+            return IsTableHeaderColumn(contentItem.Content?.Select(row => row.Content).ToList());
+        }
+
+        public static bool HasTableHeaderColumn(this FluffyContent contentItem)
+        {
+            return IsTableHeaderColumn(contentItem.Content?.Select(row => row.Content).ToList());
+        }
+
+        private static bool IsTableHeaderColumn(List<List<RelatedContent>> rows)
+        {
+            if (rows == null || rows.Count == 0)
+            {
+                return false;
+            }
+
+            // the first cell of a header row is always a header cell, so it says nothing about the column
+            var bodyRows = IsTableHeaderRow(rows[0]) ? rows.Skip(1).ToList() : rows;
+
+            return bodyRows.Count > 0
+                   && bodyRows.All(cells => TableHeaderCellNodeTypeKey.Equals(cells?.FirstOrDefault()?.NodeType));
+        }
+
+        private static List<List<string>> BuildTableRows(IEnumerable<List<RelatedContent>> rows)
+        {
+            var data = new List<List<string>>();
+            if (rows == null)
+            {
+                return data;
+            }
+
+            foreach (var cells in rows)
+            {
+                if (cells == null)
+                {
+                    continue;
+                }
+
+                data.Add(cells.Select(BuildTableCell).ToList());
+            }
+
+            return data;
+        }
+
+        private static string BuildTableCell(RelatedContent cell)
+        {
+            if (cell.Content == null)
+            {
+                return string.Empty;
+            }
+
+            return string.Join("\n", cell.Content.Select(BuildTableCellText));
+        }
+
+        private static string BuildTableCellText(RelatedContent content)
+        {
+            switch (content.NodeType)
+            {
+                case TextNodeTypeKey:
+                    var fontEffect = content.Marks?.FirstOrDefault()?.Type;
+                    return $"{(string.IsNullOrWhiteSpace(fontEffect) ? "" : $"[{fontEffect}]")}{content.Value}";
+                case HyperLinkNodeTypeKey:
+                    return $"[{content.Content?.FirstOrDefault()?.Value}]({content.Data?.Uri})";
+                default:
+                    return content.Content == null
+                        ? string.Empty
+                        : string.Concat(content.Content.Select(BuildTableCellText));
+            }
+        }
+
+        public static CtaPanelModel BuildCtaPanel(this SubContentItems contentItem, CmsContent article)
+        {
+            return article.BuildCtaPanel(contentItem.Content?
+                .Where(c => EmbeddedEntryInlineNodeTypeKey.Equals(c.NodeType))
+                .Select(c => c.Data?.Target?.Sys?.Id));
+        }
+
+        public static CtaPanelModel BuildCtaPanel(this FluffyContent contentItem, CmsContent article)
+        {
+            return article.BuildCtaPanel(contentItem.Content?
+                .Where(c => EmbeddedEntryInlineNodeTypeKey.Equals(c.NodeType))
+                .Select(c => c.Data?.Target?.Sys?.Id));
+        }
+
+        private static CtaPanelModel BuildCtaPanel(this CmsContent article, IEnumerable<string> linkedItemIds)
+        {
+            return linkedItemIds?
+                .Select(article.GetCtaPanel)
+                .FirstOrDefault(ctaPanel => ctaPanel != null);
+        }
+
+        public static CtaPanelModel GetCtaPanel(this CmsContent article, string linkedItemId)
+        {
+            if (linkedItemId == null)
+            {
+                return null;
+            }
+
+            var entry = article.Includes?.Entry?.FirstOrDefault(c =>
+                c.Sys?.Id != null && c.Sys.Id.Equals(linkedItemId, StringComparison.CurrentCultureIgnoreCase));
+            if (entry?.Fields == null || entry.Sys.ContentType?.Sys?.Id?.GetPageType() != PageType.CtaPanel)
+            {
+                return null;
+            }
+
+            return new CtaPanelModel
+            {
+                Heading = entry.Fields.Heading,
+                Description = entry.Fields.Description,
+                Icon = entry.Fields.Icon,
+                ButtonText = entry.Fields.ButtonText,
+                Url = entry.Fields.Url
+            };
+        }
+
+        public static StatsSectionModel BuildStatsSection(this SubContentItems contentItem, CmsContent article)
+        {
+            return article.BuildStatsSection(contentItem.Content?
+                .Where(c => EmbeddedEntryInlineNodeTypeKey.Equals(c.NodeType))
+                .Select(c => c.Data?.Target?.Sys?.Id));
+        }
+
+        public static StatsSectionModel BuildStatsSection(this FluffyContent contentItem, CmsContent article)
+        {
+            return article.BuildStatsSection(contentItem.Content?
+                .Where(c => EmbeddedEntryInlineNodeTypeKey.Equals(c.NodeType))
+                .Select(c => c.Data?.Target?.Sys?.Id));
+        }
+
+        private static StatsSectionModel BuildStatsSection(this CmsContent article, IEnumerable<string> linkedItemIds)
+        {
+            return linkedItemIds?
+                .Select(article.GetStatsSection)
+                .FirstOrDefault(statsSection => statsSection != null);
+        }
+
+        public static StatsSectionModel GetStatsSection(this CmsContent article, string linkedItemId)
+        {
+            if (linkedItemId == null)
+            {
+                return null;
+            }
+
+            var entry = article.Includes?.Entry?.FirstOrDefault(c =>
+                c.Sys?.Id != null && c.Sys.Id.Equals(linkedItemId, StringComparison.CurrentCultureIgnoreCase));
+            if (entry?.Fields == null
+                || !ContentfulConstants.StatsSectionContentTypeId.Equals(entry.Sys.ContentType?.Sys?.Id,
+                    StringComparison.CurrentCultureIgnoreCase))
+            {
+                return null;
+            }
+
+            return new StatsSectionModel
+            {
+                Text = entry.Fields.Text,
+                HighlightValue = entry.Fields.HighlightValue,
+                QuoteName = entry.Fields.QuoteName,
+                QuoteRole = entry.Fields.QuoteRole,
+                ReferenceText = entry.Fields.ReferenceText
+            };
+        }
+
+        private static bool IsVideoTranscript(this Entry entry)
+        {
+            return entry?.Sys?.ContentType?.Sys?.Id != null
+                   && entry.Sys.ContentType.Sys.Id.Equals(VideoTranscriptsContentTypeKey, StringComparison.CurrentCultureIgnoreCase);
         }
 
         public static bool NodeTypeIsContent(this string nodeType)
@@ -383,7 +688,172 @@ namespace SFA.DAS.Campaign.Extensions
                 {
                     Type = contentItem.NodeType,
                     Values = contentItem.BuildParagraph(),
-                    TableValue = contentItem.BuildTable(article)
+                    TableValue = contentItem.BuildTable(article),
+                    VideoTranscripts = contentItem.BuildVideoTranscripts(article),
+                    CtaPanel = contentItem.BuildCtaPanel(article),
+                    StatsSection = contentItem.BuildStatsSection(article)
+                });
+            }
+        }
+
+        public static void ProcessTableNodeTypes(this SubContentItems contentItem, List<ContentItem> contentItems)
+        {
+            if (TableNodeTypeKey.Equals(contentItem.NodeType, StringComparison.CurrentCultureIgnoreCase))
+            {
+                contentItems.Add(new ContentItem
+                {
+                    Type = contentItem.NodeType,
+                    TableValue = contentItem.BuildNativeTable(),
+                    TableHasHeaderRow = contentItem.HasTableHeaderRow(),
+                    TableHasHeaderColumn = contentItem.HasTableHeaderColumn()
+                });
+            }
+        }
+
+        public static void ProcessTableNodeTypes(this FluffyContent contentItem, List<ContentItem> contentItems)
+        {
+            if (TableNodeTypeKey.Equals(contentItem.NodeType, StringComparison.CurrentCultureIgnoreCase))
+            {
+                contentItems.Add(new ContentItem
+                {
+                    Type = contentItem.NodeType,
+                    TableValue = contentItem.BuildNativeTable(),
+                    TableHasHeaderRow = contentItem.HasTableHeaderRow(),
+                    TableHasHeaderColumn = contentItem.HasTableHeaderColumn()
+                });
+            }
+        }
+
+        public const string AnnouncementCategoryContentTypeKey = "announcementCategory";
+
+        public static string GetAnnouncementCategoryTitle(this CmsContent content, LandingPage categoryLink)
+        {
+            var linkedId = categoryLink?.Sys?.Id;
+            if (linkedId == null)
+            {
+                return null;
+            }
+
+            var entry = content.Includes?.Entry?.FirstOrDefault(c =>
+                c.Sys?.Id != null && c.Sys.Id.Equals(linkedId, StringComparison.CurrentCultureIgnoreCase));
+
+            return entry?.Fields?.Title;
+        }
+
+        public static void ProcessContentNodeTypes(this CmsContent article, FluffyContent contentItem, List<ContentItem> contentItems)
+        {
+            if (contentItem.NodeType.NodeTypeIsContent())
+            {
+                contentItems.Add(new ContentItem
+                {
+                    Type = contentItem.NodeType,
+                    Values = contentItem.BuildParagraph(),
+                    TableValue = contentItem.BuildTable(article),
+                    VideoTranscripts = contentItem.BuildVideoTranscripts(article),
+                    CtaPanel = contentItem.BuildCtaPanel(article),
+                    StatsSection = contentItem.BuildStatsSection(article)
+                });
+            }
+        }
+
+        public static void ProcessListNodeTypes(this FluffyContent contentItem, List<ContentItem> contentItems)
+        {
+            if (contentItem.NodeType.NodeTypeIsList())
+            {
+                contentItems.Add(new ContentItem
+                {
+                    Type = contentItem.NodeType,
+                    TableValue = contentItem.GetListItems()
+                });
+            }
+        }
+
+        public static void ProcessEmbeddedAssetBlockNodeTypes(this CmsContent article, FluffyContent contentItem, List<ContentItem> contentItems)
+        {
+            if (contentItem.NodeType.NodeTypeIsEmbeddedAssetBlock())
+            {
+                contentItems.Add(new ContentItem
+                {
+                    Type = contentItem.NodeType,
+                    EmbeddedResource = article.GetEmbeddedResource(contentItem.Data.Target.Sys.Id)
+                });
+            }
+        }
+
+        /// <summary>
+        /// Resolves an ordered list of tab links (e.g. an article's tabbedContent or an announcement's sections)
+        /// against the included entries, keeping the editor's ordering.
+        /// </summary>
+        public static List<TabbedContentModel> BuildTabbedContent(this CmsContent content, List<TabbedContent> tabLinks)
+        {
+            var entries = content.Includes?.Entry;
+            if (tabLinks == null || entries == null)
+            {
+                return null;
+            }
+
+            var tabs = tabLinks
+                .Select(link => entries.FirstOrDefault(entry =>
+                    entry.Sys?.Id != null
+                    && entry.Sys.Id.Equals(link.Sys?.Id)
+                    && entry.Sys.ContentType?.Sys?.Id?.GetPageType() == PageType.Tab))
+                .Where(tab => tab?.Fields != null)
+                .Select(tab =>
+                {
+                    var tabModel = new TabbedContentModel
+                    {
+                        TabName = tab.Fields.TabName,
+                        TabTitle = tab.Fields.TabTitle,
+                        FindTraineeship = tab.Fields.FindTraineeship,
+                        Id = tab.Sys.Id
+                    };
+                    var contentItems = new List<ContentItem>();
+                    if (tab.Fields.TabContent?.Content != null)
+                    {
+                        foreach (var contentItem in tab.Fields.TabContent.Content)
+                        {
+                            content.ProcessContentNodeTypes(contentItem, contentItems);
+                            contentItem.ProcessListNodeTypes(contentItems);
+                            content.ProcessEmbeddedAssetBlockNodeTypes(contentItem, contentItems);
+                            content.ProcessEmbeddedEntryBlockNodeTypes(contentItem, contentItems);
+                            contentItem.ProcessTableNodeTypes(contentItems);
+                        }
+                    }
+                    tabModel.Content.Items = contentItems;
+                    return tabModel;
+                })
+                .ToList();
+
+            return tabs.Count == 0 ? null : tabs;
+        }
+
+        public static void ProcessEmbeddedEntryBlockNodeTypes(this CmsContent article, SubContentItems contentItem, List<ContentItem> contentItems)
+        {
+            if (EmbeddedEntryBlockNodeTypeKey.Equals(contentItem.NodeType, StringComparison.CurrentCultureIgnoreCase))
+            {
+                article.AddEmbeddedEntry(contentItem.NodeType, contentItem.Data?.Target?.Sys?.Id, contentItems);
+            }
+        }
+
+        public static void ProcessEmbeddedEntryBlockNodeTypes(this CmsContent article, FluffyContent contentItem, List<ContentItem> contentItems)
+        {
+            if (EmbeddedEntryBlockNodeTypeKey.Equals(contentItem.NodeType, StringComparison.CurrentCultureIgnoreCase))
+            {
+                article.AddEmbeddedEntry(contentItem.NodeType, contentItem.Data?.Target?.Sys?.Id, contentItems);
+            }
+        }
+
+        private static void AddEmbeddedEntry(this CmsContent article, string nodeType, string linkedItemId, List<ContentItem> contentItems)
+        {
+            var ctaPanel = article.GetCtaPanel(linkedItemId);
+            var statsSection = article.GetStatsSection(linkedItemId);
+            if (ctaPanel != null || statsSection != null)
+            {
+                contentItems.Add(new ContentItem
+                {
+                    Type = nodeType,
+                    CtaPanel = ctaPanel,
+                    StatsSection = statsSection
                 });
             }
         }

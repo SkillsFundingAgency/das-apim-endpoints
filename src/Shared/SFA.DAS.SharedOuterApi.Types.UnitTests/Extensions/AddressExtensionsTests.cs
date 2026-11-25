@@ -1,44 +1,43 @@
-﻿using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.Types.Extensions;
+﻿using SFA.DAS.SharedOuterApi.Types.Extensions;
 using SFA.DAS.SharedOuterApi.Types.Models;
+using System.Collections.Generic;
 
-namespace SFA.DAS.SharedOuterApi.UnitTests.Extensions
+namespace SFA.DAS.SharedOuterApi.UnitTests.Extensions;
+
+[TestFixture]
+public class AddressExtensionsTests
 {
-    [TestFixture]
-    public class AddressExtensionsTests
+    [Test]
+    public void OrderByCity_ShouldReturnAddressesOrderedByCityFields()
     {
-        [Test]
-        public void OrderByCity_ShouldReturnAddressesOrderedByCityFields()
+        // Arrange
+        var addresses = new List<Address>
         {
-            // Arrange
-            var addresses = new List<Address>
-            {
-                new() { AddressLine1 = "Line1", AddressLine2 = "Line2", AddressLine3 = "CityB", AddressLine4 = "RegionA" },
-                new() { AddressLine1 = "Line1", AddressLine2 = "Line2", AddressLine3 = "CityA", AddressLine4 = "RegionB" },
-                new() { AddressLine1 = "Line1", AddressLine2 = "Line2", AddressLine3 = "CityC", AddressLine4 = "RegionA" }
-            };
+            new() { AddressLine1 = "Line1", AddressLine2 = "Line2", AddressLine3 = "CityB", AddressLine4 = "RegionA" },
+            new() { AddressLine1 = "Line1", AddressLine2 = "Line2", AddressLine3 = "CityA", AddressLine4 = "RegionB" },
+            new() { AddressLine1 = "Line1", AddressLine2 = "Line2", AddressLine3 = "CityC", AddressLine4 = "RegionA" }
+        };
 
-            // Act
-            var result = addresses.OrderByCity();
+        // Act
+        var result = addresses.OrderByCity();
 
-            // Assert
-            result.Should().BeInAscendingOrder(x => x.AddressLine4)
-                .And.ThenBeInAscendingOrder(x => x.AddressLine3)
-                .And.ThenBeInAscendingOrder(x => x.AddressLine2)
-                .And.ThenBeInAscendingOrder(x => x.AddressLine1);
-        }
+        // Assert
+        result.Should().BeInAscendingOrder(x => x.AddressLine4)
+            .And.ThenBeInAscendingOrder(x => x.AddressLine3)
+            .And.ThenBeInAscendingOrder(x => x.AddressLine2)
+            .And.ThenBeInAscendingOrder(x => x.AddressLine1);
+    }
 
-        [Test]
-        public void OrderByCity_ShouldReturnEmptyList_WhenInputIsEmpty()
-        {
-            // Arrange
-            var addresses = new List<Address>();
+    [Test]
+    public void OrderByCity_ShouldReturnEmptyList_WhenInputIsEmpty()
+    {
+        // Arrange
+        var addresses = new List<Address>();
 
-            // Act
-            var result = addresses.OrderByCity();
+        // Act
+        var result = addresses.OrderByCity();
 
-            // Assert
-            result.Should().BeEmpty();
-        }
+        // Assert
+        result.Should().BeEmpty();
     }
 }

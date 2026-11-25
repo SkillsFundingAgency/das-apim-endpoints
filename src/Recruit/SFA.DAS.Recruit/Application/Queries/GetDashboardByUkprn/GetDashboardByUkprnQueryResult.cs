@@ -19,6 +19,7 @@ public record GetDashboardByUkprnQueryResult
     public int SubmittedVacanciesCount { get; set; } = 0;
     public int ClosingSoonVacanciesCount { get; set; } = 0;
     public int ClosingSoonWithNoApplications { get; set; } = 0;
+    public int ArchivedVacanciesCount { get; set; }
 
     public static GetDashboardByUkprnQueryResult FromResponses(
         GetProviderDashboardApiResponse source)
@@ -40,6 +41,7 @@ public record GetDashboardByUkprnQueryResult
             SubmittedVacanciesCount = source.SubmittedVacanciesCount,
             ClosingSoonVacanciesCount = source.ClosingSoonVacanciesCount,
             ClosingSoonWithNoApplications = source.ClosingSoonWithNoApplications,
+            ArchivedVacanciesCount = source.ArchivedVacanciesCount,
         };
     }
 }

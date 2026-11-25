@@ -1,7 +1,6 @@
-﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EducationalOrganisation
+﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EducationalOrganisation;
+
+public class EducationalOrganisationResponse
 {
-    public class EducationalOrganisationResponse
-    {
-        public List<EducationalOrganisation> EducationalOrganisations { get; set; }         
-    }
+    public List<EducationalOrganisation> EducationalOrganisations { get; set; }
 }

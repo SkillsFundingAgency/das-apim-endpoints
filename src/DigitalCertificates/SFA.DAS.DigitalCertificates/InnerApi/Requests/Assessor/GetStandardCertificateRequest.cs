@@ -16,8 +16,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor
         }
 
         public string GetUrl => IncludeLogs
-            ? $"api/v1/certificates/{Id}"
-            : $"api/v1/certificates/{Id}?includeLogs=false";
+            ? $"api/v1/certificates/{Id}?includeLogs=true"
+            : $"api/v1/certificates/{Id}";
     }
-}               
-                    
+}                                   

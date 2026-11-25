@@ -1,12 +1,10 @@
-using System.Net;
-using System.Text.RegularExpressions;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-
-
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Models;
+using System.Net;
+using System.Text.RegularExpressions;
 
 namespace SFA.DAS.SharedOuterApi.Types.Services;
 
@@ -32,12 +30,12 @@ public class LocationLookupService(ILocationApiClient<LocationApiConfiguration> 
             return new LocationItem(location, [lat, lon], string.Empty);
         }
 
-        GetLocationsListItem getLocationsListItem  = null;
-        
+        GetLocationsListItem getLocationsListItem = null;
+
         if (Regex.IsMatch(location, PostcodeRegex, RegexOptions.None, RegexTimeOut))
-        { 
-            var result = await locationApiClient.Get<GetLocationByFullPostcodeRequestV2Response>(new GetLocationByFullPostcodeRequestV2(location));
-            getLocationsListItem = result?.ToGetLocationsListItem() ?? new GetLocationsListItem();
+        {
+            var postcodeInfo = await GetPostcodeInfoAsync(location);
+            getLocationsListItem = ToGetLocationsListItem(postcodeInfo) ?? new GetLocationsListItem();
             getLocationsListItem.IncludeDistrictNameInPostcodeDisplayName = includeDistrictNameInPostcodeDisplayName;
             location = getLocationsListItem.DisplayName;
         }
@@ -49,19 +47,19 @@ public class LocationLookupService(ILocationApiClient<LocationApiConfiguration> 
                 location = getLocationsListItem.DisplayName;
             }
         }
-        else if(Regex.IsMatch(location, OutcodeRegex, RegexOptions.None, RegexTimeOut))
+        else if (Regex.IsMatch(location, OutcodeRegex, RegexOptions.None, RegexTimeOut))
         {
             getLocationsListItem = await locationApiClient.Get<GetLocationsListItem>(new GetLocationByOutcodeRequest(location));
         }
         else if (location.Split(",").Length >= 2)
         {
-            
+
             var locationInformation = location.Split(",");
-            var locationName = string.Join(",",locationInformation.Take(locationInformation.Length-1)).Trim();
+            var locationName = string.Join(",", locationInformation.Take(locationInformation.Length - 1)).Trim();
             var authorityName = locationInformation.Last().Trim();
             getLocationsListItem = await locationApiClient.Get<GetLocationsListItem>(new GetLocationByLocationAndAuthorityName(locationName, authorityName));
         }
-        
+
         if (location.Length >= 2 && getLocationsListItem?.Location == null)
         {
             var locations = await locationApiClient.Get<GetLocationsListResponse>(new GetLocationsQueryRequest(location));
@@ -70,7 +68,7 @@ public class LocationLookupService(ILocationApiClient<LocationApiConfiguration> 
             if (locationsListItem != null)
             {
                 getLocationsListItem = locationsListItem;
-                location = getLocationsListItem.DisplayName;    
+                location = getLocationsListItem.DisplayName;
             }
         }
 
@@ -98,9 +96,39 @@ public class LocationLookupService(ILocationApiClient<LocationApiConfiguration> 
 
     public async Task<PostcodeInfo?> GetPostcodeInfoAsync(string postcode)
     {
-        var response = await locationApiClient.GetWithResponseCode<GetLookupPostcodeResponse>(new GetLookupPostcodeRequest(postcode));
-        return response.StatusCode == HttpStatusCode.NotFound
+        // Attempt to get postcode info from v2 endpoint first
+        var primary = await locationApiClient.GetWithResponseCode<GetLookupPostcodeResponse>(
+            new GetLookupPostcodeRequest(postcode));
+
+        if (primary.StatusCode != HttpStatusCode.NotFound && primary.Body?.Postcode is not null)
+            return PostcodeInfo.From(primary.Body);
+
+        // Fallback to v1 endpoint if v2 returns 404
+        var fallback = await locationApiClient.GetWithResponseCode<GetLookupPostcodeResponseV1>(
+            new GetLookupPostcodeRequestV1(postcode));
+
+        return fallback.StatusCode == HttpStatusCode.NotFound
             ? null
-            : PostcodeInfo.From(response.Body);
+            : PostcodeInfo.From(fallback.Body);
+    }
+
+    private static GetLocationsListItem ToGetLocationsListItem(PostcodeInfo source)
+    {
+        var result = new GetLocationsListItem
+        {
+            Postcode = source.Postcode,
+            Country = source.Country,
+            DistrictName = source.DistrictName,
+        };
+
+        if (source.Latitude is not null && source.Longitude is not null)
+        {
+            result.Location = new GetLocationsListItem.Coordinates
+            {
+                GeoPoint = [source.Latitude.Value, source.Longitude.Value],
+            };
+        }
+
+        return result;
     }
 }

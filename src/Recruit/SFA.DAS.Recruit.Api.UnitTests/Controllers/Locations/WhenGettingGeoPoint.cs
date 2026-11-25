@@ -21,7 +21,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Locations
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetGeopoint("AB1 2CD") as ObjectResult;
+            var controllerResult = await controller.GetGeoPoint("AB1 2CD") as ObjectResult;
 
             Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);

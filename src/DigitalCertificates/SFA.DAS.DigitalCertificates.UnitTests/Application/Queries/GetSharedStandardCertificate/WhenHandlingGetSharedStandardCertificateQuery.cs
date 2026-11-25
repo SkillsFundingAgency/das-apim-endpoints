@@ -55,6 +55,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharedSta
             actual.OverallGrade.Should().Be(responseBody.OverallGrade);
             actual.ProviderName.Should().Be(responseBody.ProviderName);
             actual.StartDate.Should().Be(responseBody.LearningStartDate);
+            actual.CoronationEmblem.Should().Be(responseBody.CertificateData?.CoronationEmblem ?? false);
         }
 
         [Test, MoqAutoData]
