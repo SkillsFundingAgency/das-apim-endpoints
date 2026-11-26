@@ -100,7 +100,8 @@ public class GetLevyProjectionsByAccountIdQueryHandler(
             },
             Projections = projection.Projections,
             LatestLevyDeclarationInDate = GetLatestSubmissionDate(declarations) ?? DateTime.MinValue,
-            LastSuccessfulImportDate = projection.LastSuccessfulImportDate
+            LastSuccessfulImportDate = projection.LastSuccessfulImportDate,
+            DateEstimateEntersCoinvestment = projection.DateEstimateEntersCoinvestment
         };
     }
 
