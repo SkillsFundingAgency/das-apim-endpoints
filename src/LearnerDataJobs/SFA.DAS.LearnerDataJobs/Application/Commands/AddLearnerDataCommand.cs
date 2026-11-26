@@ -28,4 +28,5 @@ public class LearnerDataIncomingRequest
     public DateTime ReceivedDate { get; set; }
     public int AcademicYear { get; set; }
     public string ConsumerReference { get; set; }
+    public bool? OnServicePayments { get; set; }
 }
