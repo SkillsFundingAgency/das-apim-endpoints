@@ -24,6 +24,7 @@ public class GetLearnerForProviderQueryResult
     public LearningType? LearningType { get; set; }
     public bool IsFlexiJob { get; set; }
     public int PlannedOTJTrainingHours { get; set; }
+    public bool? OnServicePayments { get; set; }
 
     public static implicit operator GetLearnerForProviderQueryResult(InnerApi.Responses.GetLearnerForProviderResponse source)
     {
@@ -44,6 +45,7 @@ public class GetLearnerForProviderQueryResult
             LearningType = source.LearningType,
             IsFlexiJob = source.IsFlexiJob,
             PlannedOTJTrainingHours = source.PlannedOTJTrainingHours,
+            OnServicePayments = source.OnServicePayments
         };
     }
 }
