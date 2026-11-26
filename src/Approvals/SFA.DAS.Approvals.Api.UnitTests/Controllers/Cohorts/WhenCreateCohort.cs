@@ -57,7 +57,8 @@ public class WhenCreateCohort
             y.Uln == _request.Uln &&
             y.UserInfo == _request.UserInfo &&
             y.RequestingParty == _request.RequestingParty && 
-            y.LearnerDataId == _request.LearnerDataId
+            y.LearnerDataId == _request.LearnerDataId &&
+            y.OnServicePayments == _request.OnServicePayments
             ), It.IsAny<CancellationToken>())).ReturnsAsync(expectedResult);
 
         var result = await _controller.Create(_request);
