@@ -107,6 +107,7 @@ internal class WhenHandlingGetLevyProjectionsByAccountIdQuery
         result.Projections.Should().BeEquivalentTo(_estimatesTimeline.Projections);
         result.LatestLevyDeclarationInDate.Should().Be(lastSubmissionDate);
         result.LastSuccessfulImportDate.Should().Be(_estimatesTimeline.LastSuccessfulImportDate);
+        result.DateEstimateEntersCoinvestment.Should().Be(_estimatesTimeline.DateEstimateEntersCoinvestment);
     }
 
     [Test]
