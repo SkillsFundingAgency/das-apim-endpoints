@@ -18,6 +18,7 @@ internal class FurtherApprovalSteps(TestContext testContext, ScenarioContext sce
 {
     private const string NeedsFurtherApprovalKey = "NeedsFurtherApprovalKey";
     private const string ApprovalsVerdictKey = "ApprovalsVerdictKey";
+    private const string PendingApprovalsExistKey = "PendingApprovalsExistKey";
     private const string ApprovalsEchoedOld = "2026-08-31";
     private const string ApprovalsEchoedNew = "2026-09-14";
 
@@ -37,6 +38,12 @@ internal class FurtherApprovalSteps(TestContext testContext, ScenarioContext sce
     public void GivenApprovalsAsksForEmployerApprovalOfTheChange()
     {
         scenarioContext.Set("EmployerApprovalRequested", ApprovalsVerdictKey);
+    }
+
+    [Given(@"Approvals reports that other changes are still pending employer approval")]
+    public void GivenApprovalsReportsThatOtherChangesAreStillPendingEmployerApproval()
+    {
+        scenarioContext.Set(true, PendingApprovalsExistKey);
     }
 
     [Then(@"Approvals is asked about the start date change")]
@@ -147,6 +154,7 @@ internal class FurtherApprovalSteps(TestContext testContext, ScenarioContext sce
             .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.NoContent));
 
         var verdict = scenarioContext.Get<string>(ApprovalsVerdictKey);
+        var pendingApprovalsExist = scenarioContext.TryGetValue(PendingApprovalsExistKey, out bool pending) && pending;
 
         testContext.CommitmentsApi.MockServer
             .Given(Request.Create()
@@ -158,7 +166,8 @@ internal class FurtherApprovalSteps(TestContext testContext, ScenarioContext sce
                 {
                     // Old/New values deliberately differ from the ones mock-Learning reports, so a test can tell that the event echoes Approvals and not Learning.
                     changes = new[] { new { changeType = "StartDate", approvalStatus = verdict, data = new { old = ApprovalsEchoedOld, @new = ApprovalsEchoedNew } } },
-                    prices = Array.Empty<object>()
+                    prices = Array.Empty<object>(),
+                    pendingApprovalsExist
                 }));
     }
 }

@@ -346,6 +346,31 @@ public class FurtherApprovalServiceTests
         _messageSession.Verify(x => x.Publish(evt, It.IsAny<PublishOptions>()), Times.Once);
     }
 
+    [Test]
+    public async Task Then_The_Auto_Approved_Changes_Are_Echoed_But_Not_Cleared_When_Other_Approvals_Are_Pending()
+    {
+        // Arrange
+        var learningResponse = ArrangeChange(UpdateLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate);
+        var evt = _fixture.Create<ApprovedLearningUpdatedEvent>();
+        var approvalsResponse = new ApprovalsResponse
+        {
+            Changes = [new ApprovalsChangeResult { ChangeType = "PlannedEndDate", ApprovalStatus = "autoApproved" }],
+            PendingApprovalsExist = true
+        };
+        _approvalsService
+            .Setup(x => x.RequestApproval(Ukprn, Uln, learningResponse))
+            .ReturnsAsync(new ApprovalsOutcome(true, approvalsResponse));
+        _approvedLearningUpdatedEventBuilder.Setup(x => x.Build(learningResponse, approvalsResponse)).Returns(evt);
+
+        // Act
+        var result = await _sut.Resolve(Ukprn, Uln, learningResponse);
+
+        // Assert
+        result.Should().BeTrue();
+        VerifyNotCleared();
+        _messageSession.Verify(x => x.Publish(evt, It.IsAny<PublishOptions>()), Times.Once);
+    }
+
     [TestCase("pending")]
     [TestCase("employerApprovalRequested")]
     [TestCase("autoRejected")]
