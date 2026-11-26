@@ -3,8 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Approvals.Exceptions;
 using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
+using SFA.DAS.Approvals.InnerApi.CoursesApi;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
@@ -20,6 +22,7 @@ public class SyncLearnerDataCommandHandler(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsApiClient,
     IInternalApiClient<LearnerDataInnerApiConfiguration> learnerDataClient,
     ITrainingProgrammeResolutionService trainingProgrammeResolutionService,
+    IApprenticeshipUnitVersionService apprenticeshipUnitVersionService,
     ILogger<SyncLearnerDataCommandHandler> logger)
     : IRequestHandler<SyncLearnerDataCommand, GetDraftApprenticeshipResponse>
 {
@@ -78,7 +81,7 @@ public class SyncLearnerDataCommandHandler(
             TrainingPrice = learnerData.TrainingPrice,
             EndPointAssessmentPrice = learnerData.EpaoPrice,
             StartDate = learnerData.StartDate,
-            ActualStartDate = draftApprenticeship.ActualStartDate,
+            ActualStartDate = learnerData.StartDate,
             EndDate = learnerData.PlannedEndDate,
             DateOfBirth = learnerData.Dob,
             Reference = draftApprenticeship.Reference,
@@ -122,6 +125,21 @@ public class SyncLearnerDataCommandHandler(
         if (string.IsNullOrWhiteSpace(courseCode) || (int.TryParse(courseCode, out standardId) && standardId <= 0))
         {
             return (courseCode, courseName, string.Empty, string.Empty, string.Empty);
+        }
+
+        if (learnerData.LearningType == LearningType.ApprenticeshipUnit)
+        {
+            GetCourseLookupResponse unit;
+            try
+            {
+                unit = await apprenticeshipUnitVersionService.Resolve(courseCode, learnerData.StartDate);
+            }
+            catch (ApprenticeshipUnitVersionException ex)
+            {
+                throw new LearnerDataSyncException(ex.Message);
+            }
+            return (courseCode, !string.IsNullOrWhiteSpace(courseName) ? courseName : unit.Title,
+                unit.Version, string.Empty, unit.StandardUId);
         }
 
         var response = await trainingProgrammeResolutionService.GetTrainingProgrammeAsync(courseCode, learnerData.StartDate);

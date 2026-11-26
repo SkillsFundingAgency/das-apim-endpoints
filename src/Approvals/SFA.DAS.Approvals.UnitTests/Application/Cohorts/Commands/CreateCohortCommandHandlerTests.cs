@@ -125,6 +125,7 @@ public class CreateCohortCommandHandlerTests
                     ((CreateCohortRequest)r.Data).UserInfo == request.UserInfo &&
                     ((CreateCohortRequest)r.Data).RequestingParty == request.RequestingParty &&
                     ((CreateCohortRequest)r.Data).LearnerDataId == request.LearnerDataId &&
+                    ((CreateCohortRequest)r.Data).OnServicePayments == request.OnServicePayments &&
                     ((CreateCohortRequest)r.Data).MinimumAgeAtApprenticeshipStart == learnerAgeResponse.MinimumAge &&
                     ((CreateCohortRequest)r.Data).MaximumAgeAtApprenticeshipStart == learnerAgeResponse.MaximumAge
                 ), true

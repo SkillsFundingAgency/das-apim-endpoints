@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Approvals.InnerApi.CoursesApi;
 using SFA.DAS.Approvals.InnerApi.Requests;
 
 namespace SFA.DAS.Approvals.Services;
@@ -14,6 +15,7 @@ public interface IAddCourseTypeFromRulesService
 
 public class AddCourseTypeFromRulesService(
     ICourseTypeRulesService courseTypeRulesService,
+    IApprenticeshipUnitVersionService apprenticeshipUnitVersionService,
     IMapper mapper,
     ILogger<AddCourseTypeFromRulesService> logger)
     : IAddCourseTypeFromRulesService
@@ -33,6 +35,9 @@ public class AddCourseTypeFromRulesService(
                 logger.LogInformation($"Course type data found for course code {item.CourseCode}: MinAge={courseTypeData.MinimumAgeAtApprenticeshipStart}, MaxAge={courseTypeData.MaximumAgeAtApprenticeshipStart}");
                 extendedItem.MinimumAgeAtApprenticeshipStart = courseTypeData.MinimumAgeAtApprenticeshipStart;
                 extendedItem.MaximumAgeAtApprenticeshipStart = courseTypeData.MaximumAgeAtApprenticeshipStart;
+                var version = await apprenticeshipUnitVersionService.Resolve(courseTypeData.Course, item.ActualStartDate);
+                extendedItem.TrainingCourseVersion = version?.Version;
+                extendedItem.StandardUId = version?.StandardUId;
             }
             extended.Add(extendedItem);
         }
@@ -56,6 +61,7 @@ public class AddCourseTypeFromRulesService(
             courseTypeData = new CourseTypeData
             {
                 CourseCode = courseCode,
+                Course = rules.Course,
                 MinimumAgeAtApprenticeshipStart = rules.LearnerAgeRules.MinimumAge,
                 MaximumAgeAtApprenticeshipStart = rules.LearnerAgeRules.MaximumAge
             };
@@ -68,6 +74,7 @@ public class AddCourseTypeFromRulesService(
     public class CourseTypeData
     {
         public string CourseCode { get; set; }
+        public GetCourseLookupResponse Course { get; set; }
         public int? MinimumAgeAtApprenticeshipStart { get; set; }
         public int? MaximumAgeAtApprenticeshipStart { get; set; }
     }
