@@ -2,10 +2,13 @@ using MediatR;
 using SFA.DAS.ProviderFeedback.Application.InnerApi.Requests;
 using SFA.DAS.ProviderFeedback.Application.InnerApi.Responses;
 using SFA.DAS.ProviderFeedback.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
-using static SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService.TrainingProviderResponse;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using static SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.TrainingProviderService.TrainingProviderResponse;
 
 namespace SFA.DAS.ProviderFeedback.Application.Queries.GetProviderFeedbackAnnual
 {

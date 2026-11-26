@@ -1,0 +1,52 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts;
+
+public class GetAccountTeamMembersWhichReceiveNotificationsResponse : List<GetAccountTeamMembersWhichReceiveNotificationsResponse.TeamMember>
+{
+    public class TeamMember
+    {
+        public string UserRef { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Role { get; set; }
+        public bool CanReceiveNotifications { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public InvitationStatus Status { get; set; }
+    }
+}
+
+public enum InvitationStatus
+{
+    Pending = 1,
+    Accepted = 2,
+    Expired = 3,
+    Deleted = 4
+}
+
+public enum Role
+{
+    None = 0,
+    Owner = 1,
+    Transactor = 2,
+    Viewer = 3
+}
+
+public static class TeamMemberExtensions
+{
+    public static bool IsAcceptedOwnerWithNotifications(this GetAccountTeamMembersWhichReceiveNotificationsResponse.TeamMember member)
+    {
+        return member.Status == InvitationStatus.Accepted &&
+               member.Role == nameof(Role.Owner) &&
+               member.CanReceiveNotifications;
+    }
+
+    public static bool IsAccountOwner(this GetAccountTeamMembersWhichReceiveNotificationsResponse.TeamMember member)
+    {
+        return member.Role == nameof(Role.Owner);
+    }
+}

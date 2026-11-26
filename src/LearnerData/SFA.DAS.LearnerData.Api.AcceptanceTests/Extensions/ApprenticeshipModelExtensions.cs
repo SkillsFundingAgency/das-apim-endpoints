@@ -1,9 +1,10 @@
-﻿using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
+using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
-using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode;
+using SFA.DAS.LearnerData.Responses.EarningsInner;
+using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.LearnerData.TestHelpers;
+using Episode = SFA.DAS.LearnerData.Responses.LearningInner.Episode;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
 
@@ -31,7 +32,6 @@ public static class ApprenticeshipModelExtensions
                         StartDate = x.StartDate,
                         EndDate = x.EndDate,
                         EndPointAssessmentPrice = 1000,
-                        FundingBandMaximum = 10000,
                         TotalPrice = 11000,
                         TrainingPrice = 10000
                     }).ToList()
@@ -39,24 +39,46 @@ public static class ApprenticeshipModelExtensions
             ]
         };
 
-        var earnings = new SharedOuterApi.InnerApi.Responses.Earnings.Apprenticeship
+        var earnings = new SFA.DAS.LearnerData.Responses.EarningsInner.Apprenticeship
         {
             Key = learning.Key,
-            Episodes = new List<SharedOuterApi.InnerApi.Responses.Earnings.Episode>()
+            Episodes = new List<SFA.DAS.LearnerData.Responses.EarningsInner.Episode>()
             {
-                new SharedOuterApi.InnerApi.Responses.Earnings.Episode
+                new SFA.DAS.LearnerData.Responses.EarningsInner.Episode
                 {
                     Key = Guid.NewGuid(),
+                    FundingBandMaximum = 10000,
                     Instalments = GetEarningsInstalments(apprenticeshipModel),
                     AdditionalPayments = apprenticeshipModel.AdditionalPayments.Select(x =>
-                        new SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings.AdditionalPayment
+                        new SFA.DAS.LearnerData.Responses.EarningsInner.AdditionalPayment
                         {
                             AdditionalPaymentType = x.Type,
                             Amount = x.Amount,
                             AcademicYear = x.AcademicYear,
                             DueDate = x.DueDate,
-                            DeliveryPeriod = x.DeliveryPeriod
-                        }).ToList()
+                            DeliveryPeriod = x.DeliveryPeriod,
+                            LearnAimRef = string.IsNullOrWhiteSpace(x.LearnAimRef) ? null : x.LearnAimRef
+                        }).ToList(),
+                    EnglishAndMaths = apprenticeshipModel.EnglishAndMaths.Select(x =>
+                        new SFA.DAS.LearnerData.Responses.EarningsInner.EnglishAndMaths
+                        {
+                            LearnAimRef = x.LearnAimRef,
+                            Course = x.Course,
+                            StartDate = x.StartDate,
+                            EndDate = x.EndDate,
+                            Instalments = x.StartDate.Enumerate(x.EndDate, DateIncrement.Monthly, out int instalmentCount)
+                                .Select((date) => {
+                                    (var academicYear, var deliveryPeriod) = date.ToAcademicYearAndPeriod();
+                                    return new EnglishAndMathsInstalment
+                                    {
+                                        AcademicYear = academicYear,
+                                        DeliveryPeriod = deliveryPeriod,
+                                        Amount = x.Amount/instalmentCount,
+                                        InstalmentType = "Regular"
+                                    };
+                                })
+                                .ToList()
+                        }).ToList(),
                 }
             },
             FundingLineType = "test",
@@ -71,7 +93,8 @@ public static class ApprenticeshipModelExtensions
             },
             Delivery = new UpdateLearnerRequestDeliveryDetails
             {
-                OnProgramme = GetSldOnProgrammes(apprenticeshipModel)
+                OnProgramme = GetSldOnProgrammes(apprenticeshipModel),
+                EnglishAndMaths = GetSldEnglishAndMaths(apprenticeshipModel),
             }
         };
 
@@ -95,7 +118,7 @@ public static class ApprenticeshipModelExtensions
     {
         if(apprenticeshipModel.Instalments.Any())
         {
-            return apprenticeshipModel.Instalments.Select(x => new SharedOuterApi.InnerApi.Responses.Earnings.Instalment
+            return apprenticeshipModel.Instalments.Select(x => new SFA.DAS.LearnerData.Responses.EarningsInner.Instalment
             {
                 EpisodePriceKey = apprenticeshipModel.PriceEpisodes.Single(y => y.PriceEpisodeId == x.PriceEpisodeId).Key,
                 AcademicYear = x.AcademicYear,
@@ -154,7 +177,25 @@ public static class ApprenticeshipModelExtensions
             ExpectedEndDate = ld.ExpectedEndDate,
             PauseDate = ld.ActualEndDate,
             AimSequenceNumber = ld.AimSequenceNumber,
-            LearnAimRef = ld.LearnAimRef
+            LearnAimRef = ld.LearnAimRef,
+            StandardCode = ld.StandardCode,
+            AgreementId = ld.AgreementId
+        }).ToList();
+    }
+
+    private static List<MathsAndEnglish> GetSldEnglishAndMaths(ApprenticeshipModel apprenticeshipModel)
+    {
+        if (!apprenticeshipModel.EnglishAndMaths.Any())
+            return new List<MathsAndEnglish>();
+
+        return apprenticeshipModel.EnglishAndMaths.Select(em => new MathsAndEnglish
+        {
+            Course = em.Course,
+            LearnAimRef = em.LearnAimRef,
+            StartDate = em.StartDate,
+            EndDate = em.EndDate,
+            WithdrawalDate = em.WithdrawalDate,
+            AimSequenceNumber = em.AimSequenceNumber
         }).ToList();
     }
 }

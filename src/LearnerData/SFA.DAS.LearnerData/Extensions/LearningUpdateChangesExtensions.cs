@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 
 namespace SFA.DAS.LearnerData.Extensions;
 
@@ -10,28 +10,32 @@ public static class LearningUpdateChangesExtensions
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate)
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal)
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal)
+               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Reinstated)
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted)
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved)
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated)
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices)
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.DateOfBirthChanged)
-               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Care);
+               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Care)
+               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.AchievementDateChanged)
+               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.OnprogrammeLearningSupport);
     }
 
     public static bool HasEnglishAndMathsUpdate(this List<UpdateLearnerApiPutResponse.LearningUpdateChanges> changes)
     {
-        return changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish)
-               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglishWithdrawal)
-               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsBreaksInLearningUpdated);
-    }
-
-    public static bool HasLearningSupportUpdate(this List<UpdateLearnerApiPutResponse.LearningUpdateChanges> changes)
-    {
-        return changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport);
+        return changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMaths)
+               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsWithdrawal)
+               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsBreaksInLearningUpdated)
+               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsLearningSupport);
     }
 
     public static bool HasPersonalDetailsOnly(this List<UpdateLearnerApiPutResponse.LearningUpdateChanges> changes)
     {
         return changes.SequenceEqual(new [] { UpdateLearnerApiPutResponse.LearningUpdateChanges.PersonalDetails });
+    }
+
+    public static bool HasForceEarningsSync(this List<UpdateLearnerApiPutResponse.LearningUpdateChanges> changes)
+    {
+        return changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.ForceEarningsSync);
     }
 }

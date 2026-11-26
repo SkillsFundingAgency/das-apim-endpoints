@@ -1,9 +1,7 @@
 ﻿using AutoFixture.NUnit3;
-using Azure;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Amqp.Framing;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Assessors.Api.Controllers;

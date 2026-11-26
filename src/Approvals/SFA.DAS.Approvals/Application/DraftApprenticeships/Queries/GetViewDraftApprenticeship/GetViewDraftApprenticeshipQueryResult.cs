@@ -1,5 +1,8 @@
 ﻿using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using SFA.DAS.Approvals.InnerApi;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetViewDraftApprenticeship
 {
@@ -44,5 +47,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetViewDraf
         public int? DurationReducedByHours { get; set; }
         public bool? IsDurationReducedByRpl { get; set; }
         public int? TrainingTotalHours { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public LearningType? LearningType { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancy;
 using SFA.DAS.Vacancies.Enums;
 using System;
@@ -54,9 +54,9 @@ namespace SFA.DAS.Vacancies.Api.Models
                 Course = source.Vacancy,
                 Description = source.Vacancy.Description,
                 Distance = source.Vacancy.Distance,
-                EmployerContactEmail = source.Vacancy.EmployerContactEmail,
-                EmployerContactName = source.Vacancy.EmployerContactName,
-                EmployerContactPhone = source.Vacancy.EmployerContactPhone,
+                EmployerContactEmail = source.Vacancy.EmployerContactEmail ?? source.Vacancy.ProviderContactEmail,
+                EmployerContactName = source.Vacancy.EmployerContactName ?? source.Vacancy.ProviderContactName,
+                EmployerContactPhone = source.Vacancy.EmployerContactPhone ?? source.Vacancy.ProviderContactPhone,
                 EmployerDescription = source.Vacancy.EmployerDescription,
                 EmployerName = source.Vacancy.IsEmployerAnonymous ? source.Vacancy.AnonymousEmployerName : source.Vacancy.EmployerName,
                 EmployerWebsiteUrl = source.Vacancy.EmployerWebsiteUrl,

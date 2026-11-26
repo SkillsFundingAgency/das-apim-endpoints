@@ -19,6 +19,8 @@ public record GetDashboardByAccountIdQueryResult
     public int SubmittedVacanciesCount { get; set; } = 0;
     public int ClosingSoonVacanciesCount { get; set; } = 0;
     public int ClosingSoonWithNoApplications { get; set; } = 0;
+    public int ArchivedVacanciesCount { get; set; } = 0;
+
 
     public static GetDashboardByAccountIdQueryResult FromResponses(
         GetEmployerDashboardApiResponse source)
@@ -40,6 +42,7 @@ public record GetDashboardByAccountIdQueryResult
             SubmittedVacanciesCount = source.SubmittedVacanciesCount,
             ClosingSoonVacanciesCount = source.ClosingSoonVacanciesCount,
             ClosingSoonWithNoApplications = source.ClosingSoonWithNoApplications,
+            ArchivedVacanciesCount = source.ArchivedVacanciesCount,
         };
     }
 }

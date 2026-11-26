@@ -4,6 +4,6 @@ namespace SFA.DAS.EmployerFinance.InnerApi.Responses
 {
     public class GetStandardsListResponse
     {
-        public IEnumerable<GetStandardsListItem> Standards { get; set; }
+        public IEnumerable<GetStandardsListItem> Courses { get; set; }
     }
 }

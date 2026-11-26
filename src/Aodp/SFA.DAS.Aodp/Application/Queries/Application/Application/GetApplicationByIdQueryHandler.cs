@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Aodp.Configuration;
+using SFA.DAS.Aodp.Services;
 
 public class GetApplicationByIdQueryHandler : IRequestHandler<GetApplicationByIdQuery, BaseMediatrResponse<GetApplicationByIdQueryResponse>>
 {

@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Approvals.Application.LevyTransferMatching.Queries.GetApprovedAccountApplication;
-using SFA.DAS.Approvals.Application.SelectDirectTransferConnection.Queries;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.SelectLevyConnection;
 

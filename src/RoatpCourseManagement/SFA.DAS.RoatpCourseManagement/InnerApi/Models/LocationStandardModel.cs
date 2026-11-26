@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.RoatpCourseManagement.InnerApi.Models;
+﻿using SFA.DAS.SharedOuterApi.Types.Constants;
+
+namespace SFA.DAS.RoatpCourseManagement.InnerApi.Models;
 
 public class LocationStandardModel
 {
@@ -6,4 +8,5 @@ public class LocationStandardModel
     public int Level { get; set; }
     public string LarsCode { get; set; }
     public bool HasOtherVenues { get; set; }
+    public LearningType LearningType { get; set; }
 }

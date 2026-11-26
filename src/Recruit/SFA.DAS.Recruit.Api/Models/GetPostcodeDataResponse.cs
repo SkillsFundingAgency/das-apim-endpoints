@@ -1,5 +1,6 @@
 using SFA.DAS.Recruit.Application.Queries.GetPostcodeData;
-using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain;
+
 
 namespace SFA.DAS.Recruit.Api.Models;
 

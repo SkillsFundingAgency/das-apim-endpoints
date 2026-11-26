@@ -1,7 +1,4 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
-using SFA.DAS.Recruit.Domain;
+﻿using SFA.DAS.Recruit.Domain;
 using SFA.DAS.Recruit.InnerApi.Responses;
 
 namespace SFA.DAS.Recruit.UnitTests.Domain

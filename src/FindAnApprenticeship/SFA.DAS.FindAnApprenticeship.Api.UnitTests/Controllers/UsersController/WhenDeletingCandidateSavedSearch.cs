@@ -1,13 +1,8 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidate;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteSavedSearch;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetSavedSearch;
-using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.UsersController;
 

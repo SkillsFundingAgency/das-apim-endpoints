@@ -5,8 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
 {

@@ -1,10 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetEmploymentLocations;
-using System;
 using System.Net;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.EmploymentLocationsController
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 

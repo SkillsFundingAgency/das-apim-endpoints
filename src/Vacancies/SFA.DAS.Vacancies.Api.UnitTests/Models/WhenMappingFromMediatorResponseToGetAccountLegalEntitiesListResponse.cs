@@ -37,7 +37,10 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
         {
             var actual = (GetAccountLegalEntitiesListResponse) source;
 
-            actual.AccountLegalEntities.Should().BeEquivalentTo(source.LegalEntities, options=> options.Excluding(x=>x.Agreements));
+            actual.AccountLegalEntities.Should().BeEquivalentTo(source.LegalEntities, options=> options
+                    .Excluding(x=>x.Agreements)
+                    .Excluding(x=>x.AccountLegalEntityId)
+                );
         }
         
         [Test, AutoData]

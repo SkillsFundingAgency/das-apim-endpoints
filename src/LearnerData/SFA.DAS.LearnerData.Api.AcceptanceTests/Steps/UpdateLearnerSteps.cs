@@ -1,14 +1,15 @@
-﻿using AutoFixture;
+using AutoFixture;
 using FluentAssertions;
-using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
-using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Enums;
+using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.Net;
 using System.Net.Http.Headers;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using TechTalk.SpecFlow;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
@@ -25,6 +26,9 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     private const string UkprnKey = "UkprnKey";
     private const string FundingBandMaximumKey = "FundingBandMaximumKey";
     private const string SldLearnerDataKey = "SldLearnerDataKey";
+    private const string SubsequentOnProgrammeKey = "SubsequentOnProgrammeKey";
+    private const string ApprovalCheckStatusCodeKey = "ApprovalCheckStatusCodeKey";
+    private const string LearnerRefKey = "LearnerRefKey";
 
     [Given(@"there is a learner")]
     public void GivenThereIsALearner()
@@ -54,11 +58,66 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         scenarioContext.Set(new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>(), ChangesKey); // an empty list will be returned to indicate no changes
     }
 
+    [Given(@"the learner submits an OnProgramme item for a subsequent apprenticeship")]
+    public void GivenTheLearnerSubmitsAnOnProgrammeItemForASubsequentApprenticeship()
+    {
+        var onProgramme = _fixture.Create<OnProgrammeRequestDetails>();
+        scenarioContext.Set(onProgramme, SubsequentOnProgrammeKey);
+        scenarioContext.Set(new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>(), ChangesKey); // not exercising earnings changes in these scenarios
+    }
+
+    [Given(@"that apprenticeship is already approved")]
+    public void GivenThatApprenticeshipIsAlreadyApproved()
+    {
+        scenarioContext.Set(HttpStatusCode.OK, ApprovalCheckStatusCodeKey);
+    }
+
+    [Given(@"that apprenticeship is not yet approved")]
+    public void GivenThatApprenticeshipIsNotYetApproved()
+    {
+        scenarioContext.Set(HttpStatusCode.NotFound, ApprovalCheckStatusCodeKey);
+
+        testContext.CoursesApi.MockServer
+            .Given(
+                Request
+                .Create()
+                .WithPath($"/api/courses/standards/*"))
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithBodyAsJson(new StandardDetailResponse { ApprenticeshipType = "Apprenticeship" }));
+    }
+
+    [Given(@"the learner has a LearnerRef of ""(.*)""")]
+    public void GivenTheLearnerHasALearnerRefOf(string learnerRef)
+    {
+        scenarioContext.Set(learnerRef, LearnerRefKey);
+    }
+
+    [Then(@"a LearnerDataEvent is published")]
+    public void ThenALearnerDataEventIsPublished()
+    {
+        StubMessageSession.PublishedMessages.Should().ContainSingle(m => m is LearnerDataEvent);
+    }
+
+    [Then(@"no LearnerDataEvent is published")]
+    public void ThenNoLearnerDataEventIsPublished()
+    {
+        StubMessageSession.PublishedMessages.Should().NotContain(m => m is LearnerDataEvent);
+    }
+
     [When(@"the learner is updated")]
     public async Task WhenTheLearnerIsUpdated()
     {
         ConfigureLearnerInnerApi();
-        ConfigureEarningsInnerApiToRespondeOkToEverything();
+        ConfigureEarningsInnerApiToRespondOkToEverything();
+        await CallUpdateLearnerEndpoint();
+    }
+
+    [When(@"the learner is updated with new earnings profile version")]
+    public async Task WhenTheLearnerIsUpdatedWithNewEarningsProfileVersion()
+    {
+        ConfigureLearnerInnerApi();
+        ConfigureEarningsInnerApiToRespondOkToEverything(true);
         await CallUpdateLearnerEndpoint();
     }
 
@@ -79,12 +138,53 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         requests.Should().BeEmpty("Expected no requests to the earnings domain, but found some.");
     }
 
+    [Then(@"the LearnerRef sent to the learning domain is ""(.*)""")]
+    public void ThenTheLearnerRefSentToTheLearningDomainIs(string expectedLearnerRef)
+    {
+        var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
+        var ukprn = scenarioContext.Get<long>(UkprnKey);
+        var requestUrl = $"/{ukprn}/{learnerKey}";
+
+        var entry = testContext.ApprenticeshipsApi.MockServer.LogEntries
+            .Single(request => request.RequestMessage.Url.Contains(requestUrl) && request.RequestMessage.Method == "PUT");
+
+        var body = JsonConvert.DeserializeObject<UpdateLearningRequestBody>(entry.RequestMessage.Body);
+        body!.Learner.LearnerRef.Should().Be(expectedLearnerRef);
+    }
+
+    [Then(@"the release-earnings request sent to the earnings domain has the learner key and ref ""(.*)""")]
+    public void ThenTheReleaseEarningsRequestHasTheLearnerKeyAndRef(string expectedLearnerRef)
+    {
+        var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
+        var learningKey = scenarioContext.Get<UpdateLearnerApiPutResponse>().LearningKey;
+        var requestUrl = $"learning/{learningKey}/release-earnings";
+
+        var entry = testContext.EarningsApi.MockServer.LogEntries
+            .Single(request => request.RequestMessage.Url.Contains(requestUrl) && request.RequestMessage.Method == "POST");
+
+        var body = JsonConvert.DeserializeObject<ReleaseEarningsRequest>(entry.RequestMessage.Body);
+        body!.LearnerKey.Should().Be(learnerKey);
+        body.LearnerRef.Should().Be(expectedLearnerRef);
+    }
+
+    [Then(@"only a release-earnings request for all earnings is sent to the earnings domain")]
+    public void ThenOnlyAReleaseEarningsRequestForAllEarningsIsSentToTheEarningsDomain()
+    {
+        var entry = testContext.EarningsApi.MockServer.LogEntries.Should().ContainSingle().Subject;
+        entry.RequestMessage.Method.Should().Be("POST");
+        entry.RequestMessage.Url.Should().Contain(GetEarningsRequestUrl("release-earnings"));
+
+        var body = JsonConvert.DeserializeObject<ReleaseEarningsRequest>(entry.RequestMessage.Body);
+        body!.ReleaseType.Should().Be(ReleaseType.All);
+        body.EnglishAndMathsCourseKeys.Should().BeEmpty();
+    }
+
     [Then(@"sld data is stored to the cache")]
     public async Task ThenSldDataIsStoredToTheCache()
     {
         var ukprn = scenarioContext.Get<long>(UkprnKey);
         var sldLearnerData = scenarioContext.Get<UpdateLearnerRequest>(SldLearnerDataKey);
-        var cachedData = await testContext.Cache.GetLearner(ukprn, sldLearnerData.Learner.Uln.ToString(), CancellationToken.None);
+        var cachedData = await testContext.Cache.GetLearner<UpdateLearnerRequest>(ukprn, sldLearnerData.Learner.Uln.ToString(), CancellationToken.None);
 
         cachedData.Should().NotBeNull();
         cachedData.Should().BeEquivalentTo(sldLearnerData);
@@ -128,7 +228,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     {
         var changes = scenarioContext.Get<List<UpdateLearnerApiPutResponse.LearningUpdateChanges>>(ChangesKey);
         var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
-
+        var ukprn = scenarioContext.Get<long>(UkprnKey);
 
         var response = new UpdateLearnerApiPutResponse();
         if (changes.Any())
@@ -140,16 +240,33 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         .Given(
             Request
             .Create()
-            .WithPath($"/{learnerKey}")
+            .WithPath($"/{ukprn}/{learnerKey}")
             .UsingPut())
         .RespondWith(
             Response.Create()
             .WithStatusCode(HttpStatusCode.OK)
             .WithBodyAsJson(response)
         );
+
+        var approvalCheckStatusCode = scenarioContext.TryGetValue(ApprovalCheckStatusCodeKey, out HttpStatusCode explicitStatusCode)
+            ? explicitStatusCode
+            : HttpStatusCode.OK;
+
+        testContext.ApprenticeshipsApi.MockServer
+        .Given(
+            Request
+            .Create()
+            .WithPath($"/{ukprn}/apprenticeships")
+            .UsingHead())
+        .RespondWith(
+            Response.Create()
+            .WithStatusCode(approvalCheckStatusCode)
+        );
+
+        scenarioContext.Set(response);
     }
 
-    private void ConfigureEarningsInnerApiToRespondeOkToEverything()
+    private void ConfigureEarningsInnerApiToRespondOkToEverything(bool hasNewEarningsProfileVersionBeenGenerated = false)
     {
         testContext.EarningsApi.MockServer
             .Given(
@@ -160,6 +277,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(200)
+                    .WithBody($"{{\"HasNewEarningsProfileVersionBeenGenerated\":{hasNewEarningsProfileVersionBeenGenerated.ToString().ToLower()}}}")
             );
     }
 
@@ -168,6 +286,17 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
         var ukprn = scenarioContext.Get<long>(UkprnKey);
         var requestBody = _fixture.Create<UpdateLearnerRequest>();
+
+        if (scenarioContext.TryGetValue(SubsequentOnProgrammeKey, out OnProgrammeRequestDetails onProgramme))
+        {
+            requestBody.Delivery.OnProgramme = [onProgramme];
+        }
+
+        if (scenarioContext.TryGetValue(LearnerRefKey, out string learnerRef))
+        {
+            requestBody.Learner.LearnerRef = learnerRef;
+        }
+
         var httpContent = new StringContent(JsonConvert.SerializeObject(requestBody), new MediaTypeHeaderValue("application/json"));
         var response = await testContext.OuterApiClient.PutAsync($"/providers/{ukprn}/learning/{learnerKey}", httpContent);
         var contentString = await response.Content.ReadAsStringAsync();
@@ -178,16 +307,16 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
 
     private string GetEarningsRequestUrl(string updateRequestType)
     {
-        var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
+        var learningKey = scenarioContext.Get<UpdateLearnerApiPutResponse>().LearningKey;
 
         switch (updateRequestType)
         {
             case "on-programme":
-                return $"learning/{learnerKey.ToString()}/on-programme";
-            case "learning-support":
-                return $"learning/{learnerKey.ToString()}/learning-support";
+                return $"learning/{learningKey.ToString()}/on-programme";
             case "english-and-maths":
-                return $"learning/{learnerKey.ToString()}/english-and-maths";
+                return $"learning/{learningKey.ToString()}/english-and-maths";
+            case "release-earnings":
+                return $"learning/{learningKey.ToString()}/release-earnings";
             default:
                 throw new ArgumentOutOfRangeException(nameof(updateRequestType), updateRequestType, null);
         }

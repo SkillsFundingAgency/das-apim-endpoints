@@ -36,6 +36,21 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
 
         [Test, RecursiveMoqAutoData]
+        public void Then_If_The_Banner_Has_No_Content_Then_The_Banner_Is_Built_With_No_Items(CmsContent source)
+        {
+            foreach (var item in source.Items)
+            {
+                item.Fields.Content = null;
+            }
+
+            var actual = new BannerPageModel().Build(source);
+
+            actual.MainContent.Should().HaveCount(source.Items.Count);
+            actual.MainContent.ElementAt(0).Title.Should().NotBeNullOrWhiteSpace();
+            actual.MainContent.Should().OnlyContain(c => c.Items.Count == 0);
+        }
+
+        [Test, RecursiveMoqAutoData]
         public void Then_The_Banner_Is_Built(CmsContent source, string contentValue)
         {
             source.Items[0].Fields.AllowUserToHideTheBanner = true;

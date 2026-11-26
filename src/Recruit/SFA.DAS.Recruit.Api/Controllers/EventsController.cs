@@ -2,9 +2,11 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NServiceBus;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Application.ApplicationReview.Events.ApplicationReviewShared;
 using SFA.DAS.Recruit.Events;
@@ -15,6 +17,7 @@ namespace SFA.DAS.Recruit.Api.Controllers;
 [ApiController]
 public class EventsController(
     IPublisher mediator,
+    IMessageSession messageSession,
     ILogger<EventsController> logger) : ControllerBase
 {
     [HttpPost]
@@ -68,8 +71,21 @@ public class EventsController(
     [HttpPost, Route("employer-rejected-vacancy")]
     public async Task<IActionResult> OnEmployerRejectedVacancy([FromBody] PostVacancyRejectedEventModel payload, CancellationToken cancellationToken)
     {
-        logger.LogInformation("{EventName} triggered for vacancy {VacancyId})", nameof(OnEmployerRejectedVacancy), payload.VacancyId);
+        logger.LogInformation("{EventName} triggered for vacancy {VacancyId}", nameof(OnEmployerRejectedVacancy), payload.VacancyId);
         await mediator.Publish(new VacancyRejectedEvent(payload.VacancyId), cancellationToken);
+        return NoContent();
+    }
+    
+    [HttpPost, Route("live-vacancy-updated")]
+    public async Task<IActionResult> OnLiveVacancyUpdated([FromBody] PostLiveVacancyUpdatedEventModel payload, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("{EventName} triggered for vacancy '{VacancyId}', update kind '{UpdateKind}'", nameof(OnLiveVacancyUpdated), payload.VacancyId, payload.UpdateKind);
+        await messageSession.Publish(new LiveVacancyUpdatedEvent
+        {
+            VacancyId = payload.VacancyId,
+            VacancyReference = payload.VacancyReference,
+            UpdateKind = payload.UpdateKind,
+        });
         return NoContent();
     }
 }

@@ -4,8 +4,10 @@ using SFA.DAS.Recruit.Domain;
 using SFA.DAS.Recruit.Enums;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System.Threading;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.ApplicationReviews.Command;

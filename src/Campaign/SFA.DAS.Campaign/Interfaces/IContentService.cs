@@ -1,10 +1,12 @@
 using SFA.DAS.Campaign.ExternalApi.Responses;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.Campaign.Interfaces
 {
     public interface IContentService
     {
         bool HasContent(ApiResponse<CmsContent> cmsContent);
+        bool HasContent(ApiResponse<HubCmsContent> hubCmsContent);
     }
 }

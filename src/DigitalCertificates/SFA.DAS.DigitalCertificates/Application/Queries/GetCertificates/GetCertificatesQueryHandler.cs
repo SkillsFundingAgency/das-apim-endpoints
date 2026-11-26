@@ -1,13 +1,16 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.DigitalCertificates.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificates
 {
@@ -26,13 +29,14 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificates
         {
             var result = new GetCertificatesResult();
 
-            ApiResponse<GetAuthorisationResponse> authorisationResponse = await _digitalCertificatesApiClient.
-                GetWithResponseCode<GetAuthorisationResponse>(new GetAuthorisationRequest(request.UserId));
+            ApiResponse<GetUserAuthorisationResponse> authorisationResponse = await _digitalCertificatesApiClient.
+                GetWithResponseCode<GetUserAuthorisationResponse>(new GetUsersByUserIdAuthorisationApiRequest(request.UserId));
 
             if (authorisationResponse != null && authorisationResponse.StatusCode != System.Net.HttpStatusCode.NotFound)
             {
                 authorisationResponse.EnsureSuccessStatusCode();
-                result.Authorisation = authorisationResponse.Body.Authorisation;
+
+                result.Authorisation = (UlnAuthorisation)authorisationResponse.Body.Authorisation;
 
                 if (result.Authorisation != null)
                 {

@@ -8,11 +8,13 @@ using SFA.DAS.ApprenticeFeedback.Application.Commands.TrackEmailTransactionClick
 using SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice;
 using SFA.DAS.ApprenticeFeedback.Application.Queries.GetFeedbackTransactionsToEmail;
 using SFA.DAS.ApprenticeFeedback.Models;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using static SFA.DAS.ApprenticeFeedback.Models.Enums;
 
 namespace SFA.DAS.ApprenticeFeedback.Api.Controllers

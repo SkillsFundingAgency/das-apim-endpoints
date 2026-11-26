@@ -13,8 +13,10 @@ using SFA.DAS.Campaign.ExternalApi.Requests;
 using SFA.DAS.Campaign.ExternalApi.Responses;
 using SFA.DAS.Campaign.Interfaces;
 using SFA.DAS.Campaign.Models;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Hub
@@ -26,7 +28,7 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Hub
             GetHubQuery query,
             GetMenuQueryResult menuResult,
             MenuPageModel.MenuPageContent menuContent,
-            CmsContent apiResponse,
+            HubCmsContent apiResponse,
             HubPageModel response,
             GetBannerQueryResult bannerResult,
             BannerPageModel bannerContent,
@@ -35,9 +37,9 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Hub
             [Frozen] Mock<IMediator> mediator,
             GetHubQueryHandler handler)
         {
-            contentService.Setup(x=>x.HasContent(It.IsAny<ApiResponse<CmsContent>>())).Returns(true);
+            contentService.Setup(x=>x.HasContent(It.IsAny<ApiResponse<HubCmsContent>>())).Returns(true);
             service.Setup(o =>
-                    o.GetData<CmsContent>(
+                    o.GetData<HubCmsContent>(
                         It.Is<GetHubEntriesRequest>(c =>
                             c.GetUrl.Contains($"fields.hubType={query.Hub.ToTitleCase()}")),
                         $"{query.Hub.ToTitleCase()}_hub", contentService.Object.HasContent))
@@ -49,7 +51,7 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Hub
             var actual = await handler.Handle(query, CancellationToken.None);
 
             actual.PageModel.Should().BeEquivalentTo(response.Build(apiResponse, menuContent, bannerContent));
-            service.Verify(x => x.GetData<CmsContent>(It.IsAny<GetHubEntriesRequest>(), It.IsAny<string>(), contentService.Object.HasContent), Times.Once);
+            service.Verify(x => x.GetData<HubCmsContent>(It.IsAny<GetHubEntriesRequest>(), It.IsAny<string>(), contentService.Object.HasContent), Times.Once);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.Models.Messages;
+using SFA.DAS.SharedOuterApi.Types.Models.Messages;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication
 {

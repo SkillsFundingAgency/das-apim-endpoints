@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
-using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain;
+
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
 {
@@ -179,7 +177,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
             double? Latitude = null,
             double? Longitude = null)
         {
-            public static AddressDto? From(SFA.DAS.SharedOuterApi.Models.Address? source)
+            public static AddressDto? From(SFA.DAS.SharedOuterApi.Types.Models.Address? source)
             {
                 if (source is null)
                 {

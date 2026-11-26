@@ -1,5 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
-using SFA.DAS.SharedOuterApi.Models.RequestApprenticeTraining;
+﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RequestApprenticeTraining;
+using SFA.DAS.SharedOuterApi.Types.Models.RequestApprenticeTraining;
 using System;
 using System.Collections.Generic;
 using System.Linq;

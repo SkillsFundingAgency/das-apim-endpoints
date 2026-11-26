@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using SFA.DAS.EmployerFeedback.FakeApis.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 

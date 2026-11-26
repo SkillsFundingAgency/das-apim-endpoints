@@ -1,17 +1,16 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.FindApprenticeshipTraining.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
 
@@ -24,7 +23,7 @@ public sealed class GetCourseByLarsCodeQueryHandler(
 
     public async Task<GetCourseByLarsCodeQueryResult> Handle(GetCourseByLarsCodeQuery query, CancellationToken cancellationToken)
     {
-        LocationItem locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(query.Location);
+        LocationItem locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(query.LocationName);
 
         var courseTrainingProvidersCountResponse =
             await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
@@ -46,7 +45,7 @@ public sealed class GetCourseByLarsCodeQueryHandler(
         CourseTrainingProviderCountModel trainingCourseCountDetails =
             courseTrainingProvidersCountResponse.Body.Courses.Count > 0 ? courseTrainingProvidersCountResponse.Body.Courses[0] : null;
 
-        StandardDetailResponse cachedStandardDetailResponse = await _cachedStandardDetailsService.GetStandardDetails(query.LarsCode);
+        var cachedStandardDetailResponse = await _cachedStandardDetailsService.GetStandardDetails(query.LarsCode);
 
         ApprenticeshipFunding apprenticeshipFunding = cachedStandardDetailResponse.ApprenticeshipFunding?.Count > 0 ?
             cachedStandardDetailResponse.ApprenticeshipFunding.OrderByDescending(a => a.EffectiveFrom).First() : null;
@@ -59,6 +58,14 @@ public sealed class GetCourseByLarsCodeQueryHandler(
         result.ProvidersCountWithinDistance = trainingCourseCountDetails?.ProvidersCount ?? 0;
         result.TotalProvidersCount = trainingCourseCountDetails?.TotalProvidersCount ?? 0;
         result.IncentivePayment = CalculateIncentivePayment(apprenticeshipFunding);
+
+        var ksbsResponse = await _cachedStandardDetailsService.GetKsbsForCourseOption(query.LarsCode);
+
+        if (ksbsResponse != null && ksbsResponse.Ksbs != null)
+        {
+            result.Ksbs = ksbsResponse.Ksbs.Select(k => (Ksb)k).ToList();
+        }
+
         return result;
     }
 

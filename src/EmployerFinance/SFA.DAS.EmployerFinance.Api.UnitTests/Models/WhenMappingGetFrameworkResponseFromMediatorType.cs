@@ -1,7 +1,4 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
-using SFA.DAS.EmployerFinance.Api.Models;
+﻿using SFA.DAS.EmployerFinance.Api.Models;
 using SFA.DAS.EmployerFinance.InnerApi.Responses;
 
 namespace SFA.DAS.EmployerFinance.Api.UnitTests.Models

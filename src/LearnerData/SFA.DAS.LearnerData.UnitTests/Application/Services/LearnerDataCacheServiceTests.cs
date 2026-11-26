@@ -1,13 +1,11 @@
 ﻿using System.Text;
 using System.Text.Json;
 using AutoFixture;
-using FluentAssertions;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services;
+using StackExchange.Redis;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 
@@ -25,7 +23,85 @@ public class LearnerDataCacheServiceTests
         _fixture = new Fixture();
         _cache = new Mock<IDistributedCache>();
         _logger = new Mock<ILogger<LearnerDataCacheService>>();
-        _sut = new LearnerDataCacheService(_cache.Object, _logger.Object);
+        _sut = new LearnerDataCacheService(_cache.Object, _logger.Object, TimeSpan.Zero);
+    }
+
+    private static RedisConnectionException ConnectionFailure() =>
+        new(ConnectionFailureType.SocketFailure, "An existing connection was forcibly closed by the remote host");
+
+    private static RedisTimeoutException Timeout() => new("Timeout performing HMGET", CommandStatus.Unknown);
+
+    [Test]
+    public async Task StoreLearner_RetriesOnRedisConnectionException_ThenSucceeds()
+    {
+        _cache.SetupSequence(c => c.SetAsync(
+                It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<DistributedCacheEntryOptions>(), It.IsAny<CancellationToken>()))
+            .Throws(ConnectionFailure())
+            .Throws(ConnectionFailure())
+            .Returns(Task.CompletedTask);
+
+        await _sut.StoreLearner(_fixture.Create<UpdateLearnerRequest>(), 12345, CancellationToken.None);
+
+        _cache.Verify(c => c.SetAsync(
+                It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<DistributedCacheEntryOptions>(), It.IsAny<CancellationToken>()),
+            Times.Exactly(3));
+    }
+
+    [Test]
+    public async Task StoreLearner_RethrowsAfterRetriesExhausted()
+    {
+        _cache.Setup(c => c.SetAsync(
+                It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<DistributedCacheEntryOptions>(), It.IsAny<CancellationToken>()))
+            .Throws(ConnectionFailure());
+
+        var act = () => _sut.StoreLearner(_fixture.Create<UpdateLearnerRequest>(), 12345, CancellationToken.None);
+
+        await act.Should().ThrowAsync<RedisConnectionException>();
+        _cache.Verify(c => c.SetAsync(
+                It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<DistributedCacheEntryOptions>(), It.IsAny<CancellationToken>()),
+            Times.Exactly(4));
+    }
+
+    [Test]
+    public async Task StoreLearner_DoesNotRetryNonTransientExceptions()
+    {
+        _cache.Setup(c => c.SetAsync(
+                It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<DistributedCacheEntryOptions>(), It.IsAny<CancellationToken>()))
+            .Throws(new InvalidOperationException());
+
+        var act = () => _sut.StoreLearner(_fixture.Create<UpdateLearnerRequest>(), 12345, CancellationToken.None);
+
+        await act.Should().ThrowAsync<InvalidOperationException>();
+        _cache.Verify(c => c.SetAsync(
+                It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<DistributedCacheEntryOptions>(), It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
+
+    [Test]
+    public async Task GetLearner_RetriesOnRedisTimeoutException_ThenReturnsValue()
+    {
+        var expected = _fixture.Create<UpdateLearnerRequest>();
+
+        _cache.SetupSequence(c => c.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Throws(Timeout())
+            .ReturnsAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(expected)));
+
+        var result = await _sut.GetLearner<UpdateLearnerRequest>(12345, expected.Learner.Uln.ToString(), CancellationToken.None);
+
+        result.Should().BeEquivalentTo(expected);
+        _cache.Verify(c => c.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
+    }
+
+    [Test]
+    public async Task GetLearner_RethrowsAfterRetriesExhausted()
+    {
+        _cache.Setup(c => c.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Throws(ConnectionFailure());
+
+        var act = () => _sut.GetLearner<UpdateLearnerRequest>(12345, "1234567890", CancellationToken.None);
+
+        await act.Should().ThrowAsync<RedisConnectionException>();
+        _cache.Verify(c => c.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Exactly(4));
     }
 
     [Test]
@@ -33,7 +109,7 @@ public class LearnerDataCacheServiceTests
     {
         var ukprn = _fixture.Create<long>();
         var request = _fixture.Create<UpdateLearnerRequest>();
-        var expectedKey = $"LearnerData_{ukprn}_{request.Learner.Uln}";
+        var expectedKey = $"LearnerDataApprenticeship_{ukprn}_{request.Learner.Uln}";
 
         byte[]? storedBytes = null;
         DistributedCacheEntryOptions? storedOptions = null;
@@ -65,12 +141,42 @@ public class LearnerDataCacheServiceTests
     }
 
     [Test]
+    public async Task StoreLearner_CreateLearnerRequest_StoresUnderApprenticeshipKeyAndIsReadableAsUpdateLearnerRequest()
+    {
+        var ukprn = _fixture.Create<long>();
+        var request = _fixture.Create<CreateLearnerRequest>();
+        var expectedKey = $"LearnerDataApprenticeship_{ukprn}_{request.Learner.Uln}";
+
+        byte[]? storedBytes = null;
+        _cache.Setup(c => c.SetAsync(
+                It.IsAny<string>(),
+                It.IsAny<byte[]>(),
+                It.IsAny<DistributedCacheEntryOptions>(),
+                It.IsAny<CancellationToken>()))
+            .Callback<string, byte[], DistributedCacheEntryOptions, CancellationToken>((_, bytes, _, _) => storedBytes = bytes)
+            .Returns(Task.CompletedTask);
+
+        await _sut.StoreLearner(request, ukprn, CancellationToken.None);
+
+        _cache.Verify(c => c.SetAsync(
+                expectedKey,
+                It.IsAny<byte[]>(),
+                It.IsAny<DistributedCacheEntryOptions>(),
+                It.IsAny<CancellationToken>()),
+            Times.Once);
+
+        var roundTripped = JsonSerializer.Deserialize<UpdateLearnerRequest>(storedBytes!);
+        roundTripped!.Learner.Uln.Should().Be(request.Learner.Uln);
+        roundTripped.Delivery.OnProgramme.Should().HaveCount(request.Delivery.OnProgramme.Count);
+    }
+
+    [Test]
     public async Task GetLearner_ReturnsNull_OnCacheMiss()
     {
         _cache.Setup(c => c.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((byte[]?)null);
 
-        var result = await _sut.GetLearner(12345, "9999999999", CancellationToken.None);
+        var result = await _sut.GetLearner<UpdateLearnerRequest>(12345, "9999999999", CancellationToken.None);
 
         result.Should().BeNull();
     }
@@ -85,7 +191,7 @@ public class LearnerDataCacheServiceTests
         _cache.Setup(c => c.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(bytes);
 
-        var result = await _sut.GetLearner(12345, expected.Learner.Uln.ToString(), CancellationToken.None);
+        var result = await _sut.GetLearner<UpdateLearnerRequest>(12345, expected.Learner.Uln.ToString(), CancellationToken.None);
 
         result.Should().BeEquivalentTo(expected);
     }
@@ -98,7 +204,7 @@ public class LearnerDataCacheServiceTests
         _cache.Setup(c => c.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(bytes);
 
-        var result = await _sut.GetLearner(12345, "1234567890", CancellationToken.None);
+        var result = await _sut.GetLearner<UpdateLearnerRequest>(12345, "1234567890", CancellationToken.None);
 
         result.Should().BeNull();
 
@@ -126,7 +232,7 @@ public class LearnerDataCacheServiceTests
             .ReturnsAsync((byte[]?)null)
             .ReturnsAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(learner3)));
 
-        var results = await _sut.GetLearners(ukprn, ulns, CancellationToken.None);
+        var results = await _sut.GetLearners<UpdateLearnerRequest>(ukprn, ulns, CancellationToken.None);
 
         results.Should().HaveCount(2);
         results.Should().ContainEquivalentOf(learner1);

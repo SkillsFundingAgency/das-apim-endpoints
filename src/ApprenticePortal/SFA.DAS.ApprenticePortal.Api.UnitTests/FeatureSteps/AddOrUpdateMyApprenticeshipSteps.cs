@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using SFA.DAS.ApprenticePortal.Api.Controllers;
 using SFA.DAS.ApprenticePortal.InnerApi.CommitmentsV2.Responses;
 using SFA.DAS.ApprenticePortal.Models;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps

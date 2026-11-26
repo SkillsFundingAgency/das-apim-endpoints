@@ -1,30 +1,21 @@
-﻿using System;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.VacanciesManage.Api.Models;
 using SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetCandidateSkills;
 using SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetQualifications;
 using SFA.DAS.VacanciesManage.Application.TrainingCourses.Queries;
+using System;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.VacanciesManage.Api.Controllers;
 
 [ApiController]
 [Route("[controller]/")]
-public class ReferenceDataController : ControllerBase
+public class ReferenceDataController(IMediator mediator, ILogger<ReferenceDataController> logger)
+    : ControllerBase
 {
-    private readonly IMediator _mediator;
-    private readonly ILogger<ReferenceDataController> _logger;
-
-    public ReferenceDataController (IMediator mediator, ILogger<ReferenceDataController> logger)
-    {
-        _mediator = mediator;
-        _logger = logger;
-    }
-        
     /// <summary>
     /// GET list of qualifications.
     /// </summary>
@@ -37,18 +28,18 @@ public class ReferenceDataController : ControllerBase
     {
         try
         {
-            var queryResponse = await _mediator.Send(new GetQualificationsQuery());
+            var queryResponse = await mediator.Send(new GetQualificationsQuery());
 
-            return Ok((GetQualificationsResponse) queryResponse);
+            return Ok((GetQualificationsResponse)queryResponse);
 
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error attempting to get qualifications");
-            return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+            logger.LogError(e, "Error attempting to get qualifications");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
-        
+
     /// <summary>
     /// GET list of candidate skills. 
     /// </summary>
@@ -63,14 +54,14 @@ public class ReferenceDataController : ControllerBase
     {
         try
         {
-            var queryResponse = await _mediator.Send(new GetCandidateSkillsQuery());
+            var queryResponse = await mediator.Send(new GetCandidateSkillsQuery());
 
-            return Ok((GetCandidateSkillsListResponse) queryResponse);
+            return Ok((GetCandidateSkillsListResponse)queryResponse);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error attempting to get candidate skills");
-            return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+            logger.LogError(e, "Error attempting to get candidate skills");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
 
@@ -88,13 +79,13 @@ public class ReferenceDataController : ControllerBase
     {
         try
         {
-            var queryResponse = await _mediator.Send(new GetTrainingCoursesQuery(ukprn));
-            return Ok((GetTrainingCoursesListResponse) queryResponse);
+            var queryResponse = await mediator.Send(new GetTrainingCoursesQuery(ukprn));
+            return Ok((GetTrainingCoursesListResponse)queryResponse);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error attempting to get training courses");
-            return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+            logger.LogError(e, "Error attempting to get training courses");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
 }

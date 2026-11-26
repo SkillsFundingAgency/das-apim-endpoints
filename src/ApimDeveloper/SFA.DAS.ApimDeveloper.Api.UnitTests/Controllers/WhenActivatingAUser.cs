@@ -10,7 +10,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApimDeveloper.Api.Controllers;
 using SFA.DAS.ApimDeveloper.Application.Users.Commands.ActivateUser;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers

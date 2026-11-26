@@ -18,37 +18,35 @@ function uuid() {
 function interpolate(str) {
     return str.replace(/{{(.*?)}}/g, (_, name) => {
         if (name === "$random.uuid") return uuid();
-        return globalVars[name] ?? envVars[name] ?? `{{${name}}}`;
+        const val = globalVars[name] ?? envVars[name];
+        if (val === undefined) return `{{${name}}}`;
+        return typeof val === "object" ? JSON.stringify(val) : val;
     });
 }
 
-function extractVariable(code, responseJson) {
-    const matches = [...code.matchAll(/client\.global\.set\("(.+?)",\s*response\.body\.(.+?)\)/g)];
-    for (const [, varName, jsExpr] of matches) {
-        try {
-            // Build a function that evaluates the JS expression safely
-            const value = Function("body", `return body.${jsExpr}`)(responseJson);
-            if (value !== undefined) {
-                globalVars[varName] = value;
+function executeResponseScript(code, responseJson, statusCode, requestLabel) {
+    const failures = [];
+    const client = {
+        global: {
+            set: (k, v) => { globalVars[k] = v; },
+            get: (k) => globalVars[k] ?? envVars[k],
+        },
+        test: (_name, fn) => { fn(); },
+        assert: (condition, message) => {
+            if (!condition) {
+                failures.push(message);
+                console.log(`##vso[task.logissue type=error;] ${requestLabel} → Assert failed: ${message}`);
+                process.exitCode = 1;
             }
-        } catch (err) {
-            console.warn(`⚠️ Failed to extract '${varName}' from response.body.${jsExpr}`);
-        }
+        },
+    };
+    const response = { status: statusCode, body: responseJson };
+    try {
+        Function("client", "response", code)(client, response);
+    } catch (err) {
+        console.warn(`⚠️ Response script error: ${err.message}`);
     }
-}
-
-function extractAsserts(block) {
-    // Matches: client.assert(response.status === 200, "Message")
-    const regex = /client\.assert\(([^,]+),\s*["'`](.+?)["'`]\)/g;
-    const asserts = [];
-    let match;
-    while ((match = regex.exec(block)) !== null) {
-        asserts.push({
-            condition: match[1].trim(),
-            message: match[2].trim()
-        });
-    }
-    return asserts;
+    return failures;
 }
 
 function runRequestBlock(block, output = []) {
@@ -73,7 +71,7 @@ function runRequestBlock(block, output = []) {
         }
     }
 
-    const asserts = extractAsserts(block);
+    const responseScriptMatch = block.match(/>\s*\{%([\s\S]*?)%\}/);
 
     const curl = [
         `curl -X ${method}`,
@@ -104,33 +102,17 @@ function runRequestBlock(block, output = []) {
                 let json;
                 try {
                     json = JSON.parse(data);
-                    if (block.includes("client.global.set")) {
-                        extractVariable(block, json);
-                    }
                 } catch {}
 
-                let allPass = true;
+                const label = `${method} ${url}`;
 
-                for (const { condition, message } of asserts) {
-                    try {
-                        const pass = Function("response", "body", `return ${condition};`)({ status: res.statusCode }, json);
-
-                        if (!pass) {
-                            console.log(`##vso[task.logissue type=error;] ${method} ${url} → Assert failed: ${message}`);
-                            allPass = false;
-                            process.exitCode = 1;
-                            return resolve();
-                        }
-                    } catch (err) {
-                        console.log(`##vso[task.logissue type=error;] ${method} ${url} → Error in assert: ${message}`);
-                        allPass = false;
+                if (responseScriptMatch) {
+                    const failures = executeResponseScript(responseScriptMatch[1], json, res.statusCode, label);
+                    if (failures.length === 0) {
+                        console.log(`✅ ${label} → All asserts passed`);
                     }
-                }
-
-                if (asserts.length === 0) {
-                    console.log(`ℹ️ ${method} ${url} → ${res.statusCode}`);
-                } else if (allPass) {
-                    console.log(`✅ ${method} ${url} → All asserts passed`);
+                } else {
+                    console.log(`ℹ️ ${label} → ${res.statusCode}`);
                 }
 
                 resolve();
@@ -175,13 +157,35 @@ function runRequestBlock(block, output = []) {
     const output = [];
 
     for (const block of requests) {
-        if (args.exec) {
-            await runRequestBlock(block, output);
-        } else {
-            const lines = block.trim().split("\n");
-            const curlCommand = await runRequestBlock(block, []);
-            output.push(curlCommand);
+        const firstLine = block.trim().split("\n")[0].trim();
+        const waitMatch = firstLine.match(/^WAIT\s+(\d+)$/i);
+        if (waitMatch) {
+            const ms = parseInt(waitMatch[1], 10);
+            console.log(`⏳ Waiting ${ms}ms...`);
+            await new Promise(resolve => setTimeout(resolve, ms));
+            continue;
         }
+
+        // Strip and execute pre-request scripts (< {% ... %})
+        let requestBlock = block;
+        const preRequestMatch = block.match(/^<\s*\{%([\s\S]*?)%\}\s*\n([\s\S]*)$/);
+        if (preRequestMatch) {
+            const preScript = preRequestMatch[1];
+            requestBlock = preRequestMatch[2];
+            try {
+                const client = {
+                    global: {
+                        set: (k, v) => { globalVars[k] = v; },
+                        get: (k) => globalVars[k] ?? envVars[k],
+                    }
+                };
+                Function("client", "crypto", preScript)(client, { randomUUID: uuid });
+            } catch (e) {
+                console.warn(`⚠️ Pre-request script error: ${e.message}`);
+            }
+        }
+
+        await runRequestBlock(requestBlock, output);
     }
 
     if (args.out) {

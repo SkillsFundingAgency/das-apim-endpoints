@@ -6,14 +6,18 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.Notifications.Messages.Commands;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using System.Net;
 using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Responses;
-using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain;
+
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply;
 
@@ -253,7 +257,7 @@ public class WhenHandlingSubmitApplicationCommand
             c.PatchUrl.Contains(request.CandidateId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
             c.Data.Operations[0].path == "/Status" &&
             (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Submitted
-        ))).ReturnsAsync(new ApiResponse<string>("",HttpStatusCode.Accepted,""));
+        ))).ReturnsAsync(new ApiResponse<string>("",HttpStatusCode.OK,""));
         
         recruitV2ApiClient
             .Setup(x => x.PostWithResponseCode<PostCreateApplicationReviewNotificationsResponse>(
@@ -327,7 +331,7 @@ public class WhenHandlingSubmitApplicationCommand
             c.PatchUrl.Contains(request.CandidateId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
             c.Data.Operations[0].path == "/Status" &&
             (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Submitted
-        ))).ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, ""));
+        ))).ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.OK, ""));
         
         recruitV2ApiClient
             .Setup(x => x.PutWithResponseCode<NullResponse>(It.IsAny<CreateApplicationReviewRequest>()))
@@ -407,7 +411,7 @@ public class WhenHandlingSubmitApplicationCommand
             c.PatchUrl.Contains(request.CandidateId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
             c.Data.Operations[0].path == "/Status" &&
             (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Submitted
-        ))).ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, ""));
+        ))).ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.OK, ""));
         
         recruitV2ApiClient
             .Setup(x => x.PutWithResponseCode<NullResponse>(It.IsAny<CreateApplicationReviewRequest>()))
@@ -541,6 +545,96 @@ public class WhenHandlingSubmitApplicationCommand
     }
 
     [Test, MoqAutoData]
+    public async Task Then_PatchApplication_Retries_On_Non_OK_Response_And_Eventually_Succeeds(
+        SubmitApplicationCommand request,
+        GetApplicationApiResponse applicationApiResponse,
+        GetApprenticeshipVacancyItemResponse vacancyResponse,
+        NotificationEmailDto applicationReviewNotificationsResponse,
+        [Frozen] Mock<IVacancyService> vacancyService,
+        [Frozen] Mock<IMetrics> metricsService,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitV2ApiClient,
+        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+        SubmitApplicationCommandHandler handler)
+    {
+        const string vacancyReference = "VAC999999999";
+        vacancyResponse.VacancyReference = vacancyReference;
+        applicationApiResponse.Status = ApplicationStatus.Draft;
+        applicationApiResponse.VacancyReference = vacancyReference;
+
+        candidateApiClient
+            .Setup(x => x.Get<GetApplicationApiResponse>(It.IsAny<GetApplicationApiRequest>()))
+            .ReturnsAsync(applicationApiResponse);
+
+        var callCount = 0;
+        candidateApiClient
+            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>()))
+            .ReturnsAsync(() =>
+            {
+                callCount++;
+                return callCount < 3
+                    ? new ApiResponse<string>("", HttpStatusCode.NotFound, "")
+                    : new ApiResponse<string>("", HttpStatusCode.OK, "");
+            });
+
+        vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(vacancyResponse);
+
+        recruitV2ApiClient
+            .Setup(x => x.PutWithResponseCode<NullResponse>(It.IsAny<CreateApplicationReviewRequest>()))
+            .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.Created, ""));
+
+        recruitV2ApiClient
+            .Setup(x => x.PostWithResponseCode<PostCreateApplicationReviewNotificationsResponse>(
+                It.Is<PostCreateApplicationReviewNotificationsRequest>(c =>
+                    c.PostUrl.Contains(request.ApplicationId.ToString())), true))
+            .ReturnsAsync(new ApiResponse<PostCreateApplicationReviewNotificationsResponse>(
+                [applicationReviewNotificationsResponse], HttpStatusCode.Created, ""));
+
+        var actual = await handler.Handle(request, CancellationToken.None);
+
+        candidateApiClient.Verify(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>()), Times.Exactly(3));
+        actual.Should().BeTrue();
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_PatchApplication_Retries_Three_Times_And_Throws_When_All_Attempts_Fail(
+        SubmitApplicationCommand request,
+        GetApplicationApiResponse applicationApiResponse,
+        GetApprenticeshipVacancyItemResponse vacancyResponse,
+        [Frozen] Mock<IVacancyService> vacancyService,
+        [Frozen] Mock<IMetrics> metricsService,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitV2ApiClient,
+        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+        SubmitApplicationCommandHandler handler)
+    {
+        const string vacancyReference = "VAC999999999";
+        vacancyResponse.VacancyReference = vacancyReference;
+        applicationApiResponse.Status = ApplicationStatus.Draft;
+        applicationApiResponse.VacancyReference = vacancyReference;
+
+        candidateApiClient
+            .Setup(x => x.Get<GetApplicationApiResponse>(It.IsAny<GetApplicationApiRequest>()))
+            .ReturnsAsync(applicationApiResponse);
+
+        candidateApiClient
+            .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>()))
+            .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.NotFound, ""));
+
+        vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(vacancyResponse);
+
+        recruitV2ApiClient
+            .Setup(x => x.PutWithResponseCode<NullResponse>(It.IsAny<CreateApplicationReviewRequest>()))
+            .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.Created, ""));
+
+        var act = () => handler.Handle(request, CancellationToken.None);
+
+        await act.Should().ThrowAsync<ApplicationException>()
+            .WithMessage($"*{request.ApplicationId}*");
+
+        // 1 initial attempt + 3 retries = 4 total calls
+        candidateApiClient.Verify(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>()), Times.Exactly(4));
+    }
+
+    [Test, MoqAutoData]
     public async Task Then_The_Vacancy_Is_Not_Found_Application_Is_Not_Submitted_Email_Not_Sent(
         GetApplicationApiResponse applicationApiResponse,
         SubmitApplicationCommand request,
@@ -561,7 +655,7 @@ public class WhenHandlingSubmitApplicationCommand
             c.PatchUrl.Contains(request.CandidateId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
             c.Data.Operations[0].path == "/Status" &&
             (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Submitted
-        ))).ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, ""));
+        ))).ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.OK, ""));
         recruitApiClient
             .Setup(x => x.PostWithResponseCode<NullResponse>(
                 It.Is<PostSubmitApplicationRequest>(c =>

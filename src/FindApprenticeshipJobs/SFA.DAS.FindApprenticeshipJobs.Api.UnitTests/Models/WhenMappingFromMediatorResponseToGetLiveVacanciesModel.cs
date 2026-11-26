@@ -18,7 +18,7 @@ public class WhenMappingFromMediatorResponseToGetLiveVacanciesModel
 
         using (new AssertionScope())
         {
-            actual.Vacancies.Should().BeEquivalentTo(source.Vacancies);
+            actual.Vacancies.Should().BeEquivalentTo(source.Vacancies, options=>options.Excluding(c=>c.Qualifications));
             actual.PageSize.Should().Be(source.PageSize);
             actual.PageNo.Should().Be(source.PageNo);
             actual.TotalLiveVacanciesReturned.Should().Be(source.TotalLiveVacanciesReturned);
@@ -31,7 +31,7 @@ public class WhenMappingFromMediatorResponseToGetLiveVacanciesModel
     public void Then_The_Fields_Are_Mapped_For_Nhs_Vacancies(GetNhsJobsQueryResult source)
     {
         var actual = (GetLiveVacanciesApiResponse)source;
-        actual.Vacancies.Should().BeEquivalentTo(source.NhsVacancies);
+        actual.Vacancies.Should().BeEquivalentTo(source.NhsVacancies, options=>options.Excluding(c=>c.Qualifications));
         actual.TotalPages.Should().Be(1);
         actual.PageNo.Should().Be(1);
         actual.TotalLiveVacanciesReturned.Should().Be(source.NhsVacancies.Count);

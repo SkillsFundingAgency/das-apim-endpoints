@@ -4,4 +4,5 @@ public class GetAccountReservationsStatusResponse
     public bool CanAutoCreateReservations { get; set; }
     public bool HasReachedReservationsLimit { get; set; }
     public bool HasPendingReservations { get; set; }
+    public int RemainingReservationsCount { get; set; }
 }

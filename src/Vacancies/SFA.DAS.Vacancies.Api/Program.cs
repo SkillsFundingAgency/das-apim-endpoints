@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Builder;
-using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.Vacancies.Api;
 
 var builder = WebApplication.CreateBuilder(args);

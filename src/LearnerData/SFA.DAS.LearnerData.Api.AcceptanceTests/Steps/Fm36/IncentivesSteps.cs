@@ -1,8 +1,8 @@
-﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+﻿using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
+using System.Net;
+using DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
-using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
-using System.Net;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using WireMock.RequestBuilders;
@@ -45,8 +45,8 @@ public class IncentivesSteps(TestContext testContext, ScenarioContext scenarioCo
 
         testContext.ApprenticeshipsApi.MockServer
             .Given(
-                Request.Create().WithPath($"/10005077/{academicYear}/{deliveryPeriod}")
-                    .UsingGet())
+                Request.Create().WithPath($"/10005077/learnings/by-keys")
+                    .UsingPost())
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)

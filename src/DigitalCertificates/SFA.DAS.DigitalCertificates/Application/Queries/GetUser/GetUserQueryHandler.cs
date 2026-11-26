@@ -1,12 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
-using User = SFA.DAS.DigitalCertificates.InnerApi.Responses.User;
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
 
 namespace SFA.DAS.DigitalCertificates.Application.Queries.GetUser
 {
@@ -21,8 +20,8 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetUser
 
         public async Task<GetUserResult> Handle(GetUserQuery request, CancellationToken cancellationToken)
         {
-            ApiResponse<User> userRequest = await _digitalCertificatesApiClient.
-                GetWithResponseCode<User>(new GetUserRequest(request.GovUkIdentifier));
+            ApiResponse<GetUserResponse> userRequest = await _digitalCertificatesApiClient.
+                GetWithResponseCode<GetUserResponse>(new GetUsersByGovUkIdentifierApiRequest(request.GovUkIdentifier));
 
             if (userRequest?.StatusCode != System.Net.HttpStatusCode.NotFound)
             {

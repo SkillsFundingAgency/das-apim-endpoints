@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Api.Controllers;
+using SFA.DAS.DigitalCertificates.Api.Models.Users;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser;
-using SFA.DAS.DigitalCertificates.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
@@ -28,16 +28,15 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
                 .Setup(x => x.Send(It.Is<CreateOrUpdateUserCommand>(c =>
                     c.GovUkIdentifier == request.GovUkIdentifier &&
                     c.EmailAddress == request.EmailAddress &&
-                    c.PhoneNumber == request.PhoneNumber &&
-                    c.Names == request.Names &&
-                    c.DateOfBirth == request.DateOfBirth), CancellationToken.None))
+                    c.PhoneNumber == request.PhoneNumber), CancellationToken.None))
                 .ReturnsAsync(result);
 
             var actual = await controller.CreateOrUpdateUser(request) as ObjectResult;
 
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().Be(result.UserId);
+            var expected = (Models.Users.CreateOrUpdateUserResponse)result;
+            actual.Value.Should().BeEquivalentTo(expected);
         }
 
         [Test, MoqAutoData]

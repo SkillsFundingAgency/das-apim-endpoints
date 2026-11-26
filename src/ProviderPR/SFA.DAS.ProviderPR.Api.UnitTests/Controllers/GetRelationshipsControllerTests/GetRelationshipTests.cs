@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.ProviderPR.Api.Controllers;
 using SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationship;
-using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
 
 namespace SFA.DAS.ProviderPR.Api.UnitTests.Controllers.GetRelationshipsControllerTests;

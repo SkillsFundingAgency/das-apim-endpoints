@@ -1,6 +1,4 @@
-﻿using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderPhoneNumbers;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderWebsite;
-using System.Collections.Generic;
+﻿using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderWebsite;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Models
 {

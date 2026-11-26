@@ -1,15 +1,11 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
+﻿using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies.SaveVacancy;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
+using SFA.DAS.FindAnApprenticeship.Services;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Net;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Vacancies
@@ -22,6 +18,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Vacancies
             SaveVacancyCommand command,
             PutSavedVacancyApiResponse apiResponse,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+            [Frozen] Mock<IMetrics> metrics,
             SaveVacancyCommandHandler handler)
         {
             candidateApiClient
@@ -33,12 +30,14 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Vacancies
 
             actual.Should().NotBeNull();
             actual.Id.Should().Be(apiResponse.Id);
+            metrics.Verify(x => x.IncreaseVacancySaved(It.IsAny<string>(), 1), Times.Exactly(1));
         }
 
         [Test, MoqAutoData]
         public void And_Api_Returns_Null_Then_Return_Null(
             SaveVacancyCommand command,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+            [Frozen] Mock<IMetrics> metrics,
             SaveVacancyCommandHandler handler)
         {
             candidateApiClient.Setup(x => x.PutWithResponseCode<NullResponse>(It.IsAny<PutSavedVacancyApiRequest>()))
@@ -47,6 +46,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Vacancies
             Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
 
             act.Should().ThrowAsync<InvalidOperationException>();
+
+            metrics.Verify(x => x.IncreaseVacancySaved(It.IsAny<string>(), 1), Times.Never());
         }
     }
 }

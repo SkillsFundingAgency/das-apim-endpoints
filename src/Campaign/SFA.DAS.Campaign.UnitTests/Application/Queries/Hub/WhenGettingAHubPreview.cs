@@ -25,7 +25,7 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Hub
             GetPreviewHubQuery query,
             GetMenuQueryResult menuResult,
             MenuPageModel.MenuPageContent menuContent,
-            CmsContent apiResponse,
+            HubCmsContent apiResponse,
             HubPageModel response,
             GetBannerQueryResult bannerResult,
             BannerPageModel bannerContent,
@@ -34,7 +34,7 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Hub
             GetPreviewHubQueryHandler handler)
         {
             apiClient.Setup(o =>
-                    o.Get<CmsContent>(
+                    o.Get<HubCmsContent>(
                         It.Is<GetHubEntriesRequest>(c =>
                             c.GetUrl.Contains($"fields.hubType={query.Hub.ToTitleCase()}"))))
                 .ReturnsAsync(apiResponse);

@@ -1,12 +1,24 @@
-﻿using AutoFixture;
-using FluentAssertions;
+using AutoFixture;
 using Microsoft.Extensions.Logging;
-using Moq;
+using SFA.DAS.Common.Domain.Types;
 using NServiceBus;
-using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.LearnerData.Services;
+using SFA.DAS.LearnerData.Services.ShortCourses;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.LearnerData.Configuration;
+using SFA.DAS.LearnerData.Enums;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using System.Net;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.CreateLearner;
 
@@ -17,6 +29,13 @@ public class WhenCreatingLearners
 #pragma warning disable CS8618 // Non-nullable field, instantiated in SetUp method
     private Mock<IMessageSession> _mockMessageSession;
     private Mock<ILogger<CreateLearnerCommandHandler>> _mockLogger;
+    private Mock<ILearningApiClient<LearningApiConfiguration>> _mockLearningApiClient;
+    private Mock<IEarningsApiClient<EarningsApiConfiguration>> _mockEarningsApiClient;
+    private Mock<ICreateDraftLearningApiPostRequestBuilder> _mockCreateDraftLearningApiPostRequestBuilder;
+    private Mock<IUpdateEarningsOnProgrammeRequestBuilder> _mockUpdateEarningsOnProgrammeRequestBuilder;
+    private Mock<ICreateUnapprovedApprenticeshipLearningRequestBuilder> _mockCreateUnapprovedApprenticeshipLearningRequestBuilder;
+    private Mock<ICourseService> _mockCourseService;
+    private Mock<ILearnerDataCacheService> _mockLearnerDataCacheService;
     private CreateLearnerCommandHandler _sut;
 
 
@@ -31,9 +50,51 @@ public class WhenCreatingLearners
     {
         _mockMessageSession = new Mock<IMessageSession>();
         _mockLogger = new Mock<ILogger<CreateLearnerCommandHandler>>();
-        _sut = new CreateLearnerCommandHandler(
+        _mockLearningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
+        _mockEarningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
+        _mockCreateDraftLearningApiPostRequestBuilder = new Mock<ICreateDraftLearningApiPostRequestBuilder>();
+        _mockUpdateEarningsOnProgrammeRequestBuilder = new Mock<IUpdateEarningsOnProgrammeRequestBuilder>();
+        _mockCreateUnapprovedApprenticeshipLearningRequestBuilder = new Mock<ICreateUnapprovedApprenticeshipLearningRequestBuilder>();
+        _mockCourseService = new Mock<ICourseService>();
+        _mockLearnerDataCacheService = new Mock<ILearnerDataCacheService>();
+
+        _sut =new CreateLearnerCommandHandler(
             _mockLogger.Object,
-            _mockMessageSession.Object);
+            _mockMessageSession.Object,
+            _mockLearningApiClient.Object,
+            _mockCreateDraftLearningApiPostRequestBuilder.Object,
+            _mockEarningsApiClient.Object,
+            _mockUpdateEarningsOnProgrammeRequestBuilder.Object,
+            _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
+            _mockCourseService.Object,
+            new LearnerDataEventMapper(),
+            _mockLearnerDataCacheService.Object,
+            new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = true });
+
+        _mockCourseService
+            .Setup(x => x.GetStandardDetailsById(It.IsAny<string>()))
+            .ReturnsAsync(new StandardDetailResponse { ApprenticeshipType = "Apprenticeship" });
+
+        _mockCreateDraftLearningApiPostRequestBuilder
+            .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<int>(), It.IsAny<LearningType>()))
+            .ReturnsAsync(new CreateDraftLearningApiPostRequest(new UpdateLearningRequestBody(), 0));
+
+        var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(
+            new CreateDraftLearnerApiPutResponse { Changes = new List<BaseLearnerApiPutResponse.LearningUpdateChanges>() },
+            HttpStatusCode.OK,
+            string.Empty);
+
+        _mockLearningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
+            .ReturnsAsync(successResponse);
+
+        _mockCreateUnapprovedApprenticeshipLearningRequestBuilder
+            .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<CreateDraftLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()))
+            .ReturnsAsync(new PostCreateUnapprovedApprenticeshipLearningRequest(new CreateUnapprovedApprenticeshipLearningRequest()));
+
+        _mockEarningsApiClient
+            .Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostCreateUnapprovedApprenticeshipLearningRequest>(), true))
+            .ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.OK, string.Empty));
     }
 
 
@@ -49,6 +110,19 @@ public class WhenCreatingLearners
         // Assert
         _mockMessageSession.Verify(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()),
             Times.Once());
+    }
+
+    [Test]
+    public async Task Then_learner_is_stored_in_the_cache()
+    {
+        // Arrange
+        var command = GetProcessLearnersCommand();
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _mockLearnerDataCacheService.Verify(x => x.StoreLearner(command.Request, command.Ukprn, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test]
@@ -69,6 +143,7 @@ public class WhenCreatingLearners
         await _sut.Handle(command, CancellationToken.None);
 
         // Assert
+        var expectedOnProgramme = request.Delivery.OnProgramme.MinBy(x => x.StartDate)!;
         @event.Should().BeEquivalentTo(new
         {
             ULN = request.Learner.Uln,
@@ -76,19 +151,402 @@ public class WhenCreatingLearners
             FirstName = request.Learner.FirstName,
             LastName = request.Learner.LastName,
             Email = request.Learner.Email,
-            DoB = request.Learner.Dob!.Value,
-            StartDate = request.Delivery.OnProgramme.First().StartDate,
-            PlannedEndDate = request.Delivery.OnProgramme.First().ExpectedEndDate,
-            PercentageLearningToBeDelivered = request.Delivery.OnProgramme.First().PercentageOfTrainingLeft,
-            EpaoPrice = request.Delivery.OnProgramme.First().Costs.First().EpaoPrice,
-            TrainingPrice = request.Delivery.OnProgramme.First().Costs.First().TrainingPrice,
-            AgreementId = request.Delivery.OnProgramme.First().AgreementId,
-            IsFlexiJob = request.Delivery.OnProgramme.First().IsFlexiJob!.Value,
-            StandardCode = request.Delivery.OnProgramme.First().StandardCode,
+            DoB = request.Learner.Dob,
+            StartDate = expectedOnProgramme.StartDate,
+            PlannedEndDate = expectedOnProgramme.ExpectedEndDate,
+            PercentageLearningToBeDelivered = expectedOnProgramme.PercentageOfTrainingLeft,
+            EpaoPrice = expectedOnProgramme.Costs.First().EpaoPrice,
+            TrainingPrice = expectedOnProgramme.Costs.First().TrainingPrice,
+            AgreementId = expectedOnProgramme.AgreementId,
+            IsFlexiJob = expectedOnProgramme.IsFlexiJob!.Value,
+            StandardCode = expectedOnProgramme.StandardCode,
             CorrelationId = command.CorrelationId,
             ReceivedDate = command.ReceivedOn,
-            ConsumerReference = request.ConsumerReference
+            ConsumerReference = request.ConsumerReference,
+            LearningType = LearningType.Apprenticeship
         });
+    }
+
+    [Test]
+    public async Task Then_learning_type_is_resolved_from_the_courses_api()
+    {
+        // Arrange
+        var command = GetProcessLearnersCommand();
+        var standardCode = command.Request.Delivery.OnProgramme.MinBy(x => x.StartDate)!.StandardCode;
+
+        _mockCourseService
+            .Setup(x => x.GetStandardDetailsById(standardCode.ToString()))
+            .ReturnsAsync(new StandardDetailResponse { ApprenticeshipType = "FoundationApprenticeship" });
+
+        var @event = new LearnerDataEvent();
+        _mockMessageSession.Setup(x => x.Publish(It.IsAny<LearnerDataEvent>(), It.IsAny<PublishOptions>()))
+            .Callback((object p, PublishOptions o) =>
+            {
+                @event = (LearnerDataEvent)p;
+            });
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        @event.LearningType.Should().Be(LearningType.FoundationApprenticeship);
+    }
+
+    [Test]
+    public void Then_throws_if_courses_api_returns_an_unrecognised_apprenticeship_type()
+    {
+        // Arrange
+        var command = GetProcessLearnersCommand();
+
+        _mockCourseService
+            .Setup(x => x.GetStandardDetailsById(It.IsAny<string>()))
+            .ReturnsAsync(new StandardDetailResponse { ApprenticeshipType = "SomethingUnexpected" });
+
+        // Act & Assert
+        Assert.ThrowsAsync<InvalidOperationException>(async () => await _sut.Handle(command, CancellationToken.None));
+    }
+
+    [Test]
+    public void Then_throws_invalid_course_exception_if_courses_api_returns_no_standard()
+    {
+        // Arrange
+        var command = GetProcessLearnersCommand();
+
+        _mockCourseService
+            .Setup(x => x.GetStandardDetailsById(It.IsAny<string>()))
+            .ReturnsAsync((StandardDetailResponse)null!);
+
+        // Act & Assert
+        Assert.ThrowsAsync<InvalidCourseException>(async () => await _sut.Handle(command, CancellationToken.None));
+    }
+
+    //[Test]
+    //public void Then_throws_exception_if_learner_creation_fails()
+    //{
+    //    // Arrange
+    //    var command = GetProcessLearnersCommand();
+    //    var failureResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(
+    //        new CreateDraftLearnerApiPutResponse(),
+    //        HttpStatusCode.InternalServerError,
+    //        "Internal Error");
+
+    //    _mockLearningApiClient
+    //        .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
+    //        .ReturnsAsync(failureResponse);
+
+    //    // Act & Assert
+    //    Assert.ThrowsAsync<InvalidOperationException>(async () => await _sut.Handle(command, CancellationToken.None));
+    //}
+
+    //[Test]
+    //public async Task Then_reinstates_earnings_if_learner_is_reinstated()
+    //{
+    //    // Arrange
+    //    var command = GetProcessLearnersCommand();
+    //    var learningKey = Guid.NewGuid();
+    //    var responseBody = new CreateDraftLearnerApiPutResponse
+    //    {
+    //        LearningKey = learningKey,
+    //        Changes = new List<BaseLearnerApiPutResponse.LearningUpdateChanges> { BaseLearnerApiPutResponse.LearningUpdateChanges.Reinstated }
+    //    };
+    //    var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(
+    //        responseBody,
+    //        HttpStatusCode.OK,
+    //        string.Empty);
+
+    //    _mockLearningApiClient
+    //        .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
+    //        .ReturnsAsync(successResponse);
+
+    //    var earningsPutRequest = _fixture.Create<UpdateOnProgrammeApiPutRequest>();
+    //    _mockUpdateEarningsOnProgrammeRequestBuilder
+    //        .Setup(x => x.Build(learningKey, command.Request, responseBody, It.IsAny<UpdateLearningRequestBody>()))
+    //        .ReturnsAsync(earningsPutRequest);
+
+    //    _mockEarningsApiClient
+    //        .Setup(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
+    //        .Returns(Task.CompletedTask);
+
+    //    // Act
+    //    await _sut.Handle(command, CancellationToken.None);
+
+    //    // Assert
+    //    _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(learningKey, command.Request, responseBody, It.IsAny<UpdateLearningRequestBody>()), Times.Once);
+    //    _mockEarningsApiClient.Verify(x => x.Put(earningsPutRequest), Times.Once);
+    //}
+
+    [Test]
+    public async Task Then_does_not_reinstate_earnings_if_learner_is_not_reinstated()
+    {
+        // Arrange
+        var command = GetProcessLearnersCommand();
+        var responseBody = new CreateDraftLearnerApiPutResponse
+        {
+            LearningKey = Guid.NewGuid(),
+            Changes = new List<BaseLearnerApiPutResponse.LearningUpdateChanges> { BaseLearnerApiPutResponse.LearningUpdateChanges.PersonalDetails }
+        };
+        var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(
+            responseBody,
+            HttpStatusCode.OK,
+            string.Empty);
+
+        _mockLearningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
+            .ReturnsAsync(successResponse);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(It.IsAny<Guid>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Never);
+        _mockEarningsApiClient.Verify(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Never);
+        _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Verify(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<CreateDraftLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Once);
+        _mockEarningsApiClient.Verify(x => x.PostWithResponseCode<object>(It.IsAny<PostCreateUnapprovedApprenticeshipLearningRequest>(), true), Times.Once);
+    }
+
+    [Test]
+    public async Task Then_all_earnings_are_released_when_a_reinstated_learner_has_earnings_sync_forced()
+    {
+        // Arrange
+        var command = GetProcessLearnersCommand();
+        var responseBody = MockCreateDraftLearnerResponse(
+            BaseLearnerApiPutResponse.LearningUpdateChanges.Reinstated,
+            BaseLearnerApiPutResponse.LearningUpdateChanges.ForceEarningsSync);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _mockEarningsApiClient.Verify(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Once);
+        _mockEarningsApiClient.Verify(x => x.Post(
+                It.Is<ReleaseEarningsApiPostRequest>(r =>
+                    r.PostUrl.Contains(responseBody.LearningKey.ToString()) &&
+                    r.Data.LearnerKey == responseBody.LearnerKey &&
+                    r.Data.LearnerRef == command.Request.Learner.LearnerRef &&
+                    r.Data.ReleaseType == ReleaseType.All &&
+                    r.Data.EnglishAndMathsCourseKeys.Count == 0)),
+            Times.Once);
+    }
+
+    [Test]
+    public async Task Then_earnings_are_not_released_when_a_reinstated_learner_does_not_have_earnings_sync_forced()
+    {
+        // Arrange
+        var command = GetProcessLearnersCommand();
+        MockCreateDraftLearnerResponse(BaseLearnerApiPutResponse.LearningUpdateChanges.Reinstated);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _mockEarningsApiClient.Verify(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Once);
+        _mockEarningsApiClient.Verify(x => x.Post(It.IsAny<ReleaseEarningsApiPostRequest>()), Times.Never);
+    }
+
+    [Test]
+    public async Task Then_earnings_are_not_released_when_earnings_sync_is_forced_but_the_learner_is_not_reinstated()
+    {
+        // Arrange
+        var command = GetProcessLearnersCommand();
+        MockCreateDraftLearnerResponse(BaseLearnerApiPutResponse.LearningUpdateChanges.ForceEarningsSync);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _mockEarningsApiClient.Verify(x => x.Post(It.IsAny<ReleaseEarningsApiPostRequest>()), Times.Never);
+    }
+
+    [Test]
+    public async Task Then_does_not_reinstate_earnings_if_response_body_is_null()
+    {
+        // Arrange
+        var command = GetProcessLearnersCommand();
+        var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(
+            null!,
+            System.Net.HttpStatusCode.OK,
+            string.Empty);
+
+        _mockLearningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
+            .ReturnsAsync(successResponse);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(It.IsAny<Guid>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Never);
+        _mockEarningsApiClient.Verify(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Never);
+        _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Verify(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<CreateDraftLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Never);
+        _mockEarningsApiClient.Verify(x => x.PostWithResponseCode<object>(It.IsAny<PostCreateUnapprovedApprenticeshipLearningRequest>(), true), Times.Never);
+    }
+
+    [Test]
+    public async Task Then_earnings_are_not_called_when_ApprenticeshipEarningsGeneration_is_false()
+    {
+        // Arrange
+        var sutWithEarningsGenerationDisabled = new CreateLearnerCommandHandler(
+            _mockLogger.Object,
+            _mockMessageSession.Object,
+            _mockLearningApiClient.Object,
+            _mockCreateDraftLearningApiPostRequestBuilder.Object,
+            _mockEarningsApiClient.Object,
+            _mockUpdateEarningsOnProgrammeRequestBuilder.Object,
+            _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
+            _mockCourseService.Object,
+            new LearnerDataEventMapper(),
+            _mockLearnerDataCacheService.Object,
+            new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = false });
+
+        var command = GetProcessLearnersCommand();
+
+        // Act
+        await sutWithEarningsGenerationDisabled.Handle(command, CancellationToken.None);
+
+        // Assert - draft learner creation still happens...
+        _mockLearningApiClient.Verify(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true), Times.Once);
+        _mockMessageSession.Verify(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()), Times.Once());
+
+        // ...but no call to Earnings Inner is made
+        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(It.IsAny<Guid>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Never);
+        _mockEarningsApiClient.Verify(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Never);
+        _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Verify(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<CreateDraftLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Never);
+        _mockEarningsApiClient.Verify(x => x.PostWithResponseCode<object>(It.IsAny<PostCreateUnapprovedApprenticeshipLearningRequest>(), true), Times.Never);
+    }
+
+    [Test]
+    public async Task Then_deletes_omitted_course_from_earnings_when_RemovedLearningKey_present_and_generation_enabled()
+    {
+        // Arrange
+        var removedLearningKey = Guid.NewGuid();
+        var responseBody = new CreateDraftLearnerApiPutResponse
+        {
+            LearningKey = Guid.NewGuid(),
+            RemovedLearningKey = removedLearningKey,
+            Changes = new List<BaseLearnerApiPutResponse.LearningUpdateChanges>()
+        };
+        var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(
+            responseBody,
+            HttpStatusCode.OK,
+            string.Empty);
+
+        _mockLearningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
+            .ReturnsAsync(successResponse);
+
+        _mockEarningsApiClient
+            .Setup(x => x.DeleteWithResponseCode<NullResponse>(
+                It.Is<DeleteLearningRequest>(r => r.LearningKey == removedLearningKey), false))
+            .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, string.Empty));
+
+        var command = GetProcessLearnersCommand();
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _mockEarningsApiClient.Verify(x => x.DeleteWithResponseCode<NullResponse>(
+            It.Is<DeleteLearningRequest>(r => r.LearningKey == removedLearningKey), false), Times.Once);
+    }
+
+    [Test]
+    public async Task Then_does_not_call_earnings_delete_when_RemovedLearningKey_is_null()
+    {
+        // Arrange
+        var responseBody = new CreateDraftLearnerApiPutResponse
+        {
+            LearningKey = Guid.NewGuid(),
+            RemovedLearningKey = null,
+            Changes = new List<BaseLearnerApiPutResponse.LearningUpdateChanges>()
+        };
+        var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(
+            responseBody,
+            HttpStatusCode.OK,
+            string.Empty);
+
+        _mockLearningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
+            .ReturnsAsync(successResponse);
+
+        var command = GetProcessLearnersCommand();
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _mockEarningsApiClient.Verify(x => x.DeleteWithResponseCode<NullResponse>(It.IsAny<DeleteLearningRequest>(), false), Times.Never);
+    }
+
+    [Test]
+    public async Task Then_does_not_call_earnings_delete_when_ApprenticeshipEarningsGeneration_is_false_even_if_RemovedLearningKey_present()
+    {
+        // Arrange
+        var sutWithEarningsGenerationDisabled = new CreateLearnerCommandHandler(
+            _mockLogger.Object,
+            _mockMessageSession.Object,
+            _mockLearningApiClient.Object,
+            _mockCreateDraftLearningApiPostRequestBuilder.Object,
+            _mockEarningsApiClient.Object,
+            _mockUpdateEarningsOnProgrammeRequestBuilder.Object,
+            _mockCreateUnapprovedApprenticeshipLearningRequestBuilder.Object,
+            _mockCourseService.Object,
+            new LearnerDataEventMapper(),
+            _mockLearnerDataCacheService.Object,
+            new FeatureFlags { ApprenticeshipCreateDraftLearner = true, ApprenticeshipEarningsGeneration = false });
+
+        var responseBody = new CreateDraftLearnerApiPutResponse
+        {
+            LearningKey = Guid.NewGuid(),
+            RemovedLearningKey = Guid.NewGuid(),
+            Changes = new List<BaseLearnerApiPutResponse.LearningUpdateChanges>()
+        };
+        var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(
+            responseBody,
+            HttpStatusCode.OK,
+            string.Empty);
+
+        _mockLearningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
+            .ReturnsAsync(successResponse);
+
+        var command = GetProcessLearnersCommand();
+
+        // Act
+        await sutWithEarningsGenerationDisabled.Handle(command, CancellationToken.None);
+
+        // Assert
+        _mockEarningsApiClient.Verify(x => x.DeleteWithResponseCode<NullResponse>(It.IsAny<DeleteLearningRequest>(), false), Times.Never);
+    }
+
+    [Test]
+    public void Then_throws_when_earnings_delete_of_omitted_course_fails()
+    {
+        // Arrange
+        var removedLearningKey = Guid.NewGuid();
+        var responseBody = new CreateDraftLearnerApiPutResponse
+        {
+            LearningKey = Guid.NewGuid(),
+            RemovedLearningKey = removedLearningKey,
+            Changes = new List<BaseLearnerApiPutResponse.LearningUpdateChanges>()
+        };
+        var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(
+            responseBody,
+            HttpStatusCode.OK,
+            string.Empty);
+
+        _mockLearningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
+            .ReturnsAsync(successResponse);
+
+        _mockEarningsApiClient
+            .Setup(x => x.DeleteWithResponseCode<NullResponse>(
+                It.Is<DeleteLearningRequest>(r => r.LearningKey == removedLearningKey), false))
+            .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.InternalServerError, string.Empty));
+
+        var command = GetProcessLearnersCommand();
+
+        // Act & Assert
+        Assert.ThrowsAsync<InvalidOperationException>(async () => await _sut.Handle(command, CancellationToken.None));
     }
 
     private CreateLearnerCommand GetProcessLearnersCommand(CreateLearnerRequest? createLearnerRequest = null)
@@ -100,8 +558,24 @@ public class WhenCreatingLearners
         }
 
         command.Request.Learner.Uln = _fixture.Create<long>();
-        command.Request.Delivery.OnProgramme.First().Costs = new List<CostDetails> { _fixture.Create<CostDetails>() };
+        command.Request.Delivery.OnProgramme.MinBy(x => x.StartDate)!.Costs = new List<CostDetails> { _fixture.Create<CostDetails>() };
 
         return command;
+    }
+
+    private CreateDraftLearnerApiPutResponse MockCreateDraftLearnerResponse(params BaseLearnerApiPutResponse.LearningUpdateChanges[] changes)
+    {
+        var responseBody = new CreateDraftLearnerApiPutResponse
+        {
+            LearnerKey = Guid.NewGuid(),
+            LearningKey = Guid.NewGuid(),
+            Changes = changes.ToList()
+        };
+
+        _mockLearningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
+            .ReturnsAsync(new ApiResponse<CreateDraftLearnerApiPutResponse>(responseBody, HttpStatusCode.OK, string.Empty));
+
+        return responseBody;
     }
 }

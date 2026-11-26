@@ -1,10 +1,13 @@
 using SFA.DAS.LearnerData.Application.GetProviderRelationships;
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Services;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ProviderRelationships;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.GetProviderRelationships;
 
@@ -35,7 +38,7 @@ public class WhenGettingProviderRelationships
         roatpService.Setup(t => t.GetProviderSummary(request.Ukprn)).
             ReturnsAsync(providerSummary);
 
-        getProviderRelationshipService.Setup(t => t.GetEmployerDetails(providerLegalEntitiesresponse)).
+        getProviderRelationshipService.Setup(t => t.GetEmployerDetails(providerLegalEntitiesresponse, It.IsAny<CancellationToken>())).
             ReturnsAsync(employers);
 
         // Act
@@ -89,5 +92,52 @@ public class WhenGettingProviderRelationships
 
         // Assert
         result.Should().BeNull();
+    }
+
+    [Test, MoqAutoData]
+    public async Task GetEmployerDetails_Calls_With_Correct_Values_Return_SupportedCourses(
+        GetProviderAccountLegalEntitiesResponse providerLegalEntitiesresponse,
+        GetProviderSummaryResponse providerSummary,
+        GetProviderRelationshipQuery request,
+        List<EmployerDetails> employers,
+        GetCoursesForProviderResponse coursesResponse,
+       [Frozen] Mock<IGetProviderRelationshipService> getProviderRelationshipService,
+       [Frozen] Mock<IRoatpV2TrainingProviderService> roatpService,
+       [Greedy] GetProviderRelationshipQueryHandler sut)
+    {
+        // Arrange
+        providerSummary.StatusId = 1;
+        providerSummary.ProviderTypeId = 1;
+
+        getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(request.Ukprn)).
+            ReturnsAsync(providerLegalEntitiesresponse);
+
+        getProviderRelationshipService.Setup(t => t.GetCoursesForProviderByUkprn(request.Ukprn)).
+           ReturnsAsync(coursesResponse);
+
+        roatpService.Setup(t => t.GetProviderSummary(request.Ukprn)).
+            ReturnsAsync(providerSummary);
+
+        getProviderRelationshipService.Setup(t => t.GetEmployerDetails(providerLegalEntitiesresponse, It.IsAny<CancellationToken>())).
+            ReturnsAsync(employers);
+
+        // Act
+        var result = await sut.Handle(request, CancellationToken.None);
+
+        // Assert
+        result.Should().NotBeNull();
+
+        result.SupportedCourses.Should().NotBeNull();
+
+        var expectedCourses = coursesResponse.CourseTypes.SelectMany(t => t.Courses).ToDictionary(c => c.LarsCode);
+
+        foreach (var course in result.SupportedCourses.SelectMany(t => t.Courses))
+        {
+            expectedCourses.Should().ContainKey(course.LarsCode);
+            var expectedCourse = expectedCourses[course.LarsCode];
+            course.EffectiveFrom.Should().Be(expectedCourse.EffectiveFrom);
+            course.EffectiveTo.Should().Be(expectedCourse.EffectiveTo);
+            course.LastDateStarts.Should().Be(expectedCourse.LastDateStarts);
+        }
     }
 }

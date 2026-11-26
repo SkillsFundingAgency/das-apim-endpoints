@@ -1,6 +1,4 @@
-﻿using FluentAssertions;
-using Microsoft.AspNetCore.Http;
-using NUnit.Framework;
+﻿using Microsoft.AspNetCore.Http;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Responses;
 

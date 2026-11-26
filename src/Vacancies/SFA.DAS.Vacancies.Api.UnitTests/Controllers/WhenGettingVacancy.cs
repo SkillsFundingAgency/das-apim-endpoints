@@ -10,7 +10,7 @@ using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Vacancies.Services;
 using SFA.DAS.Vacancies.Api.Controllers.v1;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancy;

@@ -1,9 +1,5 @@
-﻿using FluentAssertions;
-using FluentAssertions.Execution;
-using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
+﻿using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetExpectedSkillsAndStrengths;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models;
 public class WhenMappingFromCommandResponseToExpectedSkillsAndStrengthsApiResponse

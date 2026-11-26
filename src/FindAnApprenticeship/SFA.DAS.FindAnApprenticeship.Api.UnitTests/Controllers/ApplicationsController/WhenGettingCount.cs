@@ -2,9 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplicationsCount;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
-using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.ApplicationsController
 {

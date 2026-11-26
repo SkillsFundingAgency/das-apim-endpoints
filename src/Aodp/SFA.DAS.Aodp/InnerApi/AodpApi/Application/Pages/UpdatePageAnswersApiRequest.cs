@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 
 public class UpdatePageAnswersApiRequest(Guid applicationId, Guid pageId, Guid formVersionId, Guid sectionId) : IPutApiRequest
 {

@@ -43,7 +43,7 @@ namespace SFA.DAS.Assessors.Api.Models
 
             public DateTime EffectiveFrom { get; set; }
 
-            public static implicit operator StandardDate(SharedOuterApi.InnerApi.Responses.StandardDate source)
+            public static implicit operator StandardDate(SharedOuterApi.Types.InnerApi.Responses.Courses.StandardDate source)
             {
                 if (source == null) return null;
                 return new StandardDate

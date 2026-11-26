@@ -5,10 +5,8 @@ using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.Services;
-using System;
 using System.Net;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VacanciesController
 {

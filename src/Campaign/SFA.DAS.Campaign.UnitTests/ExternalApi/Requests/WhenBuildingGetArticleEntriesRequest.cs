@@ -14,7 +14,7 @@ namespace SFA.DAS.Campaign.UnitTests.ExternalApi.Requests
             var actual = new GetArticleEntriesRequest(hubType, slug);
             
             //Assert
-            actual.GetUrl.Should().Be($"entries?content_type=article&fields.hubType={hubType}&fields.slug={slug}");
+            actual.GetUrl.Should().Be($"entries?content_type=article&include=2&fields.hubType={hubType}&fields.slug={slug}");
         }
 
         [Test, AutoData]
@@ -24,7 +24,7 @@ namespace SFA.DAS.Campaign.UnitTests.ExternalApi.Requests
             var actual = new GetArticleEntriesRequest(entryId);
             
             //Assert
-            actual.GetUrl.Should().Be($"entries?content_type=article&sys.id={entryId}");
+            actual.GetUrl.Should().Be($"entries?content_type=article&include=2&sys.id={entryId}");
         }
     }
 }

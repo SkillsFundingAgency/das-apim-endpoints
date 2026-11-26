@@ -5,7 +5,7 @@ namespace SFA.DAS.Assessors.Application.Queries.GetAllLearners
 {
     public class GetAllLearnersResult
     {
-        public List<Learner> Learners { get; set;  }
+        public List<SFA.DAS.Assessors.InnerApi.Responses.Learner> Learners { get; set;  }
 
         public int BatchNumber { get; set; }
 

@@ -7,22 +7,24 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetUser;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
-using SFA.DAS.DigitalCertificates.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Exceptions;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
+
+using SFA.DAS.Apim.Shared.Exceptions;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries
 {
-    public class WhenHandlingGetUserRequest
+    public class WhenHandlingGetUsersByGovUkIdentifierApiRequest
     {
         [Test, MoqAutoData]
         public async Task Then_Get_User_From_The_Api_By_GovUkIdentifier(
            string govUkIdentifier,
-           User user,
+           GetUserResponse user,
            GetUserQuery query,
            [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
            GetUserQueryHandler handler)
@@ -30,10 +32,10 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries
             // Arrange
             query.GovUkIdentifier = govUkIdentifier;
 
-            var response = new ApiResponse<User>(user, HttpStatusCode.OK, string.Empty);
+            var response = new ApiResponse<GetUserResponse>(user, HttpStatusCode.OK, string.Empty);
 
             mockDigitalCertificatesApiClient
-                .Setup(client => client.GetWithResponseCode<User>(It.Is<GetUserRequest>(r => r.GovUkIdentifier == query.GovUkIdentifier)))
+                .Setup(client => client.GetWithResponseCode<GetUserResponse>(It.Is<GetUsersByGovUkIdentifierApiRequest>(r => r.GovUkIdentifier == query.GovUkIdentifier)))
                 .ReturnsAsync(response);
 
             // Act
@@ -51,7 +53,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries
         {
             // Arrange
             mockDigitalCertificatesApiClient
-                .Setup(client => client.GetWithResponseCode<User>(It.IsAny<GetUserRequest>()))
+                .Setup(client => client.GetWithResponseCode<GetUserResponse>(It.IsAny<GetUsersByGovUkIdentifierApiRequest>()))
                 .ThrowsAsync(new ApiResponseException(HttpStatusCode.NotFound, "Not Found"));
 
             // Act & Assert

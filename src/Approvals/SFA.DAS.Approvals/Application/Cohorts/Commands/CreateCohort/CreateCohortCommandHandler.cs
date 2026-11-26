@@ -5,15 +5,17 @@ using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
 
 public class CreateCohortCommandHandler(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
     IAutoReservationsService autoReservationService,
-    ICourseTypeRulesService courseTypeRulesService)
+    ICourseTypeRulesService courseTypeRulesService,
+    IApprenticeshipUnitVersionService apprenticeshipUnitVersionService)
     : IRequestHandler<CreateCohortCommand, CreateCohortResult>
 {
     public async Task<CreateCohortResult> Handle(CreateCohortCommand request, CancellationToken cancellationToken)
@@ -41,6 +43,7 @@ public class CreateCohortCommandHandler(
         try
         {
             var courseTypeRules = await courseTypeRulesService.GetCourseTypeRulesAsync(request.CourseCode);
+            var version = await apprenticeshipUnitVersionService.Resolve(courseTypeRules.Course, request.ActualStartDate);
 
             var createCohortRequest = new CreateCohortRequest
             {
@@ -53,6 +56,8 @@ public class CreateCohortCommandHandler(
                 DateOfBirth = request.DateOfBirth,
                 Uln = request.Uln,
                 CourseCode = request.CourseCode,
+                TrainingCourseVersion = version?.Version,
+                StandardUId = version?.StandardUId,
                 DeliveryModel = request.DeliveryModel,
                 Cost = request.Cost,
                 TrainingPrice = request.TrainingPrice,
@@ -69,6 +74,7 @@ public class CreateCohortCommandHandler(
                 IgnoreStartDateOverlap = request.IgnoreStartDateOverlap,
                 IsOnFlexiPaymentPilot = request.IsOnFlexiPaymentPilot,
                 LearnerDataId = request.LearnerDataId,
+                OnServicePayments = request.OnServicePayments,
                 MinimumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MinimumAge,
                 MaximumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MaximumAge,
                 UserInfo = request.UserInfo,

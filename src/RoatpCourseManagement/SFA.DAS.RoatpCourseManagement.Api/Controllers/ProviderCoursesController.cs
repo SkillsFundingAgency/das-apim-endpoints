@@ -1,19 +1,21 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProviderCourses;
+using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAvailableCourseForProvider;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAvailableCoursesForProvider;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourse;
-using SFA.DAS.SharedOuterApi.InnerApi;
+using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers;
 
 [ApiController]
 [Tags("Provider Courses")]
-[Route("")]
+[Route("providers/{ukprn}")]
 public class ProviderCoursesController : ControllerBase
 {
     private readonly ILogger<ProviderCoursesController> _logger;
@@ -26,7 +28,7 @@ public class ProviderCoursesController : ControllerBase
     }
 
     [HttpGet]
-    [Route("providers/{ukprn}/courses/{larsCode}")]
+    [Route("courses/{larsCode}")]
     public async Task<IActionResult> GetProviderCourse([FromRoute] int ukprn, [FromRoute] string larsCode)
     {
         if (ukprn <= 9999999)
@@ -53,7 +55,7 @@ public class ProviderCoursesController : ControllerBase
     }
 
     [HttpGet]
-    [Route("providers/{ukprn}/courses")]
+    [Route("courses")]
     public async Task<IActionResult> GetAllProviderCourses([FromRoute] int ukprn, [FromQuery] CourseType? courseType = null)
     {
         if (ukprn <= 0)
@@ -66,14 +68,6 @@ public class ProviderCoursesController : ControllerBase
         try
         {
             var result = await _mediator.Send(new GetAllProviderCoursesQuery(ukprn, courseType));
-
-            if (result == null)
-            {
-                _logger.LogInformation("Standards data not found for ukprn number {Ukprn}", ukprn);
-                return NotFound();
-            }
-
-            _logger.LogInformation("Standards data found for ukprn number {Ukprn}", ukprn);
             return Ok(result);
 
         }
@@ -85,11 +79,20 @@ public class ProviderCoursesController : ControllerBase
     }
 
     [HttpGet]
-    [Route("providers/{ukprn}/available-courses/{courseType}")]
+    [Route("available-courses/{courseType}")]
     public async Task<IActionResult> GetAllAvailableCourses([FromRoute] int ukprn, [FromRoute] CourseType courseType)
     {
         var result = await _mediator.Send(new GetAvailableCoursesForProviderQuery(ukprn, courseType));
-        _logger.LogInformation("Total {AvailableCoursesCount} courses are available for ukprn: {Ukprn}", result.AvailableCourses.Count, ukprn);
+        _logger.LogInformation("Total {AvailableCoursesCount} courses are available for ukprn: {Ukprn}", result.AvailableCourses.Count(), ukprn);
         return Ok(result);
+    }
+
+    [HttpGet]
+    [Route("available-courses/{courseType}/{larsCode}")]
+    public async Task<IActionResult> GetAvailableCourse([FromRoute] int ukprn, [FromRoute] CourseType courseType, [FromRoute] string larsCode)
+    {
+        var result = await _mediator.Send(new GetAvailableCourseForProviderQuery(ukprn, courseType, larsCode));
+        _logger.LogInformation("Request to get available course for ukprn: {Ukprn} and larCode: {LarsCode}", ukprn, larsCode);
+        return result is null ? NotFound() : Ok(result);
     }
 }

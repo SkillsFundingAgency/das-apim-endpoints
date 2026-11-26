@@ -10,6 +10,7 @@ public class ApprenticeshipModel
         AdditionalPayments = new List<AdditionalPaymentModel>();
         Instalments = new List<InstalmentModel>();
         LearningDeliveries = new List<LearningDeliveryModel>();
+        EnglishAndMaths = new List<EnglishAndMathsModel>();
         WithdrawnDate = null;
     }
 
@@ -17,6 +18,7 @@ public class ApprenticeshipModel
     public List<AdditionalPaymentModel> AdditionalPayments { get; set; }
     public List<InstalmentModel> Instalments { get; set; }
     public List<LearningDeliveryModel> LearningDeliveries { get; set; }
+    public List<EnglishAndMathsModel> EnglishAndMaths { get; set; }
     public DateTime? WithdrawnDate { get; set; }
 }
 
@@ -27,6 +29,8 @@ public class LearningDeliveryModel
     public DateTime ExpectedEndDate { get; set; }
     public DateTime? ActualEndDate { get; set; }
     public string LearnAimRef { get; set; }
+    public int StandardCode { get; set; }
+    public string? AgreementId { get; set; }
 }
 
 public class PriceEpisodeModel
@@ -53,6 +57,8 @@ public class AdditionalPaymentModel
     public byte DeliveryPeriod { get; set; }
     public DateTime DueDate { get; set; }
     public decimal Amount { get; set; }
+    /// <summary> The English and maths course the payment belongs to, blank for payments on the onprogramme aim </summary>
+    public string LearnAimRef { get; set; }
 }
 
 public class PeriodisedValuesModel
@@ -63,6 +69,17 @@ public class PeriodisedValuesModel
     public decimal Value { get; set; }
 
 
+}
+
+public class EnglishAndMathsModel
+{
+    public int AimSequenceNumber { get; set; }
+    public string Course { get; set; }
+    public string LearnAimRef { get; set; }
+    public decimal Amount { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public DateTime? WithdrawalDate { get; set; }
 }
 
 #pragma warning restore CS8618

@@ -13,7 +13,7 @@ using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.RenewSubscript
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProductSubscription;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProductSubscriptions;
 using SFA.DAS.ApimDeveloper.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure;
 
 namespace SFA.DAS.ApimDeveloper.Api.Controllers
 {

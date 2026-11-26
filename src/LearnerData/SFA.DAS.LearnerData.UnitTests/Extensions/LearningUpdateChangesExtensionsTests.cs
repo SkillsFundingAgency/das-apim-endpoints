@@ -1,6 +1,6 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Extensions;
 
 namespace SFA.DAS.LearnerData.UnitTests.Extensions
@@ -12,11 +12,13 @@ namespace SFA.DAS.LearnerData.UnitTests.Extensions
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate)]
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal)]
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal)]
+        [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.Reinstated)]
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted)]
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved)]
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated)]
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices)]
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.DateOfBirthChanged)]
+        [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.OnprogrammeLearningSupport)]
         public void HasOnProgrammeUpdate_ReturnsTrue_ForOnProgrammeChanges(UpdateLearnerApiPutResponse.LearningUpdateChanges change)
         {
             var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges> { change };
@@ -29,15 +31,16 @@ namespace SFA.DAS.LearnerData.UnitTests.Extensions
         {
             var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>
             {
-                UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish
+                UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMaths
             };
 
             changes.HasOnProgrammeUpdate().Should().BeFalse();
         }
 
-        [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish)]
-        [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglishWithdrawal)]
+        [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMaths)]
+        [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsWithdrawal)]
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsBreaksInLearningUpdated)]
+        [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsLearningSupport)]
         public void HasEnglishAndMathsUpdate_ReturnsTrue_ForEnglishAndMathsChanges(UpdateLearnerApiPutResponse.LearningUpdateChanges change)
         {
             var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges> { change };
@@ -54,28 +57,6 @@ namespace SFA.DAS.LearnerData.UnitTests.Extensions
             };
 
             changes.HasEnglishAndMathsUpdate().Should().BeFalse();
-        }
-
-        [Test]
-        public void HasLearningSupportUpdate_ReturnsTrue_WhenLearningSupportChangePresent()
-        {
-            var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>
-            {
-                UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport
-            };
-
-            changes.HasLearningSupportUpdate().Should().BeTrue();
-        }
-
-        [Test]
-        public void HasLearningSupportUpdate_ReturnsFalse_WhenNoRelevantChanges()
-        {
-            var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>
-            {
-                UpdateLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate
-            };
-
-            changes.HasLearningSupportUpdate().Should().BeFalse();
         }
 
         [Test]
@@ -107,6 +88,41 @@ namespace SFA.DAS.LearnerData.UnitTests.Extensions
             };
 
             changes.HasPersonalDetailsOnly().Should().BeFalse();
+        }
+
+        [Test]
+        public void HasForceEarningsSync_ReturnsTrue_WhenForceEarningsSyncPresent()
+        {
+            var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>
+            {
+                UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate,
+                UpdateLearnerApiPutResponse.LearningUpdateChanges.ForceEarningsSync
+            };
+
+            changes.HasForceEarningsSync().Should().BeTrue();
+        }
+
+        [Test]
+        public void HasForceEarningsSync_ReturnsFalse_WhenForceEarningsSyncAbsent()
+        {
+            var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>
+            {
+                UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate
+            };
+
+            changes.HasForceEarningsSync().Should().BeFalse();
+        }
+
+        [Test]
+        public void ForceEarningsSync_Does_Not_Trigger_An_Earnings_Recalculation()
+        {
+            var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>
+            {
+                UpdateLearnerApiPutResponse.LearningUpdateChanges.ForceEarningsSync
+            };
+
+            changes.HasOnProgrammeUpdate().Should().BeFalse();
+            changes.HasEnglishAndMathsUpdate().Should().BeFalse();
         }
     }
 }

@@ -11,7 +11,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerContactForms.Api.Controllers;
 using SFA.DAS.EmployerContactForms.Application.Queries.GetAddresses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerContactForms.Api.UnitTests.Controllers

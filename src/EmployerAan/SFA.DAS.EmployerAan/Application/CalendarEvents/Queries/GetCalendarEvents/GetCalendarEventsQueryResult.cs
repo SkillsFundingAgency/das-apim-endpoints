@@ -1,4 +1,5 @@
 ﻿namespace SFA.DAS.EmployerAan.Application.CalendarEvents.Queries.GetCalendarEvents;
+
 public class GetCalendarEventsQueryResult
 {
     public int Page { get; set; }
@@ -14,7 +15,7 @@ public class GetCalendarEventsQueryResult
     public class RegionData
     {
         public int Id { get; set; }
-        public string Area { get; set; }
+        public string Area { get; set; } = string.Empty;
         public int Ordering { get; set; }
     }
 

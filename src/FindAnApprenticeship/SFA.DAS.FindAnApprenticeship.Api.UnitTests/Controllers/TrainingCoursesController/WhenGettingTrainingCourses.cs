@@ -1,16 +1,8 @@
-﻿using AutoFixture.NUnit3;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
-using SFA.DAS.Testing.AutoFixture;
-using System.Threading.Tasks;
-using System;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourses;
 using System.Threading;
-using FluentAssertions.Execution;
-using FluentAssertions;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.TrainingCoursesController;
 public class WhenGettingTrainingCourses

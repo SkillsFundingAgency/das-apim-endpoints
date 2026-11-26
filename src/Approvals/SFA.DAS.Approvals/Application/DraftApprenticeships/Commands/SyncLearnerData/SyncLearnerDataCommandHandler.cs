@@ -3,18 +3,26 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Approvals.Exceptions;
 using SFA.DAS.Approvals.InnerApi;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
+using SFA.DAS.Approvals.InnerApi.CoursesApi;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Approvals.Services;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Constants;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.SyncLearnerData;
 
 public class SyncLearnerDataCommandHandler(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsApiClient,
     IInternalApiClient<LearnerDataInnerApiConfiguration> learnerDataClient,
+    ITrainingProgrammeResolutionService trainingProgrammeResolutionService,
+    IApprenticeshipUnitVersionService apprenticeshipUnitVersionService,
     ILogger<SyncLearnerDataCommandHandler> logger)
     : IRequestHandler<SyncLearnerDataCommand, GetDraftApprenticeshipResponse>
 {
@@ -52,6 +60,9 @@ public class SyncLearnerDataCommandHandler(
 
         var learnerData = learnerDataResponse.Body;
 
+        var (courseCode, trainingCourseName, trainingCourseVersion, trainingCourseOption, standardUId) =
+            await ResolveCourseFields(learnerData);
+
         var updatedDraftApprenticeship = new GetDraftApprenticeshipResponse
         {
             Id = draftApprenticeship.Id,
@@ -59,18 +70,18 @@ public class SyncLearnerDataCommandHandler(
             LastName = learnerData.LastName,
             Email = draftApprenticeship.Email,
             Uln = draftApprenticeship.Uln,
-            CourseCode = draftApprenticeship.CourseCode,
+            CourseCode = courseCode,
             DeliveryModel = learnerData.IsFlexiJob ? DeliveryModel.FlexiJobAgency : DeliveryModel.Regular,
-            TrainingCourseName = draftApprenticeship.TrainingCourseName,
-            TrainingCourseVersion = draftApprenticeship.TrainingCourseVersion,
-            TrainingCourseOption = draftApprenticeship.TrainingCourseOption,
+            TrainingCourseName = trainingCourseName,
+            TrainingCourseVersion = trainingCourseVersion,
+            TrainingCourseOption = trainingCourseOption,
             TrainingCourseVersionConfirmed = draftApprenticeship.TrainingCourseVersionConfirmed,
-            StandardUId = draftApprenticeship.StandardUId,
+            StandardUId = standardUId,
             Cost = learnerData.TrainingPrice + learnerData.EpaoPrice,
             TrainingPrice = learnerData.TrainingPrice,
             EndPointAssessmentPrice = learnerData.EpaoPrice,
             StartDate = learnerData.StartDate,
-            ActualStartDate = draftApprenticeship.ActualStartDate,
+            ActualStartDate = learnerData.StartDate,
             EndDate = learnerData.PlannedEndDate,
             DateOfBirth = learnerData.Dob,
             Reference = draftApprenticeship.Reference,
@@ -103,5 +114,48 @@ public class SyncLearnerDataCommandHandler(
             request.DraftApprenticeshipId);
 
         return updatedDraftApprenticeship;
+    }
+
+    private async Task<(string CourseCode, string TrainingCourseName, string TrainingCourseVersion, string TrainingCourseOption, string StandardUId)> ResolveCourseFields(GetLearnerForProviderResponse learnerData)
+    {
+        var courseCode = learnerData.TrainingCode ?? string.Empty;
+        var courseName = learnerData.TrainingName ?? string.Empty;
+        var isStandard = int.TryParse(courseCode, out var standardId) && standardId > 0;
+
+        if (string.IsNullOrWhiteSpace(courseCode) || (int.TryParse(courseCode, out standardId) && standardId <= 0))
+        {
+            return (courseCode, courseName, string.Empty, string.Empty, string.Empty);
+        }
+
+        if (learnerData.LearningType == LearningType.ApprenticeshipUnit)
+        {
+            GetCourseLookupResponse unit;
+            try
+            {
+                unit = await apprenticeshipUnitVersionService.Resolve(courseCode, learnerData.StartDate);
+            }
+            catch (ApprenticeshipUnitVersionException ex)
+            {
+                throw new LearnerDataSyncException(ex.Message);
+            }
+            return (courseCode, !string.IsNullOrWhiteSpace(courseName) ? courseName : unit.Title,
+                unit.Version, string.Empty, unit.StandardUId);
+        }
+
+        var response = await trainingProgrammeResolutionService.GetTrainingProgrammeAsync(courseCode, learnerData.StartDate);
+        var programme = response?.TrainingProgramme;
+
+        if (programme == null)
+        {
+            return (courseCode, courseName, string.Empty, string.Empty, string.Empty);
+        }
+
+        var resolvedCourseCode = programme.CourseCode ?? courseCode;
+        var resolvedCourseName = !string.IsNullOrWhiteSpace(courseName) ? courseName : programme.Name ?? string.Empty;
+        var version = isStandard ? programme.Version ?? string.Empty : string.Empty;
+        var option = isStandard && programme.Options?.Count > 0 ? programme.Options[0] : string.Empty;
+        var standardUId = isStandard ? programme.StandardUId ?? string.Empty : string.Empty;
+
+        return (resolvedCourseCode, resolvedCourseName, version, option, standardUId);
     }
 }

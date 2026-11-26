@@ -3,8 +3,9 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.AddNationalLocation;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 

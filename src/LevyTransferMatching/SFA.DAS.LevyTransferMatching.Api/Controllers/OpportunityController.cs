@@ -19,7 +19,6 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetApplicatio
 using System.Linq;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSelectAccount;
 using System.Collections.Generic;
-using System.Globalization;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {

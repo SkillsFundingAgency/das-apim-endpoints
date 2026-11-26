@@ -2,15 +2,14 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Services;
-using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
-using GetStandardRequest = SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests.GetStandardRequest;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
 
@@ -20,14 +19,13 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
     {
         LocationItem locationItem = null;
 
-        if (!string.IsNullOrWhiteSpace(request.Location))
+        if (!string.IsNullOrWhiteSpace(request.LocationName))
         {
-            locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(request.Location);
+            locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(request.LocationName);
 
             if (locationItem is null)
             {
-                GetStandardsListItem standard = await _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.LarsCode));
-
+                GetStandardsListItem standard = await GetCourse(request.LarsCode);
                 var standardName = standard != null ? $"{standard.Title} (level {standard.Level})" : string.Empty;
 
                 return new GetCourseProvidersResponse
@@ -39,6 +37,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
                     QarPeriod = string.Empty,
                     ReviewPeriod = string.Empty,
                     StandardName = standardName,
+                    CourseDates = standard?.CourseDates,
                     TotalCount = 0,
                     TotalPages = 0
                 };
@@ -46,7 +45,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
         }
 
         var response =
-            await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseProvidersResponseFromCourseApi>(
+            await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseProvidersResponse>(
                 new GetProvidersByCourseIdRequest()
                 {
                     CourseId = request.LarsCode,
@@ -54,7 +53,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
                     Distance = request.Distance,
                     Latitude = locationItem?.Latitude,
                     Longitude = locationItem?.Longitude,
-                    Location = request.Location,
+                    LocationName = request.LocationName,
                     DeliveryModes = request.DeliveryModes,
                     EmployerProviderRatings = request.EmployerProviderRatings,
                     ApprenticeProviderRatings = request.ApprenticeProviderRatings,
@@ -68,8 +67,20 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
         if (response.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.NotFound)
             return null;
 
-        return response.StatusCode.IsSuccessStatusCode()
-            ? (GetCourseProvidersResponse)response.Body
-            : new GetCourseProvidersResponse();
+        if (!response.StatusCode.IsSuccessStatusCode())
+            return new GetCourseProvidersResponse();
+
+        if (response.Body != null)
+        {
+            GetStandardsListItem standard = await GetCourse(request.LarsCode);
+            response.Body.CourseDates = standard?.CourseDates;
+        }
+
+        return response.Body;
+    }
+
+    private Task<GetStandardsListItem> GetCourse(string larsCode)
+    {
+        return _coursesApiClient.Get<GetStandardsListItem>(new GetCourseLookupDetailsByIdRequest(larsCode));
     }
 }

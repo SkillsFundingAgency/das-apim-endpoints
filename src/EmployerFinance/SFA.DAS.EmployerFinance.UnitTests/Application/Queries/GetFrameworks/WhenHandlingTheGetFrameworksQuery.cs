@@ -7,8 +7,10 @@ using NUnit.Framework;
 using SFA.DAS.EmployerFinance.Application.Queries.GetFrameworks;
 using SFA.DAS.EmployerFinance.InnerApi.Requests;
 using SFA.DAS.EmployerFinance.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetFrameworks

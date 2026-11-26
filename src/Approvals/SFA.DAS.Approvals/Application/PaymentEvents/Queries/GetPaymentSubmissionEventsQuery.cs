@@ -1,6 +1,6 @@
 ﻿using System;
 using MediatR;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderEvent;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ProviderEvent;
 
 namespace SFA.DAS.Approvals.Application.PaymentEvents.Queries
 {

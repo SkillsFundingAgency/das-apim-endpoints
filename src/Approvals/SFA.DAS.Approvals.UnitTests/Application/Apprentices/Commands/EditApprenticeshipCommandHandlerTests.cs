@@ -4,25 +4,26 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.EditApprenticeship;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
+using SFA.DAS.Approvals.InnerApi.CoursesApi;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
-using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Commands;
 
 [TestFixture]
 public class EditApprenticeshipCommandHandlerTests
 {
-    private const string ApprenticeshipType = "FoundationApprenticeship";
+    private const string CourseType = "FoundationApprenticeship";
 
     [Test, MoqAutoData]
     public async Task Handle_WhenApprenticeshipNotFound_ShouldThrowException(
@@ -46,6 +47,7 @@ public class EditApprenticeshipCommandHandlerTests
     [Test, MoqAutoData]
     public async Task Handle_WhenApprenticeshipFound_ShouldValidateApprenticeship(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
+        [Frozen] Mock<ITrainingProgrammeResolutionService> trainingProgrammeResolutionService,
         [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
         GetApprenticeshipResponse apprenticeshipResponse,
         GetLearnerAgeResponse learnerAgeResponse,
@@ -60,7 +62,7 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = new GetStandardsListItem { ApprenticeshipType = ApprenticeshipType },
+                Course = new GetCourseLookupResponse { LearningType = CourseType },
                 LearnerAgeRules = learnerAgeResponse
             });
 
@@ -68,8 +70,8 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.Get<GetApprenticeshipResponse>(It.IsAny<GetApprenticeshipRequest>()))
             .ReturnsAsync(apprenticeshipResponse);
 
-        commitmentsApiClient
-            .Setup(x => x.Get<GetTrainingProgrammeResponse>(It.IsAny<GetTrainingProgrammeRequest>()))
+        trainingProgrammeResolutionService
+            .Setup(x => x.GetTrainingProgrammeAsync(request.CourseCode, request.StartDate))
             .ReturnsAsync(new GetTrainingProgrammeResponse
             {
                 TrainingProgramme = new TrainingProgramme
@@ -80,7 +82,7 @@ public class EditApprenticeshipCommandHandlerTests
             });
 
         commitmentsApiClient
-            .Setup(x => x.PostWithResponseCode<NullResponse>(It.IsAny<ValidateApprenticeshipForEditApiRequest>(),  true))
+            .Setup(x => x.PostWithResponseCode<NullResponse>(It.IsAny<ValidateApprenticeshipForEditApiRequest>(), true))
             .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.OK, string.Empty));
 
         // Act
@@ -119,6 +121,7 @@ public class EditApprenticeshipCommandHandlerTests
     [Test, MoqAutoData]
     public async Task Handle_WhenCourseCodeChanged_ShouldGetTrainingProgramme(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
+        [Frozen] Mock<ITrainingProgrammeResolutionService> trainingProgrammeResolutionService,
         [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
         GetApprenticeshipResponse apprenticeshipResponse,
         GetLearnerAgeResponse learnerAgeResponse,
@@ -132,16 +135,17 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = new GetStandardsListItem { ApprenticeshipType = ApprenticeshipType },
+                Course = new GetCourseLookupResponse { LearningType = CourseType },
                 LearnerAgeRules = learnerAgeResponse
-            });
+            }).Verifiable();
 
         commitmentsApiClient
             .Setup(x => x.Get<GetApprenticeshipResponse>(It.IsAny<GetApprenticeshipRequest>()))
-            .ReturnsAsync(apprenticeshipResponse);
+            .ReturnsAsync(apprenticeshipResponse)
+            .Verifiable();
 
-        commitmentsApiClient
-            .Setup(x => x.Get<GetTrainingProgrammeResponse>(It.IsAny<GetTrainingProgrammeRequest>()))
+        trainingProgrammeResolutionService
+            .Setup(x => x.GetTrainingProgrammeAsync(request.CourseCode, request.StartDate))
             .ReturnsAsync(new GetTrainingProgrammeResponse
             {
                 TrainingProgramme = new TrainingProgramme
@@ -149,18 +153,23 @@ public class EditApprenticeshipCommandHandlerTests
                     Version = "1.0",
                     Options = ["Option1", "Option2"]
                 }
-            });
+            }).Verifiable();
 
         commitmentsApiClient
             .Setup(x => x.PostWithResponseCode<NullResponse>(It.IsAny<ValidateApprenticeshipForEditApiRequest>(), true))
-            .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.OK, string.Empty));
+            .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.OK, string.Empty))
+            .Verifiable();
 
         // Act
         var result = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        commitmentsApiClient.Verify(x => x.Get<GetTrainingProgrammeResponse>(It.Is<GetTrainingProgrammeRequest>(r =>
-            r.CourseCode == request.CourseCode)), Times.Once);
+        commitmentsApiClient.Verify();
+        commitmentsApiClient.VerifyNoOtherCalls();
+        courseTypeRulesService.Verify();
+        courseTypeRulesService.VerifyNoOtherCalls();
+        trainingProgrammeResolutionService.Verify();
+        trainingProgrammeResolutionService.VerifyNoOtherCalls();
 
         result.Should().NotBeNull();
         result.ApprenticeshipId.Should().Be(request.ApprenticeshipId);
@@ -170,6 +179,7 @@ public class EditApprenticeshipCommandHandlerTests
     [Test, MoqAutoData]
     public async Task Handle_WhenStandardCourseCode_ShouldGetCalculatedTrainingProgrammeVersion(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
+        [Frozen] Mock<ITrainingProgrammeResolutionService> trainingProgrammeResolutionService,
         [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
         GetApprenticeshipResponse apprenticeshipResponse,
         GetLearnerAgeResponse learnerAgeResponse,
@@ -184,7 +194,7 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = new GetStandardsListItem { ApprenticeshipType = ApprenticeshipType },
+                Course = new GetCourseLookupResponse { LearningType = CourseType },
                 LearnerAgeRules = learnerAgeResponse
             });
 
@@ -192,8 +202,8 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.Get<GetApprenticeshipResponse>(It.IsAny<GetApprenticeshipRequest>()))
             .ReturnsAsync(apprenticeshipResponse);
 
-        commitmentsApiClient
-            .Setup(x => x.Get<GetTrainingProgrammeResponse>(It.IsAny<GetCalculatedTrainingProgrammeVersionRequest>()))
+        trainingProgrammeResolutionService
+            .Setup(x => x.GetTrainingProgrammeAsync("123", request.StartDate))
             .ReturnsAsync(new GetTrainingProgrammeResponse
             {
                 TrainingProgramme = new TrainingProgramme
@@ -211,9 +221,7 @@ public class EditApprenticeshipCommandHandlerTests
         var result = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        commitmentsApiClient.Verify(x => x.Get<GetTrainingProgrammeResponse>(It.Is<GetCalculatedTrainingProgrammeVersionRequest>(r =>
-            r.GetUrl.Contains(int.Parse(request.CourseCode).ToString()) &&
-            r.GetUrl.Contains(request.StartDate.Value.ToString("O", System.Globalization.CultureInfo.InvariantCulture)))), Times.Once);
+        trainingProgrammeResolutionService.Verify(x => x.GetTrainingProgrammeAsync("123", request.StartDate), Times.Once);
 
         result.Should().NotBeNull();
         result.ApprenticeshipId.Should().Be(request.ApprenticeshipId);
@@ -223,6 +231,7 @@ public class EditApprenticeshipCommandHandlerTests
     [Test, MoqAutoData]
     public async Task Handle_WhenNoChanges_ShouldNotGetTrainingProgramme(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
+        [Frozen] Mock<ITrainingProgrammeResolutionService> trainingProgrammeResolutionService,
         [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
         GetApprenticeshipResponse apprenticeshipResponse,
         GetLearnerAgeResponse learnerAgeResponse,
@@ -237,7 +246,7 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = new GetStandardsListItem { ApprenticeshipType = ApprenticeshipType },
+                Course = new GetCourseLookupResponse { LearningType = CourseType },
                 LearnerAgeRules = learnerAgeResponse
             });
 
@@ -253,8 +262,7 @@ public class EditApprenticeshipCommandHandlerTests
         var result = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        commitmentsApiClient.Verify(x => x.Get<GetTrainingProgrammeResponse>(It.IsAny<GetTrainingProgrammeRequest>()), Times.Never);
-        commitmentsApiClient.Verify(x => x.Get<GetTrainingProgrammeResponse>(It.IsAny<GetCalculatedTrainingProgrammeVersionRequest>()), Times.Never);
+        trainingProgrammeResolutionService.Verify(x => x.GetTrainingProgrammeAsync(It.IsAny<string>(), It.IsAny<DateTime?>()), Times.Never);
 
         result.Should().NotBeNull();
         result.ApprenticeshipId.Should().Be(request.ApprenticeshipId);
@@ -275,7 +283,7 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = new GetStandardsListItem { ApprenticeshipType = ApprenticeshipType },
+                Course = new GetCourseLookupResponse { LearningType = CourseType },
                 LearnerAgeRules = learnerAgeResponse
             });
 

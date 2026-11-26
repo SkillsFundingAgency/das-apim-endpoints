@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.AccessorService;
+﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.AccessorService;
 using System;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;

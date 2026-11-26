@@ -1,17 +1,10 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
+﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Application.Queries.GetVacancyMetrics;
-using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Net;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Metrics
 {

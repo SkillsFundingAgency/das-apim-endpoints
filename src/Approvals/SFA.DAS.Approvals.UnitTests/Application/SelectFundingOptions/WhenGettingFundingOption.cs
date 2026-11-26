@@ -4,11 +4,12 @@ using System.Threading.Tasks;
 using SFA.DAS.Approvals.Application.SelectFunding.Queries;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerFinance;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFinance;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerFinance;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerFinance;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.SelectFundingOptions;
 
@@ -72,6 +73,27 @@ public class WhenGettingFundingOption
         var actual = await handler.Handle(query, CancellationToken.None);
 
         actual.HasUnallocatedReservationsAvailable.Should().BeTrue();
+    }
+
+    [Test, MoqAutoData]
+    public async Task ThenHasRemainingReservationsCount(
+        GetSelectFundingOptionsQuery query,
+        GetAccountReservationsStatusResponse reservationsResponse,
+        [Frozen] Mock<IReservationApiClient<ReservationApiConfiguration>> reservationsApiClient,
+        GetSelectFundingOptionsQueryHandler handler
+    )
+    {
+        reservationsResponse.RemainingReservationsCount = 5;
+
+        reservationsApiClient.Setup(x =>
+                x.Get<GetAccountReservationsStatusResponse>(
+                    It.Is<GetAccountReservationsStatusRequest>(x =>
+                        x.AccountId == query.AccountId && x.TransferSenderId == null)))
+            .ReturnsAsync(reservationsResponse);
+
+        var actual = await handler.Handle(query, CancellationToken.None);
+
+        actual.RemainingReservationsCount.Should().Be(5);
     }
 
     [Test, MoqAutoData]

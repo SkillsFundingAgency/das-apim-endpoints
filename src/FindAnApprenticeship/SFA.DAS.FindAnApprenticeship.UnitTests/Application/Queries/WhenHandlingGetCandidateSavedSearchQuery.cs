@@ -3,8 +3,10 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetSavedSearch;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetSavedSearches;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries;
 

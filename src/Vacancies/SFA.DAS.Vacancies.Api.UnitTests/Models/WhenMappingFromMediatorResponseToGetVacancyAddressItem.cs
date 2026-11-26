@@ -9,7 +9,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
     public class WhenMappingFromMediatorResponseToGetVacancyAddressItem
     {
         [Test, AutoData]
-        public void Then_The_Values_Are_Mapped(GetVacanciesListItem source)
+        public void Then_The_Values_Are_Mapped(GetVacancyApiResponse source)
         {
             // act
             var actual = GetVacancyAddressItem.From(source.Address);
@@ -19,7 +19,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
         }
         
         [Test, AutoData]
-        public void Then_Empty_Object_Returned_If_Null(GetVacanciesListItem source)
+        public void Then_Empty_Object_Returned_If_Null(GetVacancyApiResponse source)
         {
             // act
             var actual = GetVacancyAddressItem.From(null);

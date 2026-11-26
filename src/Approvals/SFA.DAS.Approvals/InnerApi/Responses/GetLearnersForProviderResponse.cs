@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace SFA.DAS.Approvals.InnerApi.Responses;
@@ -6,7 +6,8 @@ namespace SFA.DAS.Approvals.InnerApi.Responses;
 public record GetLearnersForProviderResponse
 {
     public DateTime? LastSubmissionDate { get; set; }
-    public IEnumerable<LearnerDataRecord> Data { get; set; } = new List<LearnerDataRecord>();
+    public List<Course> Courses { get; set; } = [];
+    public List<LearnerDataRecord> Data { get; set; } = [];
     public int TotalItems { get; set; }
     public int TotalPages { get; set; }
     public int PageSize { get; set; }
@@ -31,10 +32,18 @@ public record LearnerDataRecord
     public int EpaoPrice { get; set; }
     public int TrainingPrice { get; set; }
     public string AgreementId { get; set; }
-    public int StandardCode { get; set; }
+    public string? TrainingCode { get; set; }
+    public string? TrainingName { get; set; }
+    public string? LearningType { get; set; }
     public bool IsFlexiJob { get; set; }
     public int PlannedOTJTrainingHours { get; set; }
     public DateTime ReceivedDate { get; set; }
     public string CorrelationId { get; set; }
     public string ConsumerReference { get; set; }
+}
+
+public record Course
+{
+    public string? TrainingCode { get; set; }
+    public string? TrainingName { get; set; }
 }

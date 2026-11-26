@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Api.Controllers;
+using SFA.DAS.DigitalCertificates.Api.Models.Users;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetUser;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -34,7 +35,18 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
             // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().BeEquivalentTo(queryResult.User);
+            var user = queryResult.User;
+            var expected = new GetUserResponse
+            {
+                Id = user.Id,
+                GovUkIdentifier = user.GovUkIdentifier,
+                EmailAddress = user.EmailAddress,
+                PhoneNumber = user.PhoneNumber,
+                LastLoginAt = user.LastLoginAt,
+                IsLocked = user.IsLocked
+            };
+
+            actual.Value.Should().BeEquivalentTo(expected);
         }
 
         [Test, MoqAutoData]

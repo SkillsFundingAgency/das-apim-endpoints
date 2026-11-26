@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.ApimDeveloper.Application.Users.Commands.CreateUser;
 using SFA.DAS.ApimDeveloper.Configuration;
-using SFA.DAS.SharedOuterApi.Models.Messages;
+using SFA.DAS.SharedOuterApi.Types.Models.Messages;
 
 namespace SFA.DAS.ApimDeveloper.Models
 {

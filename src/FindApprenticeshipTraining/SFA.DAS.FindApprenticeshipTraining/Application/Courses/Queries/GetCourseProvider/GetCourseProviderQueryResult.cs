@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ApprenticeFeedback;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFeedback;
+using SFA.DAS.SharedOuterApi.Types.Constants;
+using SFA.DAS.SharedOuterApi.Types.InnerApi;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ApprenticeFeedback;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerFeedback;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProvider;
 
@@ -13,6 +15,9 @@ public sealed class GetCourseProviderQueryResult
     public ShortProviderAddressModel ProviderAddress { get; set; }
     public ContactModel Contact { get; set; }
     public string CourseName { get; set; }
+    public CourseType CourseType { get; set; }
+    public LearningType LearningType { get; set; }
+    public bool IsActiveAvailable { get; set; }
     public int Level { get; set; }
     public string LarsCode { get; set; }
     public string IFateReferenceNumber { get; set; }
@@ -35,8 +40,11 @@ public sealed class GetCourseProviderQueryResult
             ProviderAddress = source.Address,
             Contact = source.Contact,
             CourseName = source.CourseName,
+            CourseType = source.CourseType,
+            LearningType = source.LearningType,
+            IsActiveAvailable = source.IsActiveAvailable,
             Level = source.Level,
-            LarsCode = source.LarsCode.ToString(),
+            LarsCode = source.LarsCode,
             IFateReferenceNumber = source.IFateReferenceNumber,
             Qar = source.QAR,
             Reviews = source.Reviews,

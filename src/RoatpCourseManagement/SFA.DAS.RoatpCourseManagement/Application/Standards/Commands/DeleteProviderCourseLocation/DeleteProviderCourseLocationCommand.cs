@@ -16,7 +16,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.DeletePro
             {
                 Ukprn = command.Ukprn,
                 LarsCode = command.LarsCode,
-                Id = command.Id,
+                ProviderCourseLocationId = command.Id,
                 UserId = command.UserId,
                 UserDisplayName = command.UserDisplayName
             };

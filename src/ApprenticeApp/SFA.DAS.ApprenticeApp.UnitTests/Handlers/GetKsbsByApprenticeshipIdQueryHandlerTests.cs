@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress;
 using SFA.DAS.Testing.AutoFixture;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 

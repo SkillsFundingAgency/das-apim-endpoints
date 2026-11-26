@@ -1,16 +1,20 @@
 ﻿using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Shared;
 
 namespace SFA.DAS.LearnerData.TestHelpers;
 
 public class DefaultLearner
 {
     public static int Ukprn => 10000001;
-    public static string TrainingCode => "274";
+    // Learning inner derives the TrainingCode from the StandardCode of the onProgramme
+    public static string TrainingCode => OnProgramme.StandardCode.ToString();
     public static int FundingBandMax => 15000; 
     public static string FundingLineType => "19+ Apprenticeship (Employer on App Service)";
+    public static string LearnerRef => "LRN-DEFAULT";
 
     public static LearnerRequestDetails LearnerRequestDetails => new LearnerRequestDetails
     {
+        LearnerRef = LearnerRef,
         FirstName = "Merlin",
         LastName = "Page",
         Email = "merlin.page@example.com",
@@ -35,10 +39,22 @@ public class DefaultLearner
                 FromDate = new DateTime(2022, 9, 1)
             }
         },
-        LearningSupport = new List<LearningSupportRequestDetails>(),
+        LearningSupport = new List<LearningSupport>(),
         Care = new Care(),
         AimSequenceNumber = 1,
         LearnAimRef = "ZPROG001"
+    };
+
+    public static decimal EnglishAndMathsValue => 1500;
+
+    public static MathsAndEnglish EnglishAndMathsLearningDelivery => new MathsAndEnglish
+    {
+        AimSequenceNumber = 2,
+        LearnAimRef = "ENG001",
+        StartDate = new DateTime(2020, 9, 1),
+        EndDate = new DateTime(2021, 1, 31),
+        Course = "English",
+        LearningSupport = new List<LearningSupport>()
     };
 
     public static TestLearner CreateNew => new TestLearner

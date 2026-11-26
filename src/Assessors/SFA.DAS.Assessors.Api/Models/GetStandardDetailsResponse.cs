@@ -1,9 +1,10 @@
 ﻿using SFA.DAS.Assessors.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using StandardDetailResponse = SFA.DAS.Assessors.InnerApi.Responses.StandardDetailResponse;
 
 namespace SFA.DAS.Assessors.Api.Models
 {

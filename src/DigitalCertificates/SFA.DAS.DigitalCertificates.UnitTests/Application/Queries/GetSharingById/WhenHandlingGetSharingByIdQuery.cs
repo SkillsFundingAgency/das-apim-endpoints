@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,12 +7,14 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetSharingById;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests;
-using SFA.DAS.DigitalCertificates.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Exceptions;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
+
+using SFA.DAS.Apim.Shared.Exceptions;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharingById
@@ -35,7 +37,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharingBy
 
             mockDigitalCertificatesApiClient
             .Setup(c => c.GetWithResponseCode<GetSharingByIdResponse>(
-            It.Is<GetSharingByIdRequest>(r => r.SharingId == sharingId && r.Limit == query.Limit)))
+            It.Is<GetSharingByIdApiRequest>(r => r.Id == sharingId && r.Limit == query.Limit)))
             .ReturnsAsync(apiResponse);
 
             // Act
@@ -58,7 +60,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharingBy
             var apiResponse = new ApiResponse<GetSharingByIdResponse>(null, HttpStatusCode.NotFound, string.Empty);
 
             mockDigitalCertificatesApiClient
-            .Setup(c => c.GetWithResponseCode<GetSharingByIdResponse>(It.IsAny<GetSharingByIdRequest>()))
+            .Setup(c => c.GetWithResponseCode<GetSharingByIdResponse>(It.IsAny<GetSharingByIdApiRequest>()))
             .ReturnsAsync(apiResponse);
 
             // Act
@@ -76,7 +78,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharingBy
         {
             // Arrange
             mockDigitalCertificatesApiClient
-            .Setup(c => c.GetWithResponseCode<GetSharingByIdResponse>(It.IsAny<GetSharingByIdRequest>()))
+            .Setup(c => c.GetWithResponseCode<GetSharingByIdResponse>(It.IsAny<GetSharingByIdApiRequest>()))
             .ThrowsAsync(new ApiResponseException(HttpStatusCode.BadRequest, "Bad request"));
 
             // Act

@@ -5,8 +5,9 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.Approvals.ErrorHandling;
 using SFA.DAS.Approvals.Exceptions;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Infrastructure;
 
 namespace SFA.DAS.Approvals.Api.Clients;
 

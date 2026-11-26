@@ -16,6 +16,7 @@ namespace SFA.DAS.ApprenticeApp.Models
         public DateTime ApprovedOn { get; set; }
         public DateTime? LastViewed { get; set; }
         public DateTime? StoppedReceivedOn { get; set; }
+        public DateTime PlannedEndDate { get; set; }
         public bool IsStopped { get; set; }
         public bool HasBeenConfirmedAtLeastOnce { get; set; }
     }

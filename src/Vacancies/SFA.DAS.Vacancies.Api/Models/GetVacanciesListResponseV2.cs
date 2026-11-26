@@ -25,6 +25,24 @@ namespace SFA.DAS.Vacancies.Api.Models
             };
         }
     }
+    public record GetVacanciesDetailsListResponseV2
+    {
+        public List<GetVacancyResponseV2> Vacancies { get; set; }
+        public long Total { get ; set ; }
+        public long TotalFiltered { get ; set ; }
+        public int TotalPages { get ; set ; }
+
+        public static implicit operator GetVacanciesDetailsListResponseV2(GetVacanciesQueryResult source)
+        {
+            return new GetVacanciesDetailsListResponseV2
+            {
+                Vacancies = source.Vacancies.Select(c => (GetVacancyResponseV2)c).ToList(),
+                Total = source.Total,
+                TotalFiltered = source.TotalFiltered,
+                TotalPages = source.TotalPages
+            };
+        }
+    }
     
     public record GetVacanciesListResponseItemV2
     {
@@ -141,7 +159,7 @@ namespace SFA.DAS.Vacancies.Api.Models
         public string IsNationalVacancyDetails { get; set; }
 
 
-        public static implicit operator GetVacanciesListResponseItemV2(GetVacanciesListItem source)
+        public static implicit operator GetVacanciesListResponseItemV2(GetVacancyApiResponse source)
         {
             var addresses = new List<GetVacancyAddressItem>();
             if (source.Address != null)
@@ -180,9 +198,9 @@ namespace SFA.DAS.Vacancies.Api.Models
                 Distance = source.Distance,
                 Addresses = addresses,
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
-                EmployerContactEmail = source.EmployerContactEmail,
-                EmployerContactName = source.EmployerContactName,
-                EmployerContactPhone = source.EmployerContactPhone,
+                EmployerContactEmail = source.EmployerContactEmail ?? source.ProviderContactEmail,
+                EmployerContactName = source.EmployerContactName ?? source.ProviderContactName,
+                EmployerContactPhone = source.EmployerContactPhone ?? source.ProviderContactPhone,
                 ApprenticeshipLevel = source.ApprenticeshipLevel,
                 ApplicationUrl = source.ApplicationUrl,
                 ExpectedDuration = source.ExpectedDuration,

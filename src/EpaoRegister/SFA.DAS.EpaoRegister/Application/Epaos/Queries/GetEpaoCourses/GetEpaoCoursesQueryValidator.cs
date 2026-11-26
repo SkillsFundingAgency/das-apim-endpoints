@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.Validation;
+using SFA.DAS.SharedOuterApi.Types.Validation;
 
 namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses
 {

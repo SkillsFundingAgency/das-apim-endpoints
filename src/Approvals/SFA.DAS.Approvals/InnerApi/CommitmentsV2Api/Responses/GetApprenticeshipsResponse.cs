@@ -5,7 +5,7 @@ using SFA.DAS.Approvals.Enums;
 namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses
 {
     public class GetApprenticeshipsResponse
-    {       
+    {
         public class ApprenticeshipDetailsResponse
         {
             public long Id { get; set; }
@@ -41,6 +41,9 @@ namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses
             public bool? IsOnFlexiPaymentPilot { get; set; }
             public bool? EmployerHasEditedCost { get; set; }
             public string TrainingCourseVersion { get; set; }
+            public int? EmployerVerificationStatus { get; set; }
+            public string EmployerVerificationNotes { get; set; }
+            public Guid? PendingApprovalRequestId { get; set; }
         }
 
         public IEnumerable<ApprenticeshipDetailsResponse> Apprenticeships { get; set; }
@@ -48,5 +51,6 @@ namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses
         public int TotalApprenticeshipsWithAlertsFound { get; set; }
         public int TotalApprenticeships { get; set; }
         public int PageNumber { get; set; }
+        public bool HasChangeHistory { get; set; }
     }
 }

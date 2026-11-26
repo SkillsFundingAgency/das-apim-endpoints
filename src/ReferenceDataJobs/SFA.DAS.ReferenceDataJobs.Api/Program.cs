@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
-using SFA.DAS.SharedOuterApi.AppStart;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Logging.ApplicationInsights;
+using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.ReferenceDataJobs.Api.AppStart;
 using SFA.DAS.ReferenceDataJobs.Application.Commands;
 

@@ -141,7 +141,7 @@ namespace SFA.DAS.Vacancies.Api.Models
         [MaxLength(500)]
         public string IsNationalVacancyDetails { get; set; }
 
-        public static implicit operator GetVacanciesListResponseItem(GetVacanciesListItem source)
+        public static implicit operator GetVacanciesListResponseItem(GetVacancyApiResponse source)
         {
             var isRecruitNationally = source.VacancyLocationType != null &&
                                       source.VacancyLocationType.Equals("National",
@@ -170,9 +170,9 @@ namespace SFA.DAS.Vacancies.Api.Models
                 Address = GetVacancyAddressItem.From(source.Address),
                 OtherAddresses = source.OtherAddresses?.Select(GetVacancyAddressItem.From).ToList() ?? [],
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
-                EmployerContactEmail = source.EmployerContactEmail,
-                EmployerContactName = source.EmployerContactName,
-                EmployerContactPhone = source.EmployerContactPhone,
+                EmployerContactEmail = source.EmployerContactEmail ?? source.ProviderContactEmail,
+                EmployerContactName = source.EmployerContactName ?? source.ProviderContactName,
+                EmployerContactPhone = source.EmployerContactPhone ?? source.ProviderContactPhone,
                 ApprenticeshipLevel = source.ApprenticeshipLevel,
                 ExpectedDuration = source.ExpectedDuration,
                 Location = new VacancyLocation

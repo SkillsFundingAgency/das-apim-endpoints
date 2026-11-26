@@ -1,10 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
-using System;
 using System.Net;
 using System.Threading;
-using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.DeleteTrainingCourse;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.TrainingCoursesController;

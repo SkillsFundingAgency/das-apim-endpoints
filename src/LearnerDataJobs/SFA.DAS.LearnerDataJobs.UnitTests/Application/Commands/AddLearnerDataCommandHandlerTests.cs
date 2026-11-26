@@ -1,16 +1,18 @@
 ﻿using System.Net;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using SFA.DAS.LearnerDataJobs.Application.Commands;
 using SFA.DAS.LearnerDataJobs.Application.Handlers;
 using SFA.DAS.LearnerDataJobs.InnerApi;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LearnerDataJobs.UnitTests.Application.Commands;
@@ -20,13 +22,13 @@ public class AddLearnerDataCommandHandlerTests
     [Test, MoqAutoData]
     public async Task Then_AddingANewLearner_Returns_200_Range_HttpStatusCode(
         AddLearnerDataCommand command,
-        StandardDetailResponse courseResponse,
+        CourseLookupDetailResponse courseResponse,
         [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> client,
         [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
+        [Frozen] Mock<IConfiguration> configuration,
         [Greedy] AddLearnerDataCommandHandler handler)
     {
-
-        courseResponse.ApprenticeshipType = "Apprenticeship";
+        courseResponse.LearningType = "Apprenticeship";
 
         var expectedUrl =
             $"providers/{command.LearnerData.UKPRN}/learners/{command.LearnerData.ULN}";
@@ -36,8 +38,8 @@ public class AddLearnerDataCommandHandlerTests
             .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.Created, ""));
 
         courseClient.Setup(x =>
-                x.Get<StandardDetailResponse>(
-                    It.Is<GetStandardDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
+                x.Get<CourseLookupDetailResponse>(
+                    It.Is<GetCourseLookupDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
             .ReturnsAsync(courseResponse);
 
         var result = await handler.Handle(command, CancellationToken.None);
@@ -48,9 +50,19 @@ public class AddLearnerDataCommandHandlerTests
     [Test, MoqAutoData]
     public async Task Then_AddingANewLearner_Returns_Non200_Range_HttpStatusCode(
         AddLearnerDataCommand command,
+        CourseLookupDetailResponse courseResponse,
         [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> client,
+        [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
+        [Frozen] Mock<IConfiguration> configuration,
         [Greedy] AddLearnerDataCommandHandler handler)
     {
+        courseResponse.LearningType = "Apprenticeship";
+
+        courseClient.Setup(x =>
+        x.Get<CourseLookupDetailResponse>(
+                It.Is<GetCourseLookupDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
+            .ReturnsAsync(courseResponse);
+
         client.Setup(x =>
                 x.PutWithResponseCode<NullResponse>(It.IsAny<PutLearnerDataRequest>()))
             .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.BadRequest, "Error"));
@@ -62,17 +74,17 @@ public class AddLearnerDataCommandHandlerTests
 
     [Test, MoqAutoData]
     public async Task Then_AddingANewLearner_Throws_Exception(
-        StandardDetailResponse courseResponse,
+        CourseLookupDetailResponse courseResponse,
         AddLearnerDataCommand command,
         [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
+        [Frozen] Mock<IConfiguration> configuration,
         [Greedy] AddLearnerDataCommandHandler handler)
     {
-        courseResponse.ApprenticeshipType = "Unknown";
-
+        courseResponse.LearningType = "Unknown";
 
         courseClient.Setup(x =>
-                x.Get<StandardDetailResponse?>(
-                    It.Is<GetStandardDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
+                x.Get<CourseLookupDetailResponse?>(
+                    It.Is<GetCourseLookupDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
             .ReturnsAsync(courseResponse);
 
         var act = async () => await handler.Handle(command, CancellationToken.None);
@@ -94,15 +106,16 @@ public class AddLearnerDataCommandHandlerTests
 
     [Test, MoqAutoData]
     public async Task Then_AddingANewLearner_Throws_Exception_When_No_CourseFound(
-    AddLearnerDataCommand command,
-    [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
-    [Greedy] AddLearnerDataCommandHandler handler)
+        AddLearnerDataCommand command,
+        [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
+        [Frozen] Mock<IConfiguration> configuration,
+        [Greedy] AddLearnerDataCommandHandler handler)
     {
-        StandardDetailResponse? courseResponse = null;
+        CourseLookupDetailResponse? courseResponse = null;
 
         courseClient.Setup(x =>
-                x.Get<StandardDetailResponse?>(
-                    It.Is<GetStandardDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
+                x.Get<CourseLookupDetailResponse?>(
+                    It.Is<GetCourseLookupDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
             .ReturnsAsync(courseResponse);
 
         var act = async () => await handler.Handle(command, CancellationToken.None);
@@ -113,25 +126,26 @@ public class AddLearnerDataCommandHandlerTests
     [Test, MoqAutoData]
     public async Task Then_AddingANewLearner_Maps_To_Inner_Api_Successfully(
         AddLearnerDataCommand command,
-        StandardDetailResponse courseResponse,
+        CourseLookupDetailResponse courseResponse,
         [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> client,
         [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
+        [Frozen] Mock<IConfiguration> configuration,
         [Greedy] AddLearnerDataCommandHandler handler)
     {
-
-        courseResponse.ApprenticeshipType = "Apprenticeship";
+        courseResponse.LearningType = "ApprenticeshipUnit";
 
         var expectedUrl =
             $"providers/{command.LearnerData.UKPRN}/learners/{command.LearnerData.ULN}";
+
+        courseClient.Setup(x =>
+                x.Get<CourseLookupDetailResponse?>(
+                    It.Is<GetCourseLookupDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
+            .ReturnsAsync(courseResponse);
+
         client.Setup(x =>
                 x.PutWithResponseCode<NullResponse>(
                     It.Is<PutLearnerDataRequest>(p => p.PutUrl == expectedUrl)))
             .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.Created, ""));
-
-        courseClient.Setup(x =>
-                x.Get<StandardDetailResponse>(
-                    It.Is<GetStandardDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
-            .ReturnsAsync(courseResponse);
 
         var result = await handler.Handle(command, CancellationToken.None);
 

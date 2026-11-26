@@ -1,5 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Requests.LearningInner;
 
 namespace SFA.DAS.LearnerData.Extensions;
 

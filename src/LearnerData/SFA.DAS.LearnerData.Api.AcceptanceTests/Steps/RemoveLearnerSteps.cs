@@ -1,8 +1,11 @@
-﻿using FluentAssertions;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
+using FluentAssertions;
+using Newtonsoft.Json;
+using SFA.DAS.LearnerData.Enums;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.Apim.Shared.Infrastructure;
 using System.Net;
 using TechTalk.SpecFlow;
-using WireMock;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -13,12 +16,14 @@ internal class RemoveLearnerSteps(TestContext testContext, ScenarioContext scena
 {
     private const string LearnerKey = "LearnerKey";
     private const string UkprnKey = "UkprnKey";
+    private const string RemovedLearnerRef = "LRN-REMOVED";
 
     [When(@"the learner is removed")]
     public async Task WhenTheLearnerIsRemoved()
     {
         ConfigureRemoveLearningApi();
         ConfigureWithdrawLearnerEarningsApi();
+        ConfigureReleaseEarningsApi();
         await CallRemoveLearnerEndpoint();
     }
 
@@ -44,20 +49,33 @@ internal class RemoveLearnerSteps(TestContext testContext, ScenarioContext scena
             "Expected a delete request to the Earnings domain for the learner");
     }
 
+    [Then(@"a release earnings request is sent to the earnings domain")]
+    public void ThenAReleaseEarningsRequestIsSentToTheEarningsDomain()
+    {
+        var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
+        var requests = testContext.EarningsApi.MockServer.LogEntries;
+
+        var entry = requests.Should().ContainSingle(request => request.RequestMessage.Url.Contains($"/learning/{learnerKey}/release-earnings") && request.RequestMessage.Method == "POST",
+            "Expected a release earnings request to the Earnings domain for the removed learning").Which;
+
+        var body = JsonConvert.DeserializeObject<ReleaseEarningsRequest>(entry.RequestMessage.Body);
+        body!.LearnerKey.Should().Be(learnerKey);
+        body.LearnerRef.Should().Be(RemovedLearnerRef);
+        body.ReleaseType.Should().Be(ReleaseType.All);
+        body.EnglishAndMathsCourseKeys.Should().BeEmpty();
+    }
+
     private void ConfigureRemoveLearningApi()
     {
-        var learningKey = scenarioContext.Get<Guid>(LearnerKey);
+        var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
         var ukprn = scenarioContext.Get<long>(UkprnKey);
 
-        var responseBody = new RemoveLearnerResponse
-        {
-            LastDayOfLearning = DateTime.UtcNow
-        };
+        var responseBody = new List<RemovedLearningResponse> { new() { LearningKey = learnerKey, LearnerRef = RemovedLearnerRef } };
 
         testContext.ApprenticeshipsApi.MockServer
             .Given(
                 Request.Create()
-                    .WithPath($"/{ukprn}/{learningKey}")
+                    .WithPath($"/{ukprn}/{learnerKey}")
                     .UsingDelete()
             )
             .RespondWith(
@@ -82,6 +100,22 @@ internal class RemoveLearnerSteps(TestContext testContext, ScenarioContext scena
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.NoContent)
+            );
+    }
+
+    private void ConfigureReleaseEarningsApi()
+    {
+        var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
+
+        testContext.EarningsApi.MockServer
+            .Given(
+                Request.Create()
+                    .WithPath($"/learning/{learnerKey}/release-earnings")
+                    .UsingPost()
+            )
+            .RespondWith(
+                Response.Create()
+                    .WithStatusCode(HttpStatusCode.OK)
             );
     }
 

@@ -1,9 +1,11 @@
-﻿using MediatR;
-using SFA.DAS.EmploymentCheck.Configuration;
+using MediatR;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.EmploymentCheck.Requests;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 

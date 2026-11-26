@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
+﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.CollectionCalendar;
 
 namespace SFA.DAS.LearnerData.Extensions;
 
@@ -141,4 +141,5 @@ public static class DateTimeExtensions
         var firstOfNextMonth = new DateTime(datetime.Year, datetime.Month, 1).AddMonths(1);
         return firstOfNextMonth.AddDays(-1);
     }
+
 }

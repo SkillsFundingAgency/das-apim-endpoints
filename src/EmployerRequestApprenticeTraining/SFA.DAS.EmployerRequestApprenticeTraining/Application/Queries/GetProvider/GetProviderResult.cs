@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Models.RoatpV2;
+﻿using SFA.DAS.SharedOuterApi.Types.Models.RoatpV2;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetProvider
 {

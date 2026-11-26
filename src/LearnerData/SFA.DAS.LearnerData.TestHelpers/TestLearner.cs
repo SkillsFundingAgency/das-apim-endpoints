@@ -1,4 +1,5 @@
-﻿using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Shared;
 
 namespace SFA.DAS.LearnerData.TestHelpers;
 
@@ -28,12 +29,17 @@ public class TestLearner
     /// These can be left blank. If left blank the test data builder will create default instalments based on the update request.
     /// The auto generated instalments will be crudely calculated and should not be relied upon for precise values.
     /// </summary>
-    public List<SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings.Instalment> Instalments { get; set; }
+    public List<SFA.DAS.LearnerData.Responses.EarningsInner.Instalment> Instalments { get; set; }
 
     /// <summary>
     /// These can be left blank or manually populated, there is no auto generation of additional payments at present.
     /// </summary>
-    public List<SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings.AdditionalPayment> AdditionalPayments { get; set; }
+    public List<SFA.DAS.LearnerData.Responses.EarningsInner.AdditionalPayment> AdditionalPayments { get; set; }
+
+    /// <summary>
+    /// English and Maths value per LearnAimRef, as Earnings would hold it.
+    /// </summary>
+    public Dictionary<string, decimal> EnglishAndMathsValues { get; set; } = new();
 }
 
 public static class TestLearnerExtensions
@@ -43,9 +49,16 @@ public static class TestLearnerExtensions
         testLearner.UpdateLearnerRequest.Delivery.OnProgramme.Clear();
     }
     public static void AddProgramme(this TestLearner testLearner,
-        int ageAtStart, DateTime startDate, DateTime endDate, int? trainingPrice = null, int? endpointAssessmentPrice = null, List<CostDetails>? costs = null)
+        int ageAtStart, DateTime startDate, DateTime endDate, int? trainingPrice = null, int? endpointAssessmentPrice = null, List<CostDetails>? costs = null,
+        int? aimSequenceNumber = null, int? standardCode = null)
     {
         var programme = DefaultLearner.OnProgramme;
+
+        if (aimSequenceNumber != null)
+            programme.AimSequenceNumber = aimSequenceNumber.Value;
+
+        if (standardCode != null)
+            programme.StandardCode = standardCode.Value;
 
         if(trainingPrice == null && endpointAssessmentPrice == null && costs == null)
             throw new ArgumentException("Either trainingPrice and endpointAssessmentPrice, or costs must be provided");
@@ -68,6 +81,39 @@ public static class TestLearnerExtensions
 
         testLearner.UpdateLearnerRequest.Delivery.OnProgramme.Add(programme);
 
+    }
+
+    public static void AddEnglishAndMathsDelivery(this TestLearner testLearner, 
+        int? aimSequenceNumber = null, 
+        string? learnAimRef = null,
+        string? course = null, 
+        DateTime? startDate = null, 
+        DateTime? endDate = null, 
+        int? amount = null,
+        List<LearningSupport>? learningSupports = null)
+    {
+        var englishAndMathsLearningDelivery = DefaultLearner.EnglishAndMathsLearningDelivery;
+        
+        if (aimSequenceNumber != null)
+            englishAndMathsLearningDelivery.AimSequenceNumber = aimSequenceNumber.Value;
+
+        if (learnAimRef != null)
+            englishAndMathsLearningDelivery.LearnAimRef = learnAimRef;
+
+        if (course != null)
+            englishAndMathsLearningDelivery.Course = course;
+
+        if (startDate != null)
+            englishAndMathsLearningDelivery.StartDate = startDate.Value;
+
+        if (endDate != null)
+            englishAndMathsLearningDelivery.EndDate = endDate.Value;
+
+        if(learningSupports != null)
+            englishAndMathsLearningDelivery.LearningSupport = learningSupports;
+
+        testLearner.UpdateLearnerRequest.Delivery.EnglishAndMaths.Add(englishAndMathsLearningDelivery);
+        testLearner.EnglishAndMathsValues[englishAndMathsLearningDelivery.LearnAimRef] = amount ?? DefaultLearner.EnglishAndMathsValue;
     }
 }
 

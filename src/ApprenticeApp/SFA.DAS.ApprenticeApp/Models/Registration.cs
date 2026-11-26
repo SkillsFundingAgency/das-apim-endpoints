@@ -1,5 +1,5 @@
 ﻿using System;
-using static SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments.GetApprenticeshipUpdatesResponse;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
 
 namespace SFA.DAS.ApprenticeApp.Models
 {
@@ -7,6 +7,7 @@ namespace SFA.DAS.ApprenticeApp.Models
     {
         public Guid RegistrationId { get; set; }
         public long CommitmentsApprenticeshipId { get; set; }
+        public long? ApprenticeshipId { get; set; }
         public DateTime CommitmentsApprovedOn { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -28,7 +29,7 @@ namespace SFA.DAS.ApprenticeApp.Models
         string employerName,
         long trainingProviderId,
         string trainingProviderName,
-        DeliveryModel deliveryModel,
+        GetApprenticeshipUpdatesResponse.DeliveryModel deliveryModel,
         CourseDetails course,
         RplDetails rpl,
         int? apprenticeshipType)
@@ -46,7 +47,7 @@ namespace SFA.DAS.ApprenticeApp.Models
         public string EmployerName { get; }
         public long TrainingProviderId { get; }
         public string TrainingProviderName { get; }
-        public DeliveryModel DeliveryModel { get; }
+        public GetApprenticeshipUpdatesResponse.DeliveryModel DeliveryModel { get; }
         public CourseDetails Course { get; }
         public RplDetails Rpl { get; }
         public int? ApprenticeshipType { get; }

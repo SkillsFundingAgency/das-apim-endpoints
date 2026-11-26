@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.JsonPatch;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 

@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Aodp.Configuration;
+using SFA.DAS.Aodp.Services;
 
 public class DeleteApplicationCommandHandler : IRequestHandler<DeleteApplicationCommand, BaseMediatrResponse<EmptyResponse>>
 {
@@ -22,7 +22,8 @@ public class DeleteApplicationCommandHandler : IRequestHandler<DeleteApplication
         {
             await _apiClient.Delete(new DeleteApplicationApiRequest()
             {
-                ApplicationId = request.ApplicationId
+                ApplicationId = request.ApplicationId,
+                UserType = request.UserType
             });
             response.Success = true;
         }

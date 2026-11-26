@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
+using SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships;
 
 namespace SFA.DAS.EmployerPR.Application.Permissions.Commands.PostPermissions;
 
@@ -12,4 +12,5 @@ public class PostPermissionsCommand : IRequest<Unit>
     public required long AccountLegalEntityId { get; set; }
 
     public required List<Operation> Operations { get; set; } = [];
+    public string? Email { get; set; }
 }

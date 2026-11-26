@@ -1,13 +1,9 @@
-﻿using FluentAssertions;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
-using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Domain;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.FindAnApprenticeship.Telemetry;
-using SFA.DAS.Testing.AutoFixture;
-using System;
 using System.Diagnostics.Metrics;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Telemetry

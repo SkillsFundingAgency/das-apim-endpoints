@@ -1,5 +1,6 @@
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain;
+
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSearches;
 
@@ -27,9 +28,20 @@ public record GetSavedSearchesQueryResult
         public List<int>? SelectedRouteIds { get; set; } = [];
         public List<ApprenticeshipTypes>? SelectedApprenticeshipTypes { get; set; } = [];
         public string? UnSubscribeToken { get; set; }
+        public bool HasInvalidSearchParameters { get; set; }
 
         public static implicit operator SearchResult(GetSavedSearchesApiResponse.SavedSearch savedSearch)
         {
+            if (savedSearch.SearchParameters is null)
+            {
+                return new SearchResult
+                {
+                    Id= savedSearch.Id,
+                    UserId = savedSearch.UserReference,
+                    HasInvalidSearchParameters = true
+                };
+            }
+            
             return new SearchResult
             {
                 DisabilityConfident = savedSearch.SearchParameters.DisabilityConfident,

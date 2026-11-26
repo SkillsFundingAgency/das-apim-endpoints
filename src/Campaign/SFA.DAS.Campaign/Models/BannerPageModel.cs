@@ -29,11 +29,14 @@ namespace SFA.DAS.Campaign.Models
                 var bannerModel = ProcessBanner(item);
                 var contentItems = new List<ContentItem>();
 
-                foreach (var contentItem in item.Fields.Content.Content)
+                if (item.Fields.Content?.Content != null)
                 {
-                    banner.ProcessContentNodeTypes(contentItem, contentItems);
-                    contentItem.ProcessListNodeTypes(contentItems);
-                    banner.ProcessEmbeddedAssetBlockNodeTypes(contentItem, contentItems);
+                    foreach (var contentItem in item.Fields.Content.Content)
+                    {
+                        banner.ProcessContentNodeTypes(contentItem, contentItems);
+                        contentItem.ProcessListNodeTypes(contentItems);
+                        banner.ProcessEmbeddedAssetBlockNodeTypes(contentItem, contentItems);
+                    }
                 }
 
                 bannerModel.Items = contentItems;

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;

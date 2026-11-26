@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using SFA.DAS.LearnerData.Services;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using SFA.DAS.LearnerData.Services;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Bindings;
@@ -39,8 +39,13 @@ public class OuterApi
                 {"LearningApiConfiguration:BearerTokenSigningKey", "local_test_outer_api_client_bearer_token_signing_key"},
                 {"CollectionCalendarApiConfiguration:url", _context?.CollectionCalendarApi?.BaseAddress + "/"},
                 {"CoursesApiConfiguration:url", _context?.CoursesApi?.BaseAddress + "/"},
+                {"SLDDataApiConfiguration:url", _context?.SldDataApi?.BaseAddress + "/"},
+                {"SLDDataApiConfiguration:TokenSettings:url", _context?.SldDataApi?.BaseAddress + "/"},
+                {"SLDDataApiConfiguration:TokenSettings:ShouldSkipForLocal", "true"},
                 {"AzureAD:tenant", ""},
-                {"AzureAD:identifier", ""}
+                {"AzureAD:identifier", ""},
+                {"PaymentsConfiguration:PaymentsEndpoint", "stub"},
+                {"FeatureFlags:ApprenticeshipUpdateLearner", "true"}
             };
 
 

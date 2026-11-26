@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
 {
@@ -21,6 +23,8 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
         public bool IsRegulatedForProvider { get; set; }
         public bool HasLocations { get; set; }
         public bool HasOnlineDeliveryOption { get; set; }
+        public CourseType CourseType { get; set; }
+        public DateTime? LastDateStarts { get; set; }
     }
     public enum DeliveryModel
     {

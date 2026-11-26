@@ -2,11 +2,16 @@
 using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Services;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
 using LiveVacancy = SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses.LiveVacancy;
 using Qualification = SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses.Qualification;
 
@@ -26,6 +31,39 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
             var result = sut.Map(source, mockStandardsListResponse);
 
             AssertResponse(result, source, mockStandardsListResponse);
+        }
+
+        [Test, MoqAutoData]
+        public void Then_Other_Qualification_Types_Are_Mapped_With_Qualification_Type_As_OtherQualificationName(
+            LiveVacancy source,
+            [Frozen] Mock<ICourseService> courseService,
+            LiveVacancyMapper sut)
+        {
+            
+            var mockStandardsListResponse =  SetupCoursesApiResponse(source);
+            source.Qualifications = new List<Qualification>
+            {
+                new Qualification
+                {
+                    OtherQualificationName = "Qual 1",
+                    QualificationType = "Other",
+                    Subject = "Other Subject",
+                    Grade = "1",
+                    Weighting = QualificationWeighting.Essential
+                },
+                new Qualification
+                {
+                    OtherQualificationName = "Qual 1",
+                    QualificationType = "OTHer",
+                    Subject = "Other Subject",
+                    Grade = "1",
+                    Weighting = QualificationWeighting.Essential
+                }
+            };
+            
+            var result = sut.Map(source, mockStandardsListResponse);
+            
+            result.Qualifications.Select(c=>c.QualificationType == "Qual 1").ToList().TrueForAll(c=>c).Should().BeTrue();
         }
         
         [Test]

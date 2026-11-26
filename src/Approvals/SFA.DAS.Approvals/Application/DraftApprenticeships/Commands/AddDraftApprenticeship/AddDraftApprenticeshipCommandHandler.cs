@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -6,8 +6,9 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftApprenticeship
 {
@@ -15,6 +16,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAp
         ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
         IAutoReservationsService autoReservationService,
         ICourseTypeRulesService courseTypeRulesService,
+        IApprenticeshipUnitVersionService apprenticeshipUnitVersionService,
         ILogger<AddDraftApprenticeshipCommandHandler> logger)
         : IRequestHandler<AddDraftApprenticeshipCommand, AddDraftApprenticeshipResult>
     {
@@ -45,6 +47,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAp
             try
             {
                 var courseTypeRules = await courseTypeRulesService.GetCourseTypeRulesAsync(request.CourseCode);
+                var version = await apprenticeshipUnitVersionService.Resolve(courseTypeRules.Course, request.ActualStartDate);
                 
                 var addDraftApprenticeshipRequest = new AddDraftApprenticeshipRequest
                 {
@@ -53,6 +56,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAp
                     TrainingPrice = request.TrainingPrice,
                     EndPointAssessmentPrice = request.EndPointAssessmentPrice,
                     CourseCode = request.CourseCode,
+                    TrainingCourseVersion = version?.Version,
+                    StandardUId = version?.StandardUId,
                     DateOfBirth = request.DateOfBirth,
                     DeliveryModel = request.DeliveryModel,
                     Email = request.Email,
@@ -72,6 +77,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAp
                     UserId = request.UserId,
                     RequestingParty = request.RequestingParty,
                     LearnerDataId = request.LearnerDataId,
+                    OnServicePayments = request.OnServicePayments,
                     MinimumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MinimumAge,
                     MaximumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MaximumAge,
                 };

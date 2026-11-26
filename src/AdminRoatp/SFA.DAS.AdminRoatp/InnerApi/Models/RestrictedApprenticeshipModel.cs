@@ -1,0 +1,10 @@
+﻿namespace SFA.DAS.AdminRoatp.InnerApi.Models;
+
+public class RestrictedApprenticeshipModel
+{
+    public string LarsCode { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
+    public int Level { get; set; }
+    public DateTime? LastDateStarts { get; set; }
+    public bool IsClosedToNewStarts { get; set; }
+}

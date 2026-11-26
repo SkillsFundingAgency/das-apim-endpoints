@@ -10,8 +10,9 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Campaign.Api.AppStart;
 using SFA.DAS.Campaign.Application.Queries.Sectors;
 using SFA.DAS.Campaign.Configuration;
-using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.Apim.Shared.AppStart;
+using SFA.DAS.Apim.Shared.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

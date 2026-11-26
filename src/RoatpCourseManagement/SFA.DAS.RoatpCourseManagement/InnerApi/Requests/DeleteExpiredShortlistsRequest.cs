@@ -1,10 +1,10 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 
 public class DeleteExpiredShortlistsRequest : IDeleteApiRequest
 {
-    private const string deletePath = "api/shortlists/expired";
+    private const string deletePath = "shortlists/expired";
 
     public string DeleteUrl => deletePath;
 }

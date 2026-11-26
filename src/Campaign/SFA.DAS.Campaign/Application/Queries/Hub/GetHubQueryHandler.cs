@@ -6,7 +6,8 @@ using SFA.DAS.Campaign.ExternalApi.Requests;
 using SFA.DAS.Campaign.ExternalApi.Responses;
 using SFA.DAS.Campaign.Interfaces;
 using SFA.DAS.Campaign.Models;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Campaign.Application.Queries.Hub
 {
@@ -26,7 +27,7 @@ namespace SFA.DAS.Campaign.Application.Queries.Hub
 
         public async Task<GetHubQueryResult> Handle(GetHubQuery request, CancellationToken cancellationToken)
         {
-            var article = _reliableCacheStorageService.GetData<CmsContent>(new GetHubEntriesRequest(request.Hub.ToTitleCase()), $"{request.Hub.ToTitleCase()}_hub", _contentService.HasContent);
+            var article = _reliableCacheStorageService.GetData<HubCmsContent>(new GetHubEntriesRequest(request.Hub.ToTitleCase()), $"{request.Hub.ToTitleCase()}_hub", _contentService.HasContent);
             var menu = _mediator.RetrieveMenu(cancellationToken);
             var banners = _mediator.RetrieveBanners(cancellationToken);
 

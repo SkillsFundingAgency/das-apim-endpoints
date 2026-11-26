@@ -6,8 +6,8 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.RecalculateEarnings;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Apim.Shared.Infrastructure;
 
 namespace SFA.DAS.EmployerIncentives.Application.Services
 {

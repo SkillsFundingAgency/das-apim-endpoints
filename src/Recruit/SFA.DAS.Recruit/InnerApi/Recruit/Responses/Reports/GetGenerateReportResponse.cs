@@ -1,7 +1,8 @@
 ﻿using SFA.DAS.Recruit.Enums;
-using SFA.DAS.SharedOuterApi.Domain;
+
 using System;
 using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Types.Domain;
 
 namespace SFA.DAS.Recruit.InnerApi.Recruit.Responses.Reports;
 public record GetGenerateReportResponse

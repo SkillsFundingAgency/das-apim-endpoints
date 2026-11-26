@@ -1,6 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Interfaces;
-
-namespace SFA.DAS.ToolsSupport.InnerApi.Responses;
+﻿namespace SFA.DAS.ToolsSupport.InnerApi.Responses;
 
 
 // TODO remove unused fields

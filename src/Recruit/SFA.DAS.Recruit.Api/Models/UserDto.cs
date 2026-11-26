@@ -10,8 +10,8 @@ public class UserDto
     public required string Name { get; set; }
     public required string Email { get; set; }
     public DateTime CreatedDate { get; set; }
-    public DateTime LastSignedInDate { get; set; }
-    public IList<string> EmployerAccountIds { get; set; } = new List<string>();
+    public DateTime? LastSignedInDate { get; set; }
+    public IList<long> EmployerAccountIds { get; set; } = [];
     public long? Ukprn { get; set; }
     public DateTime? TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn { get; set; }
     public DateTime? ClosedVacanciesBlockedProviderAlertDismissedOn { get; set; }

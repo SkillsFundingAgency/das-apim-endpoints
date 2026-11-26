@@ -5,9 +5,9 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Application.Authorization.Queries;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Authorization;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
-using GetCohortAccessResponse = SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments.GetCohortAccessResponse;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Authorization;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
+using GetCohortAccessResponse = SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments.GetCohortAccessResponse;
 
 namespace SFA.DAS.Approvals.Api.Controllers;
 

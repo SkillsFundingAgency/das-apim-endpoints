@@ -6,21 +6,23 @@ using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetConfirmEmployer
 {
     public class GetConfirmEmployerQueryHandler : IRequestHandler<GetConfirmEmployerQuery, GetConfirmEmployerQueryResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
-        private readonly IProviderStandardsService _providerStandardsService;
+        private readonly IProviderCoursesOrStandardsService _providerStandardsService;
         private readonly ServiceParameters _serviceParameters;
 
         public GetConfirmEmployerQueryHandler(
             ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
-            IProviderStandardsService providerStandardsService,
+            IProviderCoursesOrStandardsService providerStandardsService,
             ServiceParameters serviceParameters)
         {
             _apiClient = apiClient;
@@ -45,7 +47,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetConfirmEmployer
 
             if (provider == null) return null;
 
-            var providerStandardsData = await _providerStandardsService.GetStandardsData(_serviceParameters.CallingPartyId);
+            var providerStandardsData = await _providerStandardsService.GetCoursesData(_serviceParameters.CallingPartyId);
 
             return new GetConfirmEmployerQueryResult
             {
