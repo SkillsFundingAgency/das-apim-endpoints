@@ -489,4 +489,35 @@ public class WhenGettingLearnersForProvider
         var request = captured.Data as GetLearnersForProviderRequest;
         request.ExcludeUlns.Should().Contain(excludeUlns);
     }
+
+    [Test, MoqAutoData]
+    public async Task Then_The_Api_Is_Called_With_AgreementId_Then_Data_Is_Included_In_LearnerApi_Call(
+        GetLearnersForProviderQuery query,
+        GetLearnersForProviderResponse learnersResponse,
+        GetAllStandardsResponse coursesResponse,
+        string agreementId,
+        [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Greedy] GetLearnersForProviderQueryHandler handler
+    )
+    {
+        query.AccountLegalEntityId = null;
+        query.CohortId = null;
+        query.AgreementId = agreementId;
+        IPostApiRequest captured = null;
+
+        learnerDataClient.Setup(x =>
+                x.PostWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<PostGetLearnersForProviderRequest>(), It.IsAny<bool>()))
+                .Callback<IPostApiRequest, bool>((r, _) => captured = r)
+                .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
+
+        commitmentsClient.Setup(x => x.GetWithResponseCode<GetAllStandardsResponse>(It.IsAny<GetAllStandardsRequest>()))
+            .ReturnsAsync(new ApiResponse<GetAllStandardsResponse>(coursesResponse, HttpStatusCode.OK, null));
+
+        var result = await handler.Handle(query, CancellationToken.None);
+
+        captured.Should().NotBeNull();
+        var request = captured.Data as GetLearnersForProviderRequest;
+        request.AgreementId.Should().Be(agreementId);
+    }
 }
