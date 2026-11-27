@@ -1,0 +1,16 @@
+@SFA.DAS.PAS.Api_HostAddress = https://localhost:7078
+
+### Health check
+
+GET {{SFA.DAS.PAS.Api_HostAddress}}/health
+Accept: application/json
+
+### Put user settings
+PUT {{SFA.DAS.PAS.Api_HostAddress}}/users/usr-0001/settings
+Content-Type: application/json
+
+{
+    "receiveNotifications": true
+}
+
+###
