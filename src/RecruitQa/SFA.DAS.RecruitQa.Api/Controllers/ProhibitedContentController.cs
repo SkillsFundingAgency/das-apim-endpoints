@@ -7,7 +7,7 @@ namespace SFA.DAS.RecruitQa.Api.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class ProhibitedContentController(IMediator mediator, ILogger<ProhibitedContentController> logger) : ControllerBase
+public class ProhibitedContentController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
     [Route("profanity")]

@@ -19,9 +19,9 @@ public class WhenCallingGetLocationInformation
         [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
         LocationLookupService service)
     {
-        var location = "";
-        var lat = 0;
-        var lon = 0;
+        const string location = "";
+        const int lat = 0;
+        const int lon = 0;
 
         await service.GetLocationInformation(location, lat, lon);
 
@@ -38,8 +38,8 @@ public class WhenCallingGetLocationInformation
     )
     {
         var location = $"{locationName}, {authorityName} ";
-        var lat = 0;
-        var lon = 0;
+        const int lat = 0;
+        const int lon = 0;
 
         mockLocationApiClient
             .Setup(client =>
@@ -63,8 +63,8 @@ public class WhenCallingGetLocationInformation
         LocationLookupService service)
     {
         var location = $"{locationName}, {locationName}, {authorityName} ";
-        var lat = 0;
-        var lon = 0;
+        const int lat = 0;
+        const int lon = 0;
         var encodedLocation = "?locationName=" + HttpUtility.UrlEncode($"{locationName}, {locationName}");
 
         mockLocationApiClient
@@ -88,8 +88,8 @@ public class WhenCallingGetLocationInformation
         LocationLookupService service)
     {
         var location = $"{locationName} ";//no regex match
-        var lat = 0;
-        var lon = 0;
+        const int lat = 0;
+        const int lon = 0;
 
         var result = await service.GetLocationInformation(location, lat, lon);
 
@@ -103,11 +103,11 @@ public class WhenCallingGetLocationInformation
         [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
         LocationLookupService service)
     {
-        var outcode = "CV1";
+        const string outcode = "CV1";
 
         var location = $"{outcode}";
-        var lat = 0;
-        var lon = 0;
+        const int lat = 0;
+        const int lon = 0;
 
         mockLocationApiClient
             .Setup(client =>
@@ -127,11 +127,11 @@ public class WhenCallingGetLocationInformation
         [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
         LocationLookupService service)
     {
-        var outcode = "NO1SE";
+        const string outcode = "NO1SE";
 
         var location = $"{outcode}";
-        var lat = 0;
-        var lon = 0;
+        const int lat = 0;
+        const int lon = 0;
 
         mockLocationApiClient
             .Setup(client =>
@@ -162,7 +162,7 @@ public class WhenCallingGetLocationInformation
         response.Postcode = postcode;
 
         var apiResponse = new ApiResponse<GetLookupPostcodeResponse>(response, HttpStatusCode.OK, string.Empty);
-        GetLookupPostcodeRequest? capturedRequest = null;
+        GetLookupPostcodeRequest capturedRequest = null;
         mockLocationApiClient
             .Setup(x => x.GetWithResponseCode<GetLookupPostcodeResponse>(It.IsAny<GetLookupPostcodeRequest>()))
             .Callback<IGetApiRequest>(x => capturedRequest = x as GetLookupPostcodeRequest)
@@ -194,7 +194,7 @@ public class WhenCallingGetLocationInformation
         var location = $"{response.Postcode}, {response.DistrictName}";
 
         var apiResponse = new ApiResponse<GetLookupPostcodeResponse>(response, HttpStatusCode.OK, string.Empty);
-        GetLookupPostcodeRequest? capturedRequest = null;
+        GetLookupPostcodeRequest capturedRequest = null;
         mockLocationApiClient
             .Setup(x => x.GetWithResponseCode<GetLookupPostcodeResponse>(It.IsAny<GetLookupPostcodeRequest>()))
             .Callback<IGetApiRequest>(x => capturedRequest = x as GetLookupPostcodeRequest)
@@ -219,10 +219,10 @@ public class WhenCallingGetLocationInformation
         [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
         LocationLookupService service)
     {
-        var outcode = "CV1";
-        var location = $"{outcode} Birmingham, West Midlands";
-        var lat = 0;
-        var lon = 0;
+        const string outcode = "CV1";
+        const string location = $"{outcode} Birmingham, West Midlands";
+        const int lat = 0;
+        const int lon = 0;
 
         mockLocationApiClient
             .Setup(client =>
@@ -242,7 +242,7 @@ public class WhenCallingGetLocationInformation
         [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
         LocationLookupService service)
     {
-        var location = "somewhere nice";
+        const string location = "somewhere nice";
         var lat = 25;
         var lon = 2;
 
@@ -260,8 +260,8 @@ public class WhenCallingGetLocationInformation
     {
         apiLocationResponse.Postcode = "";
         apiLocationResponse.DistrictName = "";
-        var lat = 0;
-        var lon = 0;
+        const int lat = 0;
+        const int lon = 0;
 
         mockLocationApiClient
             .Setup(client =>
@@ -281,9 +281,9 @@ public class WhenCallingGetLocationInformation
         [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
         LocationLookupService handler)
     {
-        var location = "no-match";
-        var lat = 0;
-        var lon = 0;
+        const string location = "no-match";
+        const int lat = 0;
+        const int lon = 0;
 
         mockLocationApiClient
             .Setup(client =>
@@ -300,9 +300,9 @@ public class WhenCallingGetLocationInformation
     public async Task Then_If_There_Is_A_Partial_Location_Name_Which_Is_Less_Than_Two_Characters_Then_Location_Is_Set_To_Null(
         LocationLookupService service)
     {
-        var location = "C";
-        var lat = 0;
-        var lon = 0;
+        const string location = "C";
+        const int lat = 0;
+        const int lon = 0;
 
         var result = await service.GetLocationInformation(location, lat, lon);
 
@@ -317,9 +317,9 @@ public class WhenCallingGetLocationInformation
     {
         apiLocationResponse.Postcode = "";
         apiLocationResponse.DistrictName = "";
-        var location = "LE1";
-        var lat = 0;
-        var lon = 0;
+        const string location = "LE1";
+        const int lat = 0;
+        const int lon = 0;
 
         mockLocationApiClient
             .Setup(client =>
