@@ -10,8 +10,12 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor
         public string Type { get; set; }
         public string CertificateReference { get; set; }
         public long? ProviderUkPrn { get; set; }
+
         public DateTime? PrintRequestedAt { get; set; }
         public string PrintRequestedBy { get; set; }
+        public string PrintStatus { get; set; }
+        public DateTime? PrintStatusAt { get; set; }
+
         public string LearnerFamilyName { get; set; }
         public string LearnerGivenNames { get; set; }
         public string ProviderName { get; set; }
@@ -24,6 +28,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor
         public DateTime? LearningStartDate { get; set; }
         public string LatestEPAOutcome { get; set; }
         public string Status { get; set; }
+
         public CertificateData CertificateData { get; set; }
         public List<CertificateLog> CertificateLogs { get; set; }
     }
