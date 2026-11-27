@@ -1,13 +1,16 @@
 ﻿using System.Net;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Moq;
 using SFA.DAS.AdminRoatp.Application.Commands.UpdateOrganisationCourseTypes;
+using SFA.DAS.AdminRoatp.InnerApi.Models;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
 using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Roatp;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
@@ -31,6 +34,8 @@ public class UpdateOrganisationCourseTypesCommandHandlerTests
         roatpV1ApiClient.Setup(a => a.PutWithResponseCode<NullResponse>(It.Is<UpdateCourseTypesRequest>(r => r.PutUrl.Equals(v1ApiRequest.PutUrl)))).ReturnsAsync(new ApiResponse<NullResponse>(nullResponse, HttpStatusCode.OK, ""));
         roatpV1ApiClient.Setup(a => a.GetWithResponseCode<OrganisationResponse>(It.Is<GetOrganisationRequest>(r => r.Ukprn == command.Ukprn))).ReturnsAsync(new ApiResponse<OrganisationResponse>(new OrganisationResponse(), HttpStatusCode.OK, ""));
 
+        roatpCMApiClient.Setup(s => s.GetWithResponseCode<List<ProviderCourseTypeModel>>(It.Is<GetProviderCourseTypesRequest>(r => r.Ukprn == command.Ukprn)))
+            .ReturnsAsync(new ApiResponse<List<ProviderCourseTypeModel>>([new ProviderCourseTypeModel()], HttpStatusCode.OK, ""));
         roatpCMApiClient.Setup(s => s.PutWithResponseCode<NullResponse>(It.IsAny<PutCourseTypesRequest>())).ReturnsAsync(new ApiResponse<NullResponse>(nullResponse, HttpStatusCode.OK, ""));
 
         await sut.Handle(command, CancellationToken.None);
@@ -54,6 +59,8 @@ public class UpdateOrganisationCourseTypesCommandHandlerTests
         roatpV1ApiClient.Setup(a => a.PutWithResponseCode<NullResponse>(It.Is<UpdateCourseTypesRequest>(r => r.PutUrl.Equals(v1ApiRequest.PutUrl)))).ReturnsAsync(new ApiResponse<NullResponse>(nullResponse, HttpStatusCode.OK, ""));
         roatpV1ApiClient.Setup(a => a.GetWithResponseCode<OrganisationResponse>(It.Is<GetOrganisationRequest>(r => r.Ukprn == command.Ukprn))).ReturnsAsync(new ApiResponse<OrganisationResponse>(new OrganisationResponse() { ProviderType = providerType }, HttpStatusCode.OK, ""));
 
+        roatpCMApiClient.Setup(s => s.GetWithResponseCode<List<ProviderCourseTypeModel>>(It.Is<GetProviderCourseTypesRequest>(r => r.Ukprn == command.Ukprn)))
+            .ReturnsAsync(new ApiResponse<List<ProviderCourseTypeModel>>([new ProviderCourseTypeModel()], HttpStatusCode.OK, ""));
         roatpCMApiClient.Setup(s => s.PutWithResponseCode<NullResponse>(It.IsAny<PutCourseTypesRequest>())).ReturnsAsync(new ApiResponse<NullResponse>(nullResponse, HttpStatusCode.OK, ""));
 
         await sut.Handle(command, CancellationToken.None);
@@ -96,6 +103,8 @@ public class UpdateOrganisationCourseTypesCommandHandlerTests
         roatpV1ApiClient.Setup(a => a.PutWithResponseCode<NullResponse>(It.Is<UpdateCourseTypesRequest>(r => r.PutUrl.Equals(v1ApiRequest.PutUrl)))).ReturnsAsync(new ApiResponse<NullResponse>(nullResponse, HttpStatusCode.OK, ""));
         roatpV1ApiClient.Setup(a => a.GetWithResponseCode<OrganisationResponse>(It.Is<GetOrganisationRequest>(r => r.Ukprn == command.Ukprn))).ReturnsAsync(new ApiResponse<OrganisationResponse>(new OrganisationResponse() { ProviderType = ProviderType.Main }, HttpStatusCode.OK, ""));
 
+        roatpCMApiClient.Setup(s => s.GetWithResponseCode<List<ProviderCourseTypeModel>>(It.Is<GetProviderCourseTypesRequest>(r => r.Ukprn == command.Ukprn)))
+            .ReturnsAsync(new ApiResponse<List<ProviderCourseTypeModel>>([new ProviderCourseTypeModel()], HttpStatusCode.OK, ""));
         roatpCMApiClient.Setup(s => s.PutWithResponseCode<NullResponse>(It.IsAny<PutCourseTypesRequest>())).ReturnsAsync(new ApiResponse<NullResponse>(nullResponse, HttpStatusCode.BadRequest, ""));
 
         Func<Task> result = () => sut.Handle(command, It.IsAny<CancellationToken>());
@@ -120,5 +129,149 @@ public class UpdateOrganisationCourseTypesCommandHandlerTests
 
         await result.Should().ThrowAsync<ApiResponseException>();
         roatpCMApiClient.Verify(s => s.PutWithResponseCode<NullResponse>(It.IsAny<PutCourseTypesRequest>()), Times.Never);
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenHandle_AndExistingCourseTypesEmpty_ThenPostsCourseTypes(
+        [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> roatpV1ApiClient,
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpCMApiClient,
+        UpdateOrganisationCourseTypesCommandHandler sut,
+        UpdateOrganisationCourseTypesCommand command,
+        NullResponse nullResponse)
+    {
+        SetupSuccessfulV1Update(roatpV1ApiClient, command, nullResponse, ProviderType.Main);
+        roatpCMApiClient.Setup(s => s.GetWithResponseCode<List<ProviderCourseTypeModel>>(It.Is<GetProviderCourseTypesRequest>(r => r.Ukprn == command.Ukprn)))
+            .ReturnsAsync(new ApiResponse<List<ProviderCourseTypeModel>>([], HttpStatusCode.OK, ""));
+        roatpCMApiClient.Setup(s => s.PostWithResponseCode<NullResponse>(It.IsAny<AddCourseTypesRequest>()))
+            .ReturnsAsync(new ApiResponse<NullResponse>(nullResponse, HttpStatusCode.OK, ""));
+
+        await sut.Handle(command, CancellationToken.None);
+
+        using (new AssertionScope())
+        {
+            roatpCMApiClient.Verify(s => s.PostWithResponseCode<NullResponse>(It.Is<AddCourseTypesRequest>(r =>
+                r.Ukprn == command.Ukprn &&
+                MatchesCourseTypes((AddCourseTypesModel)r.Data, command))), Times.Once);
+            roatpCMApiClient.Verify(s => s.PutWithResponseCode<NullResponse>(It.IsAny<PutCourseTypesRequest>()), Times.Never);
+        }
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenHandle_AndExistingCourseTypesNull_ThenPostsCourseTypes(
+        [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> roatpV1ApiClient,
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpCMApiClient,
+        UpdateOrganisationCourseTypesCommandHandler sut,
+        UpdateOrganisationCourseTypesCommand command,
+        NullResponse nullResponse)
+    {
+        SetupSuccessfulV1Update(roatpV1ApiClient, command, nullResponse, ProviderType.Employer);
+        roatpCMApiClient.Setup(s => s.GetWithResponseCode<List<ProviderCourseTypeModel>>(It.Is<GetProviderCourseTypesRequest>(r => r.Ukprn == command.Ukprn)))
+            .ReturnsAsync(new ApiResponse<List<ProviderCourseTypeModel>>(null, HttpStatusCode.OK, ""));
+        roatpCMApiClient.Setup(s => s.PostWithResponseCode<NullResponse>(It.IsAny<AddCourseTypesRequest>()))
+            .ReturnsAsync(new ApiResponse<NullResponse>(nullResponse, HttpStatusCode.OK, ""));
+
+        await sut.Handle(command, CancellationToken.None);
+
+        using (new AssertionScope())
+        {
+            roatpCMApiClient.Verify(s => s.PostWithResponseCode<NullResponse>(It.Is<AddCourseTypesRequest>(r =>
+                r.PostUrl == $"/providers/{command.Ukprn}/course-types" &&
+                MatchesCourseTypes((AddCourseTypesModel)r.Data, command))), Times.Once);
+            roatpCMApiClient.Verify(s => s.PutWithResponseCode<NullResponse>(It.IsAny<PutCourseTypesRequest>()), Times.Never);
+        }
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenHandle_AndExistingCourseTypesFound_ThenPutsCourseTypes(
+        [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> roatpV1ApiClient,
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpCMApiClient,
+        UpdateOrganisationCourseTypesCommandHandler sut,
+        UpdateOrganisationCourseTypesCommand command,
+        ProviderCourseTypeModel existingCourseType,
+        NullResponse nullResponse)
+    {
+        SetupSuccessfulV1Update(roatpV1ApiClient, command, nullResponse, ProviderType.Main);
+        roatpCMApiClient.Setup(s => s.GetWithResponseCode<List<ProviderCourseTypeModel>>(It.Is<GetProviderCourseTypesRequest>(r => r.Ukprn == command.Ukprn)))
+            .ReturnsAsync(new ApiResponse<List<ProviderCourseTypeModel>>([existingCourseType], HttpStatusCode.OK, ""));
+        roatpCMApiClient.Setup(s => s.PutWithResponseCode<NullResponse>(It.IsAny<PutCourseTypesRequest>()))
+            .ReturnsAsync(new ApiResponse<NullResponse>(nullResponse, HttpStatusCode.OK, ""));
+
+        await sut.Handle(command, CancellationToken.None);
+
+        using (new AssertionScope())
+        {
+            roatpCMApiClient.Verify(s => s.PutWithResponseCode<NullResponse>(It.Is<PutCourseTypesRequest>(r =>
+                r.Ukprn == command.Ukprn &&
+                r.PutUrl == $"/providers/{command.Ukprn}/course-types" &&
+                MatchesCourseTypes((AddCourseTypesModel)r.Data, command))), Times.Once);
+            roatpCMApiClient.Verify(s => s.PostWithResponseCode<NullResponse>(It.IsAny<AddCourseTypesRequest>()), Times.Never);
+        }
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenHandle_AndGetExistingCourseTypesFails_ThenThrows(
+        [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> roatpV1ApiClient,
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpCMApiClient,
+        UpdateOrganisationCourseTypesCommandHandler sut,
+        UpdateOrganisationCourseTypesCommand command,
+        NullResponse nullResponse)
+    {
+        SetupSuccessfulV1Update(roatpV1ApiClient, command, nullResponse, ProviderType.Main);
+        roatpCMApiClient.Setup(s => s.GetWithResponseCode<List<ProviderCourseTypeModel>>(It.IsAny<GetProviderCourseTypesRequest>()))
+            .ReturnsAsync(new ApiResponse<List<ProviderCourseTypeModel>>(null, HttpStatusCode.InternalServerError, ""));
+
+        Func<Task> result = () => sut.Handle(command, CancellationToken.None);
+
+        using (new AssertionScope())
+        {
+            await result.Should().ThrowAsync<ApiResponseException>();
+            roatpCMApiClient.Verify(s => s.PostWithResponseCode<NullResponse>(It.IsAny<AddCourseTypesRequest>()), Times.Never);
+            roatpCMApiClient.Verify(s => s.PutWithResponseCode<NullResponse>(It.IsAny<PutCourseTypesRequest>()), Times.Never);
+        }
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenHandle_AndAddCourseTypesFails_ThenThrows(
+        [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> roatpV1ApiClient,
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpCMApiClient,
+        UpdateOrganisationCourseTypesCommandHandler sut,
+        UpdateOrganisationCourseTypesCommand command,
+        NullResponse nullResponse)
+    {
+        SetupSuccessfulV1Update(roatpV1ApiClient, command, nullResponse, ProviderType.Main);
+        roatpCMApiClient.Setup(s => s.GetWithResponseCode<List<ProviderCourseTypeModel>>(It.Is<GetProviderCourseTypesRequest>(r => r.Ukprn == command.Ukprn)))
+            .ReturnsAsync(new ApiResponse<List<ProviderCourseTypeModel>>([], HttpStatusCode.OK, ""));
+        roatpCMApiClient.Setup(s => s.PostWithResponseCode<NullResponse>(It.IsAny<AddCourseTypesRequest>()))
+            .ReturnsAsync(new ApiResponse<NullResponse>(nullResponse, HttpStatusCode.BadRequest, ""));
+
+        Func<Task> result = () => sut.Handle(command, CancellationToken.None);
+
+        using (new AssertionScope())
+        {
+            await result.Should().ThrowAsync<ApiResponseException>();
+            roatpCMApiClient.Verify(s => s.PostWithResponseCode<NullResponse>(It.IsAny<AddCourseTypesRequest>()), Times.Once);
+            roatpCMApiClient.Verify(s => s.PutWithResponseCode<NullResponse>(It.IsAny<PutCourseTypesRequest>()), Times.Never);
+        }
+    }
+
+    private static void SetupSuccessfulV1Update(
+        Mock<IRoatpServiceApiClient<RoatpConfiguration>> roatpV1ApiClient,
+        UpdateOrganisationCourseTypesCommand command,
+        NullResponse nullResponse,
+        ProviderType providerType)
+    {
+        var updateCourseTypes = new UpdateCourseTypesModel(command.CourseTypeIds, command.UserId);
+        var v1ApiRequest = new UpdateCourseTypesRequest(command.Ukprn, updateCourseTypes);
+        roatpV1ApiClient.Setup(a => a.PutWithResponseCode<NullResponse>(It.Is<UpdateCourseTypesRequest>(r => r.PutUrl.Equals(v1ApiRequest.PutUrl))))
+            .ReturnsAsync(new ApiResponse<NullResponse>(nullResponse, HttpStatusCode.OK, ""));
+        roatpV1ApiClient.Setup(a => a.GetWithResponseCode<OrganisationResponse>(It.Is<GetOrganisationRequest>(r => r.Ukprn == command.Ukprn)))
+            .ReturnsAsync(new ApiResponse<OrganisationResponse>(new OrganisationResponse { ProviderType = providerType }, HttpStatusCode.OK, ""));
+    }
+
+    private static bool MatchesCourseTypes(AddCourseTypesModel model, UpdateOrganisationCourseTypesCommand command)
+    {
+        return model.UserId == command.UserId
+            && model.UserDisplayName == command.UserDisplayName
+            && model.CourseTypes.SequenceEqual(command.CourseTypeIds.Select(id => (CourseType)id));
     }
 }
