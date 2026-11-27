@@ -149,6 +149,20 @@ Scenario: Start date change that Approvals does not auto-approve
 	And the on-programme update request sent to the earnings domain requires further approval
 	And sld data is stored to the cache
 
+Scenario: Start date change that Approvals auto-approves while an earlier change is still pending
+	Given there is a learner
+	And the StartDate passed is different to the value in the learners domain
+	And Learning reports that the change needs further approval
+	And Approvals auto-approves the change
+	And Approvals reports that other changes are still pending employer approval
+	When the learner is updated
+	Then Approvals is asked about the start date change
+	And further approval needed is not cleared in the learning domain
+	And an ApprovedLearningUpdatedEvent is published for the start date change
+	And a on-programme update request is sent to the earnings domain
+	And the on-programme update request sent to the earnings domain requires further approval
+	And sld data is stored to the cache
+
 Scenario: Change that does not need further approval does not ask Approvals
 	Given there is a learner
 	And the Prices passed is different to the value in the learners domain

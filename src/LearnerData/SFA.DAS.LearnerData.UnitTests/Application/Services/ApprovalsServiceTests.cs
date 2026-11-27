@@ -166,6 +166,32 @@ public class ApprovalsServiceTests
         VerifyNoPlannedEndDateWarning();
     }
 
+    // ---- other approvals pending ------------------------------------------------------------
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task Should_Log_Whether_Other_Approvals_Are_Pending(bool pendingApprovalsExist)
+    {
+        var response = ResponseWith(isApproved: true, BaseLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate);
+        var approvalsResponse = new ApprovalsResponse
+        {
+            Changes = [new ApprovalsChangeResult { ChangeType = "PlannedEndDate", ApprovalStatus = "autoApproved" }],
+            PendingApprovalsExist = pendingApprovalsExist
+        };
+        SetupResponses(Reply(HttpStatusCode.Created, approvalsResponse));
+
+        await _sut.RequestApproval(10001234, 9999999999, response);
+
+        _logger.Verify(x => x.Log(
+            LogLevel.Information,
+            It.IsAny<EventId>(),
+            It.Is<It.IsAnyType>((state, _) =>
+                state.ToString()!.Contains(response.LearningKey.ToString()) &&
+                state.ToString()!.Contains($"other approvals pending = {pendingApprovalsExist}")),
+            It.IsAny<Exception?>(),
+            It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
+    }
+
     // ---- failures and retries --------------------------------------------------------------
 
     [TestCase(HttpStatusCode.ServiceUnavailable)]

@@ -31,7 +31,7 @@ public class FurtherApprovalService(
         if (learningResponse.ChangeDetails.Any(x => x.RequiresApproval))
         {
             var approval = await approvalsService.RequestApproval(ukprn, uln, learningResponse);
-            if (approval.AllAutoApproved)
+            if (approval.AllAutoApproved && !approval.Response.PendingApprovalsExist)
             {
                 cleared = await ClearFurtherApprovalNeeded(learningResponse);
             }

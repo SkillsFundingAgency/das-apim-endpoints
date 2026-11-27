@@ -5,6 +5,7 @@ namespace SFA.DAS.LearnerData.Responses.CommitmentsInner;
 public class ApprovalsResponse
 {
     public List<ApprovalsChangeResult> Changes { get; set; } = [];
+    public bool PendingApprovalsExist { get; set; }
 }
 
 public class ApprovalsChangeResult

@@ -160,8 +160,8 @@ public class ApprovalsService : IApprovalsService
                 body.LearningKey, body.ApprenticeshipId);
         }
 
-        _logger.LogInformation("Approvals result for learning {LearningKey} (apprenticeship {ApprenticeshipId}): all changes auto-approved = {AllAutoApproved}",
-            body.LearningKey, body.ApprenticeshipId, allAutoApproved);
+        _logger.LogInformation("Approvals result for learning {LearningKey} (apprenticeship {ApprenticeshipId}): all changes auto-approved = {AllAutoApproved}, other approvals pending = {PendingApprovalsExist}",
+            body.LearningKey, body.ApprenticeshipId, allAutoApproved, response?.PendingApprovalsExist ?? false);
     }
 
     private static bool IsPlannedEndDate(ApprovalsChangeResult verdict) =>
