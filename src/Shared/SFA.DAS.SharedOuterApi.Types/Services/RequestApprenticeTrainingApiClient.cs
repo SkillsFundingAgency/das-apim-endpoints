@@ -99,6 +99,6 @@ public class RequestApprenticeTrainingApiClient(IInternalApiClient<RequestAppren
 
     public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
     {
-        return apiClient.PutWithResponseCode<TData, TResponse>(request);
+        return apiClient.PutWithResponseCode<TData,TResponse>(request);
     }
 }
