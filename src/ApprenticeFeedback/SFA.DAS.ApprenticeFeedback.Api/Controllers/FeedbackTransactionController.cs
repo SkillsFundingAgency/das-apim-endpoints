@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.ApprenticeFeedback.Application.Commands.CreateOutcomeRecordedFeedbackTransaction;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.GenerateEmailTransaction;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.PatchApprenticeFeedbackTarget;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.ProcessEmailTransaction;
@@ -30,6 +31,26 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
         {
             _mediator = mediator;
             _logger = logger;
+        }
+
+        [HttpPost("outcome-recorded")]
+        public async Task<IActionResult> CreateOutcomeRecordedFeedbackTransaction([FromBody] CreateOutcomeRecordedFeedbackTransactionCommand command)
+        {
+            try
+            {
+                var result = await _mediator.Send(command);
+                if (result.NotFound)
+                {
+                    return NotFound();
+                }
+
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error creating feedback transaction for apprenticeship {ApprenticeshipId}", command.ApprenticeshipId);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         [HttpPost("generate-email-transactions")]
