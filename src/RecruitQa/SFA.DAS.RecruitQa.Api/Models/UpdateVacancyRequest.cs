@@ -1,3 +1,6 @@
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
+using VacancyStatus = SFA.DAS.RecruitQa.Domain.VacancyStatus;
+
 namespace SFA.DAS.RecruitQa.Api.Models;
 
 public class UpdateVacancyRequest

@@ -1,8 +1,8 @@
-using SFA.DAS.Recruit.Contracts.ApiResponses;
+using SFA.DAS.RecruitQa.InnerApi.Responses;
 
 namespace SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByFilter;
 
-public sealed record GetVacancyReviewsByFilterQueryResult
+public class GetVacancyReviewsByFilterQueryResult
 {
-    public required List<VacancyReview> VacancyReviews { get; init; }
+    public required List<GetVacancyReviewResponse> VacancyReviews { get; set; }
 }

@@ -1,8 +1,8 @@
-using SFA.DAS.Recruit.Contracts.ApiResponses;
+using SFA.DAS.RecruitQa.InnerApi.Responses;
 
 namespace SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReview;
 
 public class GetVacancyReviewQueryResult
 {
-    public VacancyReview? VacancyReview { get; init; }
+    public GetVacancyReviewResponse? VacancyReview { get; set; }
 }

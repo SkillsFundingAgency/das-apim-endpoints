@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RecruitQa.Api.Controllers;
 using SFA.DAS.RecruitQa.Api.Models;
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByAccountLegalEntity;
+using SFA.DAS.RecruitQa.InnerApi.Responses;
 
 namespace SFA.DAS.RecruitQa.Api.UnitTests.Controller.VacancyReview;
 
@@ -12,7 +13,7 @@ public class WhenCallingGetVacancyReviewsByAccountLegalEntity
     [Test, RecursiveMoqAutoData]
     public async Task Then_The_Mediator_Query_Is_Handled_And_Data_Returned(
         long accountLegalEntityId,
-        List<Recruit.Contracts.ApiResponses.VacancyReview> innerResponses,
+        List<GetVacancyReviewResponse> innerResponses,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] VacancyReviewController controller)
     {
@@ -47,7 +48,7 @@ public class WhenCallingGetVacancyReviewsByAccountLegalEntity
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new GetVacancyReviewsByAccountLegalEntityQueryResult
             {
-                VacancyReviews = []
+                VacancyReviews = new List<GetVacancyReviewResponse>()
             });
 
         var actual = await controller.GetByAccountLegalEntity(accountLegalEntityId) as OkObjectResult;

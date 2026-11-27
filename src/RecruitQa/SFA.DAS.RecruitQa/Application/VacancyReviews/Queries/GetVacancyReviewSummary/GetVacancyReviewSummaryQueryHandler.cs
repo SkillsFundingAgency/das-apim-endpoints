@@ -1,19 +1,21 @@
-using SFA.DAS.Recruit.Contracts.ApiRequests;
-using SFA.DAS.Recruit.Contracts.ApiResponses;
 using System.Net;
-using IRecruitApiClient = SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>;
+using SFA.DAS.RecruitQa.InnerApi.Requests;
+using SFA.DAS.RecruitQa.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewSummary;
 
-public class GetVacancyReviewSummaryQueryHandler(IRecruitApiClient recruitApiClient)
+public class GetVacancyReviewSummaryQueryHandler(IRecruitApiClient<RecruitApiConfiguration> recruitApiClient)
     : IRequestHandler<GetVacancyReviewSummaryQuery, GetVacancyReviewSummaryQueryResult>
 {
     public async Task<GetVacancyReviewSummaryQueryResult> Handle(GetVacancyReviewSummaryQuery request, CancellationToken cancellationToken)
     {
-        var response = await recruitApiClient.GetWithResponseCode<QaDashboard>(
-            new GetVacancyreviewsQaDashboardApiRequest());
+        var response = await recruitApiClient.GetWithResponseCode<GetVacancyReviewSummaryResponse>(
+            new GetVacancyReviewSummaryRequest());
 
-        if (response.StatusCode == HttpStatusCode.NotFound)
+        if (response.StatusCode == HttpStatusCode.NotFound || response.Body == null)
         {
             return new GetVacancyReviewSummaryQueryResult
             {
