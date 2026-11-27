@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditApprenticeship;
 using SFA.DAS.SharedOuterApi.Types.Constants;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Approvals.Api.Models.Apprentices;
 
@@ -13,6 +14,7 @@ public class GetEditApprenticeshipResponse
     public short Status { get; set; }
     [JsonConverter(typeof(StringEnumConverter))]
     public LearningType? LearningType { get; set; }
+    public List<string> LockedManualFieldsAndFeatures { get; set; }
 
     public static implicit operator GetEditApprenticeshipResponse(GetEditApprenticeshipQueryResult source)
     {
@@ -22,7 +24,8 @@ public class GetEditApprenticeshipResponse
             IsFundedByTransfer = source.IsFundedByTransfer,
             HasMultipleDeliveryModelOptions = source.HasMultipleDeliveryModelOptions,
             Status = source.Status,
-            LearningType = source.LearningType
+            LearningType = source.LearningType,
+            LockedManualFieldsAndFeatures = source.LockedManualFieldsAndFeatures
         };
     }
 }

@@ -50,6 +50,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
             value.HasMultipleDeliveryModelOptions.Should().Be(_queryResult.HasMultipleDeliveryModelOptions);
             value.IsFundedByTransfer.Should().Be(_queryResult.IsFundedByTransfer);
             value.LearningType.Should().Be(_queryResult.LearningType);
+            value.LockedManualFieldsAndFeatures.Should().BeEquivalentTo(_queryResult.LockedManualFieldsAndFeatures);
         }
     }
 }

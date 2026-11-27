@@ -24,6 +24,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         private ServiceParameters _serviceParameters;
 
         private GetApprenticeshipResponse _apprenticeship;
+        private GetEditApprenticeshipFieldAndFeatureLocksResponse _lockedFields;
         private GetEditApprenticeshipQuery _query;
         private List<string> _deliveryModels;
 
@@ -35,6 +36,9 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _apprenticeship = fixture.Build<GetApprenticeshipResponse>()
                 .With(x => x.EmployerAccountId, 123)
                 .Create();
+
+            _lockedFields = fixture.Create<GetEditApprenticeshipFieldAndFeatureLocksResponse>();
+
             _query = fixture.Create<GetEditApprenticeshipQuery>();
             _deliveryModels = fixture.Create<List<string>>();
 
@@ -43,6 +47,10 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _apiClient.Setup(x =>
                     x.GetWithResponseCode<GetApprenticeshipResponse>(It.Is<GetApprenticeshipRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)))
                 .ReturnsAsync(new ApiResponse<GetApprenticeshipResponse>(_apprenticeship, HttpStatusCode.OK, string.Empty));
+
+            _apiClient.Setup(x =>
+                    x.GetWithResponseCode<GetEditApprenticeshipFieldAndFeatureLocksResponse>(It.Is<GetEditApprenticeshipFieldAndFeatureLocksRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)))
+                .ReturnsAsync(new ApiResponse<GetEditApprenticeshipFieldAndFeatureLocksResponse>(_lockedFields, HttpStatusCode.OK, string.Empty));
 
             _deliveryModelService = new Mock<IDeliveryModelService>();
             _deliveryModelService.Setup(x => x.GetDeliveryModels(It.Is<GetApprenticeshipResponse>(r => r == _apprenticeship)))
@@ -57,14 +65,21 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         public async Task Handle_IsFundedByTransfer_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.That(result.IsFundedByTransfer, Is.EqualTo(_apprenticeship.TransferSenderId.HasValue));
+            result.IsFundedByTransfer.Should().Be(_apprenticeship.TransferSenderId.HasValue);
         }
 
         [Test]
         public async Task Handle_IsCourseName_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.That(result.CourseName, Is.EqualTo(_apprenticeship.CourseName));
+            result.CourseName.Should().Be(_apprenticeship.CourseName);
+        }
+
+        [Test]
+        public async Task Handle_IsLockedFieldsAndFeatures_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            result.LockedManualFieldsAndFeatures.Should().BeEquivalentTo(_lockedFields.LockedManualFieldsAndFeatures);
         }
 
         [TestCase(0, false)]
@@ -77,7 +92,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _deliveryModels.AddRange(fixture.CreateMany<string>(optionCount));
 
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.That(result.HasMultipleDeliveryModelOptions, Is.EqualTo(expectedHasMultiple));
+            result.HasMultipleDeliveryModelOptions.Should().Be(expectedHasMultiple);
         }
     }
 }
