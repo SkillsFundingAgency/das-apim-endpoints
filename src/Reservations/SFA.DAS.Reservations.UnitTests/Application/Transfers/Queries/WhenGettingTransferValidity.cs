@@ -38,6 +38,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Transfers.Queries
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.IsValid.Should().BeTrue();
+            result.PledgeApplicationStatus.Should().Be("Accepted");
         }
 
         [Test, MoqAutoData]
@@ -59,6 +60,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Transfers.Queries
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.IsValid.Should().BeFalse();
+            result.PledgeApplicationStatus.Should().Be("Declined");
         }
 
         [Test, MoqAutoData]
@@ -83,6 +85,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Transfers.Queries
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.IsValid.Should().BeTrue();
+            result.PledgeApplicationStatus.Should().BeNull();
         }
 
 
@@ -104,6 +107,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Transfers.Queries
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.IsValid.Should().BeFalse();
+            result.PledgeApplicationStatus.Should().BeNull();
         }
     }
 }

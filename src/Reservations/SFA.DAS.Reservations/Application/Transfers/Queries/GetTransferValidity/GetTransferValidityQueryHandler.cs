@@ -26,7 +26,8 @@ namespace SFA.DAS.Reservations.Application.Transfers.Queries.GetTransferValidity
 
                 return new GetTransferValidityQueryResult
                 {
-                    IsValid = pledgeApplication.Status == PledgeApplicationAcceptedStatus
+                    IsValid = pledgeApplication.Status == PledgeApplicationAcceptedStatus,
+                    PledgeApplicationStatus = pledgeApplication.Status
                 };
             }
 
