@@ -2,5 +2,5 @@
 
 public class GetTrainingProgrammesListResponse
 {
-    public IEnumerable<GetTrainingProgrammeResponse> TrainingProgrammes { get; set; }
+    public IEnumerable<GetTrainingProgrammeResponse> TrainingProgrammes { get; set; } = [];
 }
