@@ -45,6 +45,7 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
         public int? EndPointAssessmentPrice { get; set; }
         public DateTime? ActualStartDate { get; set; }
         public long? LearnerDataId { get; set; }
+        public bool? OnServicePayments { get; set; }
         public static implicit operator ReservationRequest(BulkUploadAddDraftApprenticeshipRequest response)
         {
             var legalEntityId = response.LegalEntityId.HasValue ? response.LegalEntityId.Value : 0;

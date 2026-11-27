@@ -177,6 +177,7 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandlerTests
                 CostAsString = "1500",
                 CohortRef = cohort.CohortReference,
                 ReservationId = reservationId,
+                OnServicePayments = true,
                 MinimumAgeAtApprenticeshipStart = 15,
                 MaximumAgeAtApprenticeshipStart = 115
             }
@@ -312,6 +313,7 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandlerTests
         PlannedEndDate = new DateTime(2026, 8, 31),
         TrainingCode = "123",
         TrainingPrice = 1000,
-        EpaoPrice = 500
+        EpaoPrice = 500,
+        OnServicePayments = true
     };
 }

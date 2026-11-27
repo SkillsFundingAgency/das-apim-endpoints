@@ -102,7 +102,8 @@ public class SelectMultipleAddDraftApprenticeshipsCommandHandler(
                 TrainingPrice = learner.TrainingPrice,
                 EndPointAssessmentPrice = learner.EpaoPrice,
                 ActualStartDate = learner.StartDate,
-                LearnerDataId = learner.Id
+                LearnerDataId = learner.Id,
+                OnServicePayments = learner.OnServicePayments
             };
         }).ToList();
     }
