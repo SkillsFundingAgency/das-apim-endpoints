@@ -1,3 +1,4 @@
+using MediatR;
 using SFA.DAS.RecruitQa.InnerApi.Requests;
 
 namespace SFA.DAS.RecruitQa.Application.VacancyReviews.Commands.UpsertVacancyReview;

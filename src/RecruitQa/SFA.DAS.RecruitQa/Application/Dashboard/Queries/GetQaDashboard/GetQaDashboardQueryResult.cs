@@ -1,7 +1,4 @@
-﻿using SFA.DAS.Recruit.Contracts.ApiResponses;
-
-namespace SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetQaDashboard;
-
+﻿namespace SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetQaDashboard;
 public record GetQaDashboardQueryResult
 {
     public int TotalVacanciesForReview { get; init; }
@@ -10,7 +7,7 @@ public record GetQaDashboardQueryResult
     public int TotalVacanciesSubmittedTwelveTwentyFourHours { get; init; }
     public int TotalVacanciesSubmittedLastTwelveHours { get; init; }
 
-    public static GetQaDashboardQueryResult FromInnerApiResponse(QaDashboard response)
+    public static GetQaDashboardQueryResult FromInnerApiResponse(InnerApi.Responses.GetQaDashboardApiResponse response)
     {
         return new GetQaDashboardQueryResult
         {

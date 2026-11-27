@@ -9,7 +9,6 @@ using SFA.DAS.RecruitQa.Api.Controllers;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Net;
-using IRecruitApiClient = SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>;
 
 namespace SFA.DAS.RecruitQa.Api.UnitTests.Controller.Vacancies;
 
@@ -18,7 +17,7 @@ public class WhenCallingPublishVacancyFromQa
     [Test, MoqAutoData]
     public async Task Then_Patch_Is_Called_With_The_Vacancy_Id_And_Ok_Is_Returned(
         Guid id,
-        Mock<IRecruitApiClient> recruitApiClient,
+        Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Greedy] VacanciesController sut)
     {
         recruitApiClient
@@ -35,7 +34,7 @@ public class WhenCallingPublishVacancyFromQa
     [Test, MoqAutoData]
     public async Task Then_Patch_Is_Called_With_Status_Live(
         Guid id,
-        Mock<IRecruitApiClient> recruitApiClient,
+        Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Greedy] VacanciesController sut)
     {
         PatchVacanciesByVacancyIdApiRequest? capturedRequest = null;

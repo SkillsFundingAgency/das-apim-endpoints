@@ -1,8 +1,10 @@
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.Recruit.Contracts.ApiRequests;
-using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByFilter;
 using System.Net;
-using IRecruitApiClient = SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>;
+using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByFilter;
+using SFA.DAS.RecruitQa.InnerApi.Requests;
+using SFA.DAS.RecruitQa.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
 
 namespace SFA.DAS.RecruitQa.UnitTests.Application.Queries.VacancyReview;
 
@@ -11,37 +13,37 @@ public class WhenHandlingGetVacancyReviewsByFilterQuery
     [Test, RecursiveMoqAutoData]
     public async Task Then_The_Query_Is_Handled_And_Data_Returned(
         GetVacancyReviewsByFilterQuery query,
-        List<Recruit.Contracts.ApiResponses.VacancyReview> apiResponse,
-        [Frozen] Mock<IRecruitApiClient> recruitApiClient,
+        List<GetVacancyReviewResponse> apiResponse,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Greedy] GetVacancyReviewsByFilterQueryHandler handler)
     {
         // Arrange
-        var expectedRequest = new GetVacancyreviewsApiRequest(query.Status, query.ExpiredAssignationDateTime);
+        var expectedRequest = new GetVacancyReviewsByFilterRequest(query.Status, query.ExpiredAssignationDateTime);
         recruitApiClient
-            .Setup(x => x.GetWithResponseCode<List<Recruit.Contracts.ApiResponses.VacancyReview>>(
-                It.Is<GetVacancyreviewsApiRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
-            .ReturnsAsync(new ApiResponse<List<Recruit.Contracts.ApiResponses.VacancyReview>>(apiResponse, HttpStatusCode.OK, ""));
+            .Setup(x => x.GetWithResponseCode<List<GetVacancyReviewResponse>>(
+                It.Is<GetVacancyReviewsByFilterRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
+            .ReturnsAsync(new ApiResponse<List<GetVacancyReviewResponse>>(apiResponse, HttpStatusCode.OK, ""));
 
         // Act
         var actual = await handler.Handle(query, CancellationToken.None);
 
         // Assert
         actual.VacancyReviews.Should().BeEquivalentTo(apiResponse);
-        recruitApiClient.Verify(x => x.GetWithResponseCode<List<Recruit.Contracts.ApiResponses.VacancyReview>>(It.IsAny<GetVacancyreviewsApiRequest>()), Times.Once);
+        recruitApiClient.Verify(x => x.GetWithResponseCode<List<GetVacancyReviewResponse>>(It.IsAny<GetVacancyReviewsByFilterRequest>()), Times.Once);
     }
 
     [Test, MoqAutoData]
     public async Task Then_The_Query_Is_Handled_And_Empty_List_Returned_When_NotFound(
         GetVacancyReviewsByFilterQuery query,
-        [Frozen] Mock<IRecruitApiClient> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Greedy] GetVacancyReviewsByFilterQueryHandler handler)
     {
         // Arrange
-        var expectedRequest = new GetVacancyreviewsApiRequest(query.Status, query.ExpiredAssignationDateTime);
+        var expectedRequest = new GetVacancyReviewsByFilterRequest(query.Status, query.ExpiredAssignationDateTime);
         recruitApiClient
-            .Setup(x => x.GetWithResponseCode<List<Recruit.Contracts.ApiResponses.VacancyReview>>(
-                It.Is<GetVacancyreviewsApiRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
-            .ReturnsAsync(new ApiResponse<List<Recruit.Contracts.ApiResponses.VacancyReview>>(null!, HttpStatusCode.NotFound, ""));
+            .Setup(x => x.GetWithResponseCode<List<GetVacancyReviewResponse>>(
+                It.Is<GetVacancyReviewsByFilterRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
+            .ReturnsAsync(new ApiResponse<List<GetVacancyReviewResponse>>(null!, HttpStatusCode.NotFound, ""));
 
         // Act
         var actual = await handler.Handle(query, CancellationToken.None);

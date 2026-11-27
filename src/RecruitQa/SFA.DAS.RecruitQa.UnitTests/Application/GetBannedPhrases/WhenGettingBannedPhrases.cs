@@ -1,7 +1,9 @@
-﻿using SFA.DAS.Recruit.Contracts.ApiRequests;
-using SFA.DAS.Recruit.Contracts.ApiResponses;
-using SFA.DAS.RecruitQa.Application.BannedPhrases.GetBannedPhrases;
-using IRecruitApiClient = SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>;
+﻿using SFA.DAS.RecruitQa.Application.BannedPhrases.GetBannedPhrases;
+using SFA.DAS.RecruitQa.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.RecruitQa.UnitTests.Application.GetBannedPhrases;
 
@@ -12,14 +14,14 @@ internal class WhenGettingBannedPhrases
     public async Task Then_The_Query_Is_Handled_And_Data_Returned(
         GetBannedPhrasesQuery query,
         List<string> apiResponse,
-        [Frozen] Mock<IRecruitApiClient> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Greedy] GetBannedPhrasesQueryHandler handler)
     {
         //Arrange
-        var expectedGetUrl = new GetProhibitedcontentByContentTypeApiRequest(ProhibitedContentType.BannedPhrases);
+        var expectedGetUrl = new GetBannedPhrasesListApiRequest();
         recruitApiClient
             .Setup(x => x.Get<List<string>>(
-                It.Is<GetProhibitedcontentByContentTypeApiRequest>(r => r.GetUrl == expectedGetUrl.GetUrl)))
+                It.Is<GetBannedPhrasesListApiRequest>(r => r.GetUrl == expectedGetUrl.GetUrl)))
             .ReturnsAsync(apiResponse);
 
         //Act
@@ -27,6 +29,6 @@ internal class WhenGettingBannedPhrases
 
         //Assert
         actual.BannedPhraseList.Should().BeEquivalentTo(apiResponse, options => options.ExcludingMissingMembers());
-        recruitApiClient.Verify(x => x.Get<List<string>>(It.IsAny<GetProhibitedcontentByContentTypeApiRequest>()), Times.Once);
+        recruitApiClient.Verify(x => x.Get<List<string>>(It.IsAny<GetBannedPhrasesListApiRequest>()), Times.Once);
     }
 }

@@ -1,15 +1,15 @@
+using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.RecruitQa.Api.AppStart;
+using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetQaDashboard;
+using System.Text.Json.Serialization;
 using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.Apim.Shared.Infrastructure;
-using SFA.DAS.RecruitQa.Api.AppStart;
-using SFA.DAS.RecruitQa.Api.ModelBinders;
-using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetQaDashboard;
-using System.Net.Http.Headers;
-using System.Text.Json.Serialization;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 namespace SFA.DAS.RecruitQa.Api;
 
@@ -63,16 +63,11 @@ public static class Startup
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "RecruitQaOuterApi", Version = "v1" });
         });
 
-        services.AddControllers(options =>
-        {
-            options.ModelBinderProviders.Insert(0, new EnumListModelBinderProvider());
-        });
-
         services
             .AddRecruitGqlClient()
             .ConfigureHttpClient((sp, x) =>
             {
-                var clientConfig = sp.GetService<Recruit.Contracts.Client.RecruitApiConfiguration>();
+                var clientConfig = sp.GetService<RecruitApiConfiguration>();
                 x.BaseAddress = new Uri($"{clientConfig.Url.TrimEnd('/')}/graphql");
 
                 if (string.IsNullOrEmpty(clientConfig.Identifier))

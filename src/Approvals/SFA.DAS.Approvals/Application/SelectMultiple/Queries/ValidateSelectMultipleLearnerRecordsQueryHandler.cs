@@ -56,10 +56,11 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandler(
             {
                 CourseId = learner.TrainingCode,
                 AccountLegalEntityId = command.AccountLegalEntityId ?? 0,
+                TransferSenderAccountId = command.TransferSenderAccountId,
                 ProviderId = (uint?)command.ProviderId,
                 RowNumber = index + 1,
                 Id = Guid.NewGuid(),
-                StartDate = learner.StartDate,
+                StartDate = learner.StartDate
             };
 
         }).ToList();
@@ -99,6 +100,9 @@ public class ValidateSelectMultipleLearnerRecordsQueryHandler(
                 CostAsString = (learner.TrainingPrice + learner.EpaoPrice).ToString(),
                 AgreementId = command.AgreementId,
                 LegalEntityId = command.AccountLegalEntityId,
+                TransferSenderId = command.TransferSenderAccountId,
+                CohortId = command.CohortId,
+                CohortRef = command.CohortReference
             };
         }).ToList();
 

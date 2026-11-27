@@ -21,4 +21,5 @@ public class SearchLearnersRequest
     public LearningType? LearningType { get; set; }
     public List<long> ExcludeUlns { get; set; } = new();
     public string AgreementId { get; set; }
+    public bool IsFundsTransfer { get; set; } = false;
 }
