@@ -18,6 +18,7 @@ namespace SFA.DAS.EmployerFeedback.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
+                        .ConfigureKestrel(options => options.AddServerHeader = false)
                         .UseStartup<Startup>();
                 })
                 .UseNServiceBusContainer();
