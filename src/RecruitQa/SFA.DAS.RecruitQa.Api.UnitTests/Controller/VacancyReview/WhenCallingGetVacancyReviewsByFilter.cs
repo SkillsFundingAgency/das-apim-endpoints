@@ -1,10 +1,10 @@
-using System.Net;
 using AutoFixture;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitQa.Api.Controllers;
 using SFA.DAS.RecruitQa.Api.Models;
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByFilter;
-using SFA.DAS.RecruitQa.InnerApi.Responses;
+using System.Net;
 
 namespace SFA.DAS.RecruitQa.Api.UnitTests.Controller.VacancyReview;
 
@@ -12,9 +12,9 @@ public class WhenCallingGetVacancyReviewsByFilter
 {
     [Test, RecursiveMoqAutoData]
     public async Task Then_The_Mediator_Query_Is_Handled_And_Data_Returned(
-        List<string> statuses,
+        List<ReviewStatus> statuses,
         DateTime? expiredAssignationDateTime,
-        List<GetVacancyReviewResponse> innerResponses,
+        List<Recruit.Contracts.ApiResponses.VacancyReview> innerResponses,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] VacancyReviewController controller)
     {
@@ -35,12 +35,12 @@ public class WhenCallingGetVacancyReviewsByFilter
         actual.Should().NotBeNull();
         var model = actual!.Value as GetVacancyReviewsApiResponse;
         model.Should().NotBeNull();
-        model!.VacancyReviews.Should().BeEquivalentTo(innerResponses.Select(r => (VacancyReviewDto)r).ToList());
+        model!.VacancyReviews.Should().BeEquivalentTo([.. innerResponses.Select(r => (VacancyReviewDto) r)]);
     }
 
     [Test, MoqAutoData]
     public async Task Then_The_Mediator_Query_Is_Handled_And_Empty_List_Returned_When_No_Data(
-        List<string> statuses,
+        List<ReviewStatus> statuses,
         DateTime? expiredAssignationDateTime,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] VacancyReviewController controller)
@@ -50,7 +50,7 @@ public class WhenCallingGetVacancyReviewsByFilter
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new GetVacancyReviewsByFilterQueryResult
             {
-                VacancyReviews = new List<SFA.DAS.RecruitQa.InnerApi.Responses.GetVacancyReviewResponse>()
+                VacancyReviews = []
             });
 
         var actual = await controller.Get(statuses, expiredAssignationDateTime) as OkObjectResult;
@@ -63,7 +63,7 @@ public class WhenCallingGetVacancyReviewsByFilter
 
     [Test, MoqAutoData]
     public async Task Then_If_Exception_Internal_Server_Error_Returned(
-        List<string> statuses,
+        List<ReviewStatus> statuses,
         DateTime? expiredAssignationDateTime,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] VacancyReviewController controller)

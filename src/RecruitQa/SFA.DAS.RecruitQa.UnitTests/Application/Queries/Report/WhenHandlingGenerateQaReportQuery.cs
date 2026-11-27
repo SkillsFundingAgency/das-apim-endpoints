@@ -1,9 +1,10 @@
+using SFA.DAS.Recruit.Contracts.ApiRequests;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitQa.Application.Report.Queries.GenerateQaReport;
 using SFA.DAS.RecruitQa.Domain;
-using SFA.DAS.RecruitQa.InnerApi.Requests;
 using SFA.DAS.RecruitQa.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using IRecruitApiClient = SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>;
 
 namespace SFA.DAS.RecruitQa.UnitTests.Application.Queries.Report;
 
@@ -12,9 +13,9 @@ public class WhenHandlingGenerateQaReportQuery
     [Test, MoqAutoData]
     public async Task Then_Report_Name_Is_Returned(
         Guid reportId,
-        RecruitQa.Domain.Reports.Report report,
+        Recruit.Contracts.ApiResponses.Report report,
         GetStandardsListItem listItem,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient> recruitApiClient,
         [Frozen] Mock<ICourseService> courseService,
         GenerateQaReportQueryHandler handler)
     {
@@ -22,10 +23,10 @@ public class WhenHandlingGenerateQaReportQuery
         listItem.Level = (int)ApprenticeshipLevel.Advanced;
 
         recruitApiClient
-            .Setup(x => x.Get<GetGenerateQaReportResponse>(It.IsAny<GetGenerateQaReportRequest>()))
-            .ReturnsAsync(new GetGenerateQaReportResponse { QaReports = [] });
+            .Setup(x => x.Get<GetQaReportResponse>(It.IsAny<GetReportsGenerateQaByReportIdApiRequest>()))
+            .ReturnsAsync(new GetQaReportResponse { QaReports = [] });
         recruitApiClient
-            .Setup(x => x.Get<RecruitQa.Domain.Reports.Report>(It.Is<GetReportByIdRequest>(r => r.GetUrl == $"api/reports/{reportId}")))
+            .Setup(x => x.Get<Recruit.Contracts.ApiResponses.Report>(It.IsAny<GetReportsByReportIdApiRequest>()))
             .ReturnsAsync(report);
         courseService
             .Setup(x => x.GetActiveStandards<GetStandardsListResponse>("ActiveStandards"))
@@ -39,24 +40,24 @@ public class WhenHandlingGenerateQaReportQuery
     [Test, MoqAutoData]
     public async Task Then_Reports_Are_Projected_With_Course_Name_And_Level(
         Guid reportId,
-        RecruitQa.Domain.Reports.Report report,
-        GetGenerateQaReportResponse apiResponse,
+        Recruit.Contracts.ApiResponses.Report report,
+        GetQaReportResponse apiResponse,
         GetStandardsListItem listItem,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient> recruitApiClient,
         [Frozen] Mock<ICourseService> courseService,
         GenerateQaReportQueryHandler handler)
     {
         listItem.ApprenticeshipType = "Apprenticeship";
         listItem.Level = (int)ApprenticeshipLevel.Advanced;
         apiResponse.QaReports = [apiResponse.QaReports.First()];
-        apiResponse.QaReports[0].ProgrammeId = listItem.LarsCode.ToString();
+        apiResponse.QaReports.First().ProgrammeId = listItem.LarsCode.ToString();
 
         recruitApiClient
-            .Setup(x => x.Get<GetGenerateQaReportResponse>(
-                It.Is<GetGenerateQaReportRequest>(r => r.GetUrl == $"api/reports/generate-qa/{reportId}")))
+            .Setup(x => x.Get<GetQaReportResponse>(
+                It.IsAny<GetReportsGenerateQaByReportIdApiRequest>()))
             .ReturnsAsync(apiResponse);
         recruitApiClient
-            .Setup(x => x.Get<RecruitQa.Domain.Reports.Report>(It.IsAny<GetReportByIdRequest>()))
+            .Setup(x => x.Get<Recruit.Contracts.ApiResponses.Report>(It.IsAny<GetReportsByReportIdApiRequest>()))
             .ReturnsAsync(report);
         courseService
             .Setup(x => x.GetActiveStandards<GetStandardsListResponse>("ActiveStandards"))
@@ -72,9 +73,9 @@ public class WhenHandlingGenerateQaReportQuery
     [Test, MoqAutoData]
     public async Task Then_Empty_List_Returned_When_QaReports_Is_Empty(
         Guid reportId,
-        RecruitQa.Domain.Reports.Report report,
+        Recruit.Contracts.ApiResponses.Report report,
         GetStandardsListItem listItem,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient> recruitApiClient,
         [Frozen] Mock<ICourseService> courseService,
         GenerateQaReportQueryHandler handler)
     {
@@ -82,10 +83,10 @@ public class WhenHandlingGenerateQaReportQuery
         listItem.Level = (int)ApprenticeshipLevel.Intermediate;
 
         recruitApiClient
-            .Setup(x => x.Get<GetGenerateQaReportResponse>(It.IsAny<GetGenerateQaReportRequest>()))
-            .ReturnsAsync(new GetGenerateQaReportResponse { QaReports = [] });
+            .Setup(x => x.Get<GetQaReportResponse>(It.IsAny<GetReportsGenerateQaByReportIdApiRequest>()))
+            .ReturnsAsync(new GetQaReportResponse { QaReports = [] });
         recruitApiClient
-            .Setup(x => x.Get<RecruitQa.Domain.Reports.Report>(It.IsAny<GetReportByIdRequest>()))
+            .Setup(x => x.Get<Recruit.Contracts.ApiResponses.Report>(It.IsAny<GetReportsByReportIdApiRequest>()))
             .ReturnsAsync(report);
         courseService
             .Setup(x => x.GetActiveStandards<GetStandardsListResponse>("ActiveStandards"))
@@ -94,18 +95,5 @@ public class WhenHandlingGenerateQaReportQuery
         var actual = await handler.Handle(new GenerateQaReportQuery(reportId), CancellationToken.None);
 
         actual.QaReports.Should().BeEmpty();
-    }
-
-    private static void SetupMatchingProgrammeIds(GetGenerateQaReportResponse apiResponse, GetStandardsListResponse standardsResponse)
-    {
-        var standards = standardsResponse.Standards.ToList();
-        apiResponse.QaReports = apiResponse.QaReports.Take(standards.Count).ToList();
-        for (var i = 0; i < apiResponse.QaReports.Count; i++)
-        {
-            standards[i].ApprenticeshipType = "Apprenticeship";
-            standards[i].Level = (int)ApprenticeshipLevel.Advanced;
-            apiResponse.QaReports[i].ProgrammeId = standards[i].LarsCode.ToString();
-        }
-        standardsResponse.Standards = standards;
     }
 }

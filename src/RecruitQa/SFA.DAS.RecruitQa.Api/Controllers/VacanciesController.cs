@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.Recruit.GraphQL;
 using SFA.DAS.RecruitQa.Api.Models;
 using SFA.DAS.RecruitQa.Data.Models;
-using SFA.DAS.RecruitQa.Domain;
 using SFA.DAS.RecruitQa.GraphQL.RecruitInner.Mappers;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using StrawberryShake;
 using VacancyStatus = SFA.DAS.Recruit.GraphQL.VacancyStatus;
+using IRecruitApiClient = SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>;
 
 namespace SFA.DAS.RecruitQa.Api.Controllers;
 
@@ -57,20 +56,20 @@ public class VacanciesController: ControllerBase
     
     [HttpPost, Route("update-from-qa/{id:Guid}")]
     public async Task<IResult> UpdateVacancyFromQaEdit([FromRoute] Guid id,
-        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromServices] IRecruitApiClient recruitApiClient,
         [FromBody] UpdateVacancyRequest request,
         CancellationToken cancellationToken)
     {
-        var data = new JsonPatchDocument<Recruit.Contracts.ApiResponses.Vacancy>();
+        var data = new JsonPatchDocument<Vacancy>();
         data.Replace(x => x.Status, Enum.Parse<Recruit.Contracts.ApiResponses.VacancyStatus>(request.Status));
         data.Replace(x => x.LastUpdatedDate, DateTime.UtcNow);
         if (!string.IsNullOrEmpty(request.CompanyBenefitsInformation))
         {
-            data.Replace(x => x.Wage.CompanyBenefitsInformation, request.CompanyBenefitsInformation);    
+            data.Replace(x => x.Wage!.CompanyBenefitsInformation, request.CompanyBenefitsInformation);    
         }
         if (!string.IsNullOrEmpty(request.WorkingWeekDescription))
         {
-            data.Replace(x => x.Wage.WorkingWeekDescription, request.WorkingWeekDescription);    
+            data.Replace(x => x.Wage!.WorkingWeekDescription, request.WorkingWeekDescription);    
         }
         if (!string.IsNullOrEmpty(request.OutcomeDescription))
         {
@@ -116,14 +115,14 @@ public class VacanciesController: ControllerBase
     
     [HttpPost, Route("close/{id:Guid}")]
     public async Task<IResult> CloseVacancyFromQa([FromRoute] Guid id,
-        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromServices] IRecruitApiClient recruitApiClient,
         [FromBody] CloseVacancyRequest request,
         CancellationToken cancellationToken)
     {
-        var data = new JsonPatchDocument<Recruit.Contracts.ApiResponses.Vacancy>();
+        var data = new JsonPatchDocument<Vacancy>();
         data.Replace(x => x.Status, Recruit.Contracts.ApiResponses.VacancyStatus.Closed);
         data.Replace(x => x.LastUpdatedDate, DateTime.UtcNow);
-        data.Replace(x => x.ClosureReason, Enum.Parse<Recruit.Contracts.ApiResponses.ClosureReason>(request.ClosureReason));
+        data.Replace(x => x.ClosureReason, request.ClosureReason);
         
         await recruitApiClient.PatchWithResponseCode(new Recruit.Contracts.ApiRequests.PatchVacanciesByVacancyIdApiRequest
         {
@@ -136,10 +135,10 @@ public class VacanciesController: ControllerBase
     
     [HttpPost, Route("publish/{id:Guid}")]
     public async Task<IResult> PublishVacancyFromQa([FromRoute] Guid id,
-        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromServices] IRecruitApiClient recruitApiClient,
         CancellationToken cancellationToken)
     {
-        var data = new JsonPatchDocument<Recruit.Contracts.ApiResponses.Vacancy>();
+        var data = new JsonPatchDocument<Vacancy>();
         data.Replace(x => x.Status, Recruit.Contracts.ApiResponses.VacancyStatus.Live);
         data.Replace(x => x.LastUpdatedDate, DateTime.UtcNow);
         
@@ -155,7 +154,7 @@ public class VacanciesController: ControllerBase
     [HttpPost, Route("refer/{vacancyReference:long}")]
     public async Task<IResult> ReferVacancyFromQa(
         [FromServices] IRecruitGqlClient recruitGqlClient,
-        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromServices] IRecruitApiClient recruitApiClient,
         [FromRoute] long vacancyReference,
         CancellationToken cancellationToken)
     {
@@ -179,7 +178,7 @@ public class VacanciesController: ControllerBase
             return TypedResults.BadRequest($"Vacancy must submitted and active to be referred, vacancy is in status '{vacancy.Status}'{closedState}");
         }
 
-        var data = new JsonPatchDocument<Recruit.Contracts.ApiResponses.Vacancy>();
+        var data = new JsonPatchDocument<Vacancy>();
         data.Replace(x => x.Status, Recruit.Contracts.ApiResponses.VacancyStatus.Referred);
         data.Replace(x => x.LastUpdatedDate, DateTime.UtcNow);
         await recruitApiClient.PatchWithResponseCode(new Recruit.Contracts.ApiRequests.PatchVacanciesByVacancyIdApiRequest
