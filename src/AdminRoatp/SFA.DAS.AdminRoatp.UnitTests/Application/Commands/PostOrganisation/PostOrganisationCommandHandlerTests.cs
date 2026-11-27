@@ -33,6 +33,10 @@ public class PostOrganisationCommandHandlerTests
         roatpServiceRestApiClientMock
             .Setup(x => x.PostOrganisation(It.IsAny<PostOrganisationRequest>(), cancellationToken)).ReturnsAsync(response);
 
+        var apiResponse = new ApiResponse<int>(1, HttpStatusCode.Created, string.Empty);
+        roatpV2ApiClientMock.Setup(c => c.PostWithResponseCode<int>(It.IsAny<PostProviderRequest>(), true)).ReturnsAsync(apiResponse);
+        roatpV2ApiClientMock.Setup(x => x.PostWithResponseCode<int>(It.IsAny<AddCourseTypesRequest>(), true)).ReturnsAsync(apiResponse);
+
         var actualResponse = await sut.Handle(command, cancellationToken);
 
         actualResponse.Should().Be(response.StatusCode);
@@ -88,6 +92,7 @@ public class PostOrganisationCommandHandlerTests
         bool deliversApprenticeshipUnits,
         int callsPutCourseTypesCount,
         [Frozen] Mock<IRoatpServiceRestApiClient> roatpServiceRestApiClientMock,
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpV2ApiClientMock,
         [Greedy] PostOrganisatonCommandHandler sut,
         PostOrganisationCommand command,
         int ukprn,
@@ -109,6 +114,10 @@ public class PostOrganisationCommandHandlerTests
 
         roatpServiceRestApiClientMock
             .Setup(x => x.PostOrganisation(It.IsAny<PostOrganisationRequest>(), cancellationToken)).ReturnsAsync(response);
+
+        var apiResponse = new ApiResponse<int>(1, HttpStatusCode.Created, string.Empty);
+        roatpV2ApiClientMock.Setup(c => c.PostWithResponseCode<int>(It.IsAny<PostProviderRequest>(), true)).ReturnsAsync(apiResponse);
+        roatpV2ApiClientMock.Setup(x => x.PostWithResponseCode<int>(It.IsAny<AddCourseTypesRequest>(), true)).ReturnsAsync(apiResponse);
 
         var actualResponse = await sut.Handle(command, cancellationToken);
 
@@ -188,11 +197,16 @@ public class PostOrganisationCommandHandlerTests
     }
 
     [Test]
-    [RecursiveMoqInlineAutoData(true, true)]
-    [RecursiveMoqInlineAutoData(true, false)]
-    [RecursiveMoqInlineAutoData(false, true)]
-    [RecursiveMoqInlineAutoData(false, false)]
-    public async Task Handle_OnSuccessfullyCreatingMainProvider_UpdatesCourseTypeInCM(
+    [RecursiveMoqInlineAutoData(ProviderType.Main, true, true)]
+    [RecursiveMoqInlineAutoData(ProviderType.Main, true, false)]
+    [RecursiveMoqInlineAutoData(ProviderType.Main, false, true)]
+    [RecursiveMoqInlineAutoData(ProviderType.Main, false, false)]
+    [RecursiveMoqInlineAutoData(ProviderType.Employer, true, true)]
+    [RecursiveMoqInlineAutoData(ProviderType.Employer, true, false)]
+    [RecursiveMoqInlineAutoData(ProviderType.Employer, false, true)]
+    [RecursiveMoqInlineAutoData(ProviderType.Employer, false, false)]
+    public async Task Handle_OnSuccessfullyCreatingMainOrEmployerProvider_UpdatesCourseTypeInCM(
+        ProviderType providerType,
         bool deliversApprenticeships,
         bool deliversApprenticeshipUnits,
         [Frozen] Mock<IRoatpServiceRestApiClient> roatpServiceRestApiClientMock,
@@ -203,7 +217,7 @@ public class PostOrganisationCommandHandlerTests
         CancellationToken cancellationToken)
     {
         command.Ukprn = ukprn;
-        command.ProviderType = ProviderType.Main;
+        command.ProviderType = providerType;
         command.DeliversApprenticeships = deliversApprenticeships;
         command.DeliversApprenticeshipUnits = deliversApprenticeshipUnits;
 
@@ -248,10 +262,8 @@ public class PostOrganisationCommandHandlerTests
     }
 
     [Test]
-    [RecursiveMoqInlineAutoData(ProviderType.Employer)]
-    [RecursiveMoqInlineAutoData(ProviderType.Supporting)]
-    public async Task Handle_NonMainProvider_DoesNotUpdateCourseTypeInCM(
-        ProviderType providerType,
+    [RecursiveMoqInlineAutoData]
+    public async Task Handle_SupportingProvider_DoesNotUpdateCourseTypeInCM(
         [Frozen] Mock<IRoatpServiceRestApiClient> roatpServiceRestApiClientMock,
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpV2ApiClientMock,
         [Greedy] PostOrganisatonCommandHandler sut,
@@ -259,7 +271,7 @@ public class PostOrganisationCommandHandlerTests
         int ukprn,
         CancellationToken cancellationToken)
     {
-        command.ProviderType = providerType;
+        command.ProviderType = ProviderType.Supporting;
 
         var response = new HttpResponseMessage { StatusCode = HttpStatusCode.Created };
 
