@@ -1,0 +1,97 @@
+using FluentAssertions;
+using SFA.DAS.EmployerFinanceJobs.Domain.Enums;
+using SFA.DAS.EmployerFinanceJobs.InnerApi.Requests;
+using SFA.DAS.Testing.AutoFixture;
+
+namespace SFA.DAS.EmployerFinanceJobs.UnitTests.InnerApi.Requests;
+
+[TestFixture]
+internal class WhenBuildingTheGetCommittedLearnersCostByAccountIdRequest
+{
+    [Test, MoqAutoData]
+    public void WhenBuildingTheRequest_ThenTheCorrectUrlIsGenerated(
+        long accountId,
+        int pageNumber,
+        int pageItemCount,
+        long transferSenderId,
+        List<ApprenticeshipStatus> statuses,
+        long providerId,
+        string sortField,
+        bool reverseSort,
+        DateTime? lastUpdated)
+    {
+        // Act
+        var request = new GetCommittedLearnersCostByAccountIdRequest(
+            accountId,
+            pageNumber,
+            pageItemCount,
+            transferSenderId,
+            statuses,
+            providerId,
+            sortField,
+            reverseSort,
+            lastUpdated);
+
+        var expectedStatuses = string.Join("&", statuses.Select(s => $"statuses={s}"));
+        // Assert
+        request.GetUrl.Should().Be(
+            $"api/apprenticeships?accountId={accountId}&transferSenderId={transferSenderId}&{expectedStatuses}&providerId={providerId}&sortField={sortField}&reverseSort={reverseSort}&lastUpdated={lastUpdated:yyyy-MM-ddTHH:mm:ss}&pageNumber={pageNumber}&pageItemCount={pageItemCount}");
+    }
+
+    [Test, MoqAutoData]
+    public void WhenBuildingTheRequestWithNoAccountId_ThenTheCorrectUrlIsGenerated(
+        int pageNumber,
+        int pageItemCount,
+        long transferSenderId)
+    {
+        // Act
+        var request = new GetCommittedLearnersCostByAccountIdRequest(
+            null,
+            pageNumber,
+            pageItemCount,
+            transferSenderId);
+
+        // Assert
+        request.GetUrl.Should().Be(
+            $"api/apprenticeships?transferSenderId={transferSenderId}&pageNumber={pageNumber}&pageItemCount={pageItemCount}");
+    }
+
+    [Test, MoqAutoData]
+    public void WhenBuildingTheRequestWithNoTransferSenderId_ThenTheCorrectUrlIsGenerated(
+        long accountId,
+        int pageNumber,
+        int pageItemCount)
+    {
+        // Act
+        var request = new GetCommittedLearnersCostByAccountIdRequest(
+            accountId,
+            pageNumber,
+            pageItemCount,
+            null);
+
+        // Assert
+        request.GetUrl.Should().Be(
+            $"api/apprenticeships?accountId={accountId}&pageNumber={pageNumber}&pageItemCount={pageItemCount}");
+    }
+
+    [Test, MoqAutoData]
+    public void WhenBuildingTheRequestWithStatues_ThenTheCorrectUrlIsGenerated(long accountId,
+        int pageNumber,
+        int pageItemCount,
+        long transferSenderId,
+        List<ApprenticeshipStatus> statuses)
+    {
+        // Act
+        var request = new GetCommittedLearnersCostByAccountIdRequest(
+            accountId,
+            pageNumber,
+            pageItemCount,
+            transferSenderId,
+            statuses);
+
+        // Assert
+        var expectedStatuses = string.Join("&", statuses.Select(s => $"statuses={s}"));
+        request.GetUrl.Should().Be(
+            $"api/apprenticeships?accountId={accountId}&transferSenderId={transferSenderId}&{expectedStatuses}&pageNumber={pageNumber}&pageItemCount={pageItemCount}");
+    }
+}

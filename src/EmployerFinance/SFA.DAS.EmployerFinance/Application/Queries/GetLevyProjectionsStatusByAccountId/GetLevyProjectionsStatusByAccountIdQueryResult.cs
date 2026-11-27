@@ -1,0 +1,5 @@
+using System;
+
+namespace SFA.DAS.EmployerFinance.Application.Queries.GetLevyProjectionsStatusByAccountId;
+
+public sealed record GetLevyProjectionsStatusByAccountIdQueryResult(DateTime LastSuccessfulImportDate);
