@@ -4,16 +4,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Reservations;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
 using GetAllStandardsRequest = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses.GetAllStandardsRequest;
 
 namespace SFA.DAS.Approvals.Application.Learners.Queries;
@@ -23,7 +22,7 @@ public class GetLearnersForProviderQueryHandler(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsClient,
     IMapLearnerRecords mapper,
     IReservationApiClient<ReservationApiConfiguration> _reservationsApiClient,
-ILogger<GetLearnersForProviderQueryHandler> logger)
+    ILogger<GetLearnersForProviderQueryHandler> logger)
     : IRequestHandler<GetLearnersForProviderQuery, GetLearnersForProviderQueryResult>
 {
     public async Task<GetLearnersForProviderQueryResult> Handle(GetLearnersForProviderQuery request,
@@ -44,7 +43,7 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
             }
             employerName = legalEntityResponse.Body.LegalEntityName;
 
-            if (legalEntityResponse.Body.LevyStatus == ApprenticeshipEmployerType.NonLevy)
+            if (legalEntityResponse.Body.LevyStatus == ApprenticeshipEmployerType.NonLevy && !request.IsFundsTransfer)
             {
                 var get = new GetAvailableDatesRequest(accountLegalEntityId);
                 var response = await _reservationsApiClient.Get<GetAvailableDatesResponse>(get);

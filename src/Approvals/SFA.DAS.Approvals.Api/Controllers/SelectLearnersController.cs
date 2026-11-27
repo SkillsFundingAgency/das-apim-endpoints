@@ -35,7 +35,8 @@ public class SelectLearnersController(IMediator mediator, ILogger<SelectLearners
                 CourseCode = request.CourseCode,
                 LearningType = request.LearningType,
                 ExcludeUlns = request.ExcludeUlns,
-                AgreementId = request.AgreementId
+                AgreementId = request.AgreementId,
+                IsFundsTransfer = request.IsFundsTransfer
             });
             return Ok(result);
         }
