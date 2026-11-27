@@ -1,27 +1,23 @@
-using MediatR;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Infrastructure;
-using SFA.DAS.RecruitQa.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Recruit.Contracts.ApiRequests;
+using IRecruitApiClient = SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>;
 
 namespace SFA.DAS.RecruitQa.Application.Report.Commands.PostCreateReport;
 
-public class PostCreateReportCommandHandler(
-    IRecruitApiClient<RecruitApiConfiguration> recruitApiClient) : IRequestHandler<PostCreateReportCommand>
+public class PostCreateReportCommandHandler(IRecruitApiClient recruitApiClient) : IRequestHandler<PostCreateReportCommand>
 {
     public async Task Handle(PostCreateReportCommand command, CancellationToken cancellationToken)
     {
-        var response = await recruitApiClient.PostWithResponseCode<NullResponse>(new PostReportRequest(
-            new PostReportRequest.PostReportRequestData
-            {
-                Id = command.Id,
-                CreatedBy = command.CreatedBy,
-                FromDate = command.FromDate,
-                ToDate = command.ToDate,
-                Name = command.Name,
-                UserId = command.UserId
-            }), false);
+        var response = await recruitApiClient.PostWithResponseCode<NullResponse>(new PostReportsApiRequest(new Recruit.Contracts.ApiResponses.PostReportRequest
+        {
+            Id = command.Id,
+            CreatedBy = command.CreatedBy,
+            FromDate = command.FromDate,
+            ToDate = command.ToDate,
+            Name = command.Name,
+            UserId = command.UserId
+        }));
 
         response.EnsureSuccessStatusCode();
     }
