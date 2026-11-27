@@ -1,10 +1,10 @@
-using System.Net;
 using AutoFixture;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitQa.Api.Controllers;
 using SFA.DAS.RecruitQa.Api.Models;
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByUser;
-using SFA.DAS.RecruitQa.InnerApi.Responses;
+using System.Net;
 
 namespace SFA.DAS.RecruitQa.Api.UnitTests.Controller.VacancyReview;
 
@@ -13,9 +13,9 @@ public class WhenCallingGetVacancyReviewsByUser
     [Test, RecursiveMoqAutoData]
     public async Task Then_The_Mediator_Query_Is_Handled_And_Data_Returned(
         string userId,
-        string status,
+        ReviewStatus status,
         DateTime? assignationExpiry,
-        List<GetVacancyReviewResponse> innerResponses,
+        List<Recruit.Contracts.ApiResponses.VacancyReview> innerResponses,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] VacancyReviewController controller)
     {
@@ -43,7 +43,7 @@ public class WhenCallingGetVacancyReviewsByUser
     public async Task Then_The_Mediator_Query_Is_Handled_And_Empty_List_Returned_When_No_Data(
         string userId,
         DateTime? assignationExpiry,
-        string status,
+        ReviewStatus status,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] VacancyReviewController controller)
     {
@@ -54,7 +54,7 @@ public class WhenCallingGetVacancyReviewsByUser
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new GetVacancyReviewsByUserQueryResult
             {
-                VacancyReviews = new List<GetVacancyReviewResponse>()
+                VacancyReviews = []
             });
 
         var actual = await controller.GetByUser(userId, assignationExpiry, status) as OkObjectResult;
@@ -68,7 +68,7 @@ public class WhenCallingGetVacancyReviewsByUser
     [Test, MoqAutoData]
     public async Task Then_If_Exception_Internal_Server_Error_Returned(
         string userId,
-        string status,
+        ReviewStatus status,
         DateTime? assignationExpiry,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] VacancyReviewController controller)
