@@ -4,6 +4,7 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.InnerApi;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ApprenticeFeedback;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerFeedback;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProvider;
@@ -17,7 +18,8 @@ public sealed class GetCourseProviderQueryResult
     public string CourseName { get; set; }
     public CourseType CourseType { get; set; }
     public LearningType LearningType { get; set; }
-    public bool IsActiveAvailable { get; set; }
+    public DateTime? LastDateStarts { get; set; }
+    public StandardDate CourseDates { get; set; }
     public int Level { get; set; }
     public string LarsCode { get; set; }
     public string IFateReferenceNumber { get; set; }
@@ -42,7 +44,7 @@ public sealed class GetCourseProviderQueryResult
             CourseName = source.CourseName,
             CourseType = source.CourseType,
             LearningType = source.LearningType,
-            IsActiveAvailable = source.IsActiveAvailable,
+            LastDateStarts = source.LastDateStarts,
             Level = source.Level,
             LarsCode = source.LarsCode,
             IFateReferenceNumber = source.IFateReferenceNumber,

@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RoatpV2;
@@ -45,7 +46,7 @@ public sealed class GetCourseByLarsCodeQueryHandler(
         CourseTrainingProviderCountModel trainingCourseCountDetails =
             courseTrainingProvidersCountResponse.Body.Courses.Count > 0 ? courseTrainingProvidersCountResponse.Body.Courses[0] : null;
 
-        var cachedStandardDetailResponse = await _cachedStandardDetailsService.GetStandardDetails(query.LarsCode);
+        GetCourseLookupResponse cachedStandardDetailResponse = await _cachedStandardDetailsService.GetStandardDetails(query.LarsCode);
 
         ApprenticeshipFunding apprenticeshipFunding = cachedStandardDetailResponse.ApprenticeshipFunding?.Count > 0 ?
             cachedStandardDetailResponse.ApprenticeshipFunding.OrderByDescending(a => a.EffectiveFrom).First() : null;
