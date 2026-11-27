@@ -56,6 +56,7 @@ public class ApprenticeshipUnitVersionService(ICoursesApiClient<CoursesApiConfig
                 && (!x.VersionDetail.LatestStartDate.HasValue || x.VersionDetail.LatestStartDate.Value.Date >= startDate))
             .OrderByDescending(x => x.VersionMajor)
             .ThenByDescending(x => x.VersionMinor)
+            .ThenByDescending(x => x.VersionDetail.EarliestStartDate)
             .FirstOrDefault();
 
         if (version == null || string.IsNullOrWhiteSpace(version.Version) || string.IsNullOrWhiteSpace(version.StandardUId))

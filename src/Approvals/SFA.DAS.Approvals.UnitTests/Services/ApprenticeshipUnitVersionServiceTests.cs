@@ -110,6 +110,30 @@ public class ApprenticeshipUnitVersionServiceTests
             request => request.GetUrl == "api/courses/lookup/versions/AU0001")), Times.Once);
     }
 
+    [Test]
+    public async Task UsesLatestEarliestStartDateWhenVersionNumbersAreNotPopulated()
+    {
+        var courses = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();
+        courses.Setup(x => x.Get<GetCourseVersionsResponse>(It.IsAny<GetCourseVersionsRequest>()))
+            .ReturnsAsync(new GetCourseVersionsResponse
+            {
+                Courses =
+                [
+                    VersionWithDates("1.0", new DateTime(2026, 4, 28), null),
+                    VersionWithDates("1.1", new DateTime(2026, 10, 1), null)
+                ]
+            });
+        var service = new ApprenticeshipUnitVersionService(courses.Object);
+
+        var result = await service.Resolve(new GetCourseLookupResponse
+        {
+            LearningType = "ApprenticeshipUnit", IfateReferenceNumber = "AU0001"
+        }, new DateTime(2026, 11, 1));
+
+        result.Version.Should().Be("1.1");
+        result.StandardUId.Should().Be("AU0001_1.1");
+    }
+
     [TestCase(null)]
     [TestCase("Apprenticeship")]
     [TestCase("FoundationApprenticeship")]
@@ -190,6 +214,13 @@ public class ApprenticeshipUnitVersionServiceTests
         Version = version,
         VersionMajor = 1,
         VersionMinor = minor,
+        StandardUId = $"AU0001_{version}",
+        VersionDetail = new StandardVersionDetail { EarliestStartDate = from, LatestStartDate = to }
+    };
+
+    private static GetCourseLookupResponse VersionWithDates(string version, DateTime from, DateTime? to) => new()
+    {
+        Version = version,
         StandardUId = $"AU0001_{version}",
         VersionDetail = new StandardVersionDetail { EarliestStartDate = from, LatestStartDate = to }
     };
