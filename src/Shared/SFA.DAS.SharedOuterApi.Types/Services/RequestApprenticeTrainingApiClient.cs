@@ -1,9 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using System.Diagnostics.CodeAnalysis;
-using System.Net;
 
 namespace SFA.DAS.SharedOuterApi.Types.Services;
 
@@ -99,6 +99,6 @@ public class RequestApprenticeTrainingApiClient(IInternalApiClient<RequestAppren
 
     public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
     {
-        return _apiClient.PutWithResponseCode<TData,TResponse>(request);
+        return apiClient.PutWithResponseCode<TData, TResponse>(request);
     }
 }
