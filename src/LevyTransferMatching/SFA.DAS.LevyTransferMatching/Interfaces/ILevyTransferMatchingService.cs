@@ -33,6 +33,7 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
         Task<Pledge> GetPledge(int id);
         Task<CreateApplicationResponse> CreateApplication(CreateApplicationRequest request);
         Task<GetApplicationsResponse> GetApplications(GetApplicationsRequest request);
+        Task<GetApplicationsForAutomaticApprovalResponse> GetApplicationsForAutomaticApproval(GetApplicationsForAutomaticApprovalRequest request);
         Task<ApiResponse<CreditPledgeRequest>> CreditPledge(CreditPledgeRequest request);
         Task<GetApplicationResponse> GetApplication(GetApplicationRequest request);
 
